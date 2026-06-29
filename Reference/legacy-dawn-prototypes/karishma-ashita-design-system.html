@@ -1,0 +1,1620 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Karishma &amp; Ashita — The Maison Design System</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+/* ============================================================
+   KARISHMA & ASHITA — GLOBAL LUXURY DESIGN SYSTEM
+   Implementation Baseline · v2.0
+   Refinements: Bodoni Moda + Jost · typographic wordmark ·
+   warm bone-and-ink palette with a single thread of antique bronze
+   ============================================================ */
+
+/* ---------- DESIGN TOKENS ---------- */
+:root{
+  /* Palette — Warm Bone, Ink & Antique Bronze */
+  --canvas:#FAF6F0;        /* Bone — primary page */
+  --ivory:#F1EADF;         /* Oat — alternating section */
+  --blush:#EBE2D5;         /* Almond — soft editorial section */
+  --noir:#16120E;          /* Espresso — dark sections / footer / primary */
+  --noir-2:#211C16;        /* raised dark surface */
+  --ink:#1E1A16;           /* Ink — headings */
+  --ink-soft:#524A40;      /* Clove — body */
+  --ink-mid:#6F675B;       /* Stone — secondary text */
+  --ink-muted:#8F8674;     /* Taupe — meta / captions */
+
+  /* The Metal — one muted thread, used by the milligram */
+  --bronze:#9C8259;        /* Antique Bronze — accent on light */
+  --bronze-deep:#7E673F;   /* deeper metal for type on light */
+  --bronze-soft:#C4A981;   /* soft metal */
+  --champagne:#C4A981;     /* warm metal on dark surfaces */
+  --metal-line:#E1D6C4;    /* gilt-bronze hairline */
+
+  --line:rgba(30,26,22,.12);
+  --line-strong:rgba(30,26,22,.22);
+  --line-on-dark:rgba(196,169,129,.26);
+
+  /* Spacing scale (8pt rhythm, couture-generous) */
+  --s1:4px; --s2:8px; --s3:12px; --s4:16px; --s5:24px; --s6:32px;
+  --s7:48px; --s8:64px; --s9:96px; --s10:128px; --s11:160px; --s12:200px;
+
+  /* Containers */
+  --c-wide:1600px; --c:1280px; --c-narrow:1040px; --c-text:680px;
+  --gutter:clamp(20px, 5vw, 64px);
+
+  /* Radius — couture is architectural & sharp */
+  --r:0px; --r-xs:2px;
+
+  /* Shadow — used only for floating overlays, never on cards */
+  --shadow-overlay:0 28px 70px -28px rgba(22,18,14,.32);
+  --shadow-soft:0 16px 50px -30px rgba(22,18,14,.24);
+
+  /* Motion */
+  --ease:cubic-bezier(.16,1,.3,1);
+  --ease-soft:cubic-bezier(.22,.61,.36,1);
+  --dur:.6s; --dur-img:.9s; --dur-fast:.35s;
+
+  /* Type */
+  --font-display:'Bodoni Moda', Didot, 'Times New Roman', serif;
+  --font-sans:'Jost', 'Helvetica Neue', Arial, sans-serif;
+  --t-display:clamp(2.7rem, 5.8vw, 5.2rem);
+  --t-h1:clamp(2.1rem, 4vw, 3.2rem);
+  --t-h2:clamp(1.8rem, 3vw, 2.5rem);
+  --t-h3:clamp(1.35rem, 2vw, 1.75rem);
+  --t-eyebrow:.72rem;
+  --t-body-l:1.15rem;
+  --t-body:1rem;
+  --t-small:.82rem;
+  --t-nav:.8rem;
+}
+
+/* ---------- RESET ---------- */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%;}
+body{
+  font-family:var(--font-sans);
+  font-weight:300;
+  font-size:var(--t-body);
+  line-height:1.75;
+  color:var(--ink-soft);
+  background:var(--canvas);
+  -webkit-font-smoothing:antialiased;
+  text-rendering:optimizeLegibility;
+}
+img{max-width:100%;display:block;}
+a{color:inherit;text-decoration:none;}
+button{font-family:inherit;cursor:pointer;border:none;background:none;color:inherit;}
+ul{list-style:none;}
+
+/* ---------- TYPOGRAPHY BASE ---------- */
+h1,h2,h3,h4{font-family:var(--font-display);font-weight:400;color:var(--ink);line-height:1.14;letter-spacing:.002em;}
+.display{font-family:var(--font-display);font-weight:400;font-size:var(--t-display);line-height:1.06;letter-spacing:-.005em;color:var(--ink);}
+h1{font-size:var(--t-h1);}
+h2{font-size:var(--t-h2);}
+h3{font-size:var(--t-h3);}
+p{max-width:62ch;}
+.eyebrow{
+  font-family:var(--font-sans);font-weight:400;font-size:var(--t-eyebrow);
+  text-transform:uppercase;letter-spacing:.34em;color:var(--bronze);
+  display:inline-block;
+}
+/* Collection-name / editorial-italic treatment (replaces all script usage) */
+.script{font-family:var(--font-display);font-style:italic;font-weight:400;color:var(--bronze);line-height:1.1;letter-spacing:.005em;}
+.amp{font-style:italic;font-weight:400;}
+.lead{font-size:var(--t-body-l);color:var(--ink-soft);line-height:1.8;font-weight:300;}
+.muted{color:var(--ink-muted);}
+
+/* ============================================================
+   DOC CHROME
+   ============================================================ */
+.docbar{
+  position:sticky;top:0;z-index:200;
+  background:var(--noir);color:#E4DCCD;
+  border-bottom:1px solid var(--line-on-dark);
+}
+.docbar-inner{
+  max-width:var(--c-wide);margin:0 auto;padding:0 var(--gutter);
+  display:flex;align-items:center;gap:var(--s6);height:46px;
+  overflow-x:auto;scrollbar-width:none;
+}
+.docbar-inner::-webkit-scrollbar{display:none;}
+.docbar .tag{
+  font-size:.62rem;letter-spacing:.34em;text-transform:uppercase;
+  color:var(--champagne);white-space:nowrap;padding-right:var(--s5);
+  border-right:1px solid var(--line-on-dark);
+}
+.docnav{display:flex;gap:var(--s5);align-items:center;}
+.docnav a{
+  font-size:.68rem;letter-spacing:.22em;text-transform:uppercase;
+  color:#B3A994;white-space:nowrap;transition:color var(--dur-fast) var(--ease);
+}
+.docnav a:hover{color:var(--champagne);}
+
+/* ============================================================
+   1 · ANNOUNCEMENT BAR (live component)
+   ============================================================ */
+.announce{
+  background:var(--noir);color:var(--champagne);
+  text-align:center;overflow:hidden;height:40px;
+  display:flex;align-items:center;justify-content:center;
+  border-bottom:1px solid rgba(196,169,129,.18);
+}
+.announce-track{position:relative;height:1.2em;width:100%;}
+.announce-msg{
+  position:absolute;inset:0;display:flex;align-items:center;justify-content:center;gap:.7em;
+  font-size:.68rem;letter-spacing:.3em;text-transform:uppercase;font-weight:400;
+  opacity:0;transform:translateY(8px);transition:opacity .8s var(--ease),transform .8s var(--ease);
+}
+.announce-msg.active{opacity:1;transform:translateY(0);}
+.announce-msg a{color:#F1EADF;border-bottom:1px solid rgba(241,234,223,.4);padding-bottom:1px;}
+
+/* ============================================================
+   2 · HEADER + NAV + MEGA MENU (live component)
+   ============================================================ */
+.site-header{
+  position:sticky;top:46px;z-index:150;
+  background:var(--canvas);
+  border-bottom:1px solid var(--line);
+  transition:background var(--dur) var(--ease);
+}
+.header-top{
+  max-width:var(--c-wide);margin:0 auto;padding:0 var(--gutter);
+  height:90px;display:grid;grid-template-columns:1fr auto 1fr;align-items:center;
+}
+.header-utils{display:flex;align-items:center;gap:var(--s5);}
+.header-utils.right{justify-content:flex-end;}
+.icon-btn{
+  width:42px;height:42px;display:flex;align-items:center;justify-content:center;
+  color:var(--ink);transition:color var(--dur-fast) var(--ease);position:relative;
+}
+.icon-btn:hover{color:var(--bronze);}
+.icon-btn svg{width:21px;height:21px;}
+.util-label{
+  font-size:.7rem;letter-spacing:.2em;text-transform:uppercase;color:var(--ink);
+  display:flex;align-items:center;gap:.5em;transition:color var(--dur-fast) var(--ease);
+}
+.util-label:hover{color:var(--bronze);}
+.util-label svg{width:19px;height:19px;}
+.cart-count{
+  position:absolute;top:6px;right:4px;background:var(--bronze);color:#fff;
+  font-family:var(--font-sans);font-size:.56rem;font-weight:500;letter-spacing:0;
+  width:15px;height:15px;border-radius:50%;display:flex;align-items:center;justify-content:center;
+}
+/* Typographic wordmark — the new identity */
+.brand{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;text-align:center;}
+.brand .wordmark{
+  font-family:var(--font-display);font-weight:500;font-size:1.42rem;letter-spacing:.28em;
+  color:var(--ink);text-transform:uppercase;line-height:1;white-space:nowrap;
+}
+.brand .wordmark .amp{color:var(--bronze-deep);padding:0 .08em;}
+.brand .sub{font-family:var(--font-sans);font-size:.54rem;letter-spacing:.4em;text-transform:uppercase;color:var(--ink-muted);}
+
+/* Primary nav row */
+.nav-row{border-top:1px solid var(--line);background:var(--canvas);}
+.mainnav{
+  max-width:var(--c-wide);margin:0 auto;padding:0 var(--gutter);
+  display:flex;align-items:center;justify-content:center;gap:var(--s7);height:54px;
+}
+.mainnav > li > a, .mainnav > li > button{
+  font-size:var(--t-nav);letter-spacing:.2em;text-transform:uppercase;color:var(--ink);
+  font-weight:400;padding:6px 0;position:relative;display:inline-block;
+  transition:color var(--dur-fast) var(--ease);
+}
+.mainnav > li > a::after, .mainnav > li > button::after{
+  content:"";position:absolute;left:0;right:0;bottom:0;height:1px;
+  background:var(--bronze);transform:scaleX(0);transform-origin:left;
+  transition:transform var(--dur) var(--ease);
+}
+.mainnav > li:hover > a, .mainnav > li:hover > button,
+.mainnav > li.open > a, .mainnav > li.open > button{color:var(--bronze);}
+.mainnav > li:hover > a::after, .mainnav > li:hover > button::after,
+.mainnav > li.open > button::after{transform:scaleX(1);}
+.mainnav .caret{display:inline-block;width:8px;height:8px;border-right:1px solid currentColor;border-bottom:1px solid currentColor;transform:rotate(45deg) translateY(-2px);margin-left:.5em;transition:transform var(--dur) var(--ease);}
+.mainnav li.open .caret{transform:rotate(-135deg) translateY(0);}
+
+/* Mega menu */
+.mega-wrap{position:relative;}
+.mega{
+  position:absolute;left:0;right:0;top:100%;
+  background:var(--canvas);border-top:1px solid var(--line);
+  box-shadow:var(--shadow-overlay);
+  opacity:0;visibility:hidden;transform:translateY(-10px);
+  transition:opacity var(--dur) var(--ease),transform var(--dur) var(--ease),visibility var(--dur);
+  z-index:140;
+}
+.mega.show{opacity:1;visibility:visible;transform:translateY(0);}
+.mega-inner{
+  max-width:var(--c-wide);margin:0 auto;padding:var(--s8) var(--gutter);
+  display:grid;grid-template-columns:1fr 1fr 1.3fr;gap:var(--s8);
+}
+.mega-col h4{
+  font-family:var(--font-sans);font-weight:400;font-size:.68rem;letter-spacing:.28em;
+  text-transform:uppercase;color:var(--ink-muted);margin-bottom:var(--s5);
+  padding-bottom:var(--s3);border-bottom:1px solid var(--line);
+}
+.mega-col li{margin-bottom:var(--s4);}
+.mega-col li a{
+  font-family:var(--font-display);font-size:1.3rem;font-weight:400;color:var(--ink);
+  position:relative;display:inline-block;transition:color var(--dur-fast) var(--ease);
+}
+.mega-col li a::after{content:"";position:absolute;left:0;bottom:1px;width:100%;height:1px;background:var(--bronze);transform:scaleX(0);transform-origin:left;transition:transform var(--dur) var(--ease);}
+.mega-col li a:hover{color:var(--bronze);}
+.mega-col li a:hover::after{transform:scaleX(1);}
+.mega-feature{position:relative;overflow:hidden;}
+.mega-feature img{width:100%;height:340px;object-fit:cover;transition:transform var(--dur-img) var(--ease);}
+.mega-feature:hover img{transform:scale(1.05);}
+.mega-feature .cap{
+  position:absolute;left:0;bottom:0;right:0;padding:var(--s6);
+  background:linear-gradient(to top,rgba(22,18,14,.72),transparent);color:#fff;
+}
+.mega-feature .cap .s{font-family:var(--font-display);font-style:italic;font-weight:400;font-size:1.9rem;color:#fff;line-height:1.05;display:block;}
+.mega-feature .cap .l{font-size:.7rem;letter-spacing:.26em;text-transform:uppercase;display:inline-flex;align-items:center;gap:.6em;margin-top:var(--s3);}
+
+/* ============================================================
+   LAYOUT HELPERS
+   ============================================================ */
+.section{padding:var(--s10) 0;}
+.section.tight{padding:var(--s9) 0;}
+.wrap{max-width:var(--c);margin:0 auto;padding:0 var(--gutter);}
+.wrap-wide{max-width:var(--c-wide);margin:0 auto;padding:0 var(--gutter);}
+.wrap-narrow{max-width:var(--c-narrow);margin:0 auto;padding:0 var(--gutter);}
+.bg-ivory{background:var(--ivory);}
+.bg-blush{background:var(--blush);}
+.bg-noir{background:var(--noir);color:#CFC6B6;}
+.bg-noir h1,.bg-noir h2,.bg-noir h3,.bg-noir h4{color:#F1EADF;}
+
+.sec-head{margin-bottom:var(--s8);max-width:760px;}
+.sec-head .eyebrow{margin-bottom:var(--s4);}
+.sec-head h2{margin-bottom:var(--s4);}
+.sec-head p{color:var(--ink-soft);}
+.rationale{
+  border-left:1px solid var(--metal-line);padding:var(--s2) 0 var(--s2) var(--s5);
+  margin-top:var(--s5);max-width:62ch;
+}
+.rationale .k{font-size:.66rem;letter-spacing:.28em;text-transform:uppercase;color:var(--bronze);display:block;margin-bottom:var(--s2);font-family:var(--font-sans);}
+.rationale p{color:var(--ink-soft);font-style:italic;font-family:var(--font-display);font-size:1.08rem;line-height:1.6;}
+
+/* ============================================================
+   COVER
+   ============================================================ */
+.cover{padding:var(--s11) 0 var(--s10);border-bottom:1px solid var(--line);position:relative;overflow:hidden;}
+.cover .wrap{position:relative;z-index:2;}
+.cover .eyebrow{margin-bottom:var(--s6);}
+.cover .display{max-width:16ch;margin-bottom:var(--s6);}
+.cover .lead{max-width:54ch;margin-bottom:var(--s8);}
+.cover-meta{display:flex;flex-wrap:wrap;gap:var(--s8);border-top:1px solid var(--line);padding-top:var(--s6);}
+.cover-meta div{min-width:150px;}
+.cover-meta .k{font-size:.66rem;letter-spacing:.26em;text-transform:uppercase;color:var(--ink-muted);margin-bottom:var(--s2);}
+.cover-meta .v{font-family:var(--font-display);font-size:1.2rem;color:var(--ink);}
+.cover-mono{
+  position:absolute;right:2vw;top:50%;transform:translateY(-50%);
+  font-family:var(--font-display);font-weight:500;font-size:min(44vw,540px);line-height:.78;
+  color:var(--ink);opacity:.045;z-index:1;pointer-events:none;letter-spacing:-.02em;
+}
+.cover-mono .amp{font-style:italic;font-weight:400;}
+
+.essence{display:flex;flex-wrap:wrap;gap:var(--s3);margin-top:var(--s7);}
+.essence span{
+  font-size:.7rem;letter-spacing:.24em;text-transform:uppercase;color:var(--ink-soft);
+  border:1px solid var(--line);padding:9px 18px;
+}
+
+/* ============================================================
+   PALETTE
+   ============================================================ */
+.swatch-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:var(--s5);}
+.swatch{cursor:pointer;border:1px solid var(--line);background:#fff;transition:transform var(--dur) var(--ease);}
+.swatch:hover{transform:translateY(-4px);}
+.swatch .chip{height:130px;position:relative;}
+.swatch .chip .copy{position:absolute;right:10px;bottom:10px;font-size:.58rem;letter-spacing:.18em;text-transform:uppercase;opacity:0;transition:opacity var(--dur-fast) var(--ease);}
+.swatch:hover .chip .copy{opacity:.85;}
+.swatch .meta{padding:var(--s4) var(--s4) var(--s5);}
+.swatch .meta .nm{font-family:var(--font-display);font-size:1.15rem;color:var(--ink);}
+.swatch .meta .hx{font-family:ui-monospace,Menlo,monospace;font-size:.72rem;letter-spacing:.06em;color:var(--ink-muted);margin-top:3px;}
+.swatch .meta .use{font-size:.72rem;color:var(--ink-soft);margin-top:var(--s3);line-height:1.5;}
+
+/* ============================================================
+   TYPOGRAPHY SPECIMENS
+   ============================================================ */
+.type-row{display:grid;grid-template-columns:160px 1fr;gap:var(--s6);padding:var(--s6) 0;border-top:1px solid var(--line);align-items:baseline;}
+.type-row:last-child{border-bottom:1px solid var(--line);}
+.type-meta .nm{font-size:.72rem;letter-spacing:.2em;text-transform:uppercase;color:var(--ink);}
+.type-meta .sp{font-family:ui-monospace,monospace;font-size:.68rem;color:var(--ink-muted);margin-top:4px;line-height:1.6;}
+.fontcards{display:grid;grid-template-columns:repeat(3,1fr);gap:var(--s5);margin-top:var(--s7);}
+.fontcard{border:1px solid var(--line);padding:var(--s6);background:#fff;}
+.fontcard .big{font-size:3.4rem;line-height:1;color:var(--ink);margin-bottom:var(--s4);}
+.fontcard .nm{font-size:.7rem;letter-spacing:.24em;text-transform:uppercase;color:var(--bronze);}
+.fontcard .role{font-size:.85rem;color:var(--ink-soft);margin-top:var(--s2);}
+.fontcard .gly{font-size:.95rem;color:var(--ink-muted);margin-top:var(--s4);letter-spacing:.04em;border-top:1px solid var(--line);padding-top:var(--s4);}
+
+/* ============================================================
+   SPACING
+   ============================================================ */
+.space-row{display:flex;align-items:center;gap:var(--s5);padding:var(--s3) 0;}
+.space-bar{background:var(--bronze-soft);height:18px;}
+.space-row .lbl{font-family:ui-monospace,monospace;font-size:.74rem;color:var(--ink-muted);width:170px;flex-shrink:0;}
+.container-demo{display:flex;flex-direction:column;gap:var(--s4);margin-top:var(--s4);}
+.cont-line{position:relative;height:46px;border:1px solid var(--line);background:repeating-linear-gradient(45deg,rgba(156,130,89,.05),rgba(156,130,89,.05) 8px,transparent 8px,transparent 16px);display:flex;align-items:center;}
+.cont-fill{height:100%;background:rgba(156,130,89,.16);border-right:1px solid var(--bronze);border-left:1px solid var(--bronze);display:flex;align-items:center;justify-content:center;}
+.cont-fill span{font-family:ui-monospace,monospace;font-size:.7rem;color:var(--ink);letter-spacing:.08em;}
+
+/* ============================================================
+   BUTTONS
+   ============================================================ */
+.btn{
+  font-family:var(--font-sans);font-size:.76rem;font-weight:400;letter-spacing:.22em;text-transform:uppercase;
+  padding:18px 40px;display:inline-flex;align-items:center;justify-content:center;gap:.8em;
+  border:1px solid transparent;border-radius:var(--r);position:relative;overflow:hidden;
+  transition:color var(--dur) var(--ease),background var(--dur) var(--ease),border-color var(--dur) var(--ease);
+}
+.btn svg{width:16px;height:16px;}
+.btn-primary{background:var(--noir);color:#F1EADF;}
+.btn-primary:hover{background:var(--bronze-deep);color:#fff;}
+.btn-outline{background:transparent;color:var(--ink);border-color:var(--ink);}
+.btn-outline:hover{background:var(--ink);color:var(--ivory);}
+.btn-gold{background:transparent;color:var(--bronze-deep);border-color:var(--bronze);}
+.btn-gold:hover{background:var(--bronze);color:#fff;border-color:var(--bronze);}
+.btn-ghost-dark{background:transparent;color:#F1EADF;border-color:rgba(241,234,223,.5);}
+.btn-ghost-dark:hover{background:#F1EADF;color:var(--noir);border-color:#F1EADF;}
+.btn-block{display:flex;width:100%;}
+.btn.sm{padding:13px 26px;font-size:.68rem;}
+.btn.lg{padding:22px 56px;}
+.btn:disabled{opacity:.4;cursor:not-allowed;}
+
+.link-cta{
+  font-family:var(--font-sans);font-size:.76rem;letter-spacing:.22em;text-transform:uppercase;color:var(--ink);
+  display:inline-flex;align-items:center;gap:.7em;position:relative;padding-bottom:6px;
+}
+.link-cta::after{content:"";position:absolute;left:0;bottom:0;width:100%;height:1px;background:var(--bronze);transform:scaleX(1);transform-origin:right;transition:transform var(--dur) var(--ease);}
+.link-cta:hover::after{transform:scaleX(0);transform-origin:right;}
+.link-cta .ar{transition:transform var(--dur) var(--ease);}
+.link-cta:hover .ar{transform:translateX(6px);}
+
+.btn-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:var(--s6);align-items:start;}
+.btn-cell{border:1px solid var(--line);padding:var(--s6);display:flex;flex-direction:column;align-items:flex-start;gap:var(--s4);background:#fff;}
+.btn-cell.dark{background:var(--noir);}
+.btn-cell .cap{font-size:.66rem;letter-spacing:.2em;text-transform:uppercase;color:var(--ink-muted);}
+.btn-cell.dark .cap{color:#A89F8E;}
+
+/* ============================================================
+   FORMS
+   ============================================================ */
+.form-demo{display:grid;grid-template-columns:1fr 1fr;gap:var(--s8);}
+.field{margin-bottom:var(--s6);}
+.field label{display:block;font-size:.68rem;letter-spacing:.22em;text-transform:uppercase;color:var(--ink-muted);margin-bottom:var(--s3);}
+.input-line{
+  width:100%;background:transparent;border:none;border-bottom:1px solid var(--line-strong);
+  padding:12px 0;font-family:var(--font-sans);font-size:1rem;font-weight:300;color:var(--ink);
+  transition:border-color var(--dur) var(--ease);
+}
+.input-line::placeholder{color:var(--ink-muted);}
+.input-line:focus{outline:none;border-color:var(--bronze);}
+.input-box{
+  width:100%;background:#fff;border:1px solid var(--line-strong);border-radius:var(--r);
+  padding:15px 18px;font-family:var(--font-sans);font-size:1rem;font-weight:300;color:var(--ink);
+  transition:border-color var(--dur) var(--ease),box-shadow var(--dur) var(--ease);
+}
+.input-box::placeholder{color:var(--ink-muted);}
+.input-box:focus{outline:none;border-color:var(--bronze);box-shadow:0 0 0 3px rgba(156,130,89,.1);}
+textarea.input-box{resize:vertical;min-height:120px;}
+.select-wrap{position:relative;}
+.select-wrap::after{content:"";position:absolute;right:18px;top:50%;width:8px;height:8px;border-right:1px solid var(--ink-soft);border-bottom:1px solid var(--ink-soft);transform:translateY(-70%) rotate(45deg);pointer-events:none;}
+select.input-box{appearance:none;-webkit-appearance:none;padding-right:44px;cursor:pointer;}
+.check-row{display:flex;align-items:center;gap:var(--s3);margin-bottom:var(--s4);cursor:pointer;font-size:.92rem;color:var(--ink-soft);}
+.check{width:18px;height:18px;border:1px solid var(--line-strong);display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all var(--dur-fast) var(--ease);}
+.check svg{width:11px;height:11px;opacity:0;color:#fff;transition:opacity var(--dur-fast) var(--ease);}
+.check-row.on .check{background:var(--bronze);border-color:var(--bronze);}
+.check-row.on .check svg{opacity:1;}
+.radio{width:18px;height:18px;border:1px solid var(--line-strong);border-radius:50%;position:relative;flex-shrink:0;transition:all var(--dur-fast) var(--ease);}
+.radio::after{content:"";position:absolute;inset:4px;border-radius:50%;background:var(--bronze);transform:scale(0);transition:transform var(--dur-fast) var(--ease);}
+.check-row.on .radio::after{transform:scale(1);}
+.check-row.on .radio{border-color:var(--bronze);}
+
+.newsletter-demo{background:var(--noir);padding:var(--s9) var(--s8);text-align:center;}
+.newsletter-demo h3{color:#F1EADF;margin-bottom:var(--s3);}
+.newsletter-demo p{color:#A89F8E;margin:0 auto var(--s6);max-width:44ch;}
+.news-form{display:flex;max-width:480px;margin:0 auto;gap:0;border-bottom:1px solid var(--line-on-dark);}
+.news-form input{flex:1;background:transparent;border:none;color:#F1EADF;padding:14px 4px;font-family:var(--font-sans);font-weight:300;letter-spacing:.04em;}
+.news-form input::placeholder{color:#8C8273;}
+.news-form input:focus{outline:none;}
+.news-form button{color:var(--champagne);font-size:.7rem;letter-spacing:.24em;text-transform:uppercase;padding:0 var(--s4);white-space:nowrap;}
+
+/* ============================================================
+   CARDS
+   ============================================================ */
+.product-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:var(--s6) var(--s5);}
+.pcard{position:relative;}
+.pcard .media{position:relative;overflow:hidden;background:var(--ivory);aspect-ratio:3/4;}
+.pcard .media img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transition:opacity var(--dur-img) var(--ease),transform var(--dur-img) var(--ease);}
+.pcard .media img.front{opacity:1;}
+.pcard .media img.back{opacity:0;}
+.pcard:hover .media img.front{opacity:0;transform:scale(1.04);}
+.pcard:hover .media img.back{opacity:1;transform:scale(1.04);}
+.pcard .tag{
+  position:absolute;top:var(--s4);left:var(--s4);z-index:2;background:rgba(250,246,240,.9);
+  font-size:.58rem;letter-spacing:.2em;text-transform:uppercase;color:var(--ink);padding:6px 12px;
+}
+.pcard .quick{
+  position:absolute;left:0;right:0;bottom:0;z-index:2;background:rgba(250,246,240,.94);
+  text-align:center;padding:14px;font-size:.66rem;letter-spacing:.22em;text-transform:uppercase;color:var(--ink);
+  transform:translateY(101%);transition:transform var(--dur) var(--ease);
+}
+.pcard:hover .quick{transform:translateY(0);}
+.pcard .info{padding:var(--s5) 0 0;text-align:center;}
+.pcard .info .cat{font-size:.6rem;letter-spacing:.24em;text-transform:uppercase;color:var(--ink-muted);}
+.pcard .info .nm{font-family:var(--font-display);font-size:1.18rem;color:var(--ink);margin:6px 0 4px;line-height:1.25;transition:color var(--dur-fast) var(--ease);}
+.pcard:hover .info .nm{color:var(--bronze);}
+.pcard .info .pr{font-size:.84rem;letter-spacing:.04em;color:var(--ink-soft);}
+
+/* Collection cards */
+.coll-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:var(--s5);}
+.ccard{position:relative;overflow:hidden;display:block;}
+.ccard .cmedia{aspect-ratio:4/5;overflow:hidden;background:var(--ivory);}
+.ccard img{width:100%;height:100%;object-fit:cover;transition:transform var(--dur-img) var(--ease);}
+.ccard:hover img{transform:scale(1.05);}
+.ccard .cover-grad{position:absolute;inset:0;background:linear-gradient(to top,rgba(22,18,14,.64) 0%,rgba(22,18,14,.1) 45%,transparent 70%);}
+.ccard .cinfo{position:absolute;left:0;right:0;bottom:0;padding:var(--s7) var(--s6);text-align:center;color:#fff;}
+.ccard .cinfo .script{color:#fff;font-size:2.2rem;display:block;margin-bottom:var(--s3);font-style:italic;}
+.ccard .cinfo .cl{font-size:.68rem;letter-spacing:.26em;text-transform:uppercase;display:inline-flex;align-items:center;gap:.6em;opacity:.92;}
+.ccard .cinfo .cl::after{content:"";width:0;height:1px;background:var(--champagne);transition:width var(--dur) var(--ease);}
+.ccard:hover .cinfo .cl::after{width:28px;}
+
+.content-card{border:1px solid var(--line);background:#fff;padding:var(--s8);text-align:center;}
+.content-card .ic{width:34px;height:34px;color:var(--bronze);margin:0 auto var(--s5);}
+.content-card h4{font-size:1.4rem;margin-bottom:var(--s3);}
+.content-card p{font-size:.92rem;margin:0 auto;}
+
+/* ============================================================
+   ICONS / DIVIDERS / SHADOWS / RADIUS
+   ============================================================ */
+.icon-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:var(--s4);}
+.icon-cell{border:1px solid var(--line);background:#fff;aspect-ratio:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:var(--s3);color:var(--ink);transition:color var(--dur-fast) var(--ease),border-color var(--dur-fast) var(--ease);}
+.icon-cell:hover{color:var(--bronze);border-color:var(--metal-line);}
+.icon-cell svg{width:24px;height:24px;}
+.icon-cell .nm{font-size:.6rem;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-muted);}
+
+.divider-demo{display:flex;flex-direction:column;gap:var(--s8);margin-top:var(--s4);}
+.div-hairline{height:1px;background:var(--line);}
+.div-gold{height:1px;background:var(--metal-line);}
+.div-ornament{display:flex;align-items:center;gap:var(--s5);color:var(--bronze);}
+.div-ornament::before,.div-ornament::after{content:"";flex:1;height:1px;background:var(--line);}
+.div-ornament .mk{font-size:.8rem;letter-spacing:.4em;}
+.div-caption{display:flex;align-items:center;justify-content:center;gap:var(--s5);}
+.div-caption::before,.div-caption::after{content:"";width:60px;height:1px;background:var(--metal-line);}
+.div-caption span{font-size:.66rem;letter-spacing:.3em;text-transform:uppercase;color:var(--ink-muted);}
+
+.demo-row{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:var(--s6);}
+.demo-tile{padding:var(--s7);background:#fff;text-align:center;}
+.demo-tile .lab{font-family:ui-monospace,monospace;font-size:.7rem;color:var(--ink-muted);margin-top:var(--s4);}
+.sh-soft{box-shadow:var(--shadow-soft);}
+.sh-overlay{box-shadow:var(--shadow-overlay);}
+.sh-none{border:1px solid var(--line);}
+.rad-0{border:1px solid var(--ink);border-radius:0;}
+.rad-2{border:1px solid var(--ink);border-radius:2px;}
+
+/* ============================================================
+   MOTION
+   ============================================================ */
+.motion-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:var(--s6);}
+.motion-tile{border:1px solid var(--line);padding:var(--s7);background:#fff;}
+.motion-tile h4{font-size:1.2rem;margin-bottom:var(--s3);}
+.motion-tile p{font-size:.86rem;color:var(--ink-soft);margin-bottom:var(--s5);}
+.zoom-box{overflow:hidden;aspect-ratio:16/10;}
+.zoom-box img{width:100%;height:100%;object-fit:cover;transition:transform 1.1s var(--ease);}
+.motion-tile:hover .zoom-box img{transform:scale(1.07);}
+.underline-demo a{font-family:var(--font-display);font-size:1.5rem;color:var(--ink);position:relative;display:inline-block;}
+.underline-demo a::after{content:"";position:absolute;left:0;bottom:-2px;width:100%;height:1px;background:var(--bronze);transform:scaleX(0);transform-origin:left;transition:transform var(--dur) var(--ease);}
+.underline-demo a:hover::after{transform:scaleX(1);}
+.reveal-stage{display:flex;gap:var(--s4);}
+.reveal-chip{flex:1;height:64px;background:var(--ivory);display:flex;align-items:center;justify-content:center;font-size:.66rem;letter-spacing:.2em;text-transform:uppercase;color:var(--ink-muted);}
+.reveal-chip.r{opacity:0;transform:translateY(18px);}
+.reveal-chip.show{opacity:1;transform:translateY(0);transition:opacity .9s var(--ease),transform .9s var(--ease);}
+
+/* scroll reveal */
+.reveal{opacity:0;transform:translateY(26px);transition:opacity 1s var(--ease),transform 1s var(--ease);}
+.reveal.in{opacity:1;transform:translateY(0);}
+
+/* logo lockup demo */
+.logo-lockups{display:grid;grid-template-columns:repeat(3,1fr);gap:var(--s4);margin-top:var(--s5);}
+.logo-tile{border:1px solid var(--line);padding:var(--s6) var(--s4);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;min-height:120px;text-align:center;}
+.logo-tile.dark{background:var(--noir);border-color:var(--noir);}
+.logo-tile .wm{font-family:var(--font-display);font-weight:500;letter-spacing:.24em;text-transform:uppercase;line-height:1;}
+.logo-tile .wm.lg{font-size:1.05rem;}
+.logo-tile .wm.mono{font-size:1.5rem;letter-spacing:.14em;}
+.logo-tile .wm .amp{color:var(--bronze-deep);}
+.logo-tile.dark .wm{color:#F1EADF;}
+.logo-tile.dark .wm .amp{color:var(--champagne);}
+.logo-tile .cap{font-family:var(--font-sans);font-size:.58rem;letter-spacing:.2em;text-transform:uppercase;color:var(--ink-muted);}
+.logo-tile.dark .cap{color:#9C927F;}
+
+/* ============================================================
+   FOOTER (live component)
+   ============================================================ */
+.site-footer{background:var(--noir);color:#B3A994;padding:var(--s10) 0 var(--s7);}
+.foot-top{display:grid;grid-template-columns:1.6fr 1fr 1fr 1.4fr;gap:var(--s8);padding-bottom:var(--s8);border-bottom:1px solid var(--line-on-dark);}
+.foot-wordmark{font-family:var(--font-display);font-weight:500;font-size:1.5rem;letter-spacing:.24em;text-transform:uppercase;color:#F1EADF;margin-bottom:var(--s5);line-height:1.3;}
+.foot-wordmark .amp{font-style:italic;font-weight:400;color:var(--champagne);}
+.foot-brand p{font-family:var(--font-display);font-size:1.15rem;font-style:italic;color:#C6BDAD;line-height:1.6;max-width:34ch;}
+.foot-col h4{font-family:var(--font-sans);font-weight:400;font-size:.66rem;letter-spacing:.28em;text-transform:uppercase;color:var(--champagne);margin-bottom:var(--s5);}
+.foot-col li{margin-bottom:var(--s3);}
+.foot-col a{font-size:.9rem;color:#B3A994;transition:color var(--dur-fast) var(--ease);position:relative;}
+.foot-col a:hover{color:#F1EADF;}
+.foot-news p{font-size:.86rem;color:#9C927F;margin-bottom:var(--s5);line-height:1.6;}
+.foot-news .news-form{margin:0;}
+.foot-social{display:flex;gap:var(--s4);margin-top:var(--s6);}
+.foot-social a{width:40px;height:40px;border:1px solid var(--line-on-dark);display:flex;align-items:center;justify-content:center;color:#B3A994;transition:all var(--dur) var(--ease);}
+.foot-social a:hover{border-color:var(--champagne);color:var(--champagne);}
+.foot-social svg{width:17px;height:17px;}
+.foot-bottom{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:var(--s5);padding-top:var(--s6);}
+.foot-bottom .cp{font-size:.72rem;letter-spacing:.06em;color:#7c7468;}
+.foot-pay{display:flex;gap:var(--s3);align-items:center;flex-wrap:wrap;}
+.foot-pay .pm{font-size:.6rem;letter-spacing:.14em;text-transform:uppercase;color:#7c7468;border:1px solid var(--line-on-dark);padding:5px 9px;}
+.foot-region{font-size:.72rem;letter-spacing:.14em;text-transform:uppercase;color:#9C927F;display:flex;align-items:center;gap:.6em;}
+
+/* ============================================================
+   MOBILE PREVIEW (phone frame)
+   ============================================================ */
+.phones{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:var(--s8);justify-items:center;}
+.phone{
+  width:330px;max-width:100%;border:10px solid var(--noir);border-radius:38px;overflow:hidden;
+  background:var(--canvas);box-shadow:var(--shadow-overlay);position:relative;height:680px;
+}
+.phone .notch{position:absolute;top:0;left:50%;transform:translateX(-50%);width:120px;height:24px;background:var(--noir);border-radius:0 0 16px 16px;z-index:30;}
+.phone-scroll{height:100%;overflow-y:auto;scrollbar-width:none;}
+.phone-scroll::-webkit-scrollbar{display:none;}
+
+.m-announce{background:var(--noir);color:var(--champagne);text-align:center;font-size:.56rem;letter-spacing:.24em;text-transform:uppercase;padding:9px 6px;padding-top:18px;}
+.m-header{display:flex;align-items:center;justify-content:space-between;padding:14px 16px;border-bottom:1px solid var(--line);position:sticky;top:0;background:var(--canvas);z-index:20;}
+.m-header .mlogo{font-family:var(--font-display);font-weight:500;font-size:1.05rem;letter-spacing:.16em;text-transform:uppercase;color:var(--ink);}
+.m-header .mlogo .amp{font-style:italic;color:var(--bronze-deep);}
+.m-header .micons{display:flex;gap:14px;}
+.m-header .micons svg{width:19px;height:19px;color:var(--ink);}
+.m-hero{position:relative;aspect-ratio:3/4;overflow:hidden;}
+.m-hero img{width:100%;height:100%;object-fit:cover;}
+.m-hero .mh-cap{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;text-align:center;padding:0 22px 36px;background:linear-gradient(to top,rgba(22,18,14,.5),transparent 55%);color:#fff;}
+.m-hero .mh-cap .me{font-size:.56rem;letter-spacing:.3em;text-transform:uppercase;margin-bottom:10px;}
+.m-hero .mh-cap h3{color:#fff;font-size:1.9rem;line-height:1.1;margin-bottom:16px;}
+.m-hero .mh-cap .mbtn{font-size:.6rem;letter-spacing:.22em;text-transform:uppercase;border:1px solid rgba(255,255,255,.6);padding:11px 22px;color:#fff;}
+.m-block{padding:42px 22px;text-align:center;}
+.m-block .eyebrow{font-size:.6rem;margin-bottom:14px;}
+.m-block h3{font-size:1.7rem;margin-bottom:14px;}
+.m-block p{font-size:.84rem;color:var(--ink-soft);margin:0 auto 22px;}
+.m-prod{display:grid;grid-template-columns:1fr 1fr;gap:14px;padding:0 16px 42px;}
+.m-prod .mp img{aspect-ratio:3/4;object-fit:cover;width:100%;background:var(--ivory);}
+.m-prod .mp .mn{font-family:var(--font-display);font-size:.9rem;color:var(--ink);margin-top:8px;text-align:center;line-height:1.2;}
+.m-prod .mp .mpr{font-size:.7rem;color:var(--ink-muted);text-align:center;margin-top:3px;}
+.m-foot{background:var(--noir);color:#9C927F;padding:34px 22px;text-align:center;}
+.m-foot .mwm{font-family:var(--font-display);font-weight:500;font-size:1rem;letter-spacing:.22em;text-transform:uppercase;color:#F1EADF;margin-bottom:18px;}
+.m-foot .mwm .amp{font-style:italic;color:var(--champagne);}
+.m-foot .mlinks{display:flex;flex-direction:column;gap:12px;font-size:.7rem;letter-spacing:.2em;text-transform:uppercase;color:#B3A994;margin-bottom:20px;}
+
+/* Mobile menu overlay (inside phone) */
+.m-menu{position:absolute;inset:0;background:var(--canvas);z-index:40;transform:translateX(-100%);transition:transform .5s var(--ease);display:flex;flex-direction:column;}
+.m-menu.open{transform:translateX(0);}
+.m-menu-top{display:flex;align-items:center;justify-content:space-between;padding:18px 18px 14px;border-bottom:1px solid var(--line);padding-top:24px;}
+.m-menu-top .mlogo{font-family:var(--font-display);font-weight:500;letter-spacing:.16em;text-transform:uppercase;color:var(--ink);}
+.m-menu-top .mlogo .amp{font-style:italic;color:var(--bronze-deep);}
+.m-menu-links{padding:26px 22px;flex:1;}
+.m-menu-links a{display:flex;align-items:center;justify-content:space-between;font-family:var(--font-display);font-size:1.55rem;color:var(--ink);padding:13px 0;border-bottom:1px solid var(--line);}
+.m-menu-links a .c{font-size:.7rem;color:var(--bronze);}
+.m-menu-foot{padding:22px;background:var(--ivory);display:flex;flex-direction:column;gap:14px;}
+.m-menu-foot .mf-row{display:flex;align-items:center;gap:10px;font-size:.7rem;letter-spacing:.18em;text-transform:uppercase;color:var(--ink-soft);}
+.m-menu-foot .mf-row svg{width:17px;height:17px;color:var(--bronze);}
+
+.mobile-specs{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:var(--s5);margin-top:var(--s8);}
+.mspec{border:1px solid var(--line);padding:var(--s6);background:#fff;}
+.mspec .k{font-size:.64rem;letter-spacing:.24em;text-transform:uppercase;color:var(--bronze);margin-bottom:var(--s3);}
+.mspec p{font-size:.86rem;color:var(--ink-soft);}
+.mspec .v{font-family:ui-monospace,monospace;font-size:.78rem;color:var(--ink);margin-top:var(--s2);}
+
+/* ============================================================
+   TOKENS APPENDIX
+   ============================================================ */
+.token-table{width:100%;border-collapse:collapse;font-family:ui-monospace,monospace;font-size:.76rem;}
+.token-table th{text-align:left;font-family:var(--font-sans);font-size:.64rem;letter-spacing:.22em;text-transform:uppercase;color:var(--ink-muted);padding:var(--s3) var(--s4);border-bottom:1px solid var(--line-strong);font-weight:400;}
+.token-table td{padding:var(--s3) var(--s4);border-bottom:1px solid var(--line);color:var(--ink-soft);vertical-align:middle;}
+.token-table td:first-child{color:var(--bronze-deep);}
+.token-table .sw{display:inline-block;width:16px;height:16px;border:1px solid var(--line);vertical-align:middle;margin-right:8px;}
+
+/* ---------- toast ---------- */
+.toast{position:fixed;bottom:28px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--noir);color:var(--champagne);font-size:.66rem;letter-spacing:.22em;text-transform:uppercase;padding:14px 26px;opacity:0;transition:all var(--dur) var(--ease);z-index:500;pointer-events:none;}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+
+/* ---------- responsive ---------- */
+@media(max-width:1024px){
+  .mega-inner{grid-template-columns:1fr 1fr;}
+  .mega-feature{display:none;}
+  .coll-grid{grid-template-columns:1fr 1fr;}
+  .fontcards{grid-template-columns:1fr;}
+  .foot-top{grid-template-columns:1fr 1fr;gap:var(--s7);}
+  .form-demo{grid-template-columns:1fr;}
+  .motion-grid{grid-template-columns:1fr;}
+}
+@media(max-width:768px){
+  .nav-row{display:none;}
+  .header-top{grid-template-columns:auto 1fr auto;}
+  .brand .wordmark{font-size:1.05rem;letter-spacing:.2em;}
+  .type-row{grid-template-columns:1fr;gap:var(--s3);}
+  .cover-mono{display:none;}
+  .coll-grid{grid-template-columns:1fr;}
+  .foot-top{grid-template-columns:1fr;}
+  .logo-lockups{grid-template-columns:1fr;}
+  .section{padding:var(--s9) 0;}
+  .docnav{gap:var(--s4);}
+  .util-text-hide{display:none;}
+}
+
+/* utility */
+.mt0{margin-top:0;} .mb0{margin-bottom:0;}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:var(--s8);}
+.flex-btns{display:flex;flex-wrap:wrap;gap:var(--s4);align-items:center;}
+.center{text-align:center;}
+</style>
+</head>
+<body>
+
+<!-- ============ DOC CHROME ============ -->
+<div class="docbar">
+  <div class="docbar-inner">
+    <span class="tag">Maison Foundations · v2.0 · Baseline</span>
+    <nav class="docnav">
+      <a href="#chrome">Header</a>
+      <a href="#palette">Palette</a>
+      <a href="#type">Typography</a>
+      <a href="#space">Spacing</a>
+      <a href="#layout">Layout</a>
+      <a href="#buttons">Buttons</a>
+      <a href="#forms">Forms</a>
+      <a href="#cards">Cards</a>
+      <a href="#icons">Icons</a>
+      <a href="#detail">Detail</a>
+      <a href="#motion">Motion</a>
+      <a href="#footer">Footer</a>
+      <a href="#mobile">Mobile</a>
+      <a href="#tokens">Tokens</a>
+    </nav>
+  </div>
+</div>
+
+<!-- ============ 1 · ANNOUNCEMENT BAR (LIVE) ============ -->
+<div class="announce" id="chrome">
+  <div class="announce-track">
+    <div class="announce-msg active">Complimentary Worldwide Shipping on Every Creation</div>
+    <div class="announce-msg">Private Appointments — In-Atelier &amp; Virtual · <a href="#">Reserve Yours</a></div>
+    <div class="announce-msg">For Bespoke Couture, WhatsApp the Atelier · <a href="#">+91 99675 43087</a></div>
+  </div>
+</div>
+
+<!-- ============ 2 · HEADER + NAV + MEGA MENU (LIVE) ============ -->
+<header class="site-header">
+  <div class="header-top">
+    <div class="header-utils left">
+      <button class="util-label" aria-label="Search">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+        <span class="util-text-hide">Search</span>
+      </button>
+    </div>
+    <a href="#" class="brand" aria-label="Karishma &amp; Ashita home">
+      <span class="wordmark">Karishma <span class="amp">&amp;</span> Ashita</span>
+      <span class="sub">Bridal Couture · Mumbai</span>
+    </a>
+    <div class="header-utils right">
+      <button class="util-label" aria-label="Appointments">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3"><rect x="3" y="5" width="18" height="16" rx="0"/><path d="M3 9h18M8 3v4M16 3v4"/></svg>
+        <span class="util-text-hide">Appointments</span>
+      </button>
+      <button class="icon-btn" aria-label="Account">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 3.6-7 8-7s8 3 8 7"/></svg>
+      </button>
+      <button class="icon-btn" aria-label="Cart">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3"><path d="M6 8h12l-1 13H7L6 8z"/><path d="M9 8V6a3 3 0 0 1 6 0v2"/></svg>
+        <span class="cart-count">2</span>
+      </button>
+    </div>
+  </div>
+  <div class="nav-row">
+    <ul class="mainnav">
+      <li><a href="#">New Arrivals</a></li>
+      <li class="mega-wrap" data-mega="women">
+        <button>Women <i class="caret"></i></button>
+      </li>
+      <li class="mega-wrap" data-mega="collections">
+        <button>Collections <i class="caret"></i></button>
+      </li>
+      <li><a href="#">Celebrities</a></li>
+      <li><a href="#">Client Diaries</a></li>
+      <li><a href="#">Bespoke</a></li>
+      <li><a href="#">Contact</a></li>
+    </ul>
+
+    <!-- Mega: Women -->
+    <div class="mega" id="mega-women">
+      <div class="mega-inner">
+        <div class="mega-col">
+          <h4>Silhouettes</h4>
+          <ul>
+            <li><a href="#">Drape Sarees</a></li>
+            <li><a href="#">Lehengas</a></li>
+            <li><a href="#">Anarkalis</a></li>
+            <li><a href="#">Indo-Western</a></li>
+            <li><a href="#">Gowns</a></li>
+          </ul>
+        </div>
+        <div class="mega-col">
+          <h4>The Atelier</h4>
+          <ul>
+            <li><a href="#">Bridal Couture</a></li>
+            <li><a href="#">Corsetry &amp; Drapes</a></li>
+            <li><a href="#">Bespoke Commissions</a></li>
+            <li><a href="#">Made to Measure</a></li>
+            <li><a href="#">Trousseau Edit</a></li>
+          </ul>
+        </div>
+        <a href="#" class="mega-feature">
+          <img src="https://karishmaashita.com/cdn/shop/files/Untitleddesign_30_8e9bde76-96c6-4e9f-bab4-23d6a612aec8.png?width=700" alt="The Bloom Soirée">
+          <div class="cap">
+            <span class="s">The Bloom Soirée</span>
+            <span class="l">Discover SS'25 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+          </div>
+        </a>
+      </div>
+    </div>
+
+    <!-- Mega: Collections -->
+    <div class="mega" id="mega-collections">
+      <div class="mega-inner">
+        <div class="mega-col">
+          <h4>Seasonal</h4>
+          <ul>
+            <li><a href="#">The Bloom Soirée</a></li>
+            <li><a href="#">Chamakk</a></li>
+            <li><a href="#">Barre Oblique</a></li>
+            <li><a href="#">The Festive Edit</a></li>
+          </ul>
+        </div>
+        <div class="mega-col">
+          <h4>Signature</h4>
+          <ul>
+            <li><a href="#">Enchanting Elegance</a></li>
+            <li><a href="#">The Anarkali Edit</a></li>
+            <li><a href="#">Enso</a></li>
+            <li><a href="#">Wavy Bliss</a></li>
+          </ul>
+        </div>
+        <a href="#" class="mega-feature">
+          <img src="https://karishmaashita.com/cdn/shop/files/MUNJALGANDHI_2024_IMG2508.jpg?width=700" alt="Chamakk">
+          <div class="cap">
+            <span class="s">Chamakk</span>
+            <span class="l">Explore the Collection <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+          </div>
+        </a>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- ============ COVER ============ -->
+<section class="cover">
+  <div class="cover-mono" aria-hidden="true">K<span class="amp">&amp;</span>A</div>
+  <div class="wrap">
+    <span class="eyebrow reveal">Karishma &amp; Ashita · The Digital Flagship</span>
+    <h1 class="display reveal">The Maison Design System</h1>
+    <p class="lead reveal">A single, considered visual language for the entire house — every page of the boutique inherits this foundation. Calm, editorial, cinematic and quietly luxurious. Built once, so that nothing on karishmaashita.com is ever ordinary again.</p>
+    <div class="flex-btns reveal">
+      <a href="#palette" class="btn btn-primary">Begin the Walkthrough</a>
+      <a href="#tokens" class="link-cta">View Design Tokens <span class="ar">→</span></a>
+    </div>
+    <div class="essence reveal">
+      <span>Timeless</span><span>Editorial</span><span>Architectural</span><span>Cinematic</span><span>Quietly Luxurious</span><span>Handcrafted</span>
+    </div>
+    <div class="cover-meta reveal">
+      <div><div class="k">House</div><div class="v">Bridal Couture, Mumbai</div></div>
+      <div><div class="k">Platform</div><div class="v">Shopify · Dawn</div></div>
+      <div><div class="k">Benchmarks</div><div class="v">Dior · Hermès · Sabyasachi</div></div>
+      <div><div class="k">Principle</div><div class="v">Luxury Always Wins</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ HEADER + LOGO RATIONALE ============ -->
+<section class="section tight bg-ivory">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="eyebrow">01 · Chrome &amp; Identity</span>
+      <h2>Announcement Bar, Wordmark, Header &amp; Mega Menu</h2>
+      <p>The components fixed at the very top of this page are <em>live</em>. Hover <strong>Women</strong> or <strong>Collections</strong> in the navigation to open the editorial mega menu. This is the permanent frame the bride sees on every page — it must feel like the brass doors of a boutique, not a toolbar.</p>
+    </div>
+    <div class="grid2">
+      <div>
+        <h3 style="margin-bottom:var(--s4)">The Announcement Bar</h3>
+        <p>A slim espresso ribbon carrying one quiet message at a time, rotating gently. It speaks of service — worldwide shipping, private appointments, the atelier's WhatsApp — never of discounts or urgency.</p>
+        <div class="rationale"><span class="k">Luxury Rationale</span><p>Houses whisper. A single rotating line in warm champagne on near-black reads as concierge service, not a sale sticker. No countdowns, no red, no exclamation marks.</p></div>
+      </div>
+      <div>
+        <h3 style="margin-bottom:var(--s4)">The Wordmark</h3>
+        <p>The gold monogram is retired. The house now speaks through a typographic wordmark — <strong>KARISHMA &amp; ASHITA</strong> in letter-spaced Bodoni capitals, ink on light and ivory on dark, its only flourish a single italic ampersand. A compact <strong>K&amp;A</strong> serves mobile and favicons.</p>
+        <div class="logo-lockups">
+          <div class="logo-tile"><span class="wm lg">Karishma <span class="amp">&amp;</span> Ashita</span><span class="cap">Ink · on light</span></div>
+          <div class="logo-tile dark"><span class="wm lg">Karishma <span class="amp">&amp;</span> Ashita</span><span class="cap">Ivory · on dark</span></div>
+          <div class="logo-tile"><span class="wm mono">K<span class="amp">&amp;</span>A</span><span class="cap">Monogram</span></div>
+        </div>
+        <div class="rationale"><span class="k">Luxury Rationale</span><p>A letter-spaced wordmark is the most flagship signal of a maison — Celine, Saint Laurent, Sabyasachi. Engraved capitals read as couture and heritage; a logo image reads as a brand badge.</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ PALETTE ============ -->
+<section class="section" id="palette">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <span class="eyebrow">02 · Foundation</span>
+      <h2>Colour Palette</h2>
+      <p>A warm, photographic palette distilled from the house's own studio light — bone, oat and almond carry the page; ink carries the word; a single thread of antique bronze is the only metal, applied by the milligram. There is no bright accent and no shiny gold. Restraint is the luxury. Click any swatch to copy its value.</p>
+    </div>
+
+    <div style="margin-bottom:var(--s8)">
+      <div class="div-caption" style="justify-content:flex-start"><span>Surfaces &amp; Light</span></div>
+    </div>
+    <div class="swatch-grid" style="margin-bottom:var(--s9)">
+      <div class="swatch" data-hex="#FAF6F0"><div class="chip" style="background:#FAF6F0;border-bottom:1px solid var(--line)"><span class="copy" style="color:#1E1A16">Tap to copy</span></div><div class="meta"><div class="nm">Bone</div><div class="hx">#FAF6F0</div><div class="use">Primary page canvas. The breath between everything.</div></div></div>
+      <div class="swatch" data-hex="#F1EADF"><div class="chip" style="background:#F1EADF"><span class="copy" style="color:#1E1A16">Tap to copy</span></div><div class="meta"><div class="nm">Oat</div><div class="hx">#F1EADF</div><div class="use">Alternating section background for slow rhythm.</div></div></div>
+      <div class="swatch" data-hex="#EBE2D5"><div class="chip" style="background:#EBE2D5"><span class="copy" style="color:#1E1A16">Tap to copy</span></div><div class="meta"><div class="nm">Almond</div><div class="hx">#EBE2D5</div><div class="use">Soft, romantic editorial moments &amp; campaign blocks.</div></div></div>
+      <div class="swatch" data-hex="#16120E"><div class="chip" style="background:#16120E"><span class="copy" style="color:#C4A981">Tap to copy</span></div><div class="meta"><div class="nm">Espresso</div><div class="hx">#16120E</div><div class="use">Cinematic dark sections, footer, primary buttons.</div></div></div>
+    </div>
+
+    <div style="margin-bottom:var(--s8)">
+      <div class="div-caption" style="justify-content:flex-start"><span>Ink &amp; Type</span></div>
+    </div>
+    <div class="swatch-grid" style="margin-bottom:var(--s9)">
+      <div class="swatch" data-hex="#1E1A16"><div class="chip" style="background:#1E1A16"><span class="copy" style="color:#fff">Tap to copy</span></div><div class="meta"><div class="nm">Ink</div><div class="hx">#1E1A16</div><div class="use">Headlines &amp; primary text. Softer than pure black.</div></div></div>
+      <div class="swatch" data-hex="#524A40"><div class="chip" style="background:#524A40"><span class="copy" style="color:#fff">Tap to copy</span></div><div class="meta"><div class="nm">Clove</div><div class="hx">#524A40</div><div class="use">Body copy. Calm and readable, never harsh.</div></div></div>
+      <div class="swatch" data-hex="#6F675B"><div class="chip" style="background:#6F675B"><span class="copy" style="color:#fff">Tap to copy</span></div><div class="meta"><div class="nm">Stone</div><div class="hx">#6F675B</div><div class="use">Secondary text &amp; sub-headings.</div></div></div>
+      <div class="swatch" data-hex="#8F8674"><div class="chip" style="background:#8F8674"><span class="copy" style="color:#fff">Tap to copy</span></div><div class="meta"><div class="nm">Taupe</div><div class="hx">#8F8674</div><div class="use">Meta, captions, prices, supporting detail.</div></div></div>
+    </div>
+
+    <div style="margin-bottom:var(--s8)">
+      <div class="div-caption" style="justify-content:flex-start"><span>The Metal — One Thread, Used Sparingly</span></div>
+    </div>
+    <div class="swatch-grid">
+      <div class="swatch" data-hex="#9C8259"><div class="chip" style="background:#9C8259"><span class="copy" style="color:#fff">Tap to copy</span></div><div class="meta"><div class="nm">Antique Bronze</div><div class="hx">#9C8259</div><div class="use">Accent on light — hairlines, underlines, eyebrows.</div></div></div>
+      <div class="swatch" data-hex="#7E673F"><div class="chip" style="background:#7E673F"><span class="copy" style="color:#fff">Tap to copy</span></div><div class="meta"><div class="nm">Bronze Deep</div><div class="hx">#7E673F</div><div class="use">Metal set as type on light — the ampersand.</div></div></div>
+      <div class="swatch" data-hex="#C4A981"><div class="chip" style="background:#C4A981"><span class="copy" style="color:#16120E">Tap to copy</span></div><div class="meta"><div class="nm">Warm Champagne</div><div class="hx">#C4A981</div><div class="use">The metal on dark — eyebrows &amp; rules over espresso.</div></div></div>
+      <div class="swatch" data-hex="#E1D6C4"><div class="chip" style="background:#E1D6C4"><span class="copy" style="color:#16120E">Tap to copy</span></div><div class="meta"><div class="nm">Gilt Hairline</div><div class="hx">#E1D6C4</div><div class="use">The finest metal rule — dividers &amp; ornaments.</div></div></div>
+    </div>
+
+    <div class="rationale" style="margin-top:var(--s8)"><span class="k">The Discipline of the Metal</span><p>The metal never fills a large area. It is a thread, a rule, the edge of a card — the way real bronze and zari appear in couture: precious because it is rare. Desaturated to a patina rather than a polish, it reads as heirloom, not costume. Bright accent colour is forbidden; the only “colour” is the photography itself.</p></div>
+  </div>
+</section>
+
+<!-- ============ TYPOGRAPHY ============ -->
+<section class="section bg-ivory" id="type">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <span class="eyebrow">03 · Foundation</span>
+      <h2>Typography &amp; Hierarchy</h2>
+      <p>Two voices, used with restraint. A high-contrast editorial serif — <strong>Bodoni Moda</strong> — for headlines and emotion; a quiet geometric grotesque — <strong>Jost</strong> — generously letter-spaced, for everything functional. Where a collection is named, we set it in <em>editorial italic</em>, never in script — the difference between a couture label and a wedding invitation.</p>
+    </div>
+
+    <div class="fontcards">
+      <div class="fontcard">
+        <div class="big" style="font-family:var(--font-display)">Aa</div>
+        <div class="nm">Bodoni Moda</div>
+        <div class="role">Display &amp; Headlines — weight 400/500</div>
+        <div class="gly" style="font-family:var(--font-display);font-size:1.2rem">Drapes · Lehengas · Couture<br>editorial &amp; architectural by nature</div>
+      </div>
+      <div class="fontcard">
+        <div class="big" style="font-family:var(--font-sans);font-weight:300">Aa</div>
+        <div class="nm">Jost</div>
+        <div class="role">Interface, Navigation &amp; Body — 300/400/500</div>
+        <div class="gly" style="font-family:var(--font-sans);letter-spacing:.18em;font-size:.8rem;text-transform:uppercase">New Arrivals · Appointments<br>Add to the Atelier</div>
+      </div>
+      <div class="fontcard">
+        <div class="big" style="font-family:var(--font-display);font-style:italic;color:var(--bronze)">Aa</div>
+        <div class="nm">Bodoni Moda · Italic</div>
+        <div class="role">Editorial accents &amp; collection names</div>
+        <div class="gly" style="font-family:var(--font-display);font-style:italic;font-size:1.6rem;color:var(--bronze-deep)">The Bloom Soirée</div>
+      </div>
+    </div>
+
+    <div style="margin-top:var(--s9)">
+      <div class="type-row">
+        <div class="type-meta"><div class="nm">Display</div><div class="sp">Bodoni Moda · 400<br>clamp 2.7–5.2rem<br>tracking −.005em</div></div>
+        <div style="font-family:var(--font-display);font-weight:400;font-size:clamp(2.7rem,6vw,4.8rem);line-height:1.06;color:var(--ink)">Where a bride finds her designer</div>
+      </div>
+      <div class="type-row">
+        <div class="type-meta"><div class="nm">Heading 1</div><div class="sp">Bodoni Moda · 400<br>clamp 2.1–3.2rem</div></div>
+        <div><h1 style="margin:0">The Bloom Soirée, Spring 2025</h1></div>
+      </div>
+      <div class="type-row">
+        <div class="type-meta"><div class="nm">Heading 2</div><div class="sp">Bodoni Moda · 400<br>clamp 1.8–2.5rem</div></div>
+        <div><h2 style="margin:0">A celebration of vibrant femininity</h2></div>
+      </div>
+      <div class="type-row">
+        <div class="type-meta"><div class="nm">Heading 3</div><div class="sp">Bodoni Moda · 500<br>clamp 1.35–1.75rem</div></div>
+        <div><h3 style="margin:0;font-weight:500">Corsetry, drapes &amp; the hand of the atelier</h3></div>
+      </div>
+      <div class="type-row">
+        <div class="type-meta"><div class="nm">Eyebrow / Overline</div><div class="sp">Jost · 400<br>.72rem · .34em<br>uppercase · bronze</div></div>
+        <div><span class="eyebrow">New Arrivals — Autumn Atelier</span></div>
+      </div>
+      <div class="type-row">
+        <div class="type-meta"><div class="nm">Lead Paragraph</div><div class="sp">Jost · 300<br>1.15rem · 1.8</div></div>
+        <div><p class="lead" style="margin:0">Each creation is cut, draped and hand-embellished in our Mumbai atelier — a quiet conversation between a bride and the women who design for her.</p></div>
+      </div>
+      <div class="type-row">
+        <div class="type-meta"><div class="nm">Body</div><div class="sp">Jost · 300<br>1rem · 1.75</div></div>
+        <div><p style="margin:0">The drape saree reimagines an heirloom silhouette through modern corsetry — structured, sculptural and effortless to wear, finished with hand-set crystal and thread that catches candlelight.</p></div>
+      </div>
+      <div class="type-row">
+        <div class="type-meta"><div class="nm">Nav / Label</div><div class="sp">Jost · 400<br>.8rem · .2em<br>uppercase</div></div>
+        <div style="font-family:var(--font-sans);font-size:.8rem;letter-spacing:.2em;text-transform:uppercase;color:var(--ink)">Women &nbsp;·&nbsp; Collections &nbsp;·&nbsp; Bespoke &nbsp;·&nbsp; Contact</div>
+      </div>
+      <div class="type-row">
+        <div class="type-meta"><div class="nm">Editorial Italic</div><div class="sp">Bodoni Moda · Italic<br>collection names</div></div>
+        <div><span class="script" style="font-size:2.4rem">Chamakk &amp; Barre Oblique</span></div>
+      </div>
+    </div>
+
+    <div class="rationale" style="margin-top:var(--s8)"><span class="k">Luxury Rationale</span><p>The Didone serif carries editorial authority and high-fashion contrast; the geometric sans carries calm. Wide letter-spacing slows the eye — the typographic equivalent of a hushed showroom. Two families, three weights, and italic reserved for the names of collections. Nothing decorative, nothing bridal.</p></div>
+  </div>
+</section>
+
+<!-- ============ SPACING ============ -->
+<section class="section" id="space">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <span class="eyebrow">04 · Foundation</span>
+      <h2>The Spacing System</h2>
+      <p>White space is the most expensive material in the house. An 8-point rhythm scales into generous, architectural intervals — sections breathe at 128–160px on desktop, so that every garment is given the room of a gallery wall.</p>
+    </div>
+    <div>
+      <div class="space-row"><span class="lbl">--s2 · 8px</span><div class="space-bar" style="width:8px"></div></div>
+      <div class="space-row"><span class="lbl">--s4 · 16px</span><div class="space-bar" style="width:16px"></div></div>
+      <div class="space-row"><span class="lbl">--s5 · 24px</span><div class="space-bar" style="width:24px"></div></div>
+      <div class="space-row"><span class="lbl">--s6 · 32px</span><div class="space-bar" style="width:32px"></div></div>
+      <div class="space-row"><span class="lbl">--s7 · 48px</span><div class="space-bar" style="width:48px"></div></div>
+      <div class="space-row"><span class="lbl">--s8 · 64px</span><div class="space-bar" style="width:64px"></div></div>
+      <div class="space-row"><span class="lbl">--s9 · 96px</span><div class="space-bar" style="width:96px"></div></div>
+      <div class="space-row"><span class="lbl">--s10 · 128px</span><div class="space-bar" style="width:128px"></div></div>
+      <div class="space-row"><span class="lbl">--s11 · 160px</span><div class="space-bar" style="width:160px"></div></div>
+      <div class="space-row"><span class="lbl">--s12 · 200px</span><div class="space-bar" style="width:200px"></div></div>
+    </div>
+    <div class="rationale" style="margin-top:var(--s7)"><span class="k">Luxury Rationale</span><p>Crowding is the cheapest mistake on the internet. Hermès and Dior let a single object hold an entire screen. Our default section padding is 128px desktop / 64px mobile — emptiness as opulence.</p></div>
+  </div>
+</section>
+
+<!-- ============ LAYOUT / CONTAINERS ============ -->
+<section class="section bg-ivory" id="layout">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <span class="eyebrow">05 · Foundation</span>
+      <h2>Container Widths</h2>
+      <p>Four measured frames govern every page — from full-bleed cinematic imagery to a narrow, book-like measure for storytelling. Content is never wider than the eye can comfortably read.</p>
+    </div>
+    <div class="container-demo">
+      <div class="cont-line"><div class="cont-fill" style="width:100%"><span>Full bleed · 100vw — hero film &amp; campaign imagery</span></div></div>
+      <div class="cont-line"><div class="cont-fill" style="width:90%;margin:0 auto"><span>--c-wide · 1600px — editorial galleries &amp; mega menu</span></div></div>
+      <div class="cont-line"><div class="cont-fill" style="width:80%;margin:0 auto"><span>--c · 1280px — default content frame</span></div></div>
+      <div class="cont-line"><div class="cont-fill" style="width:65%;margin:0 auto"><span>--c-narrow · 1040px — focused composition</span></div></div>
+      <div class="cont-line"><div class="cont-fill" style="width:42%;margin:0 auto"><span>--c-text · 680px — long-form reading</span></div></div>
+    </div>
+    <div class="rationale" style="margin-top:var(--s7)"><span class="k">Luxury Rationale</span><p>Gutters scale from 20px on mobile to 64px on large screens. The frame should feel like the margin of a couture lookbook — never edge-to-edge text, never cramped.</p></div>
+  </div>
+</section>
+
+<!-- ============ BUTTONS ============ -->
+<section class="section" id="buttons">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <span class="eyebrow">06 · Components</span>
+      <h2>Buttons &amp; Calls to Action</h2>
+      <p>Architectural, square-cornered, letter-spaced. Filled in espresso or outlined in a hairline — never a bright colour, never a rounded pill. The most luxurious call to action of all is the quiet text link with a bronze rule that retracts on hover.</p>
+    </div>
+    <div class="btn-grid">
+      <div class="btn-cell"><span class="cap">Primary</span><button class="btn btn-primary">Book an Appointment</button></div>
+      <div class="btn-cell"><span class="cap">Outline</span><button class="btn btn-outline">Explore the Collection</button></div>
+      <div class="btn-cell"><span class="cap">Bronze</span><button class="btn btn-gold">Enquire on WhatsApp</button></div>
+      <div class="btn-cell"><span class="cap">Text Link</span><a href="#" class="link-cta">Discover the House <span class="ar">→</span></a></div>
+      <div class="btn-cell dark"><span class="cap">Ghost on Dark</span><button class="btn btn-ghost-dark">View the Film</button></div>
+      <div class="btn-cell"><span class="cap">Small</span><button class="btn btn-primary sm">Add to Atelier</button></div>
+      <div class="btn-cell"><span class="cap">Large</span><button class="btn btn-primary lg">Reserve</button></div>
+      <div class="btn-cell"><span class="cap">Disabled</span><button class="btn btn-primary" disabled>Sold Out</button></div>
+    </div>
+    <div class="grid2" style="margin-top:var(--s8)">
+      <div class="rationale"><span class="k">Luxury Rationale</span><p>Sharp corners read as tailoring; rounded pills read as apps. The hover never flashes — it deepens to bronze over 600ms, the pace of a slow exhale. Letter-spacing of .22em makes even “Add to Cart” feel engraved.</p></div>
+      <div class="rationale"><span class="k">Business Rationale</span><p>Two priority actions repeat across the house — <em>Book an Appointment</em> and <em>Enquire on WhatsApp</em>. They are always present, always calm, never shouting, so the bride feels invited rather than sold to.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ FORMS ============ -->
+<section class="section bg-ivory" id="forms">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <span class="eyebrow">07 · Components</span>
+      <h2>Forms &amp; Inputs</h2>
+      <p>Two registers: a refined underline field for elegant, low-friction moments (newsletter, search), and a hairline-bordered field for considered forms (appointments, enquiries). Focus is signalled by bronze — a quiet glint, never a glaring outline.</p>
+    </div>
+    <div class="form-demo">
+      <div>
+        <h3 style="margin-bottom:var(--s6)">Underline register</h3>
+        <div class="field"><label>Full Name</label><input class="input-line" placeholder="Aanya Mehra"></div>
+        <div class="field"><label>Email Address</label><input class="input-line" placeholder="you@example.com"></div>
+        <div class="field"><label>Preferred Atelier</label>
+          <div class="select-wrap"><select class="input-line"><option>Mumbai — Flagship</option><option>Virtual Appointment</option></select></div>
+        </div>
+      </div>
+      <div>
+        <h3 style="margin-bottom:var(--s6)">Bordered register</h3>
+        <div class="field"><label>Occasion</label><input class="input-box" placeholder="Reception · Sangeet · Wedding"></div>
+        <div class="field"><label>Silhouette of Interest</label>
+          <div class="select-wrap"><select class="input-box"><option>Drape Saree</option><option>Lehenga</option><option>Anarkali</option><option>Gown</option><option>Bespoke</option></select></div>
+        </div>
+        <div class="field"><label>Notes for the Atelier</label><textarea class="input-box" placeholder="Tell us about your celebration…"></textarea></div>
+      </div>
+    </div>
+    <div style="margin-top:var(--s7);display:flex;flex-wrap:wrap;gap:var(--s8);align-items:center">
+      <div>
+        <div class="check-row on" data-toggle><span class="check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M5 12l5 5 9-11"/></svg></span> Join the Inner Circle</div>
+        <div class="check-row" data-toggle><span class="check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M5 12l5 5 9-11"/></svg></span> Add a complimentary gift note</div>
+      </div>
+      <div>
+        <div class="check-row on" data-radio data-group="g1"><span class="radio"></span> In-Atelier Appointment</div>
+        <div class="check-row" data-radio data-group="g1"><span class="radio"></span> Virtual Appointment</div>
+      </div>
+    </div>
+    <div class="rationale" style="margin-top:var(--s7)"><span class="k">Luxury Rationale</span><p>An underline field looks like a line on fine stationery; a boxed field with a 3px bronze focus halo looks considered, never clinical. Custom selects and checkboxes remove the last traces of “default Shopify”.</p></div>
+  </div>
+</section>
+
+<!-- ============ NEWSLETTER (form on dark) ============ -->
+<section class="section" style="padding-top:0">
+  <div class="wrap-narrow">
+    <div class="newsletter-demo">
+      <span class="eyebrow" style="color:var(--champagne)">The Inner Circle</span>
+      <h3 style="margin-top:var(--s4)">Be the first to receive each new collection</h3>
+      <p>Private previews, atelier invitations and the stories behind every creation — delivered with discretion.</p>
+      <form class="news-form" onsubmit="return false">
+        <input type="email" placeholder="Your email address">
+        <button type="submit">Subscribe</button>
+      </form>
+    </div>
+  </div>
+</section>
+
+<!-- ============ CARDS ============ -->
+<section class="section bg-ivory" id="cards">
+  <div class="wrap-wide">
+    <div class="sec-head reveal">
+      <span class="eyebrow">08 · Components</span>
+      <h2>Product &amp; Collection Cards</h2>
+      <p>The card is the most repeated object on the site, so it must be the most disciplined. Image-forward, shadow-free, centred. Hover dissolves to a second view, the name warms to bronze, and a quiet quick-view rises from below — desire, without a single badge.</p>
+    </div>
+
+    <div style="margin-bottom:var(--s6)"><div class="div-caption" style="justify-content:flex-start"><span>Product Cards</span></div></div>
+    <div class="product-grid">
+      <article class="pcard">
+        <div class="media">
+          <span class="tag">New</span>
+          <img class="front" src="https://karishmaashita.com/cdn/shop/files/Untitleddesign_30_8e9bde76-96c6-4e9f-bab4-23d6a612aec8.png?width=560" alt="Snow Veil Corset">
+          <img class="back" src="https://karishmaashita.com/cdn/shop/files/Untitleddesign_37_d9c7e275-6d2a-44fa-9e36-19e1a078329d.png?width=560" alt="alt view">
+          <div class="quick">Quick View</div>
+        </div>
+        <div class="info"><div class="cat">Drape · The Bloom Soirée</div><div class="nm">Snow Veil Corset &amp; Drape</div><div class="pr">₹ 43,000</div></div>
+      </article>
+      <article class="pcard">
+        <div class="media">
+          <img class="front" src="https://karishmaashita.com/cdn/shop/files/Untitleddesign_32_7c6dbaef-e2e8-4085-b7c4-67b18a062298.png?width=560" alt="Rosy Fantasy">
+          <img class="back" src="https://karishmaashita.com/cdn/shop/files/Untitled_design_29_775bb2c4-dcb6-4644-9a8b-5088b8aa0a0b.png?width=560" alt="alt view">
+          <div class="quick">Quick View</div>
+        </div>
+        <div class="info"><div class="cat">Drape · The Bloom Soirée</div><div class="nm">Rosy Fantasy Corset &amp; Drape</div><div class="pr">₹ 48,000</div></div>
+      </article>
+      <article class="pcard">
+        <div class="media">
+          <img class="front" src="https://karishmaashita.com/cdn/shop/files/Electric_Blue_Corset_Drape.png?width=560" alt="Electric Blue">
+          <img class="back" src="https://karishmaashita.com/cdn/shop/files/Untitleddesign_2_2b0d591a-3663-4181-806d-d77e73cfd0c6.png?width=560" alt="alt view">
+          <div class="quick">Quick View</div>
+        </div>
+        <div class="info"><div class="cat">Drape · Bestseller</div><div class="nm">Electric Blue Victorian Corset</div><div class="pr">₹ 38,000</div></div>
+      </article>
+      <article class="pcard">
+        <div class="media">
+          <img class="front" src="https://karishmaashita.com/cdn/shop/files/Untitled_design_29_775bb2c4-dcb6-4644-9a8b-5088b8aa0a0b.png?width=560" alt="Champagne Rose">
+          <img class="back" src="https://karishmaashita.com/cdn/shop/files/Untitleddesign_30_8e9bde76-96c6-4e9f-bab4-23d6a612aec8.png?width=560" alt="alt view">
+          <div class="quick">Quick View</div>
+        </div>
+        <div class="info"><div class="cat">Drape · Signature</div><div class="nm">Champagne Rose Corset &amp; Drape</div><div class="pr">₹ 80,000</div></div>
+      </article>
+    </div>
+
+    <div style="margin:var(--s10) 0 var(--s6)"><div class="div-caption" style="justify-content:flex-start"><span>Collection Cards</span></div></div>
+    <div class="coll-grid">
+      <a href="#" class="ccard"><div class="cmedia"><img src="https://karishmaashita.com/cdn/shop/files/Untitleddesign_30_8e9bde76-96c6-4e9f-bab4-23d6a612aec8.png?width=700" alt=""></div><div class="cover-grad"></div><div class="cinfo"><span class="script">The Bloom Soirée</span><span class="cl">Spring · Summer '25</span></div></a>
+      <a href="#" class="ccard"><div class="cmedia"><img src="https://karishmaashita.com/cdn/shop/files/MUNJALGANDHI_2024_IMG2508.jpg?width=700" alt=""></div><div class="cover-grad"></div><div class="cinfo"><span class="script">Chamakk</span><span class="cl">Discover the Collection</span></div></a>
+      <a href="#" class="ccard"><div class="cmedia"><img src="https://karishmaashita.com/cdn/shop/files/Untitleddesign_2_2b0d591a-3663-4181-806d-d77e73cfd0c6.png?width=700" alt=""></div><div class="cover-grad"></div><div class="cinfo"><span class="script">Barre Oblique</span><span class="cl">The Art of the Drape</span></div></a>
+    </div>
+
+    <div style="margin:var(--s10) 0 var(--s6)"><div class="div-caption" style="justify-content:flex-start"><span>Content / Service Cards</span></div></div>
+    <div class="coll-grid">
+      <div class="content-card">
+        <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2"><path d="M12 3l2.5 5 5.5.8-4 3.9 1 5.5L12 21l-5 2.6 1-5.5-4-3.9 5.5-.8z"/></svg>
+        <h4>The Atelier</h4>
+        <p>Every creation cut, draped and hand-embellished in Mumbai by the hands that designed it.</p>
+      </div>
+      <div class="content-card">
+        <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2"><rect x="3" y="5" width="18" height="16"/><path d="M3 9h18M8 3v4M16 3v4"/></svg>
+        <h4>Private Appointments</h4>
+        <p>In-atelier or virtual consultations with a stylist devoted entirely to your celebration.</p>
+      </div>
+      <div class="content-card">
+        <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2"><path d="M12 21s-7-4.4-9.3-9C1.2 9 2.6 5.5 6 5.5c2 0 3.2 1.2 4 2.5.8-1.3 2-2.5 4-2.5 3.4 0 4.8 3.5 3.3 6.5C19 16.6 12 21 12 21z"/></svg>
+        <h4>Bespoke Couture</h4>
+        <p>A garment made only for you — your measurements, your palette, your story, our craft.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ ICONS ============ -->
+<section class="section" id="icons">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <span class="eyebrow">09 · Detail</span>
+      <h2>Iconography</h2>
+      <p>A single family of fine line icons — 1.3px stroke on a 24px grid, drawn from the same pen. Outlined, never filled; calm, never cartoonish. Icons whisper their function and inherit the ink colour of their surroundings.</p>
+    </div>
+    <div class="icon-grid">
+      <div class="icon-cell"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg><span class="nm">Search</span></div>
+      <div class="icon-cell"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 3.6-7 8-7s8 3 8 7"/></svg><span class="nm">Account</span></div>
+      <div class="icon-cell"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3"><path d="M6 8h12l-1 13H7L6 8z"/><path d="M9 8V6a3 3 0 0 1 6 0v2"/></svg><span class="nm">Bag</span></div>
+      <div class="icon-cell"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3"><path d="M12 21s-7-4.4-9.3-9C1.2 9 2.6 5.5 6 5.5c2 0 3.2 1.2 4 2.5.8-1.3 2-2.5 4-2.5 3.4 0 4.8 3.5 3.3 6.5C19 16.6 12 21 12 21z"/></svg><span class="nm">Wishlist</span></div>
+      <div class="icon-cell"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3"><rect x="3" y="5" width="18" height="16"/><path d="M3 9h18M8 3v4M16 3v4"/></svg><span class="nm">Appointment</span></div>
+      <div class="icon-cell"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3"><path d="M20.5 12a8.5 8.5 0 0 1-12.4 7.5L3.5 20.5l1.1-4.4A8.5 8.5 0 1 1 20.5 12z"/></svg><span class="nm">WhatsApp</span></div>
+      <div class="icon-cell"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3"><path d="M4 7h16M4 12h16M4 17h16"/></svg><span class="nm">Menu</span></div>
+      <div class="icon-cell"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3"><path d="M6 6l12 12M18 6L6 18"/></svg><span class="nm">Close</span></div>
+      <div class="icon-cell"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3"><path d="M6 9l6 6 6-6"/></svg><span class="nm">Chevron</span></div>
+      <div class="icon-cell"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3"><path d="M12 5v14M5 12h14"/></svg><span class="nm">Add</span></div>
+      <div class="icon-cell"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3"><path d="M5 12h14"/></svg><span class="nm">Remove</span></div>
+      <div class="icon-cell"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3"><path d="M5 12h14M13 6l6 6-6 6"/></svg><span class="nm">Arrow</span></div>
+      <div class="icon-cell"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3"><rect x="3" y="6" width="18" height="14"/><path d="M3 9l9 6 9-6"/></svg><span class="nm">Mail</span></div>
+      <div class="icon-cell"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3"><path d="M21 16.5v2a2 2 0 0 1-2.2 2A19 19 0 0 1 3.5 5.2 2 2 0 0 1 5.5 3h2a2 2 0 0 1 2 1.7c.1 1 .4 1.9.7 2.8a2 2 0 0 1-.5 2.1L8.5 10.6a16 16 0 0 0 5 5l1-1.2a2 2 0 0 1 2.1-.5c.9.3 1.8.6 2.8.7a2 2 0 0 1 1.6 2z"/></svg><span class="nm">Call</span></div>
+      <div class="icon-cell"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3"><path d="M12 21s-7-5.2-7-11a7 7 0 0 1 14 0c0 5.8-7 11-7 11z"/><circle cx="12" cy="10" r="2.4"/></svg><span class="nm">Location</span></div>
+      <div class="icon-cell"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3"><path d="M12 4l2 5 5.3.4-4 3.5L16.5 18 12 15l-4.5 3 1.2-5.1-4-3.5L10 9z"/></svg><span class="nm">Reviews</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ DETAIL: DIVIDERS / RADIUS / SHADOW ============ -->
+<section class="section bg-ivory" id="detail">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <span class="eyebrow">10 · Detail</span>
+      <h2>Lines, Corners &amp; Light</h2>
+      <p>The smallest decisions create the most luxury. Hairline rules instead of heavy borders. Square corners instead of rounded. Almost no shadow — depth is created by space, not by drop-shadows. Shadow appears only when something must float above the page.</p>
+    </div>
+
+    <div class="grid2" style="align-items:start">
+      <div>
+        <h3 style="margin-bottom:var(--s6)">Dividers</h3>
+        <div class="divider-demo">
+          <div><div class="div-hairline"></div><div class="lab" style="font-family:ui-monospace,monospace;font-size:.7rem;color:var(--ink-muted);margin-top:8px">Hairline · ink 12%</div></div>
+          <div><div class="div-gold"></div><div class="lab" style="font-family:ui-monospace,monospace;font-size:.7rem;color:var(--ink-muted);margin-top:8px">Gilt rule · bronze hairline</div></div>
+          <div><div class="div-ornament"><span class="mk">✦</span></div><div class="lab" style="font-family:ui-monospace,monospace;font-size:.7rem;color:var(--ink-muted);margin-top:8px">Centred ornament · editorial break</div></div>
+          <div class="div-caption"><span>Karishma &amp; Ashita</span></div>
+        </div>
+      </div>
+      <div>
+        <h3 style="margin-bottom:var(--s6)">Corners &amp; Radius</h3>
+        <div class="demo-row" style="grid-template-columns:1fr 1fr">
+          <div class="demo-tile sh-none"><div class="rad-0" style="width:64px;height:64px;margin:0 auto"></div><div class="lab">--r · 0px (default)</div></div>
+          <div class="demo-tile sh-none"><div class="rad-2" style="width:64px;height:64px;margin:0 auto"></div><div class="lab">--r-xs · 2px (inputs)</div></div>
+        </div>
+        <div class="rationale" style="margin-top:var(--s6)"><span class="k">Why Square</span><p>Couture is architectural. Sharp corners read as tailoring and gallery framing; rounded corners read as software. We permit only a 2px softening on inputs for comfort.</p></div>
+      </div>
+    </div>
+
+    <div style="margin-top:var(--s9)">
+      <h3 style="margin-bottom:var(--s6)">Shadow &amp; Elevation</h3>
+      <div class="demo-row">
+        <div class="demo-tile sh-none"><div style="height:30px"></div><div class="lab">--none · cards rest flat on the page</div></div>
+        <div class="demo-tile sh-soft"><div style="height:30px"></div><div class="lab">--shadow-soft · subtle lift</div></div>
+        <div class="demo-tile sh-overlay"><div style="height:30px"></div><div class="lab">--shadow-overlay · menus &amp; drawers</div></div>
+      </div>
+      <div class="rationale" style="margin-top:var(--s6)"><span class="k">Luxury Rationale</span><p>Heavy shadows are the fingerprint of cheap web design. Our cards have none — they are separated by white space alone. A single, large, low-opacity shadow is reserved for things that genuinely float: the mega menu, the cart drawer, the search overlay.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ MOTION ============ -->
+<section class="section" id="motion">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <span class="eyebrow">11 · Behaviour</span>
+      <h2>Motion &amp; Hover</h2>
+      <p>Everything moves slowly. Transitions run 400–900ms on a soft ease, the tempo of fabric settling. Nothing bounces, nothing spins. Motion is used to reveal beauty, never to demand attention. Hover any element below to feel the house's pace.</p>
+    </div>
+    <div class="motion-grid">
+      <div class="motion-tile">
+        <h4>Image — Slow Zoom</h4>
+        <p>On hover, imagery breathes inward at scale 1.07 over 1.1s. The frame stays fixed; only the garment moves.</p>
+        <div class="zoom-box"><img src="https://karishmaashita.com/cdn/shop/files/KARISHMA_ASHITA_1_JUNE_2025_0968.jpg?width=900" alt=""></div>
+      </div>
+      <div class="motion-tile">
+        <h4>The Drawn Underline</h4>
+        <p>Links reveal a fine bronze rule from the left over 600ms — the signature gesture of the house, repeated everywhere.</p>
+        <div class="underline-demo" style="margin-top:var(--s7)"><a href="#">Discover The Bloom Soirée</a></div>
+      </div>
+      <div class="motion-tile">
+        <h4>Reveal on Scroll</h4>
+        <p>Content rises 26px and fades in as it enters the viewport — staggered, so a section assembles like a styled set.</p>
+        <button class="btn btn-outline sm" style="margin:var(--s5) 0" onclick="replay()">Replay reveal</button>
+        <div class="reveal-stage" id="revealStage">
+          <div class="reveal-chip r">Cut</div><div class="reveal-chip r">Drape</div><div class="reveal-chip r">Embellish</div><div class="reveal-chip r">Reveal</div>
+        </div>
+      </div>
+      <div class="motion-tile">
+        <h4>Page Transition Philosophy</h4>
+        <p>Between pages, the canvas performs a soft cross-fade — content fades up while the previous view fades to Bone. No white flash, no hard cut. Navigation should feel like turning the page of a lookbook: deliberate, continuous, hushed.</p>
+        <div style="margin-top:var(--s5);font-family:ui-monospace,monospace;font-size:.72rem;color:var(--ink-muted);line-height:1.9">enter: fade + rise 24px · 700ms<br>exit: fade to --canvas · 500ms<br>easing: cubic-bezier(.16,1,.3,1)</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ DARK EDITORIAL DEMO ============ -->
+<section class="section bg-noir">
+  <div class="wrap center">
+    <span class="eyebrow" style="color:var(--champagne)">The Cinematic Register</span>
+    <h2 style="margin:var(--s5) auto var(--s5);max-width:18ch">When the house wishes to hush the room, it turns to espresso</h2>
+    <p style="color:#A89F8E;max-width:52ch;margin:0 auto var(--s7)">Espresso sections with champagne type create the gravity of a couture film. Reserved for hero storytelling, the atelier narrative and the footer — used rarely, so it always lands.</p>
+    <div class="flex-btns" style="justify-content:center">
+      <button class="btn btn-ghost-dark">Watch the Atelier Film</button>
+      <a href="#" class="link-cta" style="color:#F1EADF">Read the House Story <span class="ar">→</span></a>
+    </div>
+  </div>
+</section>
+
+<!-- ============ FOOTER (LIVE) ============ -->
+<section class="section tight bg-ivory" id="footer">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <span class="eyebrow">12 · Chrome</span>
+      <h2>The Footer</h2>
+      <p>The footer is the boutique's foyer as the bride leaves — an espresso anchor that gathers the wordmark, the house's promise, considered links and the Inner Circle. Cinematic, generous, and reassuring. The live component sits below.</p>
+    </div>
+  </div>
+</section>
+
+<footer class="site-footer">
+  <div class="wrap-wide">
+    <div class="foot-top">
+      <div class="foot-brand">
+        <div class="foot-wordmark">Karishma <span class="amp">&amp;</span> Ashita</div>
+        <p>Handcrafted bridal couture, designed and made in Mumbai — for the women who wear their own story.</p>
+        <div class="foot-social">
+          <a href="#" aria-label="Instagram"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg></a>
+          <a href="#" aria-label="Facebook"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3"><path d="M15 8h-2a2 2 0 0 0-2 2v12M8 12h7"/></svg></a>
+          <a href="#" aria-label="YouTube"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3"><rect x="3" y="6" width="18" height="12" rx="3"/><path d="M11 9.5l4 2.5-4 2.5z" fill="currentColor" stroke="none"/></svg></a>
+          <a href="#" aria-label="WhatsApp"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3"><path d="M20.5 12a8.5 8.5 0 0 1-12.4 7.5L3.5 20.5l1.1-4.4A8.5 8.5 0 1 1 20.5 12z"/></svg></a>
+        </div>
+      </div>
+      <div class="foot-col">
+        <h4>The House</h4>
+        <ul>
+          <li><a href="#">New Arrivals</a></li>
+          <li><a href="#">Collections</a></li>
+          <li><a href="#">Bespoke Couture</a></li>
+          <li><a href="#">Client Diaries</a></li>
+          <li><a href="#">Celebrities</a></li>
+          <li><a href="#">About Us</a></li>
+        </ul>
+      </div>
+      <div class="foot-col">
+        <h4>Client Care</h4>
+        <ul>
+          <li><a href="#">Book an Appointment</a></li>
+          <li><a href="#">Contact the Atelier</a></li>
+          <li><a href="#">Shipping</a></li>
+          <li><a href="#">Returns &amp; Exchange</a></li>
+          <li><a href="#">Size &amp; Fit</a></li>
+          <li><a href="#">Care of Couture</a></li>
+        </ul>
+      </div>
+      <div class="foot-news">
+        <h4>The Inner Circle</h4>
+        <p>Private previews, atelier invitations and the stories behind each collection.</p>
+        <form class="news-form" onsubmit="return false">
+          <input type="email" placeholder="Your email address">
+          <button type="submit">Join</button>
+        </form>
+        <div class="foot-region" style="margin-top:var(--s6)">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c3 3 3 15 0 18M12 3c-3 3-3 15 0 18"/></svg>
+          India · INR ₹
+        </div>
+      </div>
+    </div>
+    <div class="foot-bottom">
+      <span class="cp">© 2025 Karishma &amp; Ashita. Handcrafted in Mumbai. All rights reserved.</span>
+      <div class="foot-pay">
+        <span class="pm">Visa</span><span class="pm">Mastercard</span><span class="pm">Amex</span><span class="pm">UPI</span><span class="pm">Apple Pay</span>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<!-- ============ MOBILE ============ -->
+<section class="section" id="mobile">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <span class="eyebrow">13 · Experience</span>
+      <h2>The Mobile Boutique</h2>
+      <p>Most brides arrive from Instagram, on a phone. Mobile is not a smaller desktop — it is the primary boutique. Full-bleed imagery, a hamburger that opens a serene full-screen menu, generous tap targets and the same hushed pace. Tap <strong>Menu</strong> in the first phone to open the navigation.</p>
+    </div>
+
+    <div class="phones">
+      <!-- Phone 1: home + menu -->
+      <div class="phone">
+        <div class="notch"></div>
+        <div class="phone-scroll">
+          <div class="m-announce">Complimentary Worldwide Shipping</div>
+          <div class="m-header">
+            <svg onclick="openMenu()" style="cursor:pointer" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+            <span class="mlogo">K<span class="amp">&amp;</span>A</span>
+            <div class="micons">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3"><path d="M6 8h12l-1 13H7L6 8z"/><path d="M9 8V6a3 3 0 0 1 6 0v2"/></svg>
+            </div>
+          </div>
+          <div class="m-hero">
+            <img src="https://karishmaashita.com/cdn/shop/files/Untitleddesign_30_8e9bde76-96c6-4e9f-bab4-23d6a612aec8.png?width=700" alt="">
+            <div class="mh-cap">
+              <span class="me">Spring · Summer 2025</span>
+              <h3>The Bloom<br>Soirée</h3>
+              <span class="mbtn">Discover</span>
+            </div>
+          </div>
+          <div class="m-block">
+            <span class="eyebrow">The Atelier</span>
+            <h3>Couture, made in Mumbai</h3>
+            <p>Cut, draped and hand-embellished by the hands that design it.</p>
+            <span class="link-cta" style="font-size:.66rem">Our Story →</span>
+          </div>
+          <div class="m-prod">
+            <div class="mp"><img src="https://karishmaashita.com/cdn/shop/files/Untitleddesign_32_7c6dbaef-e2e8-4085-b7c4-67b18a062298.png?width=400" alt=""><div class="mn">Rosy Fantasy</div><div class="mpr">₹ 48,000</div></div>
+            <div class="mp"><img src="https://karishmaashita.com/cdn/shop/files/Electric_Blue_Corset_Drape.png?width=400" alt=""><div class="mn">Electric Blue Corset</div><div class="mpr">₹ 38,000</div></div>
+          </div>
+          <div class="m-foot">
+            <div class="mwm">Karishma <span class="amp">&amp;</span> Ashita</div>
+            <div class="mlinks"><span>Collections</span><span>Appointments</span><span>Contact</span></div>
+            <div style="font-size:.6rem;letter-spacing:.06em;color:#6f675c">© 2025 · Mumbai</div>
+          </div>
+        </div>
+        <!-- mobile menu overlay -->
+        <div class="m-menu" id="mMenu">
+          <div class="m-menu-top">
+            <span class="mlogo">K<span class="amp">&amp;</span>A</span>
+            <svg onclick="closeMenu()" style="cursor:pointer" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3"><path d="M6 6l12 12M18 6L6 18"/></svg>
+          </div>
+          <div class="m-menu-links">
+            <a href="#">New Arrivals</a>
+            <a href="#">Women <span class="c">+</span></a>
+            <a href="#">Collections <span class="c">+</span></a>
+            <a href="#">Celebrities</a>
+            <a href="#">Client Diaries</a>
+            <a href="#">Bespoke</a>
+          </div>
+          <div class="m-menu-foot">
+            <div class="mf-row"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><rect x="3" y="5" width="18" height="16"/><path d="M3 9h18M8 3v4M16 3v4"/></svg> Book an Appointment</div>
+            <div class="mf-row"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M20.5 12a8.5 8.5 0 0 1-12.4 7.5L3.5 20.5l1.1-4.4A8.5 8.5 0 1 1 20.5 12z"/></svg> Enquire on WhatsApp</div>
+            <div class="mf-row"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 3.6-7 8-7s8 3 8 7"/></svg> Account</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Phone 2: product page -->
+      <div class="phone">
+        <div class="notch"></div>
+        <div class="phone-scroll">
+          <div class="m-announce">Private Appointments — In-Atelier &amp; Virtual</div>
+          <div class="m-header">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+            <span class="mlogo">K<span class="amp">&amp;</span>A</span>
+            <div class="micons">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3"><path d="M6 8h12l-1 13H7L6 8z"/><path d="M9 8V6a3 3 0 0 1 6 0v2"/></svg>
+            </div>
+          </div>
+          <div class="m-hero" style="aspect-ratio:3/4.2"><img src="https://karishmaashita.com/cdn/shop/files/Untitled_design_29_775bb2c4-dcb6-4644-9a8b-5088b8aa0a0b.png?width=700" alt=""></div>
+          <div style="padding:30px 22px;text-align:center">
+            <span class="eyebrow" style="font-size:.6rem">Drape · The Bloom Soirée</span>
+            <h3 style="font-size:1.8rem;margin:14px 0 8px">Champagne Rose Corset &amp; Drape</h3>
+            <div style="color:var(--ink-soft);font-size:.92rem;margin-bottom:22px">₹ 80,000</div>
+            <button class="btn btn-primary btn-block" style="margin-bottom:12px">Add to the Atelier</button>
+            <button class="btn btn-gold btn-block">Enquire on WhatsApp</button>
+            <div style="margin-top:26px;text-align:left;border-top:1px solid var(--line);padding-top:22px">
+              <p style="font-size:.86rem;color:var(--ink-soft)">A sculpted corset in champagne rose, paired with a fluid pre-draped saree. Hand-embellished over 200 hours in our Mumbai atelier.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="mobile-specs">
+      <div class="mspec"><div class="k">Section Padding</div><p>Vertical rhythm tightens for the hand.</p><div class="v">desktop 128px → mobile 64px</div></div>
+      <div class="mspec"><div class="k">Page Gutter</div><p>Edges breathe but never crowd.</p><div class="v">20–24px</div></div>
+      <div class="mspec"><div class="k">Display Type</div><p>Headlines stay grand, never shrink to noise.</p><div class="v">clamp → ~1.9–2.6rem</div></div>
+      <div class="mspec"><div class="k">Tap Targets</div><p>Every interactive element, generous.</p><div class="v">min 48 × 48px</div></div>
+      <div class="mspec"><div class="k">Menu</div><p>Full-screen ivory overlay, serif links.</p><div class="v">slide-in · 500ms</div></div>
+      <div class="mspec"><div class="k">Persistent Actions</div><p>Appointment &amp; WhatsApp always reachable.</p><div class="v">menu foyer</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ TOKENS APPENDIX ============ -->
+<section class="section bg-ivory" id="tokens">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <span class="eyebrow">14 · For the Technical Director</span>
+      <h2>Design Tokens</h2>
+      <p>The complete variable set to be implemented once in the Dawn theme — ideally as CSS custom properties in a global stylesheet and mirrored in <em>settings_data.json</em>. Every page thereafter inherits the same language without re-specification.</p>
+    </div>
+    <div class="grid2" style="align-items:start;gap:var(--s8)">
+      <div>
+        <h3 style="margin-bottom:var(--s5)">Colour</h3>
+        <table class="token-table">
+          <thead><tr><th>Token</th><th>Value</th><th>Role</th></tr></thead>
+          <tbody>
+            <tr><td>--canvas</td><td><span class="sw" style="background:#FAF6F0"></span>#FAF6F0</td><td>Bone · page</td></tr>
+            <tr><td>--ivory</td><td><span class="sw" style="background:#F1EADF"></span>#F1EADF</td><td>Oat · alt section</td></tr>
+            <tr><td>--blush</td><td><span class="sw" style="background:#EBE2D5"></span>#EBE2D5</td><td>Almond · soft section</td></tr>
+            <tr><td>--noir</td><td><span class="sw" style="background:#16120E"></span>#16120E</td><td>Espresso · dark / footer</td></tr>
+            <tr><td>--ink</td><td><span class="sw" style="background:#1E1A16"></span>#1E1A16</td><td>Headings</td></tr>
+            <tr><td>--ink-soft</td><td><span class="sw" style="background:#524A40"></span>#524A40</td><td>Body</td></tr>
+            <tr><td>--ink-mid</td><td><span class="sw" style="background:#6F675B"></span>#6F675B</td><td>Secondary</td></tr>
+            <tr><td>--ink-muted</td><td><span class="sw" style="background:#8F8674"></span>#8F8674</td><td>Meta</td></tr>
+            <tr><td>--bronze</td><td><span class="sw" style="background:#9C8259"></span>#9C8259</td><td>Metal · accent (light)</td></tr>
+            <tr><td>--bronze-deep</td><td><span class="sw" style="background:#7E673F"></span>#7E673F</td><td>Metal as type</td></tr>
+            <tr><td>--champagne</td><td><span class="sw" style="background:#C4A981"></span>#C4A981</td><td>Metal · accent (dark)</td></tr>
+            <tr><td>--metal-line</td><td><span class="sw" style="background:#E1D6C4"></span>#E1D6C4</td><td>Gilt hairline</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div>
+        <h3 style="margin-bottom:var(--s5)">Type, Space &amp; Motion</h3>
+        <table class="token-table">
+          <thead><tr><th>Token</th><th>Value</th></tr></thead>
+          <tbody>
+            <tr><td>--font-display</td><td>Bodoni Moda</td></tr>
+            <tr><td>--font-sans</td><td>Jost</td></tr>
+            <tr><td>collection names</td><td>Bodoni Moda · italic</td></tr>
+            <tr><td>--t-display</td><td>clamp(2.7rem, 5.8vw, 5.2rem)</td></tr>
+            <tr><td>--t-h1 / h2 / h3</td><td>3.2 / 2.5 / 1.75rem</td></tr>
+            <tr><td>--t-eyebrow</td><td>.72rem · .34em · upper</td></tr>
+            <tr><td>--c-wide / c / narrow / text</td><td>1600 / 1280 / 1040 / 680</td></tr>
+            <tr><td>--gutter</td><td>clamp(20px, 5vw, 64px)</td></tr>
+            <tr><td>--s8 / s10 / s11</td><td>64 / 128 / 160px</td></tr>
+            <tr><td>--r / --r-xs</td><td>0 / 2px</td></tr>
+            <tr><td>--shadow-overlay</td><td>0 28px 70px -28px rgba(22,18,14,.32)</td></tr>
+            <tr><td>--ease</td><td>cubic-bezier(.16,1,.3,1)</td></tr>
+            <tr><td>--dur / --dur-img</td><td>.6s / .9s</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div class="rationale" style="margin-top:var(--s8)"><span class="k">Implementation Note</span><p>This foundation maps cleanly onto Dawn: tokens become theme settings + a <code>base-luxury.css</code> snippet; the wordmark, header, mega menu and footer become customised Dawn sections; cards extend Dawn's <code>card</code> component. Bodoni Moda and Jost load via Google Fonts (or self-hosted for performance). Once approved, the Technical Director builds this once — every page inherits it.</p></div>
+  </div>
+</section>
+
+<!-- ============ CLOSING ============ -->
+<section class="section bg-noir center">
+  <div class="wrap-narrow">
+    <span class="eyebrow" style="color:var(--champagne)">The Foundation</span>
+    <h2 style="margin:var(--s5) auto;max-width:20ch">Approve this language, and the entire boutique speaks it</h2>
+    <p style="color:#A89F8E;max-width:50ch;margin:0 auto var(--s7)">Homepage, Collections, Product, Cart, Search, About and Contact will each be built upon this single, considered system — so that wherever a bride looks, she feels she has found her designer.</p>
+    <div style="font-family:var(--font-display);font-weight:500;font-size:1.7rem;letter-spacing:.26em;text-transform:uppercase;color:#F1EADF">Karishma <span class="amp" style="font-style:italic;color:var(--champagne)">&amp;</span> Ashita</div>
+  </div>
+</section>
+
+<div class="toast" id="toast">Copied</div>
+
+<script>
+/* ---------- Announcement rotation ---------- */
+(function(){
+  const msgs=[...document.querySelectorAll('.announce-msg')];
+  let i=0;
+  setInterval(()=>{
+    msgs[i].classList.remove('active');
+    i=(i+1)%msgs.length;
+    msgs[i].classList.add('active');
+  },4200);
+})();
+
+/* ---------- Mega menu ---------- */
+(function(){
+  const items=document.querySelectorAll('.mega-wrap');
+  const megas={women:document.getElementById('mega-women'),collections:document.getElementById('mega-collections')};
+  let hideTimer;
+  function open(key,li){
+    clearTimeout(hideTimer);
+    Object.values(megas).forEach(m=>m.classList.remove('show'));
+    document.querySelectorAll('.mega-wrap').forEach(x=>x.classList.remove('open'));
+    if(megas[key]){megas[key].classList.add('show');li.classList.add('open');}
+  }
+  function hide(){
+    hideTimer=setTimeout(()=>{
+      Object.values(megas).forEach(m=>m.classList.remove('show'));
+      document.querySelectorAll('.mega-wrap').forEach(x=>x.classList.remove('open'));
+    },160);
+  }
+  items.forEach(li=>{
+    const key=li.dataset.mega;
+    li.addEventListener('mouseenter',()=>open(key,li));
+    li.addEventListener('mouseleave',hide);
+    li.querySelector('button').addEventListener('focus',()=>open(key,li));
+  });
+  Object.values(megas).forEach(m=>{
+    m.addEventListener('mouseenter',()=>clearTimeout(hideTimer));
+    m.addEventListener('mouseleave',hide);
+  });
+})();
+
+/* ---------- Swatch copy ---------- */
+(function(){
+  const toast=document.getElementById('toast');
+  let t;
+  document.querySelectorAll('.swatch').forEach(s=>{
+    s.addEventListener('click',()=>{
+      const hex=s.dataset.hex;
+      navigator.clipboard&&navigator.clipboard.writeText(hex);
+      toast.textContent='Copied '+hex;
+      toast.classList.add('show');
+      clearTimeout(t);t=setTimeout(()=>toast.classList.remove('show'),1400);
+    });
+  });
+})();
+
+/* ---------- Form toggles ---------- */
+document.querySelectorAll('[data-toggle]').forEach(el=>el.addEventListener('click',()=>el.classList.toggle('on')));
+document.querySelectorAll('[data-radio]').forEach(el=>el.addEventListener('click',()=>{
+  document.querySelectorAll('[data-group="'+el.dataset.group+'"]').forEach(x=>x.classList.remove('on'));
+  el.classList.add('on');
+}));
+
+/* ---------- Mobile menu ---------- */
+function openMenu(){document.getElementById('mMenu').classList.add('open');}
+function closeMenu(){document.getElementById('mMenu').classList.remove('open');}
+
+/* ---------- Scroll reveal ---------- */
+(function(){
+  const io=new IntersectionObserver((entries)=>{
+    entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target);}});
+  },{threshold:.12});
+  document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
+
+  const rs=document.getElementById('revealStage');
+  if(rs){
+    const io2=new IntersectionObserver((entries)=>{
+      entries.forEach(e=>{if(e.isIntersecting){playReveal();io2.unobserve(e.target);}});
+    },{threshold:.4});
+    io2.observe(rs);
+  }
+})();
+function playReveal(){
+  const chips=[...document.querySelectorAll('#revealStage .reveal-chip')];
+  chips.forEach((c,idx)=>{c.classList.remove('show');setTimeout(()=>c.classList.add('show'),idx*160);});
+}
+function replay(){
+  const chips=[...document.querySelectorAll('#revealStage .reveal-chip')];
+  chips.forEach(c=>c.classList.remove('show'));
+  setTimeout(playReveal,80);
+}
+</script>
+</body>
+</html>

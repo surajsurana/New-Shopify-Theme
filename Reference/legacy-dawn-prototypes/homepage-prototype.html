@@ -1,0 +1,1622 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Karishma & Ashita — Bridal Couture, Mumbai</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400;0,6..96,500;1,6..96,400;1,6..96,500&family=Jost:wght@300;400;500&display=swap" rel="stylesheet" />
+
+  <style>
+    /* ─── DESIGN TOKENS ─────────────────────────────────────── */
+    :root {
+      --ka-canvas:        #FAF6F0;
+      --ka-ivory:         #F1EADF;
+      --ka-blush:         #EBE2D5;
+      --ka-noir:          #16120E;
+      --ka-noir-2:        #211C16;
+      --ka-ink:           #1E1A16;
+      --ka-ink-soft:      #524A40;
+      --ka-ink-mid:       #6F675B;
+      --ka-ink-muted:     #8F8674;
+      --ka-bronze:        #9C8259;
+      --ka-bronze-deep:   #7E673F;
+      --ka-bronze-soft:   #C4A981;
+      --ka-champagne:     #C4A981;
+      --ka-metal-line:    #E1D6C4;
+      --ka-line:          rgba(30,26,22,.12);
+      --ka-line-strong:   rgba(30,26,22,.22);
+      --ka-line-on-dark:  rgba(196,169,129,.26);
+      --ka-s1:   4px;
+      --ka-s2:   8px;
+      --ka-s3:   12px;
+      --ka-s4:   16px;
+      --ka-s5:   24px;
+      --ka-s6:   32px;
+      --ka-s7:   48px;
+      --ka-s8:   64px;
+      --ka-s9:   96px;
+      --ka-s10:  128px;
+      --ka-s11:  160px;
+      --ka-s12:  200px;
+      --ka-c-wide:   1600px;
+      --ka-c:        1280px;
+      --ka-c-narrow: 1040px;
+      --ka-c-text:   680px;
+      --ka-gutter:   clamp(20px, 5vw, 64px);
+      --ka-r:    0px;
+      --ka-r-xs: 2px;
+      --ka-shadow-overlay: 0 28px 70px -28px rgba(22,18,14,.32);
+      --ka-shadow-soft:    0 16px 50px -30px rgba(22,18,14,.24);
+      --ka-ease:      cubic-bezier(.16,1,.3,1);
+      --ka-ease-soft: cubic-bezier(.22,.61,.36,1);
+      --ka-dur:       .6s;
+      --ka-dur-img:   .9s;
+      --ka-dur-fast:  .35s;
+      --ka-font-display: 'Bodoni Moda', Didot, 'Times New Roman', serif;
+      --ka-font-sans:    'Jost', 'Helvetica Neue', Arial, sans-serif;
+      --ka-t-display: clamp(2.7rem, 5.8vw, 5.2rem);
+      --ka-t-h1:      clamp(2.1rem, 4vw, 3.2rem);
+      --ka-t-h2:      clamp(1.8rem, 3vw, 2.5rem);
+      --ka-t-h3:      clamp(1.35rem, 2vw, 1.75rem);
+      --ka-t-eyebrow: .72rem;
+      --ka-t-body-l:  1.15rem;
+      --ka-t-body:    1rem;
+      --ka-t-small:   .85rem;
+      --ka-t-caption: .78rem;
+    }
+
+    /* ─── RESET ─────────────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      background: var(--ka-canvas);
+      color: var(--ka-ink-soft);
+      font-family: var(--ka-font-sans);
+      font-size: 16px;
+      font-weight: 300;
+      line-height: 1.7;
+      -webkit-font-smoothing: antialiased;
+    }
+    img { display: block; width: 100%; height: 100%; object-fit: cover; }
+    a { color: inherit; text-decoration: none; }
+    button { cursor: pointer; border: none; background: none; font-family: inherit; }
+
+    /* ─── UTILITIES ──────────────────────────────────────────── */
+    .eyebrow {
+      font-family: var(--ka-font-sans);
+      font-size: var(--ka-t-eyebrow);
+      font-weight: 500;
+      letter-spacing: .2em;
+      text-transform: uppercase;
+      color: var(--ka-bronze);
+    }
+    .eyebrow--dark { color: var(--ka-champagne); }
+
+    .ka-container {
+      max-width: var(--ka-c);
+      margin-inline: auto;
+      padding-inline: var(--ka-gutter);
+    }
+    .ka-container--wide {
+      max-width: var(--ka-c-wide);
+      margin-inline: auto;
+      padding-inline: var(--ka-gutter);
+    }
+    .ka-container--narrow {
+      max-width: var(--ka-c-narrow);
+      margin-inline: auto;
+      padding-inline: var(--ka-gutter);
+    }
+
+    /* Scroll-reveal base */
+    .reveal {
+      opacity: 0;
+      transform: translateY(28px);
+      transition: opacity .7s var(--ka-ease), transform .7s var(--ka-ease);
+    }
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    .reveal-img {
+      opacity: 0;
+      transform: scale(1.04);
+      transition: opacity var(--ka-dur-img) var(--ka-ease), transform var(--ka-dur-img) var(--ka-ease);
+    }
+    .reveal-img.visible {
+      opacity: 1;
+      transform: scale(1);
+    }
+    .delay-1 { transition-delay: .1s; }
+    .delay-2 { transition-delay: .2s; }
+    .delay-3 { transition-delay: .32s; }
+    .delay-4 { transition-delay: .44s; }
+
+    /* ─── ANNOUNCEMENT BAR ───────────────────────────────────── */
+    .announcement-bar {
+      background: var(--ka-noir);
+      color: var(--ka-champagne);
+      text-align: center;
+      padding: var(--ka-s2) var(--ka-gutter);
+      font-size: var(--ka-t-caption);
+      font-family: var(--ka-font-sans);
+      font-weight: 400;
+      letter-spacing: .14em;
+      text-transform: uppercase;
+      position: relative;
+      z-index: 100;
+      min-height: 36px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .announcement-bar__track {
+      overflow: hidden;
+      position: relative;
+      width: 100%;
+      max-width: 640px;
+    }
+    .announcement-bar__item {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      transition: opacity .6s var(--ka-ease);
+      pointer-events: none;
+      white-space: nowrap;
+    }
+    .announcement-bar__item.active {
+      opacity: 1;
+      pointer-events: auto;
+      position: relative;
+    }
+
+    /* ─── HEADER / NAV ───────────────────────────────────────── */
+    .site-header {
+      position: sticky;
+      top: 0;
+      z-index: 90;
+      background: var(--ka-canvas);
+      border-bottom: 1px solid var(--ka-line);
+      transition: background var(--ka-dur-fast) var(--ka-ease), box-shadow var(--ka-dur-fast) var(--ka-ease);
+    }
+    .site-header.scrolled {
+      background: rgba(250,246,240,.97);
+      box-shadow: 0 1px 0 var(--ka-line);
+    }
+    .header-inner {
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
+      align-items: center;
+      height: 72px;
+      max-width: var(--ka-c-wide);
+      margin-inline: auto;
+      padding-inline: var(--ka-gutter);
+    }
+    .header-nav {
+      display: flex;
+      align-items: center;
+      gap: var(--ka-s7);
+    }
+    .header-nav--right { justify-content: flex-end; }
+    .header-nav a {
+      font-size: var(--ka-t-caption);
+      font-weight: 400;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      color: var(--ka-ink);
+      transition: color var(--ka-dur-fast) var(--ka-ease);
+      position: relative;
+    }
+    .header-nav a::after {
+      content: '';
+      position: absolute;
+      bottom: -2px;
+      left: 0;
+      width: 0;
+      height: 1px;
+      background: var(--ka-bronze);
+      transition: width var(--ka-dur-fast) var(--ka-ease);
+    }
+    .header-nav a:hover { color: var(--ka-bronze-deep); }
+    .header-nav a:hover::after { width: 100%; }
+
+    .wordmark {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 2px;
+    }
+    .wordmark__main {
+      font-family: var(--ka-font-display);
+      font-size: clamp(1.1rem, 1.6vw, 1.5rem);
+      font-weight: 400;
+      letter-spacing: .22em;
+      text-transform: uppercase;
+      color: var(--ka-ink);
+      line-height: 1;
+    }
+    .wordmark__sub {
+      font-family: var(--ka-font-sans);
+      font-size: .6rem;
+      font-weight: 400;
+      letter-spacing: .3em;
+      text-transform: uppercase;
+      color: var(--ka-bronze);
+    }
+
+    .header-icon {
+      width: 18px;
+      height: 18px;
+      stroke: var(--ka-ink);
+      fill: none;
+      stroke-width: 1.2;
+      transition: stroke var(--ka-dur-fast) var(--ka-ease);
+    }
+    .header-icon:hover { stroke: var(--ka-bronze); }
+    .icon-btn {
+      display: flex;
+      align-items: center;
+      gap: var(--ka-s2);
+      background: none;
+      border: none;
+      cursor: pointer;
+    }
+    .mobile-menu-btn { display: none; }
+
+    /* ─── HERO ───────────────────────────────────────────────── */
+    .hero {
+      position: relative;
+      height: 100svh;
+      min-height: 560px;
+      max-height: 980px;
+      overflow: hidden;
+      background: var(--ka-noir);
+    }
+    .hero__image {
+      position: absolute;
+      inset: 0;
+      overflow: hidden;
+    }
+    .hero__image img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center top;
+      transform: scale(1.06);
+      animation: heroReveal 2s var(--ka-ease) forwards;
+    }
+    @keyframes heroReveal {
+      to { transform: scale(1); }
+    }
+    .hero__overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(
+        to bottom,
+        rgba(22,18,14,0) 35%,
+        rgba(22,18,14,.35) 65%,
+        rgba(22,18,14,.72) 100%
+      );
+    }
+    .hero__content {
+      position: absolute;
+      bottom: clamp(48px, 8vw, 96px);
+      left: var(--ka-gutter);
+      right: var(--ka-gutter);
+      max-width: var(--ka-c-wide);
+      margin-inline: auto;
+    }
+    .hero__eyebrow {
+      display: inline-block;
+      font-family: var(--ka-font-sans);
+      font-size: var(--ka-t-eyebrow);
+      font-weight: 400;
+      letter-spacing: .26em;
+      text-transform: uppercase;
+      color: var(--ka-champagne);
+      margin-bottom: var(--ka-s4);
+      opacity: 0;
+      animation: fadeUp .8s .4s var(--ka-ease) forwards;
+    }
+    .hero__title {
+      font-family: var(--ka-font-display);
+      font-size: var(--ka-t-display);
+      font-weight: 400;
+      font-style: italic;
+      color: #fff;
+      line-height: 1.1;
+      letter-spacing: -.01em;
+      max-width: 720px;
+      opacity: 0;
+      animation: fadeUp .9s .55s var(--ka-ease) forwards;
+    }
+    .hero__caption {
+      margin-top: var(--ka-s5);
+      font-size: var(--ka-t-small);
+      letter-spacing: .1em;
+      color: rgba(255,255,255,.72);
+      font-weight: 300;
+      opacity: 0;
+      animation: fadeUp .8s .7s var(--ka-ease) forwards;
+    }
+    .hero__cta {
+      margin-top: var(--ka-s6);
+      display: inline-flex;
+      gap: var(--ka-s6);
+      align-items: center;
+      opacity: 0;
+      animation: fadeUp .8s .85s var(--ka-ease) forwards;
+    }
+    .btn-primary {
+      display: inline-block;
+      padding: var(--ka-s3) var(--ka-s7);
+      background: var(--ka-champagne);
+      color: var(--ka-noir);
+      font-family: var(--ka-font-sans);
+      font-size: var(--ka-t-caption);
+      font-weight: 500;
+      letter-spacing: .18em;
+      text-transform: uppercase;
+      transition: background var(--ka-dur-fast) var(--ka-ease), color var(--ka-dur-fast) var(--ka-ease);
+    }
+    .btn-primary:hover {
+      background: #fff;
+      color: var(--ka-noir);
+    }
+    .btn-ghost-light {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--ka-s2);
+      font-family: var(--ka-font-sans);
+      font-size: var(--ka-t-caption);
+      font-weight: 400;
+      letter-spacing: .18em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,.8);
+      transition: color var(--ka-dur-fast) var(--ka-ease);
+    }
+    .btn-ghost-light:hover { color: #fff; }
+    .btn-ghost-light svg { width: 16px; height: 16px; stroke: currentColor; fill: none; stroke-width: 1.2; transition: transform var(--ka-dur-fast) var(--ka-ease); }
+    .btn-ghost-light:hover svg { transform: translateX(4px); }
+
+    .hero__scroll-hint {
+      position: absolute;
+      bottom: clamp(24px, 4vw, 40px);
+      right: var(--ka-gutter);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: var(--ka-s2);
+      opacity: 0;
+      animation: fadeIn 1s 1.4s forwards;
+    }
+    .scroll-line {
+      width: 1px;
+      height: 48px;
+      background: linear-gradient(to bottom, transparent, var(--ka-champagne));
+      animation: scrollPulse 2s 2s infinite;
+    }
+    @keyframes scrollPulse {
+      0%,100% { opacity: .4; }
+      50% { opacity: 1; }
+    }
+    .scroll-label {
+      font-size: .6rem;
+      letter-spacing: .22em;
+      text-transform: uppercase;
+      color: var(--ka-champagne);
+      writing-mode: vertical-rl;
+      opacity: .7;
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to   { opacity: 1; }
+    }
+
+    /* ─── BRAND STATEMENT ────────────────────────────────────── */
+    .brand-statement {
+      background: var(--ka-canvas);
+      padding: clamp(var(--ka-s10), 12vw, var(--ka-s12)) var(--ka-gutter);
+      text-align: center;
+    }
+    .brand-statement__rule {
+      width: 40px;
+      height: 1px;
+      background: var(--ka-bronze);
+      margin-inline: auto;
+      margin-bottom: var(--ka-s6);
+    }
+    .brand-statement__quote {
+      font-family: var(--ka-font-display);
+      font-size: clamp(1.6rem, 3.2vw, 2.8rem);
+      font-weight: 400;
+      font-style: italic;
+      color: var(--ka-ink);
+      line-height: 1.3;
+      max-width: 860px;
+      margin-inline: auto;
+      letter-spacing: -.01em;
+    }
+    .brand-statement__byline {
+      margin-top: var(--ka-s6);
+      font-size: var(--ka-t-caption);
+      letter-spacing: .22em;
+      text-transform: uppercase;
+      color: var(--ka-bronze);
+      font-weight: 500;
+    }
+    .brand-statement__body {
+      margin-top: var(--ka-s5);
+      max-width: 560px;
+      margin-inline: auto;
+      color: var(--ka-ink-mid);
+      font-size: var(--ka-t-body);
+      line-height: 1.8;
+    }
+
+    /* ─── COLLECTIONS GRID ───────────────────────────────────── */
+    .collections {
+      background: var(--ka-ivory);
+      padding: clamp(var(--ka-s9), 10vw, var(--ka-s11)) var(--ka-gutter);
+    }
+    .section-header {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      margin-bottom: var(--ka-s8);
+      gap: var(--ka-s5);
+    }
+    .section-header__left { flex: 1; }
+    .section-title {
+      font-family: var(--ka-font-display);
+      font-size: var(--ka-t-h2);
+      font-weight: 400;
+      color: var(--ka-ink);
+      line-height: 1.2;
+      margin-top: var(--ka-s3);
+    }
+    .section-link {
+      font-size: var(--ka-t-caption);
+      letter-spacing: .16em;
+      text-transform: uppercase;
+      color: var(--ka-bronze-deep);
+      font-weight: 500;
+      display: inline-flex;
+      align-items: center;
+      gap: var(--ka-s2);
+      transition: gap var(--ka-dur-fast) var(--ka-ease), color var(--ka-dur-fast) var(--ka-ease);
+      white-space: nowrap;
+      align-self: flex-end;
+      padding-bottom: 2px;
+    }
+    .section-link svg { width: 14px; height: 14px; stroke: currentColor; fill: none; stroke-width: 1.4; }
+    .section-link:hover { gap: var(--ka-s3); color: var(--ka-bronze); }
+
+    .collections-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: var(--ka-s5);
+    }
+    .collection-card {
+      position: relative;
+      overflow: hidden;
+      background: var(--ka-blush);
+    }
+    .collection-card--featured {
+      grid-row: span 2;
+    }
+    .collection-card__image {
+      aspect-ratio: 3/4;
+      overflow: hidden;
+      position: relative;
+    }
+    .collection-card--featured .collection-card__image {
+      aspect-ratio: auto;
+      height: 100%;
+      min-height: 560px;
+    }
+    .collection-card__image img {
+      transition: transform var(--ka-dur-img) var(--ka-ease);
+    }
+    .collection-card:hover .collection-card__image img {
+      transform: scale(1.04);
+    }
+    .collection-card__overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to top, rgba(22,18,14,.82) 0%, rgba(22,18,14,.3) 40%, transparent 68%);
+      pointer-events: none;
+    }
+    .collection-card__info {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      padding: var(--ka-s6);
+    }
+    .collection-card__name {
+      font-family: var(--ka-font-display);
+      font-size: clamp(1.1rem, 1.8vw, 1.6rem);
+      font-weight: 400;
+      font-style: italic;
+      color: #fff;
+      line-height: 1.2;
+    }
+    .collection-card__count {
+      margin-top: var(--ka-s2);
+      font-size: var(--ka-t-caption);
+      letter-spacing: .14em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,.65);
+      font-weight: 400;
+    }
+    .collection-card__cta {
+      margin-top: var(--ka-s4);
+      display: inline-flex;
+      align-items: center;
+      gap: var(--ka-s2);
+      font-size: var(--ka-t-caption);
+      letter-spacing: .14em;
+      text-transform: uppercase;
+      color: var(--ka-champagne);
+      font-weight: 500;
+      opacity: 0;
+      transform: translateY(8px);
+      transition: opacity var(--ka-dur-fast) var(--ka-ease), transform var(--ka-dur-fast) var(--ka-ease);
+    }
+    .collection-card__cta svg { width: 12px; height: 12px; stroke: currentColor; fill: none; stroke-width: 1.6; }
+    .collection-card:hover .collection-card__cta {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* ─── EDITORIAL FEATURE ──────────────────────────────────── */
+    .editorial {
+      background: var(--ka-canvas);
+      padding: clamp(var(--ka-s9), 10vw, var(--ka-s11)) 0;
+    }
+    .editorial-inner {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      min-height: 640px;
+      max-width: var(--ka-c-wide);
+      margin-inline: auto;
+    }
+    .editorial__image {
+      overflow: hidden;
+      position: relative;
+    }
+    .editorial__image img {
+      height: 100%;
+      min-height: 500px;
+      object-position: center top;
+    }
+    .editorial__content {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: clamp(var(--ka-s7), 8vw, var(--ka-s10)) clamp(var(--ka-s7), 7vw, var(--ka-s10));
+    }
+    .editorial__title {
+      font-family: var(--ka-font-display);
+      font-size: var(--ka-t-h1);
+      font-weight: 400;
+      color: var(--ka-ink);
+      line-height: 1.2;
+      margin-top: var(--ka-s4);
+    }
+    .editorial__body {
+      margin-top: var(--ka-s5);
+      color: var(--ka-ink-mid);
+      line-height: 1.85;
+      max-width: 440px;
+    }
+    .editorial__link {
+      margin-top: var(--ka-s7);
+      display: inline-flex;
+      align-items: center;
+      gap: var(--ka-s3);
+      font-size: var(--ka-t-caption);
+      letter-spacing: .18em;
+      text-transform: uppercase;
+      color: var(--ka-bronze-deep);
+      font-weight: 500;
+      transition: gap var(--ka-dur-fast) var(--ka-ease);
+    }
+    .editorial__link svg { width: 16px; height: 16px; stroke: currentColor; fill: none; stroke-width: 1.3; }
+    .editorial__link:hover { gap: var(--ka-s4); }
+
+    /* ─── CRAFTSMANSHIP ──────────────────────────────────────── */
+    .craftsmanship {
+      background: var(--ka-blush);
+      padding: clamp(var(--ka-s9), 10vw, var(--ka-s11)) var(--ka-gutter);
+    }
+    .craftsmanship-header {
+      text-align: center;
+      max-width: 640px;
+      margin-inline: auto;
+      margin-bottom: clamp(var(--ka-s7), 7vw, var(--ka-s9));
+    }
+    .craftsmanship-header .section-title {
+      margin-top: var(--ka-s3);
+    }
+    .craftsmanship-header p {
+      margin-top: var(--ka-s5);
+      color: var(--ka-ink-mid);
+      line-height: 1.85;
+    }
+    .craft-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: var(--ka-s5);
+    }
+    .craft-item {
+      display: flex;
+      flex-direction: column;
+      gap: var(--ka-s4);
+    }
+    .craft-item__image {
+      aspect-ratio: 3/4;
+      overflow: hidden;
+      background: var(--ka-ivory);
+    }
+    .craft-item__image img {
+      transition: transform var(--ka-dur-img) var(--ka-ease);
+    }
+    .craft-item:hover .craft-item__image img {
+      transform: scale(1.04);
+    }
+    .craft-item__number {
+      font-family: var(--ka-font-display);
+      font-size: 2.4rem;
+      font-weight: 400;
+      font-style: italic;
+      color: var(--ka-bronze-soft);
+      line-height: 1;
+    }
+    .craft-item__label {
+      font-family: var(--ka-font-sans);
+      font-size: var(--ka-t-caption);
+      font-weight: 500;
+      letter-spacing: .16em;
+      text-transform: uppercase;
+      color: var(--ka-ink);
+      margin-top: var(--ka-s1);
+    }
+    .craft-item__desc {
+      font-size: var(--ka-t-small);
+      color: var(--ka-ink-mid);
+      line-height: 1.7;
+    }
+
+    /* ─── SOCIAL PROOF ───────────────────────────────────────── */
+    .social-proof {
+      background: var(--ka-canvas);
+      padding: clamp(var(--ka-s9), 10vw, var(--ka-s11)) var(--ka-gutter);
+    }
+    .reviews-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: var(--ka-s6);
+      margin-top: clamp(var(--ka-s7), 6vw, var(--ka-s8));
+    }
+    .review-card {
+      padding: var(--ka-s7) var(--ka-s6);
+      border: 1px solid var(--ka-line);
+      display: flex;
+      flex-direction: column;
+      gap: var(--ka-s4);
+      transition: border-color var(--ka-dur-fast) var(--ka-ease);
+    }
+    .review-card:hover { border-color: var(--ka-bronze-soft); }
+    .review-stars {
+      display: flex;
+      gap: 3px;
+    }
+    .star { width: 12px; height: 12px; fill: var(--ka-bronze); }
+    .review-text {
+      font-family: var(--ka-font-display);
+      font-size: 1.05rem;
+      font-style: italic;
+      color: var(--ka-ink);
+      line-height: 1.55;
+      flex: 1;
+    }
+    .review-author {
+      display: flex;
+      align-items: center;
+      gap: var(--ka-s3);
+    }
+    .review-avatar {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: var(--ka-blush);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: .72rem;
+      font-weight: 500;
+      color: var(--ka-bronze-deep);
+      letter-spacing: .06em;
+      flex-shrink: 0;
+    }
+    .review-name {
+      font-size: var(--ka-t-small);
+      font-weight: 500;
+      color: var(--ka-ink);
+      letter-spacing: .04em;
+    }
+    .review-meta {
+      font-size: var(--ka-t-caption);
+      color: var(--ka-ink-muted);
+    }
+    .reviews-aggregate {
+      text-align: center;
+      margin-top: var(--ka-s7);
+      padding-top: var(--ka-s7);
+      border-top: 1px solid var(--ka-line);
+    }
+    .aggregate-score {
+      font-family: var(--ka-font-display);
+      font-size: 3.2rem;
+      font-weight: 400;
+      color: var(--ka-ink);
+      line-height: 1;
+    }
+    .aggregate-label {
+      margin-top: var(--ka-s2);
+      font-size: var(--ka-t-caption);
+      letter-spacing: .16em;
+      text-transform: uppercase;
+      color: var(--ka-bronze);
+    }
+
+    /* ─── APPOINTMENT CTA ────────────────────────────────────── */
+    .appointment {
+      background: var(--ka-noir);
+      padding: clamp(var(--ka-s10), 12vw, var(--ka-s12)) var(--ka-gutter);
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .appointment::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: url('https://karishmaashita.com/cdn/shop/files/KARISHMA_ASHITA_1_JUNE_2025_0968.jpg?v=1751529035&width=1600') center/cover no-repeat;
+      opacity: .07;
+      pointer-events: none;
+    }
+    .appointment__content { position: relative; z-index: 1; }
+    .appointment__ornament {
+      width: 80px;
+      height: 1px;
+      background: var(--ka-line-on-dark);
+      margin-inline: auto;
+      margin-bottom: var(--ka-s6);
+      position: relative;
+    }
+    .appointment__ornament::before,
+    .appointment__ornament::after {
+      content: '';
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 4px;
+      height: 4px;
+      background: var(--ka-champagne);
+      opacity: .5;
+    }
+    .appointment__ornament::before { left: -2px; }
+    .appointment__ornament::after  { right: -2px; }
+    .appointment__title {
+      font-family: var(--ka-font-display);
+      font-size: var(--ka-t-h1);
+      font-weight: 400;
+      font-style: italic;
+      color: #fff;
+      line-height: 1.2;
+      max-width: 640px;
+      margin-inline: auto;
+    }
+    .appointment__body {
+      margin-top: var(--ka-s5);
+      color: rgba(255,255,255,.6);
+      max-width: 480px;
+      margin-inline: auto;
+      line-height: 1.8;
+    }
+    .btn-champagne {
+      display: inline-block;
+      margin-top: var(--ka-s7);
+      padding: var(--ka-s4) var(--ka-s8);
+      border: 1px solid var(--ka-champagne);
+      color: var(--ka-champagne);
+      font-family: var(--ka-font-sans);
+      font-size: var(--ka-t-caption);
+      font-weight: 500;
+      letter-spacing: .2em;
+      text-transform: uppercase;
+      transition: background var(--ka-dur-fast) var(--ka-ease), color var(--ka-dur-fast) var(--ka-ease);
+    }
+    .btn-champagne:hover {
+      background: var(--ka-champagne);
+      color: var(--ka-noir);
+    }
+    .appointment__details {
+      margin-top: var(--ka-s6);
+      display: flex;
+      justify-content: center;
+      gap: var(--ka-s8);
+      flex-wrap: wrap;
+    }
+    .appt-detail {
+      text-align: center;
+    }
+    .appt-detail__label {
+      font-size: var(--ka-t-caption);
+      letter-spacing: .16em;
+      text-transform: uppercase;
+      color: var(--ka-champagne);
+      opacity: .5;
+    }
+    .appt-detail__value {
+      margin-top: var(--ka-s1);
+      font-size: var(--ka-t-small);
+      color: rgba(255,255,255,.75);
+    }
+
+    /* ─── NEWSLETTER ─────────────────────────────────────────── */
+    .newsletter {
+      background: var(--ka-ivory);
+      padding: clamp(var(--ka-s9), 10vw, var(--ka-s10)) var(--ka-gutter);
+      text-align: center;
+    }
+    .newsletter__inner {
+      max-width: 560px;
+      margin-inline: auto;
+    }
+    .newsletter__title {
+      font-family: var(--ka-font-display);
+      font-size: var(--ka-t-h2);
+      font-weight: 400;
+      color: var(--ka-ink);
+      line-height: 1.3;
+      margin-top: var(--ka-s3);
+    }
+    .newsletter__body {
+      margin-top: var(--ka-s4);
+      color: var(--ka-ink-mid);
+      line-height: 1.8;
+    }
+    .newsletter-form {
+      margin-top: var(--ka-s6);
+      display: flex;
+      gap: 0;
+      border: 1px solid var(--ka-line-strong);
+      background: var(--ka-canvas);
+      transition: border-color var(--ka-dur-fast) var(--ka-ease);
+    }
+    .newsletter-form:focus-within { border-color: var(--ka-bronze); }
+    .newsletter-form input {
+      flex: 1;
+      padding: var(--ka-s4) var(--ka-s5);
+      background: none;
+      border: none;
+      outline: none;
+      font-family: var(--ka-font-sans);
+      font-size: var(--ka-t-small);
+      color: var(--ka-ink);
+      font-weight: 300;
+    }
+    .newsletter-form input::placeholder { color: var(--ka-ink-muted); }
+    .newsletter-form button {
+      padding: var(--ka-s4) var(--ka-s6);
+      background: var(--ka-noir);
+      color: var(--ka-champagne);
+      font-family: var(--ka-font-sans);
+      font-size: var(--ka-t-caption);
+      font-weight: 500;
+      letter-spacing: .16em;
+      text-transform: uppercase;
+      transition: background var(--ka-dur-fast) var(--ka-ease);
+      white-space: nowrap;
+    }
+    .newsletter-form button:hover { background: var(--ka-ink); }
+    .newsletter-privacy {
+      margin-top: var(--ka-s4);
+      font-size: var(--ka-t-caption);
+      color: var(--ka-ink-muted);
+    }
+
+    /* ─── FOOTER ─────────────────────────────────────────────── */
+    .site-footer {
+      background: var(--ka-noir);
+      color: rgba(255,255,255,.5);
+      padding: clamp(var(--ka-s9), 10vw, var(--ka-s11)) var(--ka-gutter) var(--ka-s7);
+    }
+    .footer-grid {
+      display: grid;
+      grid-template-columns: 1.6fr 1fr 1fr 1fr;
+      gap: var(--ka-s8);
+      padding-bottom: var(--ka-s9);
+      border-bottom: 1px solid var(--ka-line-on-dark);
+    }
+    .footer-brand .wordmark__main { color: #fff; }
+    .footer-brand .wordmark__sub { margin-top: 2px; }
+    .footer-brand p {
+      margin-top: var(--ka-s5);
+      font-size: var(--ka-t-small);
+      line-height: 1.8;
+      color: rgba(255,255,255,.45);
+      max-width: 300px;
+    }
+    .footer-social {
+      display: flex;
+      gap: var(--ka-s4);
+      margin-top: var(--ka-s6);
+    }
+    .footer-social a {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 36px;
+      height: 36px;
+      border: 1px solid var(--ka-line-on-dark);
+      transition: border-color var(--ka-dur-fast) var(--ka-ease);
+    }
+    .footer-social a:hover { border-color: var(--ka-champagne); }
+    .footer-social svg { width: 14px; height: 14px; stroke: rgba(255,255,255,.6); fill: none; stroke-width: 1.4; }
+    .footer-col h4 {
+      font-family: var(--ka-font-sans);
+      font-size: var(--ka-t-caption);
+      font-weight: 500;
+      letter-spacing: .2em;
+      text-transform: uppercase;
+      color: var(--ka-champagne);
+      margin-bottom: var(--ka-s5);
+    }
+    .footer-col ul { list-style: none; display: flex; flex-direction: column; gap: var(--ka-s3); }
+    .footer-col li a {
+      font-size: var(--ka-t-small);
+      color: rgba(255,255,255,.45);
+      transition: color var(--ka-dur-fast) var(--ka-ease);
+    }
+    .footer-col li a:hover { color: rgba(255,255,255,.8); }
+    .footer-bottom {
+      padding-top: var(--ka-s6);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--ka-s5);
+      flex-wrap: wrap;
+    }
+    .footer-bottom p { font-size: var(--ka-t-caption); color: rgba(255,255,255,.3); letter-spacing: .06em; }
+    .footer-bottom-links {
+      display: flex;
+      gap: var(--ka-s5);
+    }
+    .footer-bottom-links a {
+      font-size: var(--ka-t-caption);
+      color: rgba(255,255,255,.3);
+      transition: color var(--ka-dur-fast) var(--ka-ease);
+    }
+    .footer-bottom-links a:hover { color: rgba(255,255,255,.6); }
+
+    /* ─── MOBILE ─────────────────────────────────────────────── */
+    @media (max-width: 900px) {
+      .header-nav { display: none; }
+      .mobile-menu-btn { display: flex; }
+      .header-inner { grid-template-columns: auto 1fr auto; }
+      .wordmark { grid-column: 2; justify-content: center; }
+
+      .collections-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+      .collection-card--featured { grid-row: auto; grid-column: span 2; }
+      .collection-card--featured .collection-card__image { min-height: 420px; }
+
+      .editorial-inner { grid-template-columns: 1fr; }
+      .editorial__image img { min-height: 400px; }
+
+      .craft-grid { grid-template-columns: 1fr 1fr; }
+
+      .reviews-grid { grid-template-columns: 1fr; }
+
+      .footer-grid { grid-template-columns: 1fr 1fr; gap: var(--ka-s7) var(--ka-s6); }
+      .footer-brand { grid-column: span 2; }
+    }
+
+    @media (max-width: 600px) {
+      .collections-grid { grid-template-columns: 1fr; }
+      .collection-card--featured { grid-column: auto; }
+      .craft-grid { grid-template-columns: 1fr 1fr; }
+      .footer-grid { grid-template-columns: 1fr; }
+      .footer-brand { grid-column: auto; }
+      .newsletter-form { flex-direction: column; }
+      .newsletter-form button { padding: var(--ka-s4); }
+      .appointment__details { gap: var(--ka-s5); }
+      .hero__title { font-size: clamp(2rem, 8vw, 3rem); }
+    }
+
+    /* ─── FLOATING CONCIERGE BUTTON ─────────────────────────── */
+    .concierge-btn {
+      position: fixed;
+      bottom: 28px;
+      right: 28px;
+      z-index: 500;
+      display: flex;
+      align-items: center;
+      gap: var(--ka-s3);
+      padding: 14px 22px;
+      background: var(--ka-noir);
+      color: var(--ka-champagne);
+      border: 1px solid var(--ka-line-on-dark);
+      font-family: var(--ka-font-sans);
+      font-size: .68rem;
+      font-weight: 400;
+      letter-spacing: .22em;
+      text-transform: uppercase;
+      text-decoration: none;
+      box-shadow: var(--ka-shadow-overlay);
+      transition: background var(--ka-dur-fast) var(--ka-ease),
+                  color var(--ka-dur-fast) var(--ka-ease),
+                  border-color var(--ka-dur-fast) var(--ka-ease);
+    }
+    .concierge-btn:hover {
+      background: var(--ka-champagne);
+      color: var(--ka-noir);
+      border-color: var(--ka-champagne);
+    }
+    .concierge-btn svg {
+      width: 16px;
+      height: 16px;
+      flex-shrink: 0;
+      fill: currentColor;
+    }
+    @media (max-width: 600px) {
+      .concierge-btn { bottom: 18px; right: 18px; padding: 12px 18px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ═══ ANNOUNCEMENT BAR ═══════════════════════════════════ -->
+  <div class="announcement-bar" role="region" aria-label="Announcements">
+    <div class="announcement-bar__track">
+      <div class="announcement-bar__item active" id="ann-0">Appointments now open for 2025–26 wedding season</div>
+      <div class="announcement-bar__item" id="ann-1">Free worldwide shipping on all orders &nbsp;·&nbsp; Mumbai atelier open Mon–Sat</div>
+      <div class="announcement-bar__item" id="ann-2">For bespoke enquiries &nbsp;·&nbsp; +91 99675 43087</div>
+    </div>
+  </div>
+
+  <!-- ═══ HEADER ═══════════════════════════════════════════════ -->
+  <header class="site-header" id="site-header">
+    <div class="header-inner">
+      <nav class="header-nav" aria-label="Primary navigation">
+        <a href="#">Collections</a>
+        <a href="#">Lehengas</a>
+        <a href="#">Bridal</a>
+      </nav>
+
+      <a href="#" class="wordmark" aria-label="Karishma & Ashita – Home">
+        <span class="wordmark__main">Karishma &amp; Ashita</span>
+        <span class="wordmark__sub">Bridal Couture &nbsp;·&nbsp; Mumbai</span>
+      </a>
+
+      <nav class="header-nav header-nav--right" aria-label="Secondary navigation">
+        <a href="#">Client Diaries</a>
+        <a href="#">Contact</a>
+        <button class="icon-btn" aria-label="Search">
+          <svg class="header-icon" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><line x1="16.5" y1="16.5" x2="22" y2="22"/></svg>
+        </button>
+        <button class="icon-btn" aria-label="Bag">
+          <svg class="header-icon" viewBox="0 0 24 24"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+        </button>
+        <button class="mobile-menu-btn icon-btn" aria-label="Menu">
+          <svg class="header-icon" viewBox="0 0 24 24"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+        </button>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+
+    <!-- ═══ HERO ══════════════════════════════════════════════ -->
+    <section class="hero" aria-label="Hero">
+      <div class="hero__image">
+        <img
+          src="https://karishmaashita.com/cdn/shop/files/KARISHMA_ASHITA_1_JUNE_2025_0968.jpg?v=1751529035&width=2400"
+          alt="Karishma & Ashita — Bridal Couture"
+          fetchpriority="high"
+          loading="eager"
+        />
+      </div>
+      <div class="hero__overlay"></div>
+      <div class="hero__content ka-container--wide">
+        <span class="hero__eyebrow">The Wedding Season Edit · 2025</span>
+        <h1 class="hero__title">Dressed for the<br>story she becomes</h1>
+        <p class="hero__caption">Bridal couture conceived in Mumbai, worn across the world</p>
+        <div class="hero__cta">
+          <a href="#" class="btn-primary">Explore Collections</a>
+          <a href="#" class="btn-ghost-light">
+            Book an Appointment
+            <svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+          </a>
+        </div>
+      </div>
+      <div class="hero__scroll-hint" aria-hidden="true">
+        <div class="scroll-line"></div>
+        <span class="scroll-label">Scroll</span>
+      </div>
+    </section>
+
+    <!-- ═══ BRAND STATEMENT ══════════════════════════════════ -->
+    <section class="brand-statement">
+      <div class="brand-statement__rule reveal"></div>
+      <blockquote class="brand-statement__quote reveal delay-1">
+        "Every length of silk, every stitch of zari — held to the light of the woman who will wear it."
+      </blockquote>
+      <p class="brand-statement__byline reveal delay-2">Karishma &amp; Ashita</p>
+      <p class="brand-statement__body reveal delay-3">
+        We are a Mumbai atelier dedicated to the art of bridal dressing. Each piece begins as a conversation and ends as an heirloom — shaped by the woman, never imposed upon her.
+      </p>
+    </section>
+
+    <!-- ═══ COLLECTIONS ═══════════════════════════════════════ -->
+    <section class="collections" id="collections">
+      <div class="ka-container--wide">
+        <div class="section-header reveal">
+          <div class="section-header__left">
+            <p class="eyebrow">Current Season</p>
+            <h2 class="section-title">The Collections</h2>
+          </div>
+          <a href="#" class="section-link">
+            View all
+            <svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+          </a>
+        </div>
+
+        <div class="collections-grid">
+
+          <!-- Featured: Bloom Soirée -->
+          <div class="collection-card collection-card--featured reveal">
+            <div class="collection-card__image">
+              <img
+                src="https://karishmaashita.com/cdn/shop/files/MUNJALGANDHI_2024_IMG4485.jpg?v=1727349082&width=1200"
+                alt="The Bloom Soirée Collection"
+                loading="lazy"
+              />
+              <div class="collection-card__overlay"></div>
+              <div class="collection-card__info">
+                <p class="collection-card__name">The Bloom<br>Soirée</p>
+                <p class="collection-card__count">18 Pieces</p>
+                <span class="collection-card__cta">
+                  Explore
+                  <svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Festive Edit -->
+          <div class="collection-card reveal delay-1">
+            <div class="collection-card__image">
+              <img
+                src="https://karishmaashita.com/cdn/shop/files/Untitled_design_2.png?v=1751529182&width=900"
+                alt="The Festive Edit"
+                loading="lazy"
+              />
+              <div class="collection-card__overlay"></div>
+              <div class="collection-card__info">
+                <p class="collection-card__name">The Festive Edit</p>
+                <p class="collection-card__count">24 Pieces</p>
+                <span class="collection-card__cta">
+                  Explore
+                  <svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Chamakk -->
+          <div class="collection-card reveal delay-2">
+            <div class="collection-card__image">
+              <img
+                src="https://karishmaashita.com/cdn/shop/files/Untitled_design_3_4ce0f301-1cf9-48d9-a17a-2e112405cd26.png?v=1751529571&width=900"
+                alt="Chamakk Collection"
+                loading="lazy"
+              />
+              <div class="collection-card__overlay"></div>
+              <div class="collection-card__info">
+                <p class="collection-card__name">Chamakk</p>
+                <p class="collection-card__count">16 Pieces</p>
+                <span class="collection-card__cta">
+                  Explore
+                  <svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Barre Oblique -->
+          <div class="collection-card reveal delay-3">
+            <div class="collection-card__image">
+              <img
+                src="https://karishmaashita.com/cdn/shop/files/Untitleddesign_30_8e9bde76-96c6-4e9f-bab4-23d6a612aec8.png?v=1750838778&width=900"
+                alt="Barre Oblique Collection"
+                loading="lazy"
+              />
+              <div class="collection-card__overlay"></div>
+              <div class="collection-card__info">
+                <p class="collection-card__name">Barre Oblique</p>
+                <p class="collection-card__count">12 Pieces</p>
+                <span class="collection-card__cta">
+                  Explore
+                  <svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <!-- New Arrivals -->
+          <div class="collection-card reveal delay-4">
+            <div class="collection-card__image">
+              <img
+                src="https://karishmaashita.com/cdn/shop/files/Untitleddesign_32_7c6dbaef-e2e8-4085-b7c4-67b18a062298.png?v=1750844400&width=900"
+                alt="New Arrivals"
+                loading="lazy"
+              />
+              <div class="collection-card__overlay"></div>
+              <div class="collection-card__info">
+                <p class="collection-card__name">New Arrivals</p>
+                <p class="collection-card__count">Just Landed</p>
+                <span class="collection-card__cta">
+                  Shop Now
+                  <svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+                </span>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══ EDITORIAL FEATURE ════════════════════════════════ -->
+    <section class="editorial">
+      <div class="editorial-inner">
+        <div class="editorial__image reveal-img">
+          <img
+            src="https://karishmaashita.com/cdn/shop/files/Untitleddesign_37_d9c7e275-6d2a-44fa-9e36-19e1a078329d.png?v=1750842580&width=1400"
+            alt="Client Diaries — Editorial"
+            loading="lazy"
+          />
+        </div>
+        <div class="editorial__content">
+          <p class="eyebrow reveal">Client Diaries</p>
+          <h2 class="editorial__title reveal delay-1">The bride before the moment — in her own words</h2>
+          <p class="editorial__body reveal delay-2">
+            Our Client Diaries series captures the relationship between a woman and her wedding wardrobe — not as a transaction, but as a rite. Here, real brides speak about the garments that held them on the most important day of their lives.
+          </p>
+          <a href="#" class="editorial__link reveal delay-3">
+            Read the Stories
+            <svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══ CRAFTSMANSHIP ════════════════════════════════════ -->
+    <section class="craftsmanship">
+      <div class="ka-container">
+        <div class="craftsmanship-header">
+          <p class="eyebrow reveal">The Atelier</p>
+          <h2 class="section-title reveal delay-1">Four centuries of craft in every garment</h2>
+          <p class="reveal delay-2">Our studio in Mumbai brings together master craftspeople from across India. Each piece is constructed by hand, through processes refined over generations.</p>
+        </div>
+        <div class="craft-grid">
+          <div class="craft-item reveal">
+            <div class="craft-item__image">
+              <img src="https://karishmaashita.com/cdn/shop/files/MUNJALGANDHI_2024_IMG4485.jpg?v=1727349082&width=600" alt="Hand Embroidery" loading="lazy" />
+            </div>
+            <span class="craft-item__number">01</span>
+            <p class="craft-item__label">Hand Embroidery</p>
+            <p class="craft-item__desc">Each piece is embroidered by hand — zari, zardozi, and thread-work applied stitch by stitch under natural light.</p>
+          </div>
+          <div class="craft-item reveal delay-1">
+            <div class="craft-item__image">
+              <img src="https://karishmaashita.com/cdn/shop/files/Untitled_design_2.png?v=1751529182&width=600" alt="Fabric Selection" loading="lazy" />
+            </div>
+            <span class="craft-item__number">02</span>
+            <p class="craft-item__label">Fabric Selection</p>
+            <p class="craft-item__desc">We source silks, organzas, and velvets from Banaras, Kanchipuram and Surat — selecting only what passes the hand-feel test.</p>
+          </div>
+          <div class="craft-item reveal delay-2">
+            <div class="craft-item__image">
+              <img src="https://karishmaashita.com/cdn/shop/files/Untitled_design_3_4ce0f301-1cf9-48d9-a17a-2e112405cd26.png?v=1751529571&width=600" alt="Draping & Construction" loading="lazy" />
+            </div>
+            <span class="craft-item__number">03</span>
+            <p class="craft-item__label">Draping</p>
+            <p class="craft-item__desc">Every silhouette begins on the body, not on paper. Our drapers work directly with the cloth until the fall is exactly right.</p>
+          </div>
+          <div class="craft-item reveal delay-3">
+            <div class="craft-item__image">
+              <img src="https://karishmaashita.com/cdn/shop/files/KARISHMA_ASHITA_1_JUNE_2025_0968.jpg?v=1751529035&width=600" alt="Final Fitting" loading="lazy" />
+            </div>
+            <span class="craft-item__number">04</span>
+            <p class="craft-item__label">Final Fitting</p>
+            <p class="craft-item__desc">We insist on at least two in-person fittings. The garment is adjusted to the bride, not the other way around.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══ SOCIAL PROOF ════════════════════════════════════ -->
+    <section class="social-proof">
+      <div class="ka-container">
+        <div style="text-align:center">
+          <p class="eyebrow reveal">Client Words</p>
+          <h2 class="section-title reveal delay-1" style="margin-top:var(--ka-s3)">What our clients say</h2>
+        </div>
+        <div class="reviews-grid">
+
+          <div class="review-card reveal">
+            <div class="review-stars">
+              <svg class="star" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+              <svg class="star" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+              <svg class="star" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+              <svg class="star" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+              <svg class="star" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+            </div>
+            <p class="review-text">"I have never felt more myself than in my K&A lehenga. They understood exactly what I wanted — and gave me something more beautiful than I had imagined."</p>
+            <div class="review-author">
+              <div class="review-avatar">NA</div>
+              <div>
+                <p class="review-name">Neha Agarwal</p>
+                <p class="review-meta">Bride · November 2024 · Delhi</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="review-card reveal delay-1">
+            <div class="review-stars">
+              <svg class="star" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+              <svg class="star" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+              <svg class="star" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+              <svg class="star" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+              <svg class="star" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+            </div>
+            <p class="review-text">"The attention to detail was extraordinary. Every fitting felt like they were building the garment around me as a person. Worth every rupee and every moment."</p>
+            <div class="review-author">
+              <div class="review-avatar">PS</div>
+              <div>
+                <p class="review-name">Priya Sharma</p>
+                <p class="review-meta">Bride · March 2025 · Mumbai</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="review-card reveal delay-2">
+            <div class="review-stars">
+              <svg class="star" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+              <svg class="star" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+              <svg class="star" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+              <svg class="star" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+              <svg class="star" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+            </div>
+            <p class="review-text">"I wore K&A for all four of my wedding events. Every outfit was magnificent. Guests are still talking about the reception lehenga. True artisanship."</p>
+            <div class="review-author">
+              <div class="review-avatar">RK</div>
+              <div>
+                <p class="review-name">Ritu Kapoor</p>
+                <p class="review-meta">Client · January 2025 · Bangalore</p>
+              </div>
+            </div>
+          </div>
+
+        </div>
+        <div class="reviews-aggregate reveal">
+          <div class="review-stars" style="justify-content:center;gap:6px">
+            <svg class="star" style="width:16px;height:16px" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+            <svg class="star" style="width:16px;height:16px" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+            <svg class="star" style="width:16px;height:16px" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+            <svg class="star" style="width:16px;height:16px" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+            <svg class="star" style="width:16px;height:16px" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+          </div>
+          <p class="aggregate-score">4.9</p>
+          <p class="aggregate-label">Based on 200+ verified client reviews</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══ APPOINTMENT CTA ══════════════════════════════════ -->
+    <section class="appointment">
+      <div class="appointment__content">
+        <div class="appointment__ornament" aria-hidden="true"></div>
+        <p class="eyebrow eyebrow--dark reveal">Mumbai Atelier</p>
+        <h2 class="appointment__title reveal delay-1">Begin your bridal story. Book a private appointment.</h2>
+        <p class="appointment__body reveal delay-2">
+          Our studio appointments are intimate, unhurried, and completely personal. Meet Karishma and Ashita — and begin the journey toward your wedding wardrobe.
+        </p>
+        <a href="https://wa.me/919967543087" class="btn-champagne reveal delay-3">Request an Appointment</a>
+        <div class="appointment__details reveal delay-4">
+          <div class="appt-detail">
+            <p class="appt-detail__label">Location</p>
+            <p class="appt-detail__value">Bandra West, Mumbai</p>
+          </div>
+          <div class="appt-detail">
+            <p class="appt-detail__label">Hours</p>
+            <p class="appt-detail__value">Monday – Saturday, 10am – 7pm</p>
+          </div>
+          <div class="appt-detail">
+            <p class="appt-detail__label">Contact</p>
+            <p class="appt-detail__value">+91 99675 43087</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══ NEWSLETTER ════════════════════════════════════════ -->
+    <section class="newsletter">
+      <div class="newsletter__inner">
+        <p class="eyebrow reveal">Stay Close</p>
+        <h2 class="newsletter__title reveal delay-1">Letters from the atelier</h2>
+        <p class="newsletter__body reveal delay-2">New collections, behind-the-scenes from the studio, and invitations to private events — for those who follow closely.</p>
+        <form class="newsletter-form reveal delay-3" onsubmit="return false;">
+          <input type="email" placeholder="Your email address" aria-label="Email address" />
+          <button type="submit">Subscribe</button>
+        </form>
+        <p class="newsletter-privacy reveal delay-4">Curated, infrequent. We respect your inbox.</p>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ═══ FLOATING CONCIERGE BUTTON ══════════════════════════ -->
+  <a
+    href="https://wa.me/919967543087"
+    class="concierge-btn"
+    target="_blank"
+    rel="noopener"
+    aria-label="Open WhatsApp concierge"
+  >
+    <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M11.5 2C6.262 2 2 6.262 2 11.5c0 1.687.438 3.27 1.2 4.646L2 22l6.01-1.174A9.463 9.463 0 0 0 11.5 21C16.738 21 21 16.738 21 11.5S16.738 2 11.5 2zm0 17.25a7.737 7.737 0 0 1-3.956-1.084l-.284-.169-2.95.775.787-2.878-.185-.295A7.714 7.714 0 0 1 3.75 11.5C3.75 7.224 7.224 3.75 11.5 3.75s7.75 3.474 7.75 7.75-3.474 7.75-7.75 7.75z"/></svg>
+    Concierge
+  </a>
+
+  <!-- ═══ FOOTER ════════════════════════════════════════════ -->
+  <footer class="site-footer">
+    <div class="ka-container--wide">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <div class="wordmark" style="align-items:flex-start">
+            <span class="wordmark__main">Karishma &amp; Ashita</span>
+            <span class="wordmark__sub">Bridal Couture &nbsp;·&nbsp; Est. Mumbai</span>
+          </div>
+          <p>An atelier devoted to the Indian bridal woman — her beauty, her joy, her story. Every garment is a collaboration between craft and the woman who wears it.</p>
+          <div class="footer-social">
+            <a href="#" aria-label="Instagram">
+              <svg viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4.5"/><circle cx="17.5" cy="6.5" r=".8" fill="rgba(255,255,255,.6)"/></svg>
+            </a>
+            <a href="#" aria-label="Facebook">
+              <svg viewBox="0 0 24 24"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>
+            </a>
+            <a href="#" aria-label="YouTube">
+              <svg viewBox="0 0 24 24"><path d="M22.54 6.42a2.78 2.78 0 0 0-1.95-1.96C18.88 4 12 4 12 4s-6.88 0-8.59.46A2.78 2.78 0 0 0 1.46 6.42 29 29 0 0 0 1 12a29 29 0 0 0 .46 5.58 2.78 2.78 0 0 0 1.95 1.96C5.12 20 12 20 12 20s6.88 0 8.59-.46a2.78 2.78 0 0 0 1.95-1.96A29 29 0 0 0 23 12a29 29 0 0 0-.46-5.58z"/><polygon points="9.75 15.02 15.5 12 9.75 8.98 9.75 15.02" fill="rgba(22,18,14,1)" stroke="none"/></svg>
+            </a>
+          </div>
+        </div>
+
+        <div class="footer-col">
+          <h4>Explore</h4>
+          <ul>
+            <li><a href="#">New Arrivals</a></li>
+            <li><a href="#">Lehengas</a></li>
+            <li><a href="#">Drapes &amp; Sarees</a></li>
+            <li><a href="#">Anarkalis</a></li>
+            <li><a href="#">Indo-Western</a></li>
+            <li><a href="#">Gowns</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-col">
+          <h4>Collections</h4>
+          <ul>
+            <li><a href="#">The Bloom Soirée</a></li>
+            <li><a href="#">The Festive Edit</a></li>
+            <li><a href="#">Chamakk</a></li>
+            <li><a href="#">Barre Oblique</a></li>
+            <li><a href="#">Bestsellers</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-col">
+          <h4>Atelier</h4>
+          <ul>
+            <li><a href="#">Book Appointment</a></li>
+            <li><a href="#">Client Diaries</a></li>
+            <li><a href="#">Celebrities</a></li>
+            <li><a href="#">Customisations</a></li>
+            <li><a href="#">Contact</a></li>
+            <li><a href="#">Shipping &amp; Returns</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="footer-bottom">
+        <p>&copy; 2025 Karishma &amp; Ashita. All rights reserved.</p>
+        <div class="footer-bottom-links">
+          <a href="#">Privacy Policy</a>
+          <a href="#">Terms of Service</a>
+          <a href="#">Sitemap</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ═══ JAVASCRIPT ════════════════════════════════════════ -->
+  <script>
+    // ── Announcement bar rotation ─────────────────────────
+    (function() {
+      const items = document.querySelectorAll('.announcement-bar__item');
+      let current = 0;
+      if (items.length < 2) return;
+      setInterval(function() {
+        items[current].classList.remove('active');
+        current = (current + 1) % items.length;
+        items[current].classList.add('active');
+      }, 4000);
+    })();
+
+    // ── Sticky header scroll class ────────────────────────
+    (function() {
+      var header = document.getElementById('site-header');
+      var threshold = 60;
+      function onScroll() {
+        if (window.scrollY > threshold) {
+          header.classList.add('scrolled');
+        } else {
+          header.classList.remove('scrolled');
+        }
+      }
+      window.addEventListener('scroll', onScroll, { passive: true });
+    })();
+
+    // ── Scroll-reveal (Intersection Observer) ─────────────
+    (function() {
+      var revealEls = document.querySelectorAll('.reveal, .reveal-img');
+      if (!('IntersectionObserver' in window)) {
+        revealEls.forEach(function(el) {
+          el.classList.add('visible');
+        });
+        return;
+      }
+      var observer = new IntersectionObserver(function(entries) {
+        entries.forEach(function(entry) {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('visible');
+            observer.unobserve(entry.target);
+          }
+        });
+      }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
+
+      revealEls.forEach(function(el) {
+        observer.observe(el);
+      });
+    })();
+  </script>
+
+</body>
+</html>

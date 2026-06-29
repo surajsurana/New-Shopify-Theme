@@ -1,0 +1,12 @@
+# Claude Code local-only settings (per-machine, not shared)
+.claude/settings.local.json
+
+# OS junk
+.DS_Store
+Thumbs.db
+
+# Shopify CLI local state
+.shopify/
+
+# Node (in case tooling gets added later)
+node_modules/
