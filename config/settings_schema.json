@@ -13,15 +13,27 @@
       {
         "type": "text",
         "id": "whatsapp_number",
-        "label": "WhatsApp number (with country code, digits only)",
-        "default": "919999999999",
-        "info": "Used for tel/wa.me links, e.g. 919999999999"
+        "label": "WhatsApp number (digits only, with country code)",
+        "default": "919967543087",
+        "info": "Used for wa.me/ links across the site. Format: 919967543087 (no + sign, no spaces)."
       },
       {
         "type": "text",
         "id": "whatsapp_display",
         "label": "WhatsApp display text",
-        "default": "+91 99999 99999"
+        "default": "+91 99675 43087",
+        "info": "Human-readable number shown in footer and mobile nav."
+      }
+    ]
+  },
+  {
+    "name": "Social & sharing",
+    "settings": [
+      {
+        "type": "image_picker",
+        "id": "share_image",
+        "label": "Default OG share image",
+        "info": "Used when no page-specific image is available. Recommended: 1200x630px."
       }
     ]
   }
