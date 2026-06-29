@@ -22,7 +22,19 @@
                 class="img-filter-collection"
               />
             {% else %}
-              <div style="background: var(--c-charcoal-2); width:100%; height:100%;"></div>
+              {% assign card_name_lower = block.settings.name | downcase %}
+              {% case card_name_lower %}
+                {% when 'bridal' %}
+                  <img src="{{ 'collection-bridal.jpg' | asset_url }}" alt="{{ block.settings.name }}" loading="lazy" width="700" height="1050" class="img-filter-collection" />
+                {% when 'lehengas' %}
+                  <img src="{{ 'collection-lehengas.jpg' | asset_url }}" alt="{{ block.settings.name }}" loading="lazy" width="700" height="1050" class="img-filter-collection" />
+                {% when 'indo-western' %}
+                  <img src="{{ 'collection-indo-western.jpg' | asset_url }}" alt="{{ block.settings.name }}" loading="lazy" width="700" height="1050" class="img-filter-collection" />
+                {% when 'festive' %}
+                  <img src="{{ 'collection-festive.jpg' | asset_url }}" alt="{{ block.settings.name }}" loading="lazy" width="700" height="1050" class="img-filter-collection" />
+                {% else %}
+                  <div style="background: var(--c-charcoal-2); width:100%; height:100%;"></div>
+              {% endcase %}
             {% endif %}
           </div>
           <div class="ka-coll-card__overlay"></div>
