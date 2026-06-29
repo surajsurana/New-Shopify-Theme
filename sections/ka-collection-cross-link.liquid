@@ -1,0 +1,97 @@
+{{ 'ka-collection-cross-link.css' | asset_url | stylesheet_tag }}
+
+{%- comment -%}
+  K&A Collection Cross-Link Strip ("The Other Collections")
+  Spec: Docs/collection-build-spec.md, Section 2 ("Section 9 — Cross-Link Strip"), F8, CD Note 5.
+  Keeps the Maison feeling continuous — a visitor on one collection should see the
+  other three waiting. Per F8, given exactly four named capsule collections today,
+  the simpler fixed-four-with-filter approach is appropriate (not a "related
+  products" recommendation engine — see CD Note 5, resist ever making this
+  algorithmic). Stable order mirrors the homepage Collections Directory exactly:
+  Festive Edit, Bloom Soirée, Chamakk, Barre Oblique.
+
+  Platform-compatibility fix: originally built with four "type": "collection"
+  picker settings, but Shopify's collection-picker setting type has no documented
+  JSON value format for direct template authoring — it's editor-managed, not
+  meant to be pre-populated by hand in a JSON template (confirmed via
+  shopify.dev). The homepage's ka-collections-directory.liquid already worked
+  around this same limitation with a manual card_url fallback. Since this list
+  is already fixed/manually-maintained by design (F8 — a 5th collection needs a
+  manual code update regardless), the picker setting added an unreliable layer
+  of indirection for no benefit. Replaced with a direct `collections['handle']`
+  Liquid lookup — stable, fully documented, no schema setting or JSON wiring
+  needed. If a fifth named collection is added later, update cl_handles below —
+  acceptable for now per F8, revisit only past ~6 collections.
+{%- endcomment -%}
+
+{% liquid
+  assign cl_handles = "the-festive-edit|the-bloom-soiree|chamak|barre-oblique" | split: "|"
+%}
+
+<section class="ka-cross-link" aria-label="The other collections">
+  <div class="ka-cross-link__inner">
+    <div class="ka-cross-link__header reveal">
+      <p class="eyebrow eyebrow--on-dark ka-cross-link__eyebrow">Continue Through the Maison</p>
+      <h2 class="ka-cross-link__title">The Other Collections</h2>
+    </div>
+    <div class="ka-cross-link__grid">
+      {% assign delay = 0 %}
+      {% for h in cl_handles %}
+        {% assign cl_collection = collections[h] %}
+        {% if cl_collection != blank and cl_collection.handle != collection.handle %}
+          {% assign delay = delay | plus: 1 %}
+          <a href="{{ cl_collection.url }}" class="ka-cl-card reveal-img{% if delay > 1 %} reveal-delay-{{ delay | minus: 1 }}{% endif %}">
+            <div class="ka-cl-card__image">
+              {% if cl_collection.image != blank %}
+                <img
+                  src="{{ cl_collection.image | image_url: width: 900 }}"
+                  alt="{{ cl_collection.title }}"
+                  loading="lazy"
+                  width="900"
+                  height="675"
+                  class="img-filter-coll-page-dark"
+                />
+              {% else %}
+                {%- assign cl_handle_lower = cl_collection.handle | downcase -%}
+                {%- case cl_handle_lower -%}
+                  {%- when 'the-bloom-soiree' -%}
+                    <img src="{{ 'bloom-soiree-main.jpg' | asset_url }}" alt="{{ cl_collection.title }}" loading="lazy" width="900" height="675" class="img-filter-coll-page-dark" />
+                  {%- when 'the-festive-edit' -%}
+                    <img src="{{ 'celebrity-editorial.jpg' | asset_url }}" alt="{{ cl_collection.title }}" loading="lazy" width="900" height="675" class="img-filter-coll-page-dark" />
+                  {%- when 'chamak' -%}
+                    <img src="{{ 'collection-secondary-1.jpg' | asset_url }}" alt="{{ cl_collection.title }}" loading="lazy" width="900" height="675" class="img-filter-coll-page-dark" />
+                  {%- when 'barre-oblique' -%}
+                    <img src="{{ 'collection-secondary-2.jpg' | asset_url }}" alt="{{ cl_collection.title }}" loading="lazy" width="900" height="675" class="img-filter-coll-page-dark" />
+                  {%- else -%}
+                    <div style="background: var(--c-charcoal-2); width:100%; height:100%;"></div>
+                {%- endcase -%}
+              {% endif %}
+            </div>
+            <div class="ka-cl-card__overlay"></div>
+            <div class="ka-cl-card__label">
+              <p class="ka-cl-card__name">{{ cl_collection.title }}</p>
+              <span class="ka-cl-card__arrow">Explore &rarr;</span>
+            </div>
+          </a>
+        {% endif %}
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Collection Cross-Link",
+  "tag": "div",
+  "class": "ka-collection-cross-link-section",
+  "settings": [
+    {
+      "type": "paragraph",
+      "content": "The four cross-linked collections (Festive Edit, Bloom Soirée, Chamakk, Barre Oblique) are fixed in code by handle, not editable here — see the comment at the top of this section's .liquid file. The current page's own collection is automatically excluded from display."
+    }
+  ],
+  "presets": [
+    { "name": "Collection Cross-Link" }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,109 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "sections": {
+    "ka-nav": {
+      "type": "ka-nav",
+      "settings": {
+        "label_bestsellers": "Signature",
+        "link_bestsellers": "/collections/bestsellers",
+        "label_collections": "Collections",
+        "link_collections": "/collections",
+        "label_diaries": "Client Diaries",
+        "link_diaries": "/pages/client-diaries",
+        "label_whatsapp": "Concierge",
+        "link_about": "/pages/about",
+        "link_appointment": "/pages/appointments"
+      }
+    },
+    "ka-collection-breadcrumb": {
+      "type": "ka-collection-breadcrumb",
+      "settings": {}
+    },
+    "ka-collection-hero": {
+      "type": "ka-collection-hero",
+      "settings": {
+        "position": "01"
+      }
+    },
+    "ka-collection-intro": {
+      "type": "ka-collection-intro",
+      "settings": {}
+    },
+    "ka-collection-refine-bar": {
+      "type": "ka-collection-refine-bar",
+      "blocks": {
+        "chip-1": {
+          "type": "chip",
+          "settings": {
+            "chip_label": "Corsets"
+          }
+        },
+        "chip-2": {
+          "type": "chip",
+          "settings": {
+            "chip_label": "Lehengas"
+          }
+        },
+        "chip-3": {
+          "type": "chip",
+          "settings": {
+            "chip_label": "Indo-Western"
+          }
+        }
+      },
+      "block_order": [
+        "chip-1",
+        "chip-2",
+        "chip-3"
+      ],
+      "settings": {}
+    },
+    "ka-collection-grid": {
+      "type": "ka-collection-grid",
+      "settings": {
+        "products_per_page": 9,
+        "insert_after_index": 6
+      }
+    },
+    "ka-collection-cross-link": {
+      "type": "ka-collection-cross-link",
+      "settings": {}
+    },
+    "ka-collection-concierge": {
+      "type": "ka-collection-concierge",
+      "settings": {
+        "styling_session_url": "/pages/appointments"
+      }
+    },
+    "ka-footer": {
+      "type": "ka-footer",
+      "settings": {
+        "brand_name": "K&A by Karishma & Ashita",
+        "tagline": "Bridal couture, handcrafted\nin Mumbai.",
+        "instagram_url": "https://instagram.com/karishmaashita",
+        "pinterest_url": "",
+        "email": "hello@karishmaashita.com",
+        "address": "Mumbai, India\nFree worldwide shipping"
+      }
+    }
+  },
+  "order": [
+    "ka-nav",
+    "ka-collection-breadcrumb",
+    "ka-collection-hero",
+    "ka-collection-intro",
+    "ka-collection-refine-bar",
+    "ka-collection-grid",
+    "ka-collection-cross-link",
+    "ka-collection-concierge",
+    "ka-footer"
+  ]
+}
