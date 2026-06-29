@@ -1,3 +1,12 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
 {
   "sections": {
     "ka-nav": {
@@ -80,15 +89,6 @@
     },
     "ka-voice-of-bride": {
       "type": "ka-voice-of-bride",
-      "settings": {
-        "show_section": false,
-        "eyebrow": "What Brides Say",
-        "title": "The words of\nour brides.",
-        "rating_number": "",
-        "rating_label": "",
-        "google_cta_label": "Read all reviews on Google",
-        "google_url": ""
-      },
       "blocks": {
         "review-1": {
           "type": "review",
@@ -115,55 +115,103 @@
           }
         }
       },
-      "block_order": ["review-1", "review-2", "review-3"]
+      "block_order": [
+        "review-1",
+        "review-2",
+        "review-3"
+      ],
+      "settings": {
+        "show_section": false,
+        "eyebrow": "What Brides Say",
+        "title": "The words of\nour brides.",
+        "rating_number": "",
+        "rating_label": "",
+        "google_cta_label": "Read all reviews on Google",
+        "google_url": ""
+      }
     },
     "ka-collections-directory": {
       "type": "ka-collections-directory",
-      "settings": {
-        "eyebrow": "The House",
-        "title": "Our Collections"
-      },
       "blocks": {
         "bridal": {
           "type": "collection_card",
-          "settings": { "name": "Bridal",       "card_url": "/collections/bridal" }
+          "settings": {
+            "name": "Bridal",
+            "card_url": "/collections/bridal"
+          }
         },
         "lehengas": {
           "type": "collection_card",
-          "settings": { "name": "Lehengas",     "card_url": "/collections/lehengas" }
+          "settings": {
+            "name": "Lehengas",
+            "card_url": "/collections/lehengas"
+          }
         },
         "indo-western": {
           "type": "collection_card",
-          "settings": { "name": "Indo-Western", "card_url": "/collections/indo-western" }
+          "settings": {
+            "name": "Indo-Western",
+            "card_url": "/collections/indo-western"
+          }
         },
         "festive": {
           "type": "collection_card",
-          "settings": { "name": "Festive",      "card_url": "/collections/festive" }
+          "settings": {
+            "name": "Festive",
+            "card_url": "/collections/festive"
+          }
         }
       },
-      "block_order": ["bridal", "lehengas", "indo-western", "festive"]
+      "block_order": [
+        "bridal",
+        "lehengas",
+        "indo-western",
+        "festive"
+      ],
+      "settings": {
+        "eyebrow": "The House",
+        "title": "Our Collections"
+      }
     },
     "ka-craft-strip": {
       "type": "ka-craft-strip",
       "blocks": {
         "handcrafted": {
           "type": "item",
-          "settings": { "label": "Handcrafted",        "sublabel": "Every stitch by hand" }
+          "settings": {
+            "label": "Handcrafted",
+            "sublabel": "Every stitch by hand"
+          }
         },
         "made-to-order": {
           "type": "item",
-          "settings": { "label": "Made to Order",      "sublabel": "Designed around you" }
+          "settings": {
+            "label": "Made to Order",
+            "sublabel": "Designed around you"
+          }
         },
         "worldwide": {
           "type": "item",
-          "settings": { "label": "Worldwide Delivery", "sublabel": "Free shipping, always" }
+          "settings": {
+            "label": "Worldwide Delivery",
+            "sublabel": "Free shipping, always"
+          }
         },
         "concierge": {
           "type": "item",
-          "settings": { "label": "Concierge",          "sublabel": "Personal styling, always available" }
+          "settings": {
+            "label": "Concierge",
+            "sublabel": "Personal styling, always available"
+          }
         }
       },
-      "block_order": ["handcrafted", "made-to-order", "worldwide", "concierge"]
+      "block_order": [
+        "handcrafted",
+        "made-to-order",
+        "worldwide",
+        "concierge"
+      ],
+      "settings": {}
     },
     "ka-appointment": {
       "type": "ka-appointment",
