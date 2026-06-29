@@ -86,12 +86,12 @@
     "ka-footer": {
       "type": "ka-footer",
       "settings": {
-        "brand_name": "K&A by Karishma & Ashita",
+        "brand_name": "Karishma Ashita",
         "tagline": "Bridal couture, handcrafted\nin Mumbai.",
         "instagram_url": "https://instagram.com/karishmaashita",
         "pinterest_url": "",
-        "email": "hello@karishmaashita.com",
-        "address": "Mumbai, India\nFree worldwide shipping"
+        "email": "info@karishmaashita.com",
+        "address": "Mumbai, India\nComplimentary worldwide shipping"
       }
     }
   },
