@@ -1,0 +1,121 @@
+{{ 'ka-client-diaries.css' | asset_url | stylesheet_tag }}
+
+<section class="ka-lookbook" aria-label="Client Diaries lookbook">
+  <div class="ka-lookbook__header">
+    <p class="eyebrow eyebrow--muted reveal">{{ section.settings.eyebrow }}</p>
+    <h2 class="ka-lookbook__header-title reveal reveal-delay-1">{{ section.settings.title }}</h2>
+  </div>
+
+  <div class="ka-lookbook__grid">
+    <!-- Column 1: tall image -->
+    <div class="ka-lookbook__item ka-lookbook__item--tall reveal-img">
+      {% if section.settings.image_tall != blank %}
+        <img
+          src="{{ section.settings.image_tall | image_url: width: 900 }}"
+          alt="{{ section.settings.image_tall.alt | escape | default: 'Client Diaries — real K&A bride' }}"
+          loading="lazy"
+          width="900"
+          height="1200"
+          class="img-filter-lookbook"
+        />
+      {% else %}
+        <div style="background: var(--c-smoke); width:100%; height:100%;"></div>
+      {% endif %}
+      <div class="ka-lookbook__overlay"></div>
+      <div class="ka-lookbook__caption">
+        <span class="ka-lookbook__caption-name">{{ section.settings.caption_1_name }}</span>
+        <span class="ka-lookbook__caption-garment">{{ section.settings.caption_1_garment }}</span>
+      </div>
+    </div>
+
+    <!-- Column 2: text CTA -->
+    <div class="ka-lookbook__text-col">
+      <p class="eyebrow eyebrow--muted reveal" style="margin-bottom: 16px;">{{ section.settings.text_eyebrow }}</p>
+      <h3 class="ka-lookbook__cta-title reveal reveal-delay-1">{{ section.settings.text_title }}</h3>
+      <p class="ka-lookbook__cta-body reveal reveal-delay-2">{{ section.settings.text_body }}</p>
+      <a href="{{ section.settings.text_cta_url }}" class="btn-dark reveal reveal-delay-3">{{ section.settings.text_cta_label }}</a>
+    </div>
+
+    <!-- Column 3: stacked two images -->
+    <div class="ka-lookbook__item ka-lookbook__item--mid">
+      <div class="ka-lookbook__item-inner reveal-img">
+        {% if section.settings.image_mid_1 != blank %}
+          <img
+            src="{{ section.settings.image_mid_1 | image_url: width: 700 }}"
+            alt="{{ section.settings.image_mid_1.alt | escape | default: 'Client Diaries — K&A bride' }}"
+            loading="lazy"
+            width="700"
+            height="500"
+            class="img-filter-lookbook"
+          />
+        {% else %}
+          <div style="background: var(--c-paper-deep); width:100%; height:100%;"></div>
+        {% endif %}
+        <div class="ka-lookbook__overlay"></div>
+        <div class="ka-lookbook__caption">
+          <span class="ka-lookbook__caption-name">{{ section.settings.caption_2_name }}</span>
+          <span class="ka-lookbook__caption-garment">{{ section.settings.caption_2_garment }}</span>
+        </div>
+      </div>
+      <div class="ka-lookbook__item-inner reveal-img">
+        {% if section.settings.image_mid_2 != blank %}
+          <img
+            src="{{ section.settings.image_mid_2 | image_url: width: 700 }}"
+            alt="{{ section.settings.image_mid_2.alt | escape | default: 'Client Diaries — K&A bride' }}"
+            loading="lazy"
+            width="700"
+            height="500"
+            class="img-filter-lookbook"
+          />
+        {% else %}
+          <div style="background: var(--c-smoke); width:100%; height:100%;"></div>
+        {% endif %}
+        <div class="ka-lookbook__overlay"></div>
+        <div class="ka-lookbook__caption">
+          <span class="ka-lookbook__caption-name">{{ section.settings.caption_3_name }}</span>
+          <span class="ka-lookbook__caption-garment">{{ section.settings.caption_3_garment }}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Client Diaries",
+  "tag": "section",
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow",    "default": "Real Brides" },
+    { "type": "text", "id": "title",   "label": "Section title", "default": "Client Diaries" },
+    {
+      "type": "header",
+      "content": "Images"
+    },
+    { "type": "image_picker", "id": "image_tall",  "label": "Tall image (column 1)" },
+    { "type": "image_picker", "id": "image_mid_1", "label": "Stacked image 1 (column 3, top)" },
+    { "type": "image_picker", "id": "image_mid_2", "label": "Stacked image 2 (column 3, bottom)" },
+    {
+      "type": "header",
+      "content": "Image captions (hover)"
+    },
+    { "type": "text", "id": "caption_1_name",    "label": "Image 1 — garment name",    "default": "The Bloom Soirée Lehenga" },
+    { "type": "text", "id": "caption_1_garment", "label": "Image 1 — garment detail",  "default": "Blush & Gold — Made to Order" },
+    { "type": "text", "id": "caption_2_name",    "label": "Image 2 — garment name",    "default": "The Snow Veil Corset" },
+    { "type": "text", "id": "caption_2_garment", "label": "Image 2 — garment detail",  "default": "Ivory Silk Organza — Made to Order" },
+    { "type": "text", "id": "caption_3_name",    "label": "Image 3 — garment name",    "default": "The Column Corset" },
+    { "type": "text", "id": "caption_3_garment", "label": "Image 3 — garment detail",  "default": "White & Ivory — Made to Order" },
+    {
+      "type": "header",
+      "content": "Text column (centre)"
+    },
+    { "type": "text",     "id": "text_eyebrow",   "label": "Text column eyebrow",  "default": "Stories" },
+    { "type": "text",     "id": "text_title",      "label": "Text column title",    "default": "Every bride becomes\npart of our diary." },
+    { "type": "textarea", "id": "text_body",       "label": "Text column body",     "default": "From the first conversation to the last pin, we document the journey of every K&A bride. Each diary entry is a story of craft, emotion, and the precise moment a woman becomes a bride." },
+    { "type": "text",     "id": "text_cta_label",  "label": "CTA label",           "default": "Read the diaries" },
+    { "type": "url",      "id": "text_cta_url",    "label": "CTA URL" }
+  ],
+  "presets": [
+    { "name": "Client Diaries" }
+  ]
+}
+{% endschema %}

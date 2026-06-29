@@ -1,0 +1,165 @@
+﻿/* ================================================================
+   KA-NAV — Navigation section styles
+================================================================ */
+.ka-nav {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 100;
+  padding: 24px var(--gutter);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  transition:
+    background var(--dur-med) var(--ease-soft),
+    padding    var(--dur-med) var(--ease-soft),
+    backdrop-filter var(--dur-med) var(--ease-soft);
+}
+.ka-nav.scrolled {
+  background: rgba(248,244,239,0.96);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  padding: 16px var(--gutter);
+  border-bottom: 1px solid var(--line);
+}
+
+.ka-nav__links {
+  display: flex;
+  gap: 36px;
+  list-style: none;
+}
+.ka-nav__links a {
+  font-family: var(--f-sans);
+  font-size: 0.68rem;
+  font-weight: 400;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: white;
+  transition: color var(--dur-fast);
+  position: relative;
+}
+.ka-nav__links a::after {
+  content: '';
+  position: absolute;
+  left: 0; bottom: -3px;
+  width: 0; height: 1px;
+  background: var(--c-rosegold);
+  transition: width var(--dur-med) var(--ease-luxury);
+}
+.ka-nav__links a:hover::after { width: 100%; }
+.ka-nav.scrolled .ka-nav__links a { color: var(--c-charcoal); }
+
+.ka-nav__logo {
+  font-family: var(--f-display);
+  font-size: clamp(1rem, 2vw, 1.25rem);
+  font-weight: 400;
+  letter-spacing: 0.16em;
+  color: white;
+  text-transform: uppercase;
+  transition: color var(--dur-med);
+}
+.ka-nav.scrolled .ka-nav__logo { color: var(--c-charcoal); }
+
+.ka-nav__actions {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+}
+
+.ka-nav__whatsapp {
+  font-family: var(--f-sans);
+  font-size: 0.66rem;
+  font-weight: 400;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: white;
+  border: 1px solid rgba(255,255,255,0.4);
+  padding: 8px 18px;
+  transition: background var(--dur-fast), color var(--dur-fast), border-color var(--dur-fast);
+}
+.ka-nav__whatsapp:hover { background: white; color: var(--c-charcoal); }
+.ka-nav.scrolled .ka-nav__whatsapp { color: var(--c-charcoal); border-color: var(--line-strong); }
+.ka-nav.scrolled .ka-nav__whatsapp:hover { background: var(--c-charcoal); color: white; }
+
+.ka-nav__toggle {
+  display: none;
+  flex-direction: column;
+  gap: 5px;
+  padding: 4px;
+}
+.ka-nav__toggle span {
+  display: block;
+  width: 24px;
+  height: 1px;
+  background: white;
+  transition: background var(--dur-med);
+}
+.ka-nav.scrolled .ka-nav__toggle span { background: var(--c-charcoal); }
+
+/* Mobile nav drawer */
+.ka-mobile-nav {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  background: var(--c-charcoal);
+  display: flex;
+  flex-direction: column;
+  padding: 80px var(--gutter) var(--s-lg);
+  transform: translateX(100%);
+  transition: transform 0.5s var(--ease-luxury);
+}
+.ka-mobile-nav.open { transform: translateX(0); }
+
+.ka-mobile-nav__close {
+  position: absolute;
+  top: 24px;
+  right: var(--gutter);
+  font-family: var(--f-sans);
+  font-size: 0.63rem;
+  font-weight: 400;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.45);
+  padding: 8px;
+}
+
+.ka-mobile-nav__links {
+  list-style: none;
+  margin-bottom: var(--s-lg);
+}
+.ka-mobile-nav__links li { border-bottom: 1px solid rgba(255,255,255,0.07); }
+.ka-mobile-nav__links a {
+  display: block;
+  font-family: var(--f-display);
+  font-size: clamp(1.6rem, 6vw, 2.6rem);
+  font-weight: 400;
+  font-style: italic;
+  color: white;
+  padding: 18px 0;
+  letter-spacing: 0.02em;
+  transition: color var(--dur-fast);
+}
+.ka-mobile-nav__links a:hover { color: var(--c-rosegold); }
+
+.ka-mobile-nav__footer { margin-top: auto; }
+.ka-mobile-nav__footer p {
+  font-family: var(--f-sans);
+  font-size: 0.7rem;
+  font-weight: 300;
+  color: rgba(255,255,255,0.3);
+  letter-spacing: 0.1em;
+  margin-bottom: 8px;
+}
+.ka-mobile-nav__footer a {
+  display: block;
+  font-family: var(--f-sans);
+  font-size: 0.82rem;
+  font-weight: 300;
+  color: var(--c-rosegold);
+  letter-spacing: 0.06em;
+}
+
+@media (max-width: 900px) {
+  .ka-nav__links   { display: none; }
+  .ka-nav__toggle  { display: flex; }
+  .ka-nav__whatsapp { display: none; }
+}

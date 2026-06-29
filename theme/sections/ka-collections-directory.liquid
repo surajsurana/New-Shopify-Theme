@@ -1,0 +1,82 @@
+{{ 'ka-collections-directory.css' | asset_url | stylesheet_tag }}
+
+<section class="ka-collections-dir" aria-label="Collections directory">
+  <div class="ka-collections-dir__inner">
+    <div class="ka-collections-dir__header reveal">
+      <p class="eyebrow eyebrow--on-dark" style="margin-bottom: 16px;">{{ section.settings.eyebrow }}</p>
+      <h2 class="ka-collections-dir__title">{{ section.settings.title }}</h2>
+    </div>
+
+    <div class="ka-collections-dir__grid">
+      {% for block in section.blocks %}
+        {% assign card_url = block.settings.collection.url | default: block.settings.card_url %}
+        <a href="{{ card_url }}" class="ka-coll-card reveal-img" {{ block.shopify_attributes }}>
+          <div class="ka-coll-card__image">
+            {% if block.settings.image != blank %}
+              <img
+                src="{{ block.settings.image | image_url: width: 700 }}"
+                alt="{{ block.settings.image.alt | escape | default: block.settings.name }}"
+                loading="lazy"
+                width="700"
+                height="1050"
+                class="img-filter-collection"
+              />
+            {% else %}
+              <div style="background: var(--c-charcoal-2); width:100%; height:100%;"></div>
+            {% endif %}
+          </div>
+          <div class="ka-coll-card__overlay"></div>
+          <div class="ka-coll-card__label">
+            <p class="ka-coll-card__number">{{ forloop.index | prepend: '0' | slice: -2, 2 }}</p>
+            <h3 class="ka-coll-card__name">{{ block.settings.name }}</h3>
+            <span class="ka-coll-card__arrow">Explore &rarr;</span>
+          </div>
+        </a>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Collections Directory",
+  "tag": "section",
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow",       "default": "The House" },
+    { "type": "text", "id": "title",   "label": "Section title", "default": "Our Collections" }
+  ],
+  "blocks": [
+    {
+      "type": "collection_card",
+      "name": "Collection card",
+      "limit": 4,
+      "settings": [
+        { "type": "image_picker", "id": "image",      "label": "Card image" },
+        { "type": "text",         "id": "name",       "label": "Collection name", "default": "Bridal" },
+        {
+          "type": "collection",
+          "id": "collection",
+          "label": "Shopify collection",
+          "info": "Select a collection — URL is pulled automatically."
+        },
+        {
+          "type": "url",
+          "id": "card_url",
+          "label": "Manual URL (fallback if no collection selected)"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Collections Directory",
+      "blocks": [
+        { "type": "collection_card", "settings": { "name": "Bridal" } },
+        { "type": "collection_card", "settings": { "name": "Lehengas" } },
+        { "type": "collection_card", "settings": { "name": "Indo-Western" } },
+        { "type": "collection_card", "settings": { "name": "Festive" } }
+      ]
+    }
+  ]
+}
+{% endschema %}

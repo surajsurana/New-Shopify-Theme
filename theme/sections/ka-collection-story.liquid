@@ -1,0 +1,78 @@
+{{ 'ka-collection-story.css' | asset_url | stylesheet_tag }}
+
+<section class="ka-collection-story" aria-label="Featured collection">
+  <div class="ka-collection-story__image-main reveal-img">
+    {% if section.settings.image_main != blank %}
+      <img
+        src="{{ section.settings.image_main | image_url: width: 1200 }}"
+        alt="{{ section.settings.image_main.alt | escape | default: section.settings.title }}"
+        loading="lazy"
+        width="1200"
+        height="1600"
+        class="img-filter-editorial"
+      />
+    {% else %}
+      <div style="background: var(--c-smoke); width:100%; height:100%;"></div>
+    {% endif %}
+  </div>
+
+  <div class="ka-collection-story__right">
+    <div class="ka-collection-story__text">
+      <p class="eyebrow eyebrow--muted ka-collection-story__eyebrow reveal">{{ section.settings.eyebrow }}</p>
+      <h2 class="ka-collection-story__title reveal reveal-delay-1">{{ section.settings.title }}</h2>
+      <p class="ka-collection-story__body reveal reveal-delay-2">{{ section.settings.body }}</p>
+      <a href="{{ section.settings.cta_url }}" class="btn-dark reveal reveal-delay-3">{{ section.settings.cta_label }}</a>
+    </div>
+
+    <div class="ka-collection-story__images-secondary">
+      <div class="ka-collection-story__image-secondary reveal-img">
+        {% if section.settings.image_secondary_1 != blank %}
+          <img
+            src="{{ section.settings.image_secondary_1 | image_url: width: 600 }}"
+            alt="{{ section.settings.image_secondary_1.alt | escape | default: 'Collection detail' }}"
+            loading="lazy"
+            width="600"
+            height="400"
+            class="img-filter-editorial"
+          />
+        {% endif %}
+      </div>
+      <div class="ka-collection-story__image-secondary reveal-img">
+        {% if section.settings.image_secondary_2 != blank %}
+          <img
+            src="{{ section.settings.image_secondary_2 | image_url: width: 600 }}"
+            alt="{{ section.settings.image_secondary_2.alt | escape | default: 'Collection detail' }}"
+            loading="lazy"
+            width="600"
+            height="400"
+            class="img-filter-editorial"
+          />
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Collection Story",
+  "tag": "section",
+  "settings": [
+    { "type": "text",         "id": "eyebrow",          "label": "Eyebrow",              "default": "Introducing" },
+    { "type": "text",         "id": "title",             "label": "Collection title",     "default": "The Bloom\nSoirée" },
+    { "type": "textarea",     "id": "body",              "label": "Body text",            "default": "Blushing rose petals pressed into organza. Ivory silk worked by hand into structures that hold their shape across a twelve-hour celebration. The Bloom Soirée begins where traditional bridal ends — in the quiet confidence of craft that needs no introduction." },
+    { "type": "text",         "id": "cta_label",         "label": "CTA button label",     "default": "Explore the collection" },
+    { "type": "url",          "id": "cta_url",           "label": "CTA URL" },
+    {
+      "type": "header",
+      "content": "Images"
+    },
+    { "type": "image_picker", "id": "image_main",        "label": "Main image (left)" },
+    { "type": "image_picker", "id": "image_secondary_1", "label": "Secondary image 1" },
+    { "type": "image_picker", "id": "image_secondary_2", "label": "Secondary image 2" }
+  ],
+  "presets": [
+    { "name": "Collection Story" }
+  ]
+}
+{% endschema %}

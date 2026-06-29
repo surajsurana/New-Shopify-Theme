@@ -1,0 +1,96 @@
+﻿/* ================================================================
+   KA-CLIENT-DIARIES (Lookbook)
+================================================================ */
+.ka-lookbook {
+  padding: var(--s-2xl) 0;
+  overflow: hidden;
+}
+.ka-lookbook__header { padding: 0 var(--gutter) var(--s-lg); }
+.ka-lookbook__header-title {
+  font-family: var(--f-display);
+  font-size: var(--t-h2);
+  font-weight: 400;
+  color: var(--c-charcoal);
+  line-height: 1.05;
+  margin-top: 8px;
+}
+.ka-lookbook__grid {
+  display: grid;
+  grid-template-columns: 1.2fr 0.6fr 1fr;
+  gap: 3px;
+  min-height: 70vh;
+}
+.ka-lookbook__item {
+  position: relative;
+  overflow: hidden;
+}
+.ka-lookbook__item--tall { min-height: 600px; }
+.ka-lookbook__item--mid {
+  display: grid;
+  grid-template-rows: 1fr 1fr;
+  gap: 3px;
+}
+.ka-lookbook__item-inner {
+  overflow: hidden;
+  height: 100%;
+  position: relative;
+}
+.ka-lookbook__item img,
+.ka-lookbook__item-inner img {
+  transition: transform 1.2s var(--ease-luxury);
+}
+.ka-lookbook__item:hover img,
+.ka-lookbook__item-inner:hover img { transform: scale(1.03); }
+
+.ka-lookbook__overlay {
+  position: absolute; inset: 0;
+  background: linear-gradient(to top, rgba(15,12,10,0.65) 0%, transparent 50%);
+  opacity: 0;
+  transition: opacity var(--dur-med);
+}
+.ka-lookbook__item:hover .ka-lookbook__overlay,
+.ka-lookbook__item-inner:hover .ka-lookbook__overlay { opacity: 1; }
+
+.ka-lookbook__caption {
+  position: absolute;
+  bottom: 24px; left: 24px; right: 24px;
+  opacity: 0; transform: translateY(8px);
+  transition: opacity var(--dur-med), transform var(--dur-med) var(--ease-luxury);
+}
+.ka-lookbook__item:hover .ka-lookbook__caption,
+.ka-lookbook__item-inner:hover .ka-lookbook__caption { opacity: 1; transform: translateY(0); }
+
+.ka-lookbook__caption-name {
+  font-family: var(--f-display);
+  font-size: 1.1rem; font-weight: 400; font-style: italic;
+  color: white; display: block;
+}
+.ka-lookbook__caption-garment {
+  font-family: var(--f-sans);
+  font-size: 0.63rem; font-weight: 300;
+  letter-spacing: 0.14em; text-transform: uppercase;
+  color: rgba(255,255,255,0.7);
+}
+.ka-lookbook__text-col {
+  display: flex; flex-direction: column; justify-content: center;
+  padding: clamp(32px, 5vw, 64px);
+  background: var(--c-paper-deep);
+}
+.ka-lookbook__cta-title {
+  font-family: var(--f-display);
+  font-size: var(--t-h3); font-weight: 400; font-style: italic;
+  color: var(--c-charcoal); line-height: 1.3; margin-bottom: 20px;
+}
+.ka-lookbook__cta-body {
+  font-size: 0.88rem; font-weight: 300;
+  line-height: 1.9; color: var(--c-ink-mid); margin-bottom: 32px;
+}
+
+@media (max-width: 900px) {
+  .ka-lookbook__grid { grid-template-columns: 1fr 1fr; grid-template-rows: auto; }
+  .ka-lookbook__item--tall { min-height: 320px; }
+  .ka-lookbook__text-col { grid-column: 1 / -1; min-height: 240px; }
+}
+@media (max-width: 600px) {
+  .ka-lookbook__grid { grid-template-columns: 1fr; }
+}

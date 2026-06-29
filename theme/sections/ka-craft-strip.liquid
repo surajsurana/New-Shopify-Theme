@@ -1,0 +1,46 @@
+{{ 'ka-craft-strip.css' | asset_url | stylesheet_tag }}
+
+<div class="ka-craft-strip" role="complementary" aria-label="Craft credentials">
+  <div class="ka-craft-strip__inner">
+    {% for block in section.blocks %}
+      {% if block.type == 'item' %}
+        <div class="ka-craft-strip__item reveal{% if forloop.index > 1 %} reveal-delay-{{ forloop.index | minus: 1 }}{% endif %}" {{ block.shopify_attributes }}>
+          <span class="ka-craft-strip__label">{{ block.settings.label }}</span>
+          <span class="ka-craft-strip__sub">{{ block.settings.sublabel }}</span>
+        </div>
+        {% unless forloop.last %}
+          <div class="ka-craft-strip__dot reveal reveal-delay-{{ forloop.index }}" aria-hidden="true"></div>
+        {% endunless %}
+      {% endif %}
+    {% endfor %}
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Craft Strip",
+  "tag": "section",
+  "blocks": [
+    {
+      "type": "item",
+      "name": "Craft pillar",
+      "limit": 4,
+      "settings": [
+        { "type": "text", "id": "label",    "label": "Label",     "default": "Handcrafted" },
+        { "type": "text", "id": "sublabel", "label": "Sub-label", "default": "Every stitch by hand" }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Craft Strip",
+      "blocks": [
+        { "type": "item", "settings": { "label": "Handcrafted",       "sublabel": "Every stitch by hand" } },
+        { "type": "item", "settings": { "label": "Made to Order",     "sublabel": "Designed around you" } },
+        { "type": "item", "settings": { "label": "Worldwide Delivery","sublabel": "Free shipping, always" } },
+        { "type": "item", "settings": { "label": "Concierge",         "sublabel": "Personal styling, always available" } }
+      ]
+    }
+  ]
+}
+{% endschema %}

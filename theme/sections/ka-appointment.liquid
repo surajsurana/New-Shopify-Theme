@@ -1,0 +1,73 @@
+{{ 'ka-appointment.css' | asset_url | stylesheet_tag }}
+
+{%- comment -%}
+  F5 assumption: Both appointment CTAs default to /pages/appointments.
+  Suraj can update the exact URLs via the section settings in the theme editor
+  once the booking system (Calendly / Shopify app / WhatsApp pre-fill) is confirmed.
+{%- endcomment -%}
+
+<section class="ka-appointment" aria-label="Book a styling appointment">
+  <div class="ka-appointment__bg reveal-img">
+    {% if section.settings.image != blank %}
+      <img
+        src="{{ section.settings.image | image_url: width: 1600 }}"
+        alt="{{ section.settings.image.alt | escape | default: 'K&A atelier — styling appointment' }}"
+        loading="lazy"
+        width="1600"
+        height="1067"
+        class="img-filter-appointment"
+      />
+    {% else %}
+      <div style="background: var(--c-charcoal); width:100%; height:100%;"></div>
+    {% endif %}
+  </div>
+  <div class="ka-appointment__overlay"></div>
+  <div class="ka-appointment__content">
+    <p class="eyebrow eyebrow--on-dark ka-appointment__eyebrow reveal">{{ section.settings.eyebrow }}</p>
+    <h2 class="ka-appointment__title reveal reveal-delay-1">{{ section.settings.title }}</h2>
+    <p class="ka-appointment__body reveal reveal-delay-2">{{ section.settings.body }}</p>
+    <div class="ka-appointment__options reveal reveal-delay-3">
+      <a href="{{ section.settings.cta_instore_url | default: '/pages/appointments' }}" class="btn-outline-white">
+        {{ section.settings.cta_instore_label }}
+      </a>
+      <span class="ka-appointment__divider">or</span>
+      <a href="{{ section.settings.cta_virtual_url | default: '/pages/appointments' }}" class="btn-outline-white">
+        {{ section.settings.cta_virtual_label }}
+      </a>
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Appointment CTA",
+  "tag": "section",
+  "settings": [
+    { "type": "image_picker", "id": "image",    "label": "Background image" },
+    { "type": "text",         "id": "eyebrow",  "label": "Eyebrow",   "default": "The Atelier" },
+    { "type": "text",         "id": "title",    "label": "Title",     "default": "Begin with a\nConversation." },
+    { "type": "textarea",     "id": "body",     "label": "Body text", "default": "Every K&A bride begins with a private styling session — in our Mumbai atelier or virtually, wherever in the world you are. We listen before we design." },
+    {
+      "type": "header",
+      "content": "CTAs"
+    },
+    { "type": "text", "id": "cta_instore_label", "label": "In-store CTA label",   "default": "Book In-Store Appointment" },
+    {
+      "type": "url",
+      "id": "cta_instore_url",
+      "label": "In-store CTA URL",
+      "info": "Defaults to /pages/appointments. Update once booking system is confirmed."
+    },
+    { "type": "text", "id": "cta_virtual_label", "label": "Virtual CTA label",   "default": "Book Virtual Styling Session" },
+    {
+      "type": "url",
+      "id": "cta_virtual_url",
+      "label": "Virtual CTA URL",
+      "info": "Defaults to /pages/appointments. Can be a Calendly/Typeform link or WhatsApp pre-fill."
+    }
+  ],
+  "presets": [
+    { "name": "Appointment CTA" }
+  ]
+}
+{% endschema %}

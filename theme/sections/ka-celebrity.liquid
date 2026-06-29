@@ -1,0 +1,42 @@
+{{ 'ka-celebrity.css' | asset_url | stylesheet_tag }}
+
+<section class="ka-celebrity" aria-label="Editorial brand feature">
+  <div class="ka-celebrity__bg reveal-img">
+    {% if section.settings.image != blank %}
+      <img
+        src="{{ section.settings.image | image_url: width: 1600 }}"
+        alt="{{ section.settings.image.alt | escape | default: 'Editorial feature — K&A couture' }}"
+        loading="lazy"
+        width="1600"
+        height="1067"
+        class="img-filter-celebrity"
+      />
+    {% else %}
+      <div style="background: var(--c-charcoal); width:100%; height:100%;"></div>
+    {% endif %}
+  </div>
+  <div class="ka-celebrity__overlay"></div>
+  <div class="ka-celebrity__content">
+    <p class="eyebrow eyebrow--on-dark reveal" style="margin-bottom: 24px;">{{ section.settings.eyebrow }}</p>
+    <blockquote class="ka-celebrity__quote reveal reveal-delay-1">{{ section.settings.quote }}</blockquote>
+    {% if section.settings.attribution != blank %}
+      <p class="ka-celebrity__attribution">{{ section.settings.attribution }}</p>
+    {% endif %}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Celebrity Moment",
+  "tag": "section",
+  "settings": [
+    { "type": "image_picker", "id": "image",       "label": "Background image" },
+    { "type": "text",         "id": "eyebrow",     "label": "Eyebrow",         "default": "The House" },
+    { "type": "textarea",     "id": "quote",       "label": "Quote text",      "default": "“Worn by those who believe a garment should tell a story.”" },
+    { "type": "text",         "id": "attribution", "label": "Attribution (optional — leave blank to hide)" }
+  ],
+  "presets": [
+    { "name": "Celebrity Moment" }
+  ]
+}
+{% endschema %}

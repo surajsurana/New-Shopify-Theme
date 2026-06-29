@@ -1,0 +1,219 @@
+{
+  "sections": {
+    "ka-nav": {
+      "type": "ka-nav",
+      "settings": {
+        "label_bestsellers": "Bestsellers",
+        "link_bestsellers": "/collections/bestsellers",
+        "label_collections": "Collections",
+        "link_collections": "/collections",
+        "label_diaries": "Client Diaries",
+        "link_diaries": "/pages/client-diaries",
+        "label_whatsapp": "Concierge",
+        "link_about": "/pages/about",
+        "link_appointment": "/pages/appointments"
+      }
+    },
+    "ka-hero": {
+      "type": "ka-hero",
+      "settings": {
+        "eyebrow": "Mumbai — Est. in Craft",
+        "title_line1": "Bridal",
+        "title_line2": "Couture",
+        "subtitle": "Made-to-order bridal wear — corsets, lehengas, Indo-Western — conceived in Mumbai and worn across the world.",
+        "cta_primary_label": "Explore Collections",
+        "cta_primary_url": "/collections",
+        "cta_secondary_label": "Book a Styling Appointment",
+        "cta_secondary_url": "/pages/appointments"
+      }
+    },
+    "ka-manifesto": {
+      "type": "ka-manifesto",
+      "settings": {
+        "quote": "“Every lehenga, every corset, every draped silhouette — handcrafted for the woman who wants her wedding to begin the moment she dresses.”",
+        "attribution": "Karishma & Ashita — Bridal Couture, Mumbai"
+      }
+    },
+    "ka-collection-story": {
+      "type": "ka-collection-story",
+      "settings": {
+        "eyebrow": "Introducing",
+        "title": "The Bloom\nSoirée",
+        "body": "Blushing rose petals pressed into organza. Ivory silk worked by hand into structures that hold their shape across a twelve-hour celebration. The Bloom Soirée begins where traditional bridal ends — in the quiet confidence of craft that needs no introduction.",
+        "cta_label": "Explore the collection",
+        "cta_url": "/collections/bloom-soiree"
+      }
+    },
+    "ka-bestsellers": {
+      "type": "ka-bestsellers",
+      "settings": {
+        "eyebrow": "Most Loved",
+        "title": "Signature Pieces",
+        "view_all_label": "View all bestsellers",
+        "view_all_url": "/collections/bestsellers"
+      }
+    },
+    "ka-celebrity": {
+      "type": "ka-celebrity",
+      "settings": {
+        "eyebrow": "The House",
+        "quote": "“Worn by those who believe a garment should tell a story.”"
+      }
+    },
+    "ka-client-diaries": {
+      "type": "ka-client-diaries",
+      "settings": {
+        "eyebrow": "Real Brides",
+        "title": "Client Diaries",
+        "caption_1_name": "The Bloom Soirée Lehenga",
+        "caption_1_garment": "Blush & Gold — Made to Order",
+        "caption_2_name": "The Snow Veil Corset",
+        "caption_2_garment": "Ivory Silk Organza — Made to Order",
+        "caption_3_name": "The Column Corset",
+        "caption_3_garment": "White & Ivory — Made to Order",
+        "text_eyebrow": "Stories",
+        "text_title": "Every bride becomes\npart of our diary.",
+        "text_body": "From the first conversation to the last pin, we document the journey of every K&A bride. Each diary entry is a story of craft, emotion, and the precise moment a woman becomes a bride.",
+        "text_cta_label": "Read the diaries",
+        "text_cta_url": "/pages/client-diaries"
+      }
+    },
+    "ka-voice-of-bride": {
+      "type": "ka-voice-of-bride",
+      "settings": {
+        "show_section": false,
+        "eyebrow": "What Brides Say",
+        "title": "The words of\nour brides.",
+        "rating_number": "",
+        "rating_label": "",
+        "google_cta_label": "Read all reviews on Google",
+        "google_url": ""
+      },
+      "blocks": {
+        "review-1": {
+          "type": "review",
+          "settings": {
+            "quote": "",
+            "reviewer_name": "",
+            "occasion": ""
+          }
+        },
+        "review-2": {
+          "type": "review",
+          "settings": {
+            "quote": "",
+            "reviewer_name": "",
+            "occasion": ""
+          }
+        },
+        "review-3": {
+          "type": "review",
+          "settings": {
+            "quote": "",
+            "reviewer_name": "",
+            "occasion": ""
+          }
+        }
+      },
+      "block_order": ["review-1", "review-2", "review-3"]
+    },
+    "ka-collections-directory": {
+      "type": "ka-collections-directory",
+      "settings": {
+        "eyebrow": "The House",
+        "title": "Our Collections"
+      },
+      "blocks": {
+        "bridal": {
+          "type": "collection_card",
+          "settings": { "name": "Bridal",       "card_url": "/collections/bridal" }
+        },
+        "lehengas": {
+          "type": "collection_card",
+          "settings": { "name": "Lehengas",     "card_url": "/collections/lehengas" }
+        },
+        "indo-western": {
+          "type": "collection_card",
+          "settings": { "name": "Indo-Western", "card_url": "/collections/indo-western" }
+        },
+        "festive": {
+          "type": "collection_card",
+          "settings": { "name": "Festive",      "card_url": "/collections/festive" }
+        }
+      },
+      "block_order": ["bridal", "lehengas", "indo-western", "festive"]
+    },
+    "ka-craft-strip": {
+      "type": "ka-craft-strip",
+      "blocks": {
+        "handcrafted": {
+          "type": "item",
+          "settings": { "label": "Handcrafted",        "sublabel": "Every stitch by hand" }
+        },
+        "made-to-order": {
+          "type": "item",
+          "settings": { "label": "Made to Order",      "sublabel": "Designed around you" }
+        },
+        "worldwide": {
+          "type": "item",
+          "settings": { "label": "Worldwide Delivery", "sublabel": "Free shipping, always" }
+        },
+        "concierge": {
+          "type": "item",
+          "settings": { "label": "Concierge",          "sublabel": "Personal styling, always available" }
+        }
+      },
+      "block_order": ["handcrafted", "made-to-order", "worldwide", "concierge"]
+    },
+    "ka-appointment": {
+      "type": "ka-appointment",
+      "settings": {
+        "eyebrow": "The Atelier",
+        "title": "Begin with a\nConversation.",
+        "body": "Every K&A bride begins with a private styling session — in our Mumbai atelier or virtually, wherever in the world you are. We listen before we design.",
+        "cta_instore_label": "Book In-Store Appointment",
+        "cta_instore_url": "/pages/appointments",
+        "cta_virtual_label": "Book Virtual Styling Session",
+        "cta_virtual_url": "/pages/appointments"
+      }
+    },
+    "ka-newsletter": {
+      "type": "ka-newsletter",
+      "settings": {
+        "eyebrow": "From the Atelier",
+        "title": "Receive our\nCorrespondence",
+        "body": "Collection stories, styling notes, and invitations to our trunk shows — delivered quietly to your inbox. No promotions. Only beauty.",
+        "input_placeholder": "Your email address",
+        "submit_label": "Subscribe",
+        "success_message": "Thank you. You are on the list.",
+        "note": "We send four letters a year. Unsubscribe at any time."
+      }
+    },
+    "ka-footer": {
+      "type": "ka-footer",
+      "settings": {
+        "brand_name": "K&A by Karishma & Ashita",
+        "tagline": "Bridal couture, handcrafted\nin Mumbai.",
+        "instagram_url": "https://instagram.com/karishmaashita",
+        "pinterest_url": "",
+        "email": "hello@karishmaashita.com",
+        "address": "Mumbai, India\nFree worldwide shipping"
+      }
+    }
+  },
+  "order": [
+    "ka-nav",
+    "ka-hero",
+    "ka-manifesto",
+    "ka-collection-story",
+    "ka-bestsellers",
+    "ka-celebrity",
+    "ka-client-diaries",
+    "ka-voice-of-bride",
+    "ka-collections-directory",
+    "ka-craft-strip",
+    "ka-appointment",
+    "ka-newsletter",
+    "ka-footer"
+  ]
+}

@@ -1,0 +1,32 @@
+﻿/* ================================================================
+   KA-CELEBRITY
+================================================================ */
+.ka-celebrity {
+  position: relative;
+  height: 85vh;
+  min-height: 500px;
+  overflow: hidden;
+}
+.ka-celebrity__bg { position: absolute; inset: 0; }
+.ka-celebrity__bg img { object-position: center 20%; }
+.ka-celebrity__overlay {
+  position: absolute; inset: 0;
+  background: linear-gradient(105deg, rgba(15,12,10,0.75) 0%, rgba(15,12,10,0.2) 55%, rgba(15,12,10,0.05) 100%);
+}
+.ka-celebrity__content {
+  position: absolute;
+  top: 50%; transform: translateY(-50%);
+  left: var(--gutter); max-width: 580px;
+}
+.ka-celebrity__quote {
+  font-family: var(--f-display);
+  font-size: clamp(1.6rem, 3.2vw, 2.8rem);
+  font-weight: 400; font-style: italic;
+  color: white; line-height: 1.3; margin-bottom: 32px;
+}
+.ka-celebrity__attribution {
+  font-family: var(--f-sans);
+  font-size: 0.66rem; font-weight: 400;
+  letter-spacing: 0.22em; text-transform: uppercase;
+  color: var(--c-rosegold);
+}

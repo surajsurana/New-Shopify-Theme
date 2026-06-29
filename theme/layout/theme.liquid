@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="{{ request.locale.iso_code }}">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>
+    {% if page_title == shop.name %}
+      {{ shop.name }} — Bridal Couture, Mumbai
+    {% else %}
+      {{ page_title }} — {{ shop.name }}
+    {% endif %}
+  </title>
+
+  {% if page_description %}
+    <meta name="description" content="{{ page_description | escape }}" />
+  {% endif %}
+
+  {%- liquid
+    assign og_image = page_image | default: settings.share_image
+  -%}
+  {% if og_image %}
+    <meta property="og:image" content="{{ og_image | image_url: width: 1200 }}" />
+  {% endif %}
+
+  <!-- Canonical -->
+  <link rel="canonical" href="{{ canonical_url }}" />
+
+  <!-- Google Fonts preconnect (required before font link) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+
+  <!-- Google Fonts: Bodoni Moda + Jost (exact weights from spec) -->
+  <link
+    href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400;0,6..96,500;1,6..96,400;1,6..96,500&family=Jost:wght@200;300;400;500&display=swap"
+    rel="stylesheet"
+  />
+
+  <!-- Global design tokens + reset -->
+  {{ 'ka-base.css' | asset_url | stylesheet_tag }}
+
+  {{ content_for_header }}
+</head>
+
+<body>
+  {{ content_for_layout }}
+
+  <!-- Global theme JS: nav scroll, reveals, parallax, mobile nav, newsletter -->
+  <script src="{{ 'ka-theme.js' | asset_url }}" defer></script>
+</body>
+</html>

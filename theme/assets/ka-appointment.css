@@ -1,0 +1,42 @@
+﻿/* ================================================================
+   KA-APPOINTMENT
+================================================================ */
+.ka-appointment {
+  position: relative; min-height: 70vh;
+  display: flex; align-items: center; overflow: hidden;
+}
+.ka-appointment__bg { position: absolute; inset: 0; }
+.ka-appointment__bg img { object-position: center 30%; }
+.ka-appointment__overlay {
+  position: absolute; inset: 0;
+  background: rgba(26,23,20,0.60);
+}
+.ka-appointment__content {
+  position: relative; z-index: 1;
+  padding: var(--s-2xl) var(--gutter);
+  max-width: 680px; margin: 0 auto; text-align: center;
+}
+.ka-appointment__eyebrow { margin-bottom: 24px; }
+.ka-appointment__title {
+  font-family: var(--f-display);
+  font-size: var(--t-display); font-weight: 400; font-style: italic;
+  color: white; line-height: 1.05; margin-bottom: 24px;
+}
+.ka-appointment__body {
+  font-family: var(--f-sans);
+  font-size: 0.88rem; font-weight: 300;
+  line-height: 1.9; color: rgba(255,255,255,0.7);
+  margin-bottom: 48px; letter-spacing: 0.02em;
+}
+.ka-appointment__options {
+  display: flex; align-items: center; justify-content: center;
+  gap: 20px; flex-wrap: wrap;
+}
+.ka-appointment__divider {
+  font-family: var(--f-sans);
+  font-size: 0.63rem; letter-spacing: 0.1em;
+  color: rgba(255,255,255,0.3);
+}
+@media (max-width: 600px) {
+  .ka-appointment__options { flex-direction: column; align-items: stretch; }
+}

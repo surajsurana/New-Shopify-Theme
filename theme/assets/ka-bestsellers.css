@@ -1,0 +1,75 @@
+﻿/* ================================================================
+   KA-BESTSELLERS
+================================================================ */
+.ka-bestsellers {
+  padding: var(--s-2xl) var(--gutter);
+  max-width: var(--max-wide);
+  margin: 0 auto;
+}
+.ka-bestsellers__grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2px;
+}
+.ka-product-card {
+  position: relative;
+  overflow: hidden;
+}
+.ka-product-card__image {
+  aspect-ratio: 3/4;
+  overflow: hidden;
+  position: relative;
+}
+.ka-product-card__image img { transition: transform 1.2s var(--ease-luxury); }
+.ka-product-card:hover .ka-product-card__image img { transform: scale(1.04); }
+
+.ka-product-card__badge {
+  position: absolute;
+  top: 20px; left: 20px;
+  font-family: var(--f-sans);
+  font-size: 0.56rem; font-weight: 400;
+  letter-spacing: 0.2em; text-transform: uppercase;
+  color: var(--c-charcoal);
+  background: var(--c-paper);
+  padding: 5px 12px;
+  box-shadow: none;
+}
+.ka-product-card__info { padding: 20px 4px 36px; }
+.ka-product-card__name {
+  font-family: var(--f-display);
+  font-size: clamp(1rem, 1.6vw, 1.4rem);
+  font-weight: 400; font-style: italic;
+  color: var(--c-charcoal);
+  line-height: 1.25; margin-bottom: 8px;
+}
+.ka-product-card__fabric {
+  font-family: var(--f-sans);
+  font-size: 0.7rem; font-weight: 300;
+  color: var(--c-ink-muted);
+  letter-spacing: 0.06em; margin-bottom: 14px;
+}
+.ka-product-card__price {
+  font-family: var(--f-sans);
+  font-size: 0.78rem; font-weight: 300;
+  color: var(--c-ink-mid); letter-spacing: 0.08em;
+}
+.ka-product-card__action {
+  position: absolute;
+  bottom: 36px; right: 4px;
+  font-family: var(--f-sans);
+  font-size: 0.6rem; font-weight: 400;
+  letter-spacing: 0.18em; text-transform: uppercase;
+  color: var(--c-rosegold-2);
+  opacity: 0; transform: translateX(-8px);
+  transition: opacity var(--dur-fast), transform var(--dur-med) var(--ease-luxury);
+}
+.ka-product-card:hover .ka-product-card__action { opacity: 1; transform: translateX(0); }
+
+@media (max-width: 900px) {
+  .ka-bestsellers__grid { grid-template-columns: 1fr 1fr; gap: 2px; }
+  .ka-bestsellers__grid .ka-product-card:last-child { grid-column: 1 / -1; }
+}
+@media (max-width: 600px) {
+  .ka-bestsellers__grid { grid-template-columns: 1fr; }
+  .ka-bestsellers__grid .ka-product-card:last-child { grid-column: auto; }
+}

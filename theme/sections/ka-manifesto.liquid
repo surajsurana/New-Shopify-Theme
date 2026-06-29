@@ -1,0 +1,30 @@
+{{ 'ka-manifesto.css' | asset_url | stylesheet_tag }}
+
+<section class="ka-manifesto" aria-label="Brand manifesto">
+  <p class="ka-manifesto__line reveal">{{ section.settings.quote }}</p>
+  <p class="ka-manifesto__attribution reveal reveal-delay-2">{{ section.settings.attribution }}</p>
+</section>
+
+{% schema %}
+{
+  "name": "Manifesto",
+  "tag": "section",
+  "settings": [
+    {
+      "type": "textarea",
+      "id": "quote",
+      "label": "Manifesto quote",
+      "default": "“Every lehenga, every corset, every draped silhouette — handcrafted for the woman who wants her wedding to begin the moment she dresses.”"
+    },
+    {
+      "type": "text",
+      "id": "attribution",
+      "label": "Attribution",
+      "default": "Karishma & Ashita — Bridal Couture, Mumbai"
+    }
+  ],
+  "presets": [
+    { "name": "Manifesto" }
+  ]
+}
+{% endschema %}

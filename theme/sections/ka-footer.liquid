@@ -1,0 +1,114 @@
+{{ 'ka-footer.css' | asset_url | stylesheet_tag }}
+
+<footer class="ka-footer" aria-label="Site footer">
+  <div class="ka-footer__top">
+    <!-- Column 1: Brand -->
+    <div class="ka-footer__brand">
+      <span class="ka-footer__logo">{{ section.settings.brand_name }}</span>
+      <p class="ka-footer__tagline">{{ section.settings.tagline }}</p>
+      <div class="ka-footer__social">
+        {% if section.settings.instagram_url != blank %}
+          <a href="{{ section.settings.instagram_url }}" target="_blank" rel="noopener">Instagram</a>
+        {% endif %}
+        <a href="https://wa.me/{{ settings.whatsapp_number }}" target="_blank" rel="noopener">Concierge</a>
+        {% if section.settings.pinterest_url != blank %}
+          <a href="{{ section.settings.pinterest_url }}" target="_blank" rel="noopener">Pinterest</a>
+        {% endif %}
+      </div>
+    </div>
+
+    <!-- Column 2: Collections -->
+    <div>
+      <p class="ka-footer__col-title">Collections</p>
+      <ul class="ka-footer__links">
+        {% for link in linklists['footer-collections'].links %}
+          <li><a href="{{ link.url }}">{{ link.title }}</a></li>
+        {% endfor %}
+        {% if linklists['footer-collections'].links.size == 0 %}
+          <li><a href="/collections/bridal">Bridal</a></li>
+          <li><a href="/collections/lehengas">Lehengas</a></li>
+          <li><a href="/collections/indo-western">Indo-Western</a></li>
+          <li><a href="/collections/festive">Festive Wear</a></li>
+          <li><a href="/collections/bestsellers">Bestsellers</a></li>
+        {% endif %}
+      </ul>
+    </div>
+
+    <!-- Column 3: The House -->
+    <div>
+      <p class="ka-footer__col-title">The House</p>
+      <ul class="ka-footer__links">
+        {% for link in linklists['footer-the-house'].links %}
+          <li><a href="{{ link.url }}">{{ link.title }}</a></li>
+        {% endfor %}
+        {% if linklists['footer-the-house'].links.size == 0 %}
+          <li><a href="/pages/about">About Karishma &amp; Ashita</a></li>
+          <li><a href="/pages/client-diaries">Client Diaries</a></li>
+          <li><a href="/pages/appointments">Book an Appointment</a></li>
+          <li><a href="https://wa.me/{{ settings.whatsapp_number }}" target="_blank" rel="noopener">Concierge</a></li>
+          <li><a href="/pages/press">Press</a></li>
+        {% endif %}
+      </ul>
+    </div>
+
+    <!-- Column 4: Contact -->
+    <div>
+      <p class="ka-footer__col-title">Contact</p>
+      <div style="display: flex; flex-direction: column; gap: 12px;">
+        {% if settings.whatsapp_number != blank %}
+          <p class="ka-footer__contact-item">
+            <a href="https://wa.me/{{ settings.whatsapp_number }}">{{ settings.whatsapp_display }}</a>
+          </p>
+        {% endif %}
+        {% if section.settings.email != blank %}
+          <p class="ka-footer__contact-item">
+            <a href="mailto:{{ section.settings.email }}">{{ section.settings.email }}</a>
+          </p>
+        {% endif %}
+        <p class="ka-footer__contact-item">{{ section.settings.address }}</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="ka-footer__bottom">
+    <p class="ka-footer__copy">&copy; {{ 'now' | date: '%Y' }} {{ section.settings.brand_name }}. All rights reserved.</p>
+    <ul class="ka-footer__legal">
+      <li><a href="{{ section.settings.privacy_url | default: '/policies/privacy-policy' }}">Privacy Policy</a></li>
+      <li><a href="{{ section.settings.terms_url | default: '/policies/terms-of-service' }}">Terms of Service</a></li>
+      <li><a href="{{ section.settings.shipping_url | default: '/policies/shipping-policy' }}">Shipping &amp; Returns</a></li>
+    </ul>
+  </div>
+</footer>
+
+{% schema %}
+{
+  "name": "Footer",
+  "tag": "section",
+  "settings": [
+    { "type": "text",     "id": "brand_name",    "label": "Brand name",  "default": "K&A by Karishma & Ashita" },
+    { "type": "textarea", "id": "tagline",        "label": "Tagline",     "default": "Bridal couture, handcrafted\nin Mumbai." },
+    {
+      "type": "header",
+      "content": "Social links"
+    },
+    { "type": "url", "id": "instagram_url", "label": "Instagram URL", "default": "https://instagram.com/karishmaashita" },
+    { "type": "url", "id": "pinterest_url", "label": "Pinterest URL", "info": "Leave blank to hide the Pinterest link." },
+    {
+      "type": "header",
+      "content": "Contact column"
+    },
+    { "type": "text",     "id": "email",   "label": "Email address", "default": "hello@karishmaashita.com" },
+    { "type": "textarea", "id": "address", "label": "Address / shipping note", "default": "Mumbai, India\nFree worldwide shipping" },
+    {
+      "type": "header",
+      "content": "Legal links"
+    },
+    { "type": "url", "id": "privacy_url",  "label": "Privacy Policy URL",       "info": "Defaults to Shopify's /policies/privacy-policy" },
+    { "type": "url", "id": "terms_url",    "label": "Terms of Service URL",      "info": "Defaults to /policies/terms-of-service" },
+    { "type": "url", "id": "shipping_url", "label": "Shipping & Returns URL",    "info": "Defaults to /policies/shipping-policy" }
+  ],
+  "presets": [
+    { "name": "Footer" }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,90 @@
+﻿/* ================================================================
+   KA-VOICE-OF-BRIDE
+================================================================ */
+.ka-voices {
+  background: var(--c-charcoal);
+  padding: var(--s-2xl) var(--gutter);
+  overflow: hidden;
+  position: relative;
+}
+.ka-voices::before {
+  content: ''; position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 1px; background: var(--line-on-dark);
+}
+.ka-voices__inner { max-width: 1100px; margin: 0 auto; }
+.ka-voices__header {
+  display: flex; align-items: flex-end; justify-content: space-between;
+  margin-bottom: var(--s-xl); gap: 24px;
+}
+.ka-voices__title {
+  font-family: var(--f-display);
+  font-size: var(--t-h2); font-weight: 400; font-style: italic;
+  color: white; line-height: 1.05;
+}
+.ka-voices__rating-block { text-align: right; flex-shrink: 0; }
+.ka-voices__rating-number {
+  font-family: var(--f-display);
+  font-size: clamp(2rem, 4vw, 3.6rem);
+  font-weight: 400; color: white;
+  line-height: 1; display: block;
+}
+.ka-voices__rating-label {
+  font-family: var(--f-sans);
+  font-size: 0.62rem; font-weight: 400;
+  letter-spacing: 0.2em; text-transform: uppercase;
+  color: var(--c-rosegold); display: block; margin-top: 6px;
+}
+.ka-voices__grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1px;
+  background: var(--line-on-dark);
+}
+.ka-voice-card {
+  padding: 40px 36px 44px;
+  background: var(--c-charcoal);
+  display: flex; flex-direction: column;
+}
+.ka-voice-card__quote-mark {
+  font-family: var(--f-display);
+  font-size: 3.5rem; font-weight: 400;
+  color: var(--c-rosegold); line-height: 0.8;
+  margin-bottom: 20px; opacity: 0.6;
+}
+.ka-voice-card__quote {
+  font-family: var(--f-display);
+  font-size: clamp(1rem, 1.4vw, 1.25rem);
+  font-weight: 400; font-style: italic;
+  color: rgba(255,255,255,0.88);
+  line-height: 1.65; flex: 1; margin-bottom: 28px;
+}
+.ka-voice-card__meta {
+  border-top: 1px solid var(--line-on-dark);
+  padding-top: 20px;
+  display: flex; align-items: center; justify-content: space-between;
+}
+.ka-voice-card__name {
+  font-family: var(--f-sans);
+  font-size: 0.66rem; font-weight: 400;
+  letter-spacing: 0.18em; text-transform: uppercase;
+  color: rgba(255,255,255,0.5);
+}
+.ka-voice-card__occasion {
+  font-family: var(--f-sans);
+  font-size: 0.62rem; font-weight: 300;
+  letter-spacing: 0.1em; color: var(--c-rosegold);
+}
+.ka-voices__cta {
+  margin-top: var(--s-lg);
+  display: flex; align-items: center; justify-content: center;
+}
+
+@media (max-width: 900px) {
+  .ka-voices__grid { grid-template-columns: 1fr; gap: 1px; }
+  .ka-voices__header { flex-direction: column; align-items: flex-start; gap: 20px; }
+  .ka-voices__rating-block { text-align: left; }
+}
+@media (max-width: 600px) {
+  .ka-voice-card { padding: 28px 24px 32px; }
+}

@@ -1,0 +1,71 @@
+{{ 'ka-nav.css' | asset_url | stylesheet_tag }}
+
+<nav class="ka-nav" id="ka-nav" role="navigation" aria-label="Main navigation">
+  <ul class="ka-nav__links">
+    <li><a href="{{ section.settings.link_bestsellers }}">{{ section.settings.label_bestsellers }}</a></li>
+    <li><a href="{{ section.settings.link_collections }}">{{ section.settings.label_collections }}</a></li>
+    <li><a href="{{ section.settings.link_diaries }}">{{ section.settings.label_diaries }}</a></li>
+  </ul>
+
+  <a href="/" class="ka-nav__logo">K&amp;A</a>
+
+  <div class="ka-nav__actions">
+    <a href="https://wa.me/{{ settings.whatsapp_number }}" class="ka-nav__whatsapp" target="_blank" rel="noopener">
+      {{ section.settings.label_whatsapp }}
+    </a>
+    <button class="ka-nav__toggle" id="ka-nav-toggle" aria-label="Open menu" aria-expanded="false">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</nav>
+
+<nav class="ka-mobile-nav" id="ka-mobile-nav" aria-hidden="true" aria-label="Mobile navigation">
+  <button class="ka-mobile-nav__close" id="ka-nav-close" aria-label="Close menu">Close</button>
+  <ul class="ka-mobile-nav__links">
+    <li><a href="{{ section.settings.link_bestsellers }}">{{ section.settings.label_bestsellers }}</a></li>
+    <li><a href="{{ section.settings.link_collections }}">{{ section.settings.label_collections }}</a></li>
+    <li><a href="{{ section.settings.link_diaries }}">{{ section.settings.label_diaries }}</a></li>
+    <li><a href="{{ section.settings.link_about }}">About</a></li>
+    <li><a href="{{ section.settings.link_appointment }}">Book an Appointment</a></li>
+  </ul>
+  <div class="ka-mobile-nav__footer">
+    <p>Concierge</p>
+    <a href="https://wa.me/{{ settings.whatsapp_number }}" target="_blank" rel="noopener">
+      {{ settings.whatsapp_display }}
+    </a>
+  </div>
+</nav>
+
+{% schema %}
+{
+  "name": "Navigation",
+  "tag": "header",
+  "class": "ka-nav-section",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Desktop nav links"
+    },
+    { "type": "text", "id": "label_bestsellers", "label": "Bestsellers label", "default": "Bestsellers" },
+    { "type": "url",  "id": "link_bestsellers",  "label": "Bestsellers URL" },
+    { "type": "text", "id": "label_collections", "label": "Collections label", "default": "Collections" },
+    { "type": "url",  "id": "link_collections",  "label": "Collections URL" },
+    { "type": "text", "id": "label_diaries", "label": "Client Diaries label", "default": "Client Diaries" },
+    { "type": "url",  "id": "link_diaries",  "label": "Client Diaries URL" },
+    {
+      "type": "header",
+      "content": "Concierge / WhatsApp"
+    },
+    { "type": "text", "id": "label_whatsapp", "label": "Concierge button label", "default": "Concierge" },
+    {
+      "type": "header",
+      "content": "Mobile nav additional links"
+    },
+    { "type": "url",  "id": "link_about",       "label": "About page URL" },
+    { "type": "url",  "id": "link_appointment",  "label": "Appointment page URL" }
+  ],
+  "presets": [
+    { "name": "Navigation" }
+  ]
+}
+{% endschema %}

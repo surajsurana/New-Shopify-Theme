@@ -1,0 +1,37 @@
+﻿/* ================================================================
+   KA-CRAFT-STRIP
+================================================================ */
+.ka-craft-strip {
+  background: var(--c-charcoal);
+  padding: var(--s-xl) var(--gutter);
+  border-top: 1px solid var(--line-on-dark);
+  border-bottom: 1px solid var(--line-on-dark);
+}
+.ka-craft-strip__inner {
+  display: flex; align-items: center; justify-content: center;
+  gap: clamp(24px, 5vw, 80px);
+  flex-wrap: wrap;
+  max-width: var(--max-wide); margin: 0 auto;
+}
+.ka-craft-strip__item { text-align: center; }
+.ka-craft-strip__label {
+  font-family: var(--f-display);
+  font-size: clamp(1rem, 2.2vw, 1.6rem);
+  font-weight: 400; font-style: italic;
+  color: white; display: block; margin-bottom: 6px;
+}
+.ka-craft-strip__sub {
+  font-family: var(--f-sans);
+  font-size: 0.62rem; font-weight: 300;
+  letter-spacing: 0.18em; text-transform: uppercase;
+  color: rgba(255,255,255,0.35);
+}
+.ka-craft-strip__dot {
+  width: 3px; height: 3px; border-radius: 50%;
+  background: var(--c-rosegold); opacity: 0.4;
+}
+
+@media (max-width: 600px) {
+  .ka-craft-strip__inner { flex-direction: column; gap: 32px; }
+  .ka-craft-strip__dot { display: none; }
+}

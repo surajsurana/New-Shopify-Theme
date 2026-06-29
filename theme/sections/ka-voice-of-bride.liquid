@@ -1,0 +1,101 @@
+{{ 'ka-voice-of-bride.css' | asset_url | stylesheet_tag }}
+
+{%- comment -%}
+  Voice of the Bride — conditionally hidden until real review data is present.
+  The section renders only when section.settings.show_section is true AND
+  at least one review block exists with non-empty quote text.
+  Creative Director spec note: "Do not publish placeholder review content."
+{%- endcomment -%}
+
+{% if section.settings.show_section %}
+<section class="ka-voices" aria-label="What our brides say">
+  <div class="ka-voices__inner">
+    <div class="ka-voices__header reveal">
+      <div>
+        <p class="eyebrow eyebrow--on-dark" style="margin-bottom: 16px;">{{ section.settings.eyebrow }}</p>
+        <h2 class="ka-voices__title">{{ section.settings.title }}</h2>
+      </div>
+      {% if section.settings.rating_number != blank %}
+        <div class="ka-voices__rating-block">
+          <span class="ka-voices__rating-number">{{ section.settings.rating_number }}</span>
+          <span class="ka-voices__rating-label">{{ section.settings.rating_label }}</span>
+        </div>
+      {% endif %}
+    </div>
+
+    {% if section.blocks.size > 0 %}
+      <div class="ka-voices__grid">
+        {% assign delay_classes = 'reveal, reveal reveal-delay-1, reveal reveal-delay-2' | split: ', ' %}
+        {% for block in section.blocks %}
+          {% if block.settings.quote != blank %}
+            <div class="ka-voice-card {{ delay_classes[forloop.index0] }}" {{ block.shopify_attributes }}>
+              <div class="ka-voice-card__quote-mark">&ldquo;</div>
+              <p class="ka-voice-card__quote">{{ block.settings.quote }}</p>
+              <div class="ka-voice-card__meta">
+                <span class="ka-voice-card__name">{{ block.settings.reviewer_name }}</span>
+                <span class="ka-voice-card__occasion">{{ block.settings.occasion }}</span>
+              </div>
+            </div>
+          {% endif %}
+        {% endfor %}
+      </div>
+    {% endif %}
+
+    <div class="ka-voices__cta reveal reveal-delay-3">
+      <a href="{{ section.settings.google_url }}" class="btn-outline-rose" target="_blank" rel="noopener">
+        {{ section.settings.google_cta_label }}
+      </a>
+    </div>
+  </div>
+</section>
+{% endif %}
+
+{% schema %}
+{
+  "name": "Voice of the Bride",
+  "tag": "section",
+  "settings": [
+    {
+      "type": "checkbox",
+      "id": "show_section",
+      "label": "Show this section",
+      "default": false,
+      "info": "IMPORTANT: Only enable once real client review data has been entered below. Do not publish with placeholder content."
+    },
+    { "type": "text", "id": "eyebrow",          "label": "Eyebrow",         "default": "What Brides Say" },
+    { "type": "text", "id": "title",             "label": "Section title",   "default": "The words of\nour brides." },
+    {
+      "type": "header",
+      "content": "Rating block"
+    },
+    { "type": "text", "id": "rating_number", "label": "Rating (e.g. 4.9 or ★★★★★)",    "info": "Leave blank to hide the rating block." },
+    { "type": "text", "id": "rating_label",  "label": "Rating label (e.g. 4.9 · 52 Google Reviews)" },
+    {
+      "type": "header",
+      "content": "CTA"
+    },
+    { "type": "text", "id": "google_cta_label", "label": "Google reviews CTA label", "default": "Read all reviews on Google" },
+    { "type": "url",  "id": "google_url",        "label": "Google Maps review URL",  "info": "Obtain from your Google Business Profile." }
+  ],
+  "blocks": [
+    {
+      "type": "review",
+      "name": "Review",
+      "limit": 3,
+      "settings": [
+        {
+          "type": "textarea",
+          "id": "quote",
+          "label": "Review quote (verbatim from Google)",
+          "info": "Must be the exact text from the reviewer's Google review. Do not paraphrase."
+        },
+        { "type": "text", "id": "reviewer_name", "label": "Reviewer first name and initial (e.g. Priya S.)" },
+        { "type": "text", "id": "occasion",       "label": "Occasion and year (e.g. Bridal, 2024)" }
+      ]
+    }
+  ],
+  "presets": [
+    { "name": "Voice of the Bride" }
+  ]
+}
+{% endschema %}
