@@ -1,0 +1,89 @@
+{{ 'ka-collection-hero.css' | asset_url | stylesheet_tag }}
+
+{%- comment -%}
+  K&A Collection Hero
+  Spec: Docs/collection-build-spec.md, Section 2 ("Section 3 — Collection Hero"), F2.
+  The single biggest structural departure from a generic Shopify collection page:
+  opens as a full-bleed editorial chapter (one image, one Bodoni italic name, a
+  piece count) rather than a filter sidebar + thumbnail wall.
+
+  Image: section setting (image_picker), per F2 — none of the four real collections
+  has dedicated photography yet except The Bloom Soirée. Falls back to the placeholder
+  assignment in spec Section 5, keyed by collection.handle (not a typed name string),
+  matching the established fallback pattern in ka-collections-directory.liquid.
+
+  "Position" (the eyebrow's "0X") is a per-instance section setting because Liquid has
+  no native "index of this collection in the Maison" concept — it must mirror the fixed
+  homepage Collections Directory order (Festive Edit 01, Bloom Soirée 02, Chamakk 03,
+  Barre Oblique 04) per CD Note 5. Set manually per collection.json instance.
+{%- endcomment -%}
+
+<section class="ka-coll-hero">
+  <div class="ka-coll-hero__frame reveal-img">
+    {% if section.settings.hero_image != blank %}
+      <img
+        src="{{ section.settings.hero_image | image_url: width: 1800 }}"
+        alt="{{ section.settings.hero_image.alt | escape | default: collection.title }}"
+        loading="eager"
+        fetchpriority="high"
+        width="1800"
+        height="1100"
+        class="img-filter-coll-page-dark"
+      />
+    {% else %}
+      {%- assign handle_lower = collection.handle | downcase -%}
+      {%- case handle_lower -%}
+        {%- when 'the-bloom-soiree' -%}
+          <img src="{{ 'bloom-soiree-main.jpg' | asset_url }}" alt="{{ collection.title }}" loading="eager" fetchpriority="high" width="1800" height="1100" class="img-filter-coll-page-dark" />
+        {%- when 'the-festive-edit' -%}
+          {%- comment -%} Placeholder stand-in (no capsule shoot yet) — see Docs/collection-build-spec.md Section 5 {%- endcomment -%}
+          <img src="{{ 'celebrity-editorial.jpg' | asset_url }}" alt="{{ collection.title }}" loading="eager" fetchpriority="high" width="1800" height="1100" class="img-filter-coll-page-dark" />
+        {%- when 'chamak' -%}
+          {%- comment -%} Placeholder stand-in (no capsule shoot yet) — see Docs/collection-build-spec.md Section 5 {%- endcomment -%}
+          <img src="{{ 'collection-secondary-1.jpg' | asset_url }}" alt="{{ collection.title }}" loading="eager" fetchpriority="high" width="1800" height="1100" class="img-filter-coll-page-dark" />
+        {%- when 'barre-oblique' -%}
+          {%- comment -%} Placeholder stand-in (no capsule shoot yet) — see Docs/collection-build-spec.md Section 5 {%- endcomment -%}
+          <img src="{{ 'collection-secondary-2.jpg' | asset_url }}" alt="{{ collection.title }}" loading="eager" fetchpriority="high" width="1800" height="1100" class="img-filter-coll-page-dark" />
+        {%- else -%}
+          <div style="background: var(--c-charcoal-2); width:100%; height:100%;"></div>
+      {%- endcase -%}
+    {% endif %}
+    <div class="ka-coll-hero__overlay"></div>
+    <div class="ka-coll-hero__content">
+      <div>
+        <p class="eyebrow eyebrow--on-dark ka-coll-hero__eyebrow reveal">The Collections — {{ section.settings.position | default: '01' }}</p>
+        <h1 class="ka-coll-hero__title reveal reveal-delay-1">{{ collection.title }}</h1>
+      </div>
+      <div class="ka-coll-hero__meta reveal reveal-delay-2">
+        <span class="num">{{ collection.all_products_count }}</span>
+        <span>Pieces in this collection</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Collection Hero",
+  "tag": "div",
+  "class": "ka-collection-hero-section",
+  "settings": [
+    {
+      "type": "image_picker",
+      "id": "hero_image",
+      "label": "Collection hero image",
+      "info": "Pre-populate with the placeholder assigned in Docs/collection-build-spec.md Section 5 until real capsule photography exists. Swap any time — no code change needed."
+    },
+    {
+      "type": "text",
+      "id": "position",
+      "label": "Position in Maison order (e.g. 01, 02, 03, 04)",
+      "default": "01",
+      "info": "Must mirror the homepage Collections Directory order: Festive Edit 01, Bloom Soirée 02, Chamakk 03, Barre Oblique 04."
+    }
+  ],
+  "presets": [
+    { "name": "Collection Hero" }
+  ]
+}
+{% endschema %}

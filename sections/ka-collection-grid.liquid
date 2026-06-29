@@ -1,0 +1,163 @@
+{{ 'ka-collection-grid.css' | asset_url | stylesheet_tag }}
+<script src="{{ 'ka-collection.js' | asset_url }}" defer></script>
+
+{%- comment -%}
+  K&A Collection Grid + Editorial Insert + Load More
+  Spec: Docs/collection-build-spec.md, Section 2 ("Section 6 — Product Grid",
+  "Section 7 — Editorial Insert", "Section 8 — Load More"), F5, F6, F7, F10,
+  CD Notes 1 and 3.
+
+  One continuous {% paginate %} loop (real Shopify pagination, not two hardcoded
+  static grids as in the prototype). Editorial insert is injected at a fixed
+  forloop.index position (after the 6th product) and ONLY on page 1 of the
+  paginated set, per F6 and CD Note 3 — it must appear exactly once, never repeat
+  across pages and never vanish.
+
+  Pagination mechanism (F7): AJAX "Load More" via the Section Rendering API
+  (?section_id={{ section.id }}&page=N), implemented in assets/ka-collection.js.
+  Progressive-enhancement fallback: the button is a real <a href="{{ paginate.next.url }}">
+  so it works with JS disabled (traditional pagination), and ka-collection.js
+  intercepts the click to fetch + append instead when JS is available.
+
+  "Enquire on WhatsApp" is the only conversion affordance on every card — per CD
+  Note 1, never add an Add to Cart button here even if a future Shopify default
+  introduces one.
+{%- endcomment -%}
+
+{% liquid
+  assign per_page = section.settings.products_per_page | default: 9
+  assign insert_after_index = section.settings.insert_after_index | default: 6
+%}
+
+{% paginate collection.products by per_page %}
+  <div class="ka-product-grid" id="ka-product-grid-{{ section.id }}" data-ka-product-grid>
+    {% for product in collection.products %}
+      <div class="ka-p-card reveal-img">
+        <div class="ka-p-card__image">
+          {% if product.featured_image %}
+            <img
+              src="{{ product.featured_image | image_url: width: 800 }}"
+              alt="{{ product.featured_image.alt | escape | default: product.title | escape }}"
+              loading="lazy"
+              width="800"
+              height="1067"
+              class="img-filter-coll-page"
+            />
+          {% else %}
+            <div style="background: var(--c-smoke); width:100%; height:100%;"></div>
+          {% endif %}
+          {% if product.tags contains 'made-to-order' or product.tags contains 'Made to Order' %}
+            <span class="ka-p-card__badge">Made to Order</span>
+          {% endif %}
+          <div class="ka-p-card__veil">
+            <a
+              href="https://wa.me/{{ settings.whatsapp_number }}?text=Hi%2C%20I%27d%20like%20to%20enquire%20about%20the%20{{ product.title | url_param_escape }}"
+              class="ka-p-card__veil-link"
+              target="_blank"
+              rel="noopener"
+            >Enquire on WhatsApp</a>
+          </div>
+        </div>
+        <div class="ka-p-card__info">
+          <h3 class="ka-p-card__name"><a href="{{ product.url }}">{{ product.title }}</a></h3>
+          {% if product.metafields.custom.fabric_description != blank %}
+            <p class="ka-p-card__fabric">{{ product.metafields.custom.fabric_description }}</p>
+          {% endif %}
+          <p class="ka-p-card__price">{{ product.price | money }} <span>onward</span></p>
+        </div>
+      </div>
+
+      {% if forloop.index == insert_after_index and paginate.current_page == 1 %}
+        <div class="ka-editorial-insert">
+          <div class="ka-editorial-insert__frame reveal-img">
+            {% if section.settings.insert_image != blank %}
+              <img
+                src="{{ section.settings.insert_image | image_url: width: 1800 }}"
+                alt="{{ section.settings.insert_image.alt | escape | default: collection.title }}"
+                loading="lazy"
+                width="1800"
+                height="1000"
+                class="img-filter-coll-page-dark"
+              />
+            {% else %}
+              {%- assign handle_lower = collection.handle | downcase -%}
+              {%- case handle_lower -%}
+                {%- when 'the-bloom-soiree' -%}
+                  <img src="{{ 'bloom-soiree-main.jpg' | asset_url }}" alt="{{ collection.title }}" loading="lazy" width="1800" height="1000" class="img-filter-coll-page-dark" />
+                {%- when 'the-festive-edit' -%}
+                  <img src="{{ 'celebrity-editorial.jpg' | asset_url }}" alt="{{ collection.title }}" loading="lazy" width="1800" height="1000" class="img-filter-coll-page-dark" />
+                {%- when 'chamak' -%}
+                  <img src="{{ 'collection-secondary-2.jpg' | asset_url }}" alt="{{ collection.title }}" loading="lazy" width="1800" height="1000" class="img-filter-coll-page-dark" />
+                {%- when 'barre-oblique' -%}
+                  <img src="{{ 'collection-secondary-1.jpg' | asset_url }}" alt="{{ collection.title }}" loading="lazy" width="1800" height="1000" class="img-filter-coll-page-dark" />
+                {%- else -%}
+                  <div style="background: var(--c-charcoal-2); width:100%; height:100%;"></div>
+              {%- endcase -%}
+            {% endif %}
+            <div class="ka-editorial-insert__overlay"></div>
+            <p class="ka-editorial-insert__caption reveal">
+              {{ collection.metafields.custom.editorial_caption | default: "Caption pending — Creative Director, see collection-build-spec.md §4" }}
+            </p>
+          </div>
+        </div>
+      {% endif %}
+    {% endfor %}
+  </div>
+
+  <div class="ka-load-more reveal" data-ka-load-more
+    data-section-id="{{ section.id }}"
+    data-current-page="{{ paginate.current_page }}"
+    data-pages="{{ paginate.pages }}"
+    data-items="{{ paginate.items }}"
+    data-per-page="{{ per_page }}"
+    data-next-url="{% if paginate.next %}{{ paginate.next.url }}{% endif %}"
+  >
+    {% if paginate.next %}
+      <a href="{{ paginate.next.url }}" class="btn-outline-rose" data-ka-load-more-btn>View More of the Collection</a>
+    {% endif %}
+    <span class="ka-load-more__count" data-ka-load-more-count>
+      Showing {{ paginate.current_offset | plus: collection.products.size }} of {{ paginate.items }} pieces
+    </span>
+  </div>
+{% endpaginate %}
+
+{% schema %}
+{
+  "name": "Collection Grid",
+  "tag": "div",
+  "class": "ka-collection-grid-section",
+  "settings": [
+    {
+      "type": "range",
+      "id": "products_per_page",
+      "label": "Products per page",
+      "min": 3,
+      "max": 24,
+      "step": 3,
+      "default": 9
+    },
+    {
+      "type": "range",
+      "id": "insert_after_index",
+      "label": "Insert editorial image after Nth product (page 1 only)",
+      "min": 3,
+      "max": 12,
+      "step": 1,
+      "default": 6
+    },
+    {
+      "type": "image_picker",
+      "id": "insert_image",
+      "label": "Editorial insert image",
+      "info": "Pre-populate with the placeholder assigned in Docs/collection-build-spec.md Section 5 until real capsule photography exists."
+    },
+    {
+      "type": "paragraph",
+      "content": "Editorial insert caption text is pulled from the collection.metafields.custom.editorial_caption metafield, not a setting here, so it can vary per collection without a code change."
+    }
+  ],
+  "presets": [
+    { "name": "Collection Grid" }
+  ]
+}
+{% endschema %}

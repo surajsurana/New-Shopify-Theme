@@ -1,0 +1,66 @@
+{{ 'ka-collection-concierge.css' | asset_url | stylesheet_tag }}
+
+{%- comment -%}
+  K&A Collection Concierge Band
+  Spec: Docs/collection-build-spec.md, Section 2 ("Section 10 — Concierge Band").
+  Replaces a cart/checkout funnel entirely for this page's primary conversion path.
+
+  Body copy interpolates collection.title, but the spec flags a grammar nuance:
+  "the The Bloom Soirée collection" reads wrong for titles that already contain
+  "The". Recommended fix (spec): a metafield override
+  (collection.metafields.custom.short_name) for titles starting with "The", so the
+  sentence can read "Every piece in The Bloom Soirée is a starting point..." instead
+  of "...in the The Bloom Soirée collection...". Implemented below as a Liquid
+  branch: if the metafield is set, use the "Every piece in {short_name}..."
+  phrasing (no trailing "collection" word, since short_name already reads as the
+  proper noun); otherwise use "Every piece in the {{ collection.title }} collection...".
+{%- endcomment -%}
+
+{% liquid
+  assign short_name = collection.metafields.custom.short_name
+%}
+
+<section class="ka-coll-concierge" aria-label="Concierge enquiry">
+  <div class="ka-coll-concierge__inner">
+    <p class="eyebrow ka-coll-concierge__eyebrow reveal">Made to Order</p>
+    <h2 class="ka-coll-concierge__title reveal reveal-delay-1">Found something close?<br>Let's make it yours.</h2>
+    <p class="ka-coll-concierge__body reveal reveal-delay-2">
+      {% if short_name != blank %}
+        Every piece in {{ short_name }} is a starting point — fabric, colour, embellishment and fit are yours to direct. Begin over WhatsApp, or book a private styling session in our Mumbai atelier or virtually.
+      {% else %}
+        Every piece in the {{ collection.title }} collection is a starting point — fabric, colour, embellishment and fit are yours to direct. Begin over WhatsApp, or book a private styling session in our Mumbai atelier or virtually.
+      {% endif %}
+    </p>
+    <div class="ka-coll-concierge__ctas reveal reveal-delay-3">
+      <a
+        href="https://wa.me/{{ settings.whatsapp_number }}?text=Hi%2C%20I%27d%20like%20to%20enquire%20about%20the%20{{ collection.title | url_param_escape }}%20collection"
+        class="btn-dark-solid"
+        target="_blank"
+        rel="noopener"
+      >Enquire on WhatsApp</a>
+      <a href="{{ section.settings.styling_session_url | default: '/#appointment' }}" class="btn-outline-dark">Book a Styling Session</a>
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Collection Concierge Band",
+  "tag": "div",
+  "class": "ka-collection-concierge-section",
+  "settings": [
+    {
+      "type": "paragraph",
+      "content": "For collection titles that already begin with \"The\" (e.g. The Bloom Soirée, The Festive Edit), set a collection.metafields.custom.short_name metafield in Admin so the body copy reads correctly. Leave blank for titles like Chamakk or Barre Oblique."
+    },
+    {
+      "type": "url",
+      "id": "styling_session_url",
+      "label": "Book a Styling Session URL"
+    }
+  ],
+  "presets": [
+    { "name": "Collection Concierge Band" }
+  ]
+}
+{% endschema %}

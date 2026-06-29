@@ -1,0 +1,59 @@
+{{ 'ka-collection-intro.css' | asset_url | stylesheet_tag }}
+
+{%- comment -%}
+  K&A Collection Intro
+  Spec: Docs/collection-build-spec.md, Section 2 ("Section 4 — Collection Intro"), F3.
+  Editorial description + a facts strip (Silhouettes / Made to Order / Price Range /
+  Sizing) that replaces a filter sidebar with the information a bride actually needs.
+
+  All five values are collection-level metafields (namespace "custom"):
+    custom.intro_copy, custom.silhouettes, custom.lead_time,
+    custom.price_range_display, custom.sizing_note
+  Per scope boundary #2 of this build: where the spec has not drafted real copy yet
+  (The Festive Edit, Barre Oblique), the metafield will be blank in Admin until
+  Creative Director supplies it. The Liquid below falls back to an explicitly
+  temporary scaffolding string in that case, rather than inventing brand copy.
+  Per CD Note 4 (spec Section 7): price range is always a manually maintained
+  metafield string, never computed from collection.products min/max.
+{%- endcomment -%}
+
+<section class="ka-coll-intro">
+  <p class="ka-coll-intro__body reveal">
+    {{ collection.metafields.custom.intro_copy | default: "Intro copy pending — Creative Director, see collection-build-spec.md §4" }}
+  </p>
+  <div class="ka-coll-intro__facts reveal reveal-delay-1">
+    <div>
+      <p class="ka-coll-intro__fact-label">Silhouettes</p>
+      <p class="ka-coll-intro__fact-value">{{ collection.metafields.custom.silhouettes | default: "Pending — see §4" }}</p>
+    </div>
+    <div>
+      <p class="ka-coll-intro__fact-label">Made to Order</p>
+      <p class="ka-coll-intro__fact-value">{{ collection.metafields.custom.lead_time | default: "Pending — see §4" }}</p>
+    </div>
+    <div>
+      <p class="ka-coll-intro__fact-label">Price Range</p>
+      <p class="ka-coll-intro__fact-value">{{ collection.metafields.custom.price_range_display | default: "Pending — see §4" }}</p>
+    </div>
+    <div>
+      <p class="ka-coll-intro__fact-label">Sizing</p>
+      <p class="ka-coll-intro__fact-value">{{ collection.metafields.custom.sizing_note | default: "Made to Measure" }}</p>
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Collection Intro",
+  "tag": "div",
+  "class": "ka-collection-intro-section",
+  "settings": [
+    {
+      "type": "paragraph",
+      "content": "Content for this section is pulled from collection metafields (namespace custom: intro_copy, silhouettes, lead_time, price_range_display, sizing_note), not from settings here — edit per collection in Shopify Admin > Collections > [collection] > Metafields."
+    }
+  ],
+  "presets": [
+    { "name": "Collection Intro" }
+  ]
+}
+{% endschema %}

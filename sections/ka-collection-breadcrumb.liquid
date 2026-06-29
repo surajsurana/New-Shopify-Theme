@@ -1,0 +1,35 @@
+{{ 'ka-collection-breadcrumb.css' | asset_url | stylesheet_tag }}
+
+{%- comment -%}
+  K&A Collection Breadcrumb
+  Spec: Docs/collection-build-spec.md, Section 2 ("Section 2 — Breadcrumb").
+  Quiet wayfinding strip beneath the fixed nav: Maison / Collections / [Collection Name].
+  This section also carries a small page-specific override that forces the global
+  nav (#ka-nav) into its "scrolled" (crystallised) visual state permanently, since
+  this page has no dark hero image directly behind the nav — see spec Section 2 §1
+  ("Navigation") and homepage ka-nav.css/.js for the scroll-triggered version.
+  F1: "Collections" segment links to the homepage Collections Directory anchor
+  (/#collections) until a dedicated collections-index page exists (flagged, not a blocker).
+{%- endcomment -%}
+
+<div class="ka-coll-breadcrumb">
+  <div class="ka-coll-breadcrumb__inner">
+    <a href="/">Maison</a>
+    <span class="ka-coll-breadcrumb__sep">/</span>
+    <a href="/#collections">Collections</a>
+    <span class="ka-coll-breadcrumb__sep">/</span>
+    <span class="ka-coll-breadcrumb__current">{{ collection.title }}</span>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Collection Breadcrumb",
+  "tag": "div",
+  "class": "ka-collection-breadcrumb-section",
+  "settings": [],
+  "presets": [
+    { "name": "Collection Breadcrumb" }
+  ]
+}
+{% endschema %}

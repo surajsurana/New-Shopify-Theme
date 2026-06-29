@@ -3,7 +3,7 @@
 <nav class="ka-nav" id="ka-nav" role="navigation" aria-label="Main navigation">
   <ul class="ka-nav__links">
     <li><a href="{{ section.settings.link_bestsellers }}">{{ section.settings.label_bestsellers }}</a></li>
-    <li><a href="{{ section.settings.link_collections }}">{{ section.settings.label_collections }}</a></li>
+    <li><a href="{{ section.settings.link_collections }}"{% if template contains 'collection' %} class="is-active"{% endif %}>{{ section.settings.label_collections }}</a></li>
     <li><a href="{{ section.settings.link_diaries }}">{{ section.settings.label_diaries }}</a></li>
   </ul>
 

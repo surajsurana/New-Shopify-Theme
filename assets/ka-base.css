@@ -1,4 +1,4 @@
-﻿/* =================================================================
+/* =================================================================
    K&A DESIGN TOKENS + GLOBAL RESET
    Single source of truth. Every section CSS file uses these vars.
 ================================================================= */
@@ -94,6 +94,8 @@ button { border: none; background: none; cursor: pointer; font-family: inherit; 
 .img-filter-product     { filter: sepia(0.10) saturate(0.90) brightness(0.97); }
 .img-filter-collection  { filter: sepia(0.10) saturate(0.90) brightness(0.90); }
 .img-filter-appointment { filter: sepia(0.10) saturate(0.85) brightness(0.88); }
+.img-filter-coll-page      { filter: sepia(0.10) saturate(0.90) brightness(0.94); }
+.img-filter-coll-page-dark { filter: sepia(0.10) saturate(0.85) brightness(0.88); }
 
 .btn-ghost {
   font-family: var(--f-sans); font-size: 0.68rem; font-weight: 400;

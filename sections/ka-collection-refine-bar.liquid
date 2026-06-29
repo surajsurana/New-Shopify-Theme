@@ -1,0 +1,83 @@
+{{ 'ka-collection-refine-bar.css' | asset_url | stylesheet_tag }}
+
+{%- comment -%}
+  K&A Collection Refine Bar
+  Spec: Docs/collection-build-spec.md, Section 2 ("Section 5 — Refine Bar"), F4, CD Note 2.
+  A single quiet line replacing a Dawn-style filter sidebar: up to 3 silhouette chips
+  ("All" + up to 3) plus a 3-option sort. Deliberately no price slider, no stock filter
+  — see CD Note 2, do not add either even if a future app suggests it.
+
+  F4 implementation chosen: tag-based collection filtering via Shopify's native
+  /collections/{handle}/{tag-handle} URL path (works on every Shopify plan, no
+  Search & Discovery app / Storefront Filter API dependency required). Chip labels
+  are per-collection section-setting text fields (block-based) so Creative Director
+  can set the real silhouette split per collection without a code change — chip tag
+  values are handleized automatically by Shopify from the chip label text, matching
+  product tags exactly (case-sensitive handleization — confirm exact product tag
+  spelling against the chip label when CD sets these).
+
+  Sort maps to Shopify's native collection sort_by query parameter, appended via a
+  real <select> with onchange navigation (progressively enhanced by ka-collection.js
+  to avoid a jarring full navigation where avoidable — falls back to a real submit
+  with no JS).
+{%- endcomment -%}
+
+<div class="ka-refine-bar" data-ka-refine-bar>
+  <nav class="ka-refine-bar__chips" data-ka-refine-chips aria-label="Refine collection">
+    <a
+      href="{{ collection.url }}"
+      class="ka-chip{% if current_tags == empty or current_tags == blank %} is-active{% endif %}"
+    >All</a>
+    {% for block in section.blocks %}
+      {% assign chip_tag_handle = block.settings.chip_label | handle %}
+      <a
+        href="{{ collection.url }}/{{ chip_tag_handle }}"
+        class="ka-chip{% if current_tags contains block.settings.chip_label %} is-active{% endif %}"
+        {{ block.shopify_attributes }}
+      >{{ block.settings.chip_label }}</a>
+    {% endfor %}
+  </nav>
+
+  <div class="ka-refine-bar__sort">
+    <span>Sort</span>
+    <select aria-label="Sort collection" data-ka-sort-select>
+      <option value="manual" {% if collection.sort_by == 'manual' or collection.sort_by == blank %}selected{% endif %}>As Curated</option>
+      <option value="created-descending" {% if collection.sort_by == 'created-descending' %}selected{% endif %}>Newest First</option>
+      <option value="price-ascending" {% if collection.sort_by == 'price-ascending' %}selected{% endif %}>Price, Low to High</option>
+    </select>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Collection Refine Bar",
+  "tag": "div",
+  "class": "ka-collection-refine-bar-section",
+  "settings": [
+    {
+      "type": "paragraph",
+      "content": "Add up to 3 chip blocks below. Chip label text must exactly match (case-sensitive) a real product tag handle used in this collection's products, since Shopify auto-handleizes the label to build the filter URL."
+    }
+  ],
+  "blocks": [
+    {
+      "type": "chip",
+      "name": "Refine chip",
+      "limit": 3,
+      "settings": [
+        { "type": "text", "id": "chip_label", "label": "Chip label / product tag", "default": "Corsets" }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Collection Refine Bar",
+      "blocks": [
+        { "type": "chip", "settings": { "chip_label": "Corsets" } },
+        { "type": "chip", "settings": { "chip_label": "Lehengas" } },
+        { "type": "chip", "settings": { "chip_label": "Indo-Western" } }
+      ]
+    }
+  ]
+}
+{% endschema %}
