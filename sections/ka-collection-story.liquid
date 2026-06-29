@@ -12,7 +12,14 @@
         class="img-filter-editorial"
       />
     {% else %}
-      <div style="background: var(--c-smoke); width:100%; height:100%;"></div>
+      <img
+        src="{{ 'bloom-soiree-main.jpg' | asset_url }}"
+        alt="{{ section.settings.title }}"
+        loading="lazy"
+        width="1200"
+        height="1600"
+        class="img-filter-editorial"
+      />
     {% endif %}
   </div>
 
@@ -35,6 +42,15 @@
             height="400"
             class="img-filter-editorial"
           />
+        {% else %}
+          <img
+            src="{{ 'collection-secondary-1.jpg' | asset_url }}"
+            alt="Collection detail"
+            loading="lazy"
+            width="600"
+            height="400"
+            class="img-filter-editorial"
+          />
         {% endif %}
       </div>
       <div class="ka-collection-story__image-secondary reveal-img">
@@ -42,6 +58,15 @@
           <img
             src="{{ section.settings.image_secondary_2 | image_url: width: 600 }}"
             alt="{{ section.settings.image_secondary_2.alt | escape | default: 'Collection detail' }}"
+            loading="lazy"
+            width="600"
+            height="400"
+            class="img-filter-editorial"
+          />
+        {% else %}
+          <img
+            src="{{ 'collection-secondary-2.jpg' | asset_url }}"
+            alt="Collection detail"
             loading="lazy"
             width="600"
             height="400"

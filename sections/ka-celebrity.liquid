@@ -12,7 +12,14 @@
         class="img-filter-celebrity"
       />
     {% else %}
-      <div style="background: var(--c-charcoal); width:100%; height:100%;"></div>
+      <img
+        src="{{ 'celebrity-editorial.jpg' | asset_url }}"
+        alt="Editorial feature — K&A couture"
+        loading="lazy"
+        width="1600"
+        height="1067"
+        class="img-filter-celebrity"
+      />
     {% endif %}
   </div>
   <div class="ka-celebrity__overlay"></div>
