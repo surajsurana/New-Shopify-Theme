@@ -12,7 +12,7 @@
     "ka-nav": {
       "type": "ka-nav",
       "settings": {
-        "label_bestsellers": "Bestsellers",
+        "label_bestsellers": "Signature",
         "link_bestsellers": "/collections/bestsellers",
         "label_collections": "Collections",
         "link_collections": "/collections",
@@ -50,7 +50,7 @@
         "title": "The Bloom\nSoirée",
         "body": "Blushing rose petals pressed into organza. Ivory silk worked by hand into structures that hold their shape across a twelve-hour celebration. The Bloom Soirée begins where traditional bridal ends — in the quiet confidence of craft that needs no introduction.",
         "cta_label": "Explore the collection",
-        "cta_url": "/collections/bloom-soiree"
+        "cta_url": "/collections/the-bloom-soiree"
       }
     },
     "ka-bestsellers": {
@@ -58,14 +58,14 @@
       "settings": {
         "eyebrow": "Most Loved",
         "title": "Signature Pieces",
-        "view_all_label": "View all bestsellers",
+        "view_all_label": "View the Signature edit",
         "view_all_url": "/collections/bestsellers"
       }
     },
     "ka-celebrity": {
       "type": "ka-celebrity",
       "settings": {
-        "eyebrow": "The House",
+        "eyebrow": "Maison",
         "quote": "“Worn by those who believe a garment should tell a story.”"
       }
     },
@@ -133,43 +133,43 @@
     "ka-collections-directory": {
       "type": "ka-collections-directory",
       "blocks": {
-        "bridal": {
+        "the-festive-edit": {
           "type": "collection_card",
           "settings": {
-            "name": "Bridal",
-            "card_url": "/collections/bridal"
+            "name": "The Festive Edit",
+            "card_url": "/collections/the-festive-edit"
           }
         },
-        "lehengas": {
+        "the-bloom-soiree": {
           "type": "collection_card",
           "settings": {
-            "name": "Lehengas",
-            "card_url": "/collections/lehengas"
+            "name": "The Bloom Soirée",
+            "card_url": "/collections/the-bloom-soiree"
           }
         },
-        "indo-western": {
+        "chamakk": {
           "type": "collection_card",
           "settings": {
-            "name": "Indo-Western",
-            "card_url": "/collections/indo-western"
+            "name": "Chamakk",
+            "card_url": "/collections/chamak"
           }
         },
-        "festive": {
+        "barre-oblique": {
           "type": "collection_card",
           "settings": {
-            "name": "Festive",
-            "card_url": "/collections/festive"
+            "name": "Barre Oblique",
+            "card_url": "/collections/barre-oblique"
           }
         }
       },
       "block_order": [
-        "bridal",
-        "lehengas",
-        "indo-western",
-        "festive"
+        "the-festive-edit",
+        "the-bloom-soiree",
+        "chamakk",
+        "barre-oblique"
       ],
       "settings": {
-        "eyebrow": "The House",
+        "eyebrow": "Maison",
         "title": "Our Collections"
       }
     },
@@ -228,13 +228,13 @@
     "ka-newsletter": {
       "type": "ka-newsletter",
       "settings": {
-        "eyebrow": "From the Atelier",
+        "eyebrow": "The Inner Circle",
         "title": "Receive our\nCorrespondence",
-        "body": "Collection stories, styling notes, and invitations to our trunk shows — delivered quietly to your inbox. No promotions. Only beauty.",
+        "body": "Collection previews before they are shown publicly, styling notes, and private invitations to our trunk shows — delivered quietly to your inbox. No promotions. Only beauty.",
         "input_placeholder": "Your email address",
-        "submit_label": "Subscribe",
-        "success_message": "Thank you. You are on the list.",
-        "note": "We send four letters a year. Unsubscribe at any time."
+        "submit_label": "Request Entry",
+        "success_message": "Welcome In. You are one of us now.",
+        "note": "Four letters a year. Nothing public arrives here first."
       }
     },
     "ka-footer": {

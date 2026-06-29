@@ -24,14 +24,17 @@
             {% else %}
               {% assign card_name_lower = block.settings.name | downcase %}
               {% case card_name_lower %}
-                {% when 'bridal' %}
-                  <img src="{{ 'collection-bridal.jpg' | asset_url }}" alt="{{ block.settings.name }}" loading="lazy" width="700" height="1050" class="img-filter-collection" />
-                {% when 'lehengas' %}
-                  <img src="{{ 'collection-lehengas.jpg' | asset_url }}" alt="{{ block.settings.name }}" loading="lazy" width="700" height="1050" class="img-filter-collection" />
-                {% when 'indo-western' %}
-                  <img src="{{ 'collection-indo-western.jpg' | asset_url }}" alt="{{ block.settings.name }}" loading="lazy" width="700" height="1050" class="img-filter-collection" />
-                {% when 'festive' %}
-                  <img src="{{ 'collection-festive.jpg' | asset_url }}" alt="{{ block.settings.name }}" loading="lazy" width="700" height="1050" class="img-filter-collection" />
+                {% when 'the festive edit' %}
+                  {%- comment -%} Placeholder stand-in (no capsule shoot yet) — see Docs/collection-build-spec.md {%- endcomment -%}
+                  <img src="{{ 'celebrity-editorial.jpg' | asset_url }}" alt="{{ block.settings.name }}" loading="lazy" width="700" height="1050" class="img-filter-collection" />
+                {% when 'the bloom soirée' %}
+                  <img src="{{ 'bloom-soiree-main.jpg' | asset_url }}" alt="{{ block.settings.name }}" loading="lazy" width="700" height="1050" class="img-filter-collection" />
+                {% when 'chamakk' %}
+                  {%- comment -%} Placeholder stand-in (no capsule shoot yet) — see Docs/collection-build-spec.md {%- endcomment -%}
+                  <img src="{{ 'collection-secondary-1.jpg' | asset_url }}" alt="{{ block.settings.name }}" loading="lazy" width="700" height="1050" class="img-filter-collection" />
+                {% when 'barre oblique' %}
+                  {%- comment -%} Placeholder stand-in (no capsule shoot yet) — see Docs/collection-build-spec.md {%- endcomment -%}
+                  <img src="{{ 'collection-secondary-2.jpg' | asset_url }}" alt="{{ block.settings.name }}" loading="lazy" width="700" height="1050" class="img-filter-collection" />
                 {% else %}
                   <div style="background: var(--c-charcoal-2); width:100%; height:100%;"></div>
               {% endcase %}
@@ -54,7 +57,7 @@
   "name": "Collections Directory",
   "tag": "section",
   "settings": [
-    { "type": "text", "id": "eyebrow", "label": "Eyebrow",       "default": "The House" },
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow",       "default": "Maison" },
     { "type": "text", "id": "title",   "label": "Section title", "default": "Our Collections" }
   ],
   "blocks": [
@@ -64,7 +67,7 @@
       "limit": 4,
       "settings": [
         { "type": "image_picker", "id": "image",      "label": "Card image" },
-        { "type": "text",         "id": "name",       "label": "Collection name", "default": "Bridal" },
+        { "type": "text",         "id": "name",       "label": "Collection name", "default": "The Festive Edit" },
         {
           "type": "collection",
           "id": "collection",
@@ -83,10 +86,10 @@
     {
       "name": "Collections Directory",
       "blocks": [
-        { "type": "collection_card", "settings": { "name": "Bridal" } },
-        { "type": "collection_card", "settings": { "name": "Lehengas" } },
-        { "type": "collection_card", "settings": { "name": "Indo-Western" } },
-        { "type": "collection_card", "settings": { "name": "Festive" } }
+        { "type": "collection_card", "settings": { "name": "The Festive Edit" } },
+        { "type": "collection_card", "settings": { "name": "The Bloom Soirée" } },
+        { "type": "collection_card", "settings": { "name": "Chamakk" } },
+        { "type": "collection_card", "settings": { "name": "Barre Oblique" } }
       ]
     }
   ]
