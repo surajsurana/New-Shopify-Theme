@@ -42,9 +42,19 @@
           <li><a href="{{ link.url }}">{{ link.title }}</a></li>
         {% endfor %}
         {% if linklists['footer-the-house'].links.size == 0 %}
-          <li><a href="/pages/about">About Karishma &amp; Ashita</a></li>
+          <li><a href="/pages/about-us">About Karishma &amp; Ashita</a></li>
           <li><a href="/pages/client-diaries">Client Diaries</a></li>
-          <li><a href="/pages/appointments">Book an Appointment</a></li>
+          {%- comment -%}
+            "Book an Appointment" — TEMPORARY interim WhatsApp routing,
+            same sitewide pattern (Docs/cta-architecture-revision.md
+            Round 2, R2-4; extended here for the soft-launch
+            /pages/appointments dead-link fix — no Shopify Page with that
+            handle exists). data-ka-appt-link is intercepted by the
+            sitewide delegated handler in this same file's <script> below.
+            href kept as a no-JS fallback / ready slot for a real booking
+            flow later.
+          {%- endcomment -%}
+          <li><a href="/pages/appointments" data-ka-appt-link data-ka-appt-text="Hi, I'd like to book an appointment">Book an Appointment</a></li>
           <li><a href="https://wa.me/{{ settings.whatsapp_number }}" target="_blank" rel="noopener">Concierge</a></li>
           <li><a href="/pages/press">Press</a></li>
         {% endif %}

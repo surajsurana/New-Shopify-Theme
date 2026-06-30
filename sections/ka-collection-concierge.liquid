@@ -11,9 +11,9 @@
   (collection.metafields.custom.short_name) for titles starting with "The", so the
   sentence can read "Every piece in The Bloom Soirée is a starting point..." instead
   of "...in the The Bloom Soirée collection...". Implemented below as a Liquid
-  branch: if the metafield is set, use the "Every piece in {short_name}..."
-  phrasing (no trailing "collection" word, since short_name already reads as the
-  proper noun); otherwise use "Every piece in the {{ collection.title }} collection...".
+  branch: if the metafield is set, use the "Every piece in {short_name}..." phrasing
+  (no trailing "collection" word, since short_name already reads as the proper noun);
+  otherwise use "Every piece in the {{ collection.title }} collection...".
 {%- endcomment -%}
 
 {% liquid
@@ -38,7 +38,22 @@
         target="_blank"
         rel="noopener"
       >Enquire on WhatsApp</a>
-      <a href="{{ section.settings.styling_session_url | default: '/#appointment' }}" class="btn-outline-dark">Book a Styling Session</a>
+      {%- comment -%}
+        "Book a Styling Session" — TEMPORARY interim WhatsApp routing,
+        same pattern as the rest of the site (Docs/cta-architecture-revision.md
+        Round 2, R2-4; extended here for the soft-launch /pages/appointments
+        dead-link fix). data-ka-appt-link is intercepted by the sitewide
+        delegated handler in ka-nav.liquid. styling_session_url is kept as
+        the real href (no-JS fallback + ready slot for a real booking flow
+        later); Suraj can still set it via section settings, but JS reroutes
+        to WhatsApp regardless until a real booking flow exists.
+      {%- endcomment -%}
+      <a
+        href="{{ section.settings.styling_session_url | default: '/#appointment' }}"
+        class="btn-outline-dark"
+        data-ka-appt-link
+        data-ka-appt-text="Hi, I'd like to book a styling session"
+      >Book a Styling Session</a>
     </div>
   </div>
 </section>

@@ -36,7 +36,19 @@
     <p class="ka-hero__sub">{{ section.settings.subtitle }}</p>
     <div class="ka-hero__ctas">
       <a href="{{ section.settings.cta_primary_url }}" class="btn-ghost">{{ section.settings.cta_primary_label }}</a>
-      <a href="{{ section.settings.cta_secondary_url }}" class="btn-text">{{ section.settings.cta_secondary_label }}</a>
+      {%- comment -%}
+        Secondary CTA ("Book a Styling Appointment") — TEMPORARY interim
+        WhatsApp routing, same pattern as the Product page / mobile nav
+        drawer (Docs/cta-architecture-revision.md Round 2, R2-4). There is
+        no live appointments page yet, so this is marked data-ka-appt-link
+        and intercepted by the sitewide delegated click handler in
+        ka-nav.liquid, which opens https://wa.me/{{ settings.whatsapp_number }}
+        instead. cta_secondary_url is kept as the real href so the link still
+        goes somewhere sane if JS fails to load, and so the setting is ready
+        to use as-is once a real booking flow exists (remove data-ka-appt-link
+        at that point and this reverts to a normal configurable link).
+      {%- endcomment -%}
+      <a href="{{ section.settings.cta_secondary_url }}" class="btn-text" data-ka-appt-link>{{ section.settings.cta_secondary_label }}</a>
     </div>
   </div>
 

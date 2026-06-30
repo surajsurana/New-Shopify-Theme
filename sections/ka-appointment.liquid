@@ -1,9 +1,19 @@
 {{ 'ka-appointment.css' | asset_url | stylesheet_tag }}
 
 {%- comment -%}
-  F5 assumption: Both appointment CTAs default to /pages/appointments.
-  Suraj can update the exact URLs via the section settings in the theme editor
-  once the booking system (Calendly / Shopify app / WhatsApp pre-fill) is confirmed.
+  Both appointment CTAs — TEMPORARY interim WhatsApp routing, same pattern
+  used sitewide (Docs/cta-architecture-revision.md Round 2, R2-4; extended
+  to this section as part of the soft-launch /pages/appointments dead-link
+  fix, since no Shopify Page with that handle exists). Each button carries
+  data-ka-appt-link, intercepted by the sitewide delegated click handler in
+  ka-nav.liquid, which opens https://wa.me/{{ settings.whatsapp_number }}
+  with a pre-filled enquiry distinguishing in-store vs. virtual so Suraj's
+  team knows which was requested. cta_instore_url / cta_virtual_url are kept
+  as the real hrefs (no-JS fallback + ready slot for a real booking flow
+  later) — Suraj can still override them via section settings, but until a
+  real booking system exists, JS always reroutes to WhatsApp regardless of
+  what's configured here. Remove data-ka-appt-link from a button once its
+  real booking destination is live.
 {%- endcomment -%}
 
 <section class="ka-appointment" aria-label="Book a styling appointment">
@@ -34,11 +44,21 @@
     <h2 class="ka-appointment__title reveal reveal-delay-1">{{ section.settings.title }}</h2>
     <p class="ka-appointment__body reveal reveal-delay-2">{{ section.settings.body }}</p>
     <div class="ka-appointment__options reveal reveal-delay-3">
-      <a href="{{ section.settings.cta_instore_url | default: '/pages/appointments' }}" class="btn-outline-white">
+      <a
+        href="{{ section.settings.cta_instore_url | default: '/pages/appointments' }}"
+        class="btn-outline-white"
+        data-ka-appt-link
+        data-ka-appt-text="Hi, I'd like to book an in-store appointment"
+      >
         {{ section.settings.cta_instore_label }}
       </a>
       <span class="ka-appointment__divider">or</span>
-      <a href="{{ section.settings.cta_virtual_url | default: '/pages/appointments' }}" class="btn-outline-white">
+      <a
+        href="{{ section.settings.cta_virtual_url | default: '/pages/appointments' }}"
+        class="btn-outline-white"
+        data-ka-appt-link
+        data-ka-appt-text="Hi, I'd like to book a virtual styling session"
+      >
         {{ section.settings.cta_virtual_label }}
       </a>
     </div>
