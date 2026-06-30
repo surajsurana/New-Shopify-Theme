@@ -1,0 +1,36 @@
+{{ 'ka-cart-mobile-bar.css' | asset_url | stylesheet_tag }}
+
+{%- comment -%}
+  K&A Cart ("Selection") — Mobile Sticky Checkout Bar
+  Spec: Docs/cart-build-spec.md, Section 3 §9, F8.
+
+  display:none by default, display:flex at <=900px (pure CSS breakpoint
+  toggle, no scroll-triggered show/hide — see spec's Interaction Inventory).
+  Hidden entirely on the empty-cart state by not rendering the markup at
+  all when cart.item_count == 0 (server-rendered, per F9) — there is no
+  total to show and the spec is explicit this bar must not appear there.
+{%- endcomment -%}
+
+{%- if cart.item_count > 0 -%}
+  <div class="ka-mobile-bar" id="kaMobileBar" data-ka-mobile-bar>
+    <div class="ka-mobile-bar__amt">
+      <small>Estimated Total</small>
+      <span data-ka-mobile-total>{{ cart.total_price | money }}</span>
+    </div>
+    <form action="{{ routes.cart_url }}" method="post" novalidate>
+      <button type="submit" name="checkout" class="ka-btn">Checkout</button>
+    </form>
+  </div>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "Cart Mobile Bar",
+  "tag": "div",
+  "class": "ka-cart-mobile-bar-section",
+  "settings": [],
+  "presets": [
+    { "name": "Cart Mobile Bar" }
+  ]
+}
+{% endschema %}

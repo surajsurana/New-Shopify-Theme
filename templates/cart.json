@@ -1,0 +1,82 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "sections": {
+    "ka-nav": {
+      "type": "ka-nav",
+      "settings": {
+        "utility_1": "Complimentary Worldwide Delivery",
+        "utility_2": "Hand-Embroidered to Order",
+        "utility_3": "Private & Virtual Appointments",
+        "logo_text": "Karishma Ashita",
+        "logo_subline": "Bridal Couture · Mumbai",
+        "label_bestsellers": "Signature",
+        "link_bestsellers": "/collections/bestsellers",
+        "label_collections": "Collections",
+        "link_collections": "/collections",
+        "label_diaries": "Client Diaries",
+        "link_diaries": "/pages/client-diaries",
+        "link_about": "/pages/about",
+        "link_appointment": "/pages/appointments"
+      }
+    },
+    "ka-cart-breadcrumb": {
+      "type": "ka-cart-breadcrumb",
+      "settings": {}
+    },
+    "ka-cart-items": {
+      "type": "ka-cart-items",
+      "settings": {
+        "collections_url": "/collections"
+      }
+    },
+    "ka-cart-summary": {
+      "type": "ka-cart-summary",
+      "settings": {}
+    },
+    "ka-cart-cross-link": {
+      "type": "ka-cart-cross-link",
+      "settings": {
+        "products_limit": 4
+      }
+    },
+    "ka-footer": {
+      "type": "ka-footer",
+      "settings": {
+        "brand_name": "Karishma Ashita",
+        "logo_subline": "Bridal Couture · Mumbai",
+        "tagline": "Bridal couture, handcrafted\nin Mumbai.",
+        "instagram_url": "https://instagram.com/karishmaashita",
+        "pinterest_url": "",
+        "email": "info@karishmaashita.com",
+        "address": "Mumbai, India\nComplimentary worldwide shipping",
+        "news_title": "The Inner Circle",
+        "news_body": "Collection previews, styling notes and private trunk show invitations — delivered quietly to your inbox.",
+        "news_placeholder": "Your email address",
+        "news_submit": "Join",
+        "news_success": "Welcome in. You are one of us now.",
+        "service_line": "Mumbai · Worldwide Delivery · DHL Express"
+      }
+    },
+    "ka-cart-mobile-bar": {
+      "type": "ka-cart-mobile-bar",
+      "settings": {}
+    }
+  },
+  "order": [
+    "ka-nav",
+    "ka-cart-breadcrumb",
+    "ka-cart-items",
+    "ka-cart-summary",
+    "ka-cart-cross-link",
+    "ka-footer",
+    "ka-cart-mobile-bar"
+  ]
+}

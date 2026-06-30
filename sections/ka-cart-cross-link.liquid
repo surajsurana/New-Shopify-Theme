@@ -1,0 +1,101 @@
+{{ 'ka-cart-cross-link.css' | asset_url | stylesheet_tag }}
+
+{%- comment -%}
+  K&A Cart ("Selection") — Cross-Link Strip
+  Spec: Docs/cart-build-spec.md, Section 3 §7, F5 (n/a here), CD Note 4.
+
+  Two copy variants, same markup, conditional on cart.item_count (server-
+  rendered, not the prototype's client-side toggle — F9):
+  - Filled cart: "You May Also Love" / "From the Same Atelier" — pulls from
+    the same collection as items already in the cart.
+  - Empty cart: "Begin Here" / "Recently Loved" — pulls from the store's
+    recommended/bestsellers collection (general best-sellers, since there
+    is no cart context to pair against).
+
+  Query logic mirrors ka-product-related.liquid's pattern: a curated
+  metafield list takes priority if present, else falls back to a
+  collection-driven pull — same content-model decision already proven on
+  the Product page.
+{%- endcomment -%}
+
+{%- liquid
+  assign limit = section.settings.products_limit | default: 4
+
+  if cart.item_count > 0
+    assign eyebrow = 'You May Also Love'
+    assign heading = 'From the Same Atelier'
+    assign supporting = "A few pieces our style advisors often pair with what's already in your selection."
+    assign curated = section.settings.filled_collection
+    assign source_collection = curated
+    if source_collection == blank
+      assign first_item = cart.items.first
+      assign source_collection = first_item.product.collections.first
+    endif
+  else
+    assign eyebrow = 'Begin Here'
+    assign heading = 'Recently Loved'
+    assign supporting = 'A few pieces our clients and their families have returned to this season.'
+    assign source_collection = section.settings.empty_collection
+    if source_collection == blank
+      assign source_collection = collections['bestsellers']
+    endif
+  endif
+
+  assign related = source_collection.products
+-%}
+
+<section class="ka-cross">
+  <div class="ka-cross__head reveal">
+    <div class="rule" style="margin:0 auto"></div>
+    <div class="eyebrow" style="margin-top:22px">{{ eyebrow }}</div>
+    <h2>{{ heading }}</h2>
+    <p>{{ supporting }}</p>
+  </div>
+
+  <div class="ka-r-grid">
+    {%- assign shown = 0 -%}
+    {%- for p in related -%}
+      {%- if shown < limit -%}
+        {%- assign shown = shown | plus: 1 -%}
+        <a class="ka-r-card reveal-img reveal-delay-{{ forloop.index | modulo: 4 }}" href="{{ p.url }}">
+          <div class="ph">
+            {%- if p.featured_image -%}
+              <img src="{{ p.featured_image | image_url: width: 800 }}" alt="{{ p.featured_image.alt | escape | default: p.title | escape }}" loading="lazy" width="800" height="1066" class="img-filter" />
+            {%- else -%}
+              <div style="background: var(--c-smoke); width:100%; height:100%;"></div>
+            {%- endif -%}
+          </div>
+          <div class="ct">{{ p.collections.first.title | default: 'K&A' }}</div>
+          <h3>{{ p.title }}</h3>
+          <div class="pr">{{ p.price | money }} <span style="color:var(--c-ink-muted)">onward</span></div>
+        </a>
+      {%- endif -%}
+    {%- endfor -%}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Cart Cross-Link",
+  "tag": "section",
+  "class": "ka-cart-cross-link-section",
+  "settings": [
+    {
+      "type": "collection",
+      "id": "filled_collection",
+      "label": "Filled-cart source collection",
+      "info": "Optional override. If left blank, pulls from the same collection as the first item already in the cart."
+    },
+    {
+      "type": "collection",
+      "id": "empty_collection",
+      "label": "Empty-cart source collection",
+      "info": "Optional override. If left blank, falls back to the 'bestsellers' collection handle."
+    },
+    { "type": "range", "id": "products_limit", "label": "Max products", "min": 2, "max": 8, "step": 1, "default": 4 }
+  ],
+  "presets": [
+    { "name": "Cart Cross-Link" }
+  ]
+}
+{% endschema %}
