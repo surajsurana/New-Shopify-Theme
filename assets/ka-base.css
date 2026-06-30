@@ -3,22 +3,27 @@
    Single source of truth. Every section CSS file uses these vars.
 ================================================================= */
 :root {
-  --c-paper:         #F8F4EF;
-  --c-paper-deep:    #F0EAE1;
-  --c-smoke:         #EDE7DD;
-  --c-charcoal:      #1A1714;
-  --c-charcoal-2:    #2C2825;
-  --c-ink:           #3D3730;
-  --c-ink-mid:       #6B6259;
-  --c-ink-muted:     #9A9088;
-  --c-rosegold:      #C4A882;
-  --c-rosegold-2:    #A8896A;
-  --c-rosegold-pale: #DDD0BC;
-  --line:            rgba(26,23,20,0.10);
-  --line-strong:     rgba(26,23,20,0.18);
-  --line-light:      rgba(196,168,130,0.25);
-  --line-on-dark:    rgba(196,168,130,0.20);
-  --f-display: 'Bodoni Moda', Didot, 'Times New Roman', serif;
+  /* Canvas */
+  --c-paper:         #F7F3EC;
+  --c-paper-deep:    #EFE8DD;
+  --c-smoke:         #E9E1D2;
+  /* Dark */
+  --c-charcoal:      #2A2420;
+  --c-charcoal-2:    #1D1916;
+  --c-ink:           #2A2420;
+  --c-ink-mid:       #6E655B;
+  --c-ink-muted:     #9C9389;
+  /* Accent — antique gold */
+  --c-rosegold:      #9A7B4F;
+  --c-rosegold-2:    #7E6440;
+  --c-rosegold-pale: #B99B6E;
+  /* Lines */
+  --line:            rgba(42,36,32,0.12);
+  --line-strong:     rgba(42,36,32,0.20);
+  --line-light:      rgba(154,123,79,0.28);
+  --line-on-dark:    rgba(154,123,79,0.22);
+  /* Typography — Cormorant Garamond + Jost */
+  --f-display: 'Cormorant Garamond', Georgia, 'Times New Roman', serif;
   --f-sans:    'Jost', 'Helvetica Neue', Arial, sans-serif;
   --t-hero:    clamp(3.6rem, 8vw, 8rem);
   --t-display: clamp(2.6rem, 5.5vw, 5.2rem);
@@ -38,7 +43,7 @@
   --max-wide: 1680px;
   --max-text: 720px;
   --gutter:   clamp(20px, 5vw, 80px);
-  --ease-luxury: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-luxury: cubic-bezier(0.16, 0.84, 0.44, 1);
   --ease-soft:   cubic-bezier(0.22, 0.61, 0.36, 1);
   --dur-slow:    1s;
   --dur-med:     0.65s;
@@ -96,6 +101,9 @@ button { border: none; background: none; cursor: pointer; font-family: inherit; 
 .img-filter-appointment { filter: sepia(0.10) saturate(0.85) brightness(0.88); }
 .img-filter-coll-page      { filter: sepia(0.10) saturate(0.90) brightness(0.94); }
 .img-filter-coll-page-dark { filter: sepia(0.10) saturate(0.85) brightness(0.88); }
+/* Product-page filters (shared values with collection page, per product-build-spec.md S1) */
+.img-filter        { filter: sepia(0.10) saturate(0.90) brightness(0.94); }
+.img-filter-dark   { filter: sepia(0.10) saturate(0.85) brightness(0.88); }
 
 .btn-ghost {
   font-family: var(--f-sans); font-size: 0.68rem; font-weight: 400;

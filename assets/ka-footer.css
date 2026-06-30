@@ -1,5 +1,5 @@
-﻿/* ================================================================
-   KA-FOOTER
+/* ================================================================
+   KA-FOOTER — global five-column footer + two-part bottom bar
 ================================================================ */
 .ka-footer {
   background: var(--c-charcoal);
@@ -8,25 +8,34 @@
 }
 .ka-footer__top {
   display: grid;
-  grid-template-columns: 1.4fr 1fr 1fr 1fr;
+  grid-template-columns: 1.2fr 0.8fr 0.8fr 0.8fr 1.2fr;
   gap: var(--s-lg);
   padding-bottom: var(--s-xl);
   border-bottom: 1px solid rgba(255,255,255,0.07);
   margin-bottom: var(--s-lg);
 }
+
+/* ── Column 1: Brand ── */
 .ka-footer__logo {
   font-family: var(--f-display);
-  font-size: 1.5rem; font-weight: 400;
-  letter-spacing: 0.12em;
-  color: rgba(255,255,255,0.82);
-  text-transform: uppercase;
-  margin-bottom: 16px; display: block;
+  font-size: 1.7rem; font-weight: 400;
+  letter-spacing: 0.06em;
+  color: rgba(244,236,222,0.92);
+  margin-bottom: 6px; display: block;
+}
+.ka-footer__logo small {
+  display: block;
+  font-family: var(--f-sans);
+  font-size: 0.5rem; font-weight: 400;
+  letter-spacing: 0.32em; text-transform: uppercase;
+  color: var(--c-rosegold-pale);
+  margin-top: 8px;
 }
 .ka-footer__tagline {
   font-family: var(--f-display); font-style: italic;
-  font-size: 0.92rem;
+  font-size: 0.95rem;
   color: rgba(255,255,255,0.32);
-  line-height: 1.65; margin-bottom: 28px; max-width: 260px;
+  line-height: 1.65; margin: 20px 0 28px; max-width: 260px;
 }
 .ka-footer__social { display: flex; gap: 16px; }
 .ka-footer__social a {
@@ -37,6 +46,8 @@
   transition: color var(--dur-fast);
 }
 .ka-footer__social a:hover { color: var(--c-rosegold); }
+
+/* ── Link columns ── */
 .ka-footer__col-title {
   font-family: var(--f-sans);
   font-size: 0.6rem; font-weight: 500;
@@ -51,6 +62,9 @@
   transition: color var(--dur-fast); letter-spacing: 0.04em;
 }
 .ka-footer__links a:hover { color: white; }
+
+/* ── Contact ── */
+.ka-footer__contact { display: flex; flex-direction: column; gap: 12px; }
 .ka-footer__contact-item {
   font-family: var(--f-sans);
   font-size: 0.78rem; font-weight: 300;
@@ -62,14 +76,67 @@
   transition: color var(--dur-fast);
 }
 .ka-footer__contact-item a:hover { color: var(--c-rosegold); }
+
+/* ── Inner Circle (newsletter column) ── */
+.ka-footer__news p {
+  font-family: var(--f-sans);
+  font-size: 0.78rem; font-weight: 300;
+  line-height: 1.7;
+  color: rgba(255,255,255,0.42);
+  margin-bottom: 18px; letter-spacing: 0.02em;
+}
+.ka-footer__news .ka-footer__col-title { color: rgba(255,255,255,0.35); }
+.ka-footer__news-form {
+  display: flex;
+  border: 1px solid rgba(255,255,255,0.18);
+}
+.ka-footer__news-input {
+  flex: 1; background: none; border: none; outline: none;
+  font-family: var(--f-sans); font-size: 0.74rem; font-weight: 300;
+  color: white; letter-spacing: 0.04em; padding: 13px 14px;
+}
+.ka-footer__news-input::placeholder { color: rgba(255,255,255,0.3); }
+.ka-footer__news-submit {
+  font-family: var(--f-sans);
+  font-size: 0.6rem; font-weight: 400;
+  letter-spacing: 0.16em; text-transform: uppercase;
+  color: var(--c-rosegold);
+  border-left: 1px solid rgba(255,255,255,0.18);
+  padding: 0 18px;
+  transition: color var(--dur-fast);
+  white-space: nowrap;
+}
+.ka-footer__news-submit:hover { color: white; }
+.ka-footer__news-success {
+  font-family: var(--f-display); font-style: italic;
+  font-size: 0.95rem; color: var(--c-rosegold-pale);
+  line-height: 1.6;
+}
+
+/* ── Bottom bar: single gold-toned primary divider, fainter internal hairline ── */
 .ka-footer__bottom {
+  display: flex; flex-direction: column; gap: 16px;
+  padding-top: 22px;
+  border-top: 1px solid rgba(154,123,79,0.22);
+}
+.ka-footer__bottom-row {
   display: flex; align-items: center; justify-content: space-between;
   gap: 24px; flex-wrap: wrap;
+}
+.ka-footer__bottom-row + .ka-footer__bottom-row {
+  padding-top: 16px;
+  border-top: 1px solid rgba(255,255,255,0.06);
 }
 .ka-footer__copy {
   font-family: var(--f-sans);
   font-size: 0.63rem; font-weight: 300;
   color: rgba(255,255,255,0.18); letter-spacing: 0.1em;
+}
+.ka-footer__service-line {
+  font-family: var(--f-sans);
+  font-size: 0.63rem; font-weight: 400;
+  color: rgba(255,255,255,0.32);
+  letter-spacing: 0.14em; text-transform: uppercase;
 }
 .ka-footer__legal { display: flex; gap: 24px; list-style: none; }
 .ka-footer__legal a {
@@ -83,6 +150,7 @@
 @media (max-width: 900px) {
   .ka-footer__top { grid-template-columns: 1fr 1fr; gap: var(--s-md); }
   .ka-footer__brand { grid-column: 1 / -1; }
+  .ka-footer__news  { grid-column: 1 / -1; }
 }
 @media (max-width: 600px) {
   .ka-footer__top { grid-template-columns: 1fr; }

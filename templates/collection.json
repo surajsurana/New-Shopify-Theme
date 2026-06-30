@@ -18,7 +18,6 @@
         "link_collections": "/collections",
         "label_diaries": "Client Diaries",
         "link_diaries": "/pages/client-diaries",
-        "label_whatsapp": "Concierge",
         "link_about": "/pages/about",
         "link_appointment": "/pages/appointments"
       }

@@ -4,8 +4,8 @@
   <div class="ka-footer__top">
     <!-- Column 1: Brand -->
     <div class="ka-footer__brand">
-      <span class="ka-footer__logo">{{ section.settings.brand_name }}</span>
-      <p class="ka-footer__tagline">{{ section.settings.tagline }}</p>
+      <span class="ka-footer__logo">{{ section.settings.brand_name }}<small>{{ section.settings.logo_subline }}</small></span>
+      <p class="ka-footer__tagline">{{ section.settings.tagline | newline_to_br }}</p>
       <div class="ka-footer__social">
         {% if section.settings.instagram_url != blank %}
           <a href="{{ section.settings.instagram_url }}" target="_blank" rel="noopener">Instagram</a>
@@ -54,7 +54,7 @@
     <!-- Column 4: Contact -->
     <div>
       <p class="ka-footer__col-title">Contact</p>
-      <div style="display: flex; flex-direction: column; gap: 12px;">
+      <div class="ka-footer__contact">
         {% if settings.whatsapp_number != blank %}
           <p class="ka-footer__contact-item">
             <a href="https://wa.me/{{ settings.whatsapp_number }}">{{ settings.whatsapp_display }}</a>
@@ -65,18 +65,49 @@
             <a href="mailto:{{ section.settings.email }}">{{ section.settings.email }}</a>
           </p>
         {% endif %}
-        <p class="ka-footer__contact-item">{{ section.settings.address }}</p>
+        <p class="ka-footer__contact-item">{{ section.settings.address | newline_to_br }}</p>
       </div>
+    </div>
+
+    <!-- Column 5: Inner Circle (newsletter) -->
+    <div class="ka-footer__news">
+      <p class="ka-footer__col-title">{{ section.settings.news_title }}</p>
+      <p>{{ section.settings.news_body }}</p>
+      {%- comment -%}
+        Defaults to Shopify native customer email subscribe. To swap for
+        Klaviyo, replace this {% form 'customer' %} block with the embed.
+      {%- endcomment -%}
+      {% form 'customer', class: 'ka-footer__news-form' %}
+        {% if form.posted_successfully? %}
+          <p class="ka-footer__news-success">{{ section.settings.news_success }}</p>
+        {% else %}
+          <input type="hidden" name="contact[tags]" value="newsletter,ka-correspondence" />
+          <input
+            type="email"
+            name="contact[email]"
+            class="ka-footer__news-input"
+            placeholder="{{ section.settings.news_placeholder }}"
+            aria-label="{{ section.settings.news_placeholder }}"
+            required
+          />
+          <button type="submit" class="ka-footer__news-submit">{{ section.settings.news_submit }}</button>
+        {% endif %}
+      {% endform %}
     </div>
   </div>
 
   <div class="ka-footer__bottom">
-    <p class="ka-footer__copy">&copy; {{ 'now' | date: '%Y' }} {{ section.settings.brand_name }}. All rights reserved.</p>
-    <ul class="ka-footer__legal">
-      <li><a href="{{ section.settings.privacy_url | default: '/policies/privacy-policy' }}">Privacy Policy</a></li>
-      <li><a href="{{ section.settings.terms_url | default: '/policies/terms-of-service' }}">Terms of Service</a></li>
-      <li><a href="{{ section.settings.shipping_url | default: '/policies/shipping-policy' }}">Shipping &amp; Returns</a></li>
-    </ul>
+    <div class="ka-footer__bottom-row">
+      <p class="ka-footer__copy">&copy; {{ 'now' | date: '%Y' }} {{ section.settings.brand_name }}. All rights reserved.</p>
+      <ul class="ka-footer__legal">
+        <li><a href="{{ section.settings.privacy_url | default: '/policies/privacy-policy' }}">Privacy Policy</a></li>
+        <li><a href="{{ section.settings.terms_url | default: '/policies/terms-of-service' }}">Terms of Service</a></li>
+        <li><a href="{{ section.settings.shipping_url | default: '/policies/shipping-policy' }}">Shipping &amp; Returns</a></li>
+      </ul>
+    </div>
+    <div class="ka-footer__bottom-row">
+      <p class="ka-footer__service-line">{{ section.settings.service_line }}</p>
+    </div>
   </div>
 </footer>
 
@@ -86,6 +117,7 @@
   "tag": "section",
   "settings": [
     { "type": "text",     "id": "brand_name",    "label": "Brand name",  "default": "Karishma Ashita" },
+    { "type": "text",     "id": "logo_subline",  "label": "Logo sub-line", "default": "Bridal Couture · Mumbai" },
     { "type": "textarea", "id": "tagline",        "label": "Tagline",     "default": "Bridal couture, handcrafted\nin Mumbai." },
     {
       "type": "header",
@@ -99,6 +131,20 @@
     },
     { "type": "text",     "id": "email",   "label": "Email address", "default": "info@karishmaashita.com" },
     { "type": "textarea", "id": "address", "label": "Address / shipping note", "default": "Mumbai, India\nComplimentary worldwide shipping" },
+    {
+      "type": "header",
+      "content": "Inner Circle (newsletter column)"
+    },
+    { "type": "text",     "id": "news_title",       "label": "Column title",   "default": "The Inner Circle" },
+    { "type": "textarea", "id": "news_body",        "label": "Supporting line", "default": "Collection previews, styling notes and private trunk show invitations — delivered quietly to your inbox." },
+    { "type": "text",     "id": "news_placeholder", "label": "Input placeholder", "default": "Your email address" },
+    { "type": "text",     "id": "news_submit",      "label": "Submit button",  "default": "Join" },
+    { "type": "text",     "id": "news_success",     "label": "Success message", "default": "Welcome in. You are one of us now." },
+    {
+      "type": "header",
+      "content": "Bottom bar"
+    },
+    { "type": "text", "id": "service_line", "label": "Service line", "default": "Mumbai · Worldwide Delivery · DHL Express" },
     {
       "type": "header",
       "content": "Legal links"

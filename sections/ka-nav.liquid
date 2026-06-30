@@ -1,18 +1,30 @@
 {{ 'ka-nav.css' | asset_url | stylesheet_tag }}
 
-<nav class="ka-nav" id="ka-nav" role="navigation" aria-label="Main navigation">
+{%- comment -%}
+  Global header: utility bar (z-index 101, top:0, permanent) + nav (z-index 100, top:34px).
+  Homepage opens transparent over the dark hero and crystallises on scroll (.scrolled added
+  by ka-theme.js). Collection / Product / all other templates have no dark hero behind the
+  nav, so they render permanently in the settled (opaque/blurred) state via .ka-nav--settled
+  and need no scroll listener. The nav NEVER changes `top` on scroll (utility bar overlap fix).
+{%- endcomment -%}
+
+{%- assign is_home = false -%}
+{%- if request.page_type == 'index' -%}{%- assign is_home = true -%}{%- endif -%}
+
+<div class="ka-utility-bar" role="complementary" aria-label="Service messages">
+  <b>{{ section.settings.utility_1 }}</b><span aria-hidden="true">·</span><b>{{ section.settings.utility_2 }}</b><span aria-hidden="true">·</span><b>{{ section.settings.utility_3 }}</b>
+</div>
+
+<nav class="ka-nav{% unless is_home %} ka-nav--settled{% endunless %}" id="ka-nav" role="navigation" aria-label="Main navigation">
   <ul class="ka-nav__links">
     <li><a href="{{ section.settings.link_bestsellers }}">{{ section.settings.label_bestsellers }}</a></li>
     <li><a href="{{ section.settings.link_collections }}"{% if template contains 'collection' %} class="is-active"{% endif %}>{{ section.settings.label_collections }}</a></li>
     <li><a href="{{ section.settings.link_diaries }}">{{ section.settings.label_diaries }}</a></li>
   </ul>
 
-  <a href="/" class="ka-nav__logo">K&amp;A</a>
+  <a href="/" class="ka-nav__logo">{{ section.settings.logo_text }}<small>{{ section.settings.logo_subline }}</small></a>
 
   <div class="ka-nav__actions">
-    <a href="https://wa.me/{{ settings.whatsapp_number }}" class="ka-nav__whatsapp" target="_blank" rel="noopener">
-      {{ section.settings.label_whatsapp }}
-    </a>
     <button class="ka-nav__toggle" id="ka-nav-toggle" aria-label="Open menu" aria-expanded="false">
       <span></span><span></span><span></span>
     </button>
@@ -44,19 +56,27 @@
   "settings": [
     {
       "type": "header",
+      "content": "Utility bar"
+    },
+    { "type": "text", "id": "utility_1", "label": "Utility phrase 1", "default": "Complimentary Worldwide Delivery" },
+    { "type": "text", "id": "utility_2", "label": "Utility phrase 2", "default": "Hand-Embroidered to Order" },
+    { "type": "text", "id": "utility_3", "label": "Utility phrase 3", "default": "Private & Virtual Appointments" },
+    {
+      "type": "header",
+      "content": "Logo"
+    },
+    { "type": "text", "id": "logo_text",    "label": "Logo wordmark", "default": "Karishma Ashita" },
+    { "type": "text", "id": "logo_subline", "label": "Logo sub-line", "default": "Bridal Couture · Mumbai" },
+    {
+      "type": "header",
       "content": "Desktop nav links"
     },
-    { "type": "text", "id": "label_bestsellers", "label": "Bestsellers label", "default": "Bestsellers" },
-    { "type": "url",  "id": "link_bestsellers",  "label": "Bestsellers URL" },
+    { "type": "text", "id": "label_bestsellers", "label": "Signature label", "default": "Signature" },
+    { "type": "url",  "id": "link_bestsellers",  "label": "Signature URL" },
     { "type": "text", "id": "label_collections", "label": "Collections label", "default": "Collections" },
     { "type": "url",  "id": "link_collections",  "label": "Collections URL" },
     { "type": "text", "id": "label_diaries", "label": "Client Diaries label", "default": "Client Diaries" },
     { "type": "url",  "id": "link_diaries",  "label": "Client Diaries URL" },
-    {
-      "type": "header",
-      "content": "Concierge / WhatsApp"
-    },
-    { "type": "text", "id": "label_whatsapp", "label": "Concierge button label", "default": "Concierge" },
     {
       "type": "header",
       "content": "Mobile nav additional links"
