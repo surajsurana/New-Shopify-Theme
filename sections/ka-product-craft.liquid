@@ -1,0 +1,34 @@
+{{ 'ka-product-craft.css' | asset_url | stylesheet_tag }}
+
+{%- liquid
+  assign hours = product.metafields.custom.embroidery_hours | default: section.settings.fallback_hours
+-%}
+
+<section class="ka-craft">
+  <div class="ka-craft__img reveal-img">
+    {%- if section.settings.image != blank -%}
+      <img src="{{ section.settings.image | image_url: width: 1400 }}" alt="{{ section.settings.image.alt | escape | default: 'Hand embroidery — K&A atelier' }}" loading="lazy" class="img-filter-dark" width="1400" height="1750" />
+    {%- endif -%}
+  </div>
+  <div class="ka-craft__txt reveal">
+    <div class="eyebrow">{{ section.settings.eyebrow }}</div>
+    <div class="ka-craft__big">{{ hours }}<small>{{ section.settings.stat_label }}</small></div>
+    <p>{{ section.settings.body }}</p>
+    <div class="ka-craft__rule"></div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Craftsmanship Band",
+  "tag": "section",
+  "settings": [
+    { "type": "image_picker", "id": "image", "label": "Image (left)", "info": "Falls back to a gradient placeholder if empty." },
+    { "type": "text",     "id": "eyebrow",       "label": "Eyebrow", "default": "The Hand of the Maker" },
+    { "type": "text",     "id": "fallback_hours","label": "Fallback embroidery hours", "default": "180+", "info": "Used when a product has no custom.embroidery_hours metafield. Per-product accuracy matters — set the metafield per SKU." },
+    { "type": "text",     "id": "stat_label",    "label": "Stat label", "default": "Hours of Hand Embroidery" },
+    { "type": "textarea", "id": "body",          "label": "Body copy", "default": "No machine touches a Karishma & Ashita corset. Each motif is placed by a single karigar, bead by bead, thread by thread — a discipline measured not in minutes, but in patience. What you wear is the quiet record of a craftsman's hands." }
+  ],
+  "presets": [{ "name": "Craftsmanship Band" }]
+}
+{% endschema %}

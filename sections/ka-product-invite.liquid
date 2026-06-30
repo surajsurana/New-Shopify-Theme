@@ -1,0 +1,35 @@
+{{ 'ka-product-invite.css' | asset_url | stylesheet_tag }}
+
+{%- liquid
+  assign wa = settings.whatsapp_number
+  assign appt_url = section.settings.appointment_url | default: '/pages/appointments'
+  assign wa_text = 'Hi, I' | append: '%27' | append: 'd like to enquire about the ' | append: product.title
+  assign wa_enquire = 'https://wa.me/' | append: wa | append: '?text=' | append: wa_text | url_param_escape
+-%}
+
+<section class="ka-invite">
+  <div class="ka-invite__inner reveal">
+    <div class="ka-rule" style="margin:0 auto"></div>
+    <div class="eyebrow" style="margin-top:24px">{{ section.settings.eyebrow }}</div>
+    <h2>{{ section.settings.title }}</h2>
+    <p>{{ section.settings.body }}</p>
+    <div class="ka-invite__acts">
+      <a class="ka-btn" href="{{ appt_url }}">Book a Private Appointment</a>
+      <a class="ka-btn ka-btn--concierge" href="{{ wa_enquire }}" target="_blank" rel="noopener"><span class="dot"></span>Speak with a Couture Concierge</a>
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Conversation CTA",
+  "tag": "section",
+  "settings": [
+    { "type": "url",      "id": "appointment_url", "label": "Appointment booking URL" },
+    { "type": "text",     "id": "eyebrow", "label": "Eyebrow", "default": "The K&A Experience" },
+    { "type": "text",     "id": "title",   "label": "Title",   "default": "Every Piece Begins with a Conversation" },
+    { "type": "textarea", "id": "body",    "label": "Body", "default": "Tell us about your celebration. Our atelier will guide you on fit, fabric and customisation — with no obligation, only care." }
+  ],
+  "presets": [{ "name": "Conversation CTA" }]
+}
+{% endschema %}

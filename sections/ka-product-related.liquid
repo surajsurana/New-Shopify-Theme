@@ -1,0 +1,57 @@
+{{ 'ka-product-related.css' | asset_url | stylesheet_tag }}
+
+{%- liquid
+  assign limit = section.settings.products_limit | default: 4
+  assign curated = product.metafields.custom.related_products.value
+
+  # Build the list of products to show:
+  # 1) curated metafield list (product_list) if present,
+  # 2) else same-collection products (excluding current),
+  # 3) Shopify-native recommendations also available via the Recommendations API
+  #    in admin — kept here as the collection-driven default per F7.
+  assign related = curated
+  if related == blank
+    assign related = product.collections.first.products
+  endif
+-%}
+
+<section class="ka-related">
+  <div class="ka-sec-head reveal" style="margin-bottom:0">
+    <div class="ka-rule" style="margin:0 auto"></div>
+    <div class="eyebrow" style="margin-top:22px">{{ section.settings.eyebrow }}</div>
+    <h2>{{ section.settings.title | default: product.collections.first.title }}</h2>
+  </div>
+
+  <div class="ka-r-grid">
+    {%- assign shown = 0 -%}
+    {%- for p in related -%}
+      {%- if p.id != product.id and shown < limit -%}
+        {%- assign shown = shown | plus: 1 -%}
+        <a class="ka-r-card reveal-img reveal-delay-{{ forloop.index | modulo: 4 }}" href="{{ p.url }}">
+          <div class="ka-r-card__ph">
+            {%- if p.featured_image -%}
+              <img src="{{ p.featured_image | image_url: width: 800 }}" alt="{{ p.featured_image.alt | escape | default: p.title }}" loading="lazy" class="img-filter" width="800" height="1066" />
+            {%- endif -%}
+          </div>
+          <div class="ka-r-card__ct">{{ p.collections.first.title | default: section.settings.fallback_tag }}</div>
+          <h3>{{ p.title }}</h3>
+          <div class="ka-r-card__pr">{{ p.price | money }} <span style="color:var(--c-ink-muted)">onward</span></div>
+        </a>
+      {%- endif -%}
+    {%- endfor -%}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Related Products",
+  "tag": "section",
+  "settings": [
+    { "type": "text",  "id": "eyebrow", "label": "Eyebrow", "default": "Continue the Collection" },
+    { "type": "text",  "id": "title",   "label": "Title (blank = collection name)" },
+    { "type": "text",  "id": "fallback_tag", "label": "Fallback card tag", "default": "K&A" },
+    { "type": "range", "id": "products_limit", "label": "Max products", "min": 2, "max": 8, "step": 1, "default": 4 }
+  ],
+  "presets": [{ "name": "Related Products" }]
+}
+{% endschema %}

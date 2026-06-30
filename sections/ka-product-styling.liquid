@@ -1,0 +1,72 @@
+{{ 'ka-product-styling.css' | asset_url | stylesheet_tag }}
+
+{%- liquid
+  assign wa = settings.whatsapp_number
+  assign wa_text = 'Hi, I' | append: '%27' | append: 'd like a styling consultation for the ' | append: product.title
+  assign wa_styling = 'https://wa.me/' | append: wa | append: '?text=' | append: wa_text | url_param_escape
+  assign body = product.metafields.custom.styling_notes | default: section.settings.body
+  assign accent = product.metafields.custom.styling_accent_line | default: section.settings.accent
+-%}
+
+<section class="ka-styling">
+  <div class="ka-styling__grid">
+    <div class="ka-styling__text reveal">
+      <div class="ka-rule"></div>
+      <div class="eyebrow" style="margin-top:22px">{{ section.settings.eyebrow }}</div>
+      <h2>{{ section.settings.title }}</h2>
+      <p>{{ body }}</p>
+      {%- if accent != blank -%}<p class="ka-styling__accent">{{ accent }}</p>{%- endif -%}
+      <div class="ka-chips">
+        {%- for block in section.blocks -%}
+          <span class="ka-chip" {{ block.shopify_attributes }}>{{ block.settings.label }}</span>
+        {%- endfor -%}
+      </div>
+      <div style="margin-top:32px">
+        <a class="ka-btn-line" href="{{ wa_styling }}" target="_blank" rel="noopener">Ask for a Styling Consultation &rarr;</a>
+      </div>
+    </div>
+    <div class="ka-styling__ph reveal-img reveal-delay-1">
+      {%- if section.settings.image != blank -%}
+        <img src="{{ section.settings.image | image_url: width: 1000 }}" alt="{{ section.settings.image.alt | escape | default: 'Styling — K&A' }}" loading="lazy" class="img-filter" width="1000" height="1250" />
+      {%- endif -%}
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Styling Notes",
+  "tag": "section",
+  "settings": [
+    { "type": "image_picker", "id": "image", "label": "Image (right)", "info": "Falls back to a gradient placeholder if empty." },
+    { "type": "text",     "id": "eyebrow", "label": "Eyebrow", "default": "Styling Notes" },
+    { "type": "text",     "id": "title",   "label": "Title",   "default": "One House, Every Celebration" },
+    { "type": "richtext", "id": "body",    "label": "Body copy (fallback)", "info": "Overridden by the product's custom.styling_notes metafield when present.", "default": "<p>This piece was made to move through a wedding season. Worn long and fluid for a reception, it is pure drama. Styled with heirloom jewels for a sangeet, it becomes a memory. Our style advisors will tailor the silhouette, length and embroidery to your role in the celebration.</p>" },
+    { "type": "text",     "id": "accent",  "label": "Accent line (fallback)", "info": "Overridden by custom.styling_accent_line metafield when present.", "default": "Whether you are the bride, her sister, her mother, or the guest everyone remembers — there is a way to wear it that is entirely yours." }
+  ],
+  "blocks": [
+    {
+      "type": "chip",
+      "name": "Occasion chip",
+      "settings": [
+        { "type": "text", "id": "label", "label": "Label", "default": "The Bride" }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Styling Notes",
+      "blocks": [
+        { "type": "chip", "settings": { "label": "The Bride" } },
+        { "type": "chip", "settings": { "label": "Sister of the Bride" } },
+        { "type": "chip", "settings": { "label": "Mother of the Bride" } },
+        { "type": "chip", "settings": { "label": "Reception" } },
+        { "type": "chip", "settings": { "label": "Cocktail" } },
+        { "type": "chip", "settings": { "label": "Sangeet" } },
+        { "type": "chip", "settings": { "label": "Engagement" } },
+        { "type": "chip", "settings": { "label": "Festive" } }
+      ]
+    }
+  ]
+}
+{% endschema %}

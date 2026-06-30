@@ -1,0 +1,25 @@
+{{ 'ka-product-note.css' | asset_url | stylesheet_tag }}
+
+<section class="ka-note">
+  <div class="ka-note__inner reveal">
+    <div class="ka-rule" style="margin:0 auto"></div>
+    <div class="eyebrow" style="margin-top:26px">{{ section.settings.eyebrow }}</div>
+    <p class="ka-note__quote">{{ section.settings.quote }}</p>
+    <div class="ka-note__sig">{{ section.settings.signature }}</div>
+    <div class="ka-note__sig-sub">{{ section.settings.signature_sub }}</div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Designers' Note",
+  "tag": "section",
+  "settings": [
+    { "type": "text",     "id": "eyebrow",       "label": "Eyebrow", "default": "The Designers' Note" },
+    { "type": "textarea", "id": "quote",         "label": "Quote",   "default": "We wanted the structure of a corset and the soul of a saree to meet — something a woman could wear to be looked at, and feel entirely herself." },
+    { "type": "text",     "id": "signature",     "label": "Signature", "default": "Karishma & Ashita" },
+    { "type": "text",     "id": "signature_sub", "label": "Signature sub-line", "default": "Founders & Creative Directors" }
+  ],
+  "presets": [{ "name": "Designers' Note" }]
+}
+{% endschema %}

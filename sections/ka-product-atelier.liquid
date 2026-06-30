@@ -1,0 +1,53 @@
+{{ 'ka-product-atelier.css' | asset_url | stylesheet_tag }}
+
+<section class="ka-atelier">
+  <div class="ka-sec-head reveal">
+    <div class="ka-rule" style="margin:0 auto"></div>
+    <div class="eyebrow" style="margin-top:22px">{{ section.settings.eyebrow }}</div>
+    <h2>{{ section.settings.title }}</h2>
+    <p>{{ section.settings.intro }}</p>
+  </div>
+  <div class="ka-steps">
+    {%- for block in section.blocks -%}
+      <div class="ka-step reveal reveal-delay-{{ forloop.index }}" {{ block.shopify_attributes }}>
+        <div class="ka-step__no">{{ block.settings.numeral }}</div>
+        <h3>{{ block.settings.heading }}</h3>
+        <p>{{ block.settings.body }}</p>
+      </div>
+    {%- endfor -%}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Atelier Journey",
+  "tag": "section",
+  "settings": [
+    { "type": "text",     "id": "eyebrow", "label": "Eyebrow", "default": "Made for You Alone" },
+    { "type": "text",     "id": "title",   "label": "Title",   "default": "The Couture Journey" },
+    { "type": "textarea", "id": "intro",   "label": "Intro line", "default": "From the first conversation to the final fitting, your piece is created around you — and you alone." }
+  ],
+  "blocks": [
+    {
+      "type": "step",
+      "name": "Step",
+      "limit": 3,
+      "settings": [
+        { "type": "text",     "id": "numeral", "label": "Roman numeral", "default": "I" },
+        { "type": "text",     "id": "heading", "label": "Heading", "default": "The Consultation" },
+        { "type": "textarea", "id": "body",    "label": "Body", "default": "Begin with a private appointment — in our Mumbai atelier or virtually from anywhere in the world. We listen, we sketch, we advise." }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Atelier Journey",
+      "blocks": [
+        { "type": "step", "settings": { "numeral": "I",   "heading": "The Consultation",     "body": "Begin with a private appointment — in our Mumbai atelier or virtually from anywhere in the world. We listen, we sketch, we advise." } },
+        { "type": "step", "settings": { "numeral": "II",  "heading": "Made to Your Measure", "body": "Your garment is cut and hand-embroidered to your exact measurements, with any personalisation worked into the design." } },
+        { "type": "step", "settings": { "numeral": "III", "heading": "The Final Fitting",    "body": "Hand-finished, pressed and quality-checked, then delivered to your door worldwide by DHL Express — ready for your moment." } }
+      ]
+    }
+  ]
+}
+{% endschema %}
