@@ -7,7 +7,6 @@
    can never collide with the utility bar's permanent top:0/z-index:101.
 ================================================================ */
 
-/* ── Utility bar (permanent, never moves) ── */
 .ka-utility-bar {
   position: fixed;
   top: 0; left: 0; right: 0;
@@ -24,8 +23,11 @@
 }
 .ka-utility-bar span { opacity: 0.55; margin: 0 14px; }
 .ka-utility-bar b { font-weight: 400; opacity: 0.95; }
+.ka-utility-bar__track { display: inline-flex; white-space: nowrap; }
+.ka-utility-bar__group { display: inline-flex; align-items: center; flex: 0 0 auto; }
+.ka-utility-bar__group[aria-hidden="true"] { display: none; }
+@keyframes utility-scroll { from { transform: translateX(0); } to { transform: translateX(-50%); } }
 
-/* ── Nav ── */
 .ka-nav {
   position: fixed;
   top: 34px; left: 0; right: 0;
@@ -40,8 +42,6 @@
     backdrop-filter var(--dur-med) var(--ease-soft);
 }
 
-/* Crystallised state — applied on homepage via .scrolled (JS),
-   and permanently on interior pages via .ka-nav--settled. */
 .ka-nav.scrolled,
 .ka-nav--settled {
   background: rgba(247,243,236,0.94);
@@ -115,6 +115,36 @@
   gap: 24px;
 }
 
+.ka-nav__bag {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  padding: 4px;
+  color: white;
+  transition: color var(--dur-med);
+}
+.ka-nav.scrolled .ka-nav__bag,
+.ka-nav--settled .ka-nav__bag { color: var(--c-charcoal); }
+.ka-nav__bag svg { width: 20px; height: 20px; stroke: currentColor; fill: none; }
+.ka-nav__bag__count {
+  position: absolute;
+  top: -2px; right: -4px;
+  min-width: 15px; height: 15px;
+  border-radius: 50%;
+  background: var(--c-rosegold);
+  color: #fff;
+  font-family: var(--f-sans);
+  font-size: 0.56rem;
+  line-height: 15px;
+  text-align: center;
+  padding: 0 3px;
+}
+.ka-nav__bag__count:empty,
+.ka-nav__bag__count[data-count="0"] { display: none; }
+
 .ka-nav__toggle {
   display: none;
   flex-direction: column;
@@ -131,7 +161,6 @@
 .ka-nav.scrolled .ka-nav__toggle span,
 .ka-nav--settled .ka-nav__toggle span { background: var(--c-charcoal); }
 
-/* ── Mobile nav drawer ── */
 .ka-mobile-nav {
   position: fixed;
   inset: 0;
@@ -176,6 +205,32 @@
 }
 .ka-mobile-nav__links a:hover { color: var(--c-rosegold); }
 
+.ka-mobile-nav__bag-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 18px 0;
+  border-bottom: 1px solid rgba(255,255,255,0.07);
+  font-family: var(--f-sans);
+  font-size: 0.78rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: white;
+}
+.ka-mobile-nav__bag-row svg {
+  width: 18px; height: 18px;
+  stroke: currentColor; fill: none;
+  flex: 0 0 auto;
+}
+.ka-mobile-nav__bag-count {
+  margin-left: auto;
+  font-family: var(--f-sans);
+  font-size: 0.7rem;
+  color: var(--c-rosegold);
+}
+.ka-mobile-nav__bag-count:empty,
+.ka-mobile-nav__bag-count[data-count="0"] { display: none; }
+
 .ka-mobile-nav__footer { margin-top: auto; }
 .ka-mobile-nav__footer p {
   font-family: var(--f-sans);
@@ -195,11 +250,19 @@
 }
 
 @media (max-width: 900px) {
-  .ka-utility-bar { font-size: 0.54rem; letter-spacing: 0.12em; padding: 8px 12px; }
+  .ka-utility-bar { font-size: 0.54rem; letter-spacing: 0.12em; padding: 8px 12px; overflow: hidden; }
   .ka-utility-bar span { margin: 0 8px; }
+  .ka-utility-bar__track { animation: utility-scroll 20s linear infinite; }
+  .ka-utility-bar__group[aria-hidden="true"] { display: inline-flex; }
+  @media (prefers-reduced-motion: reduce) {
+    .ka-utility-bar__track { animation: none; }
+    .ka-utility-bar__group[aria-hidden="true"] { display: none; }
+    .ka-utility-bar { overflow-x: auto; }
+  }
   .ka-nav { top: 30px; grid-template-columns: auto 1fr auto; padding: 18px 20px; }
   .ka-nav__links   { display: none; }
   .ka-nav__toggle  { display: flex; }
   .ka-nav__logo    { font-size: 1.2rem; }
   .ka-nav__logo small { font-size: 0.44rem; letter-spacing: 0.26em; }
+  .ka-nav__actions { gap: 16px; }
 }

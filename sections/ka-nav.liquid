@@ -11,8 +11,26 @@
 {%- assign is_home = false -%}
 {%- if request.page_type == 'index' -%}{%- assign is_home = true -%}{%- endif -%}
 
+{%- comment -%}
+  Utility bar — Round 3 fix (R3-3): the three phrases are wrapped in a
+  ".ka-utility-bar__track" containing two identical ".ka-utility-bar__group"
+  copies (the second copy is aria-hidden, purely decorative). Desktop is
+  untouched (track just sits still). At the mobile breakpoint (<=900px,
+  see ka-nav.css) the track animates translateX(0) -> translateX(-50%) in
+  a continuous loop instead of wrapping to two lines. prefers-reduced-motion
+  disables the animation and falls back to plain horizontal scroll (the
+  duplicate group is hidden so it doesn't sit there inert).
+  Spec: Docs/cta-architecture-revision.md Round 3 / R3-3.
+{%- endcomment -%}
 <div class="ka-utility-bar" role="complementary" aria-label="Service messages">
-  <b>{{ section.settings.utility_1 }}</b><span aria-hidden="true">·</span><b>{{ section.settings.utility_2 }}</b><span aria-hidden="true">·</span><b>{{ section.settings.utility_3 }}</b>
+  <div class="ka-utility-bar__track">
+    <span class="ka-utility-bar__group">
+      <b>{{ section.settings.utility_1 }}</b><span aria-hidden="true">·</span><b>{{ section.settings.utility_2 }}</b><span aria-hidden="true">·</span><b>{{ section.settings.utility_3 }}</b>
+    </span>
+    <span class="ka-utility-bar__group" aria-hidden="true">
+      <b>{{ section.settings.utility_1 }}</b><span aria-hidden="true">·</span><b>{{ section.settings.utility_2 }}</b><span aria-hidden="true">·</span><b>{{ section.settings.utility_3 }}</b>
+    </span>
+  </div>
 </div>
 
 <nav class="ka-nav{% unless is_home %} ka-nav--settled{% endunless %}" id="ka-nav" role="navigation" aria-label="Main navigation">
@@ -25,6 +43,18 @@
   <a href="/" class="ka-nav__logo">{{ section.settings.logo_text }}<small>{{ section.settings.logo_subline }}</small></a>
 
   <div class="ka-nav__actions">
+    {%- comment -%}
+      Bag icon — Round 2 addition (R2-7). Lives in every template via
+      this shared section. Count badge is updated sitewide by
+      window.kaUpdateBagCount() in ka-theme.js, which targets every
+      [data-ka-bag-count] node (this one + the mobile drawer's). The
+      data-count="0" attribute pairs with ka-nav.css's
+      [data-count="0"] { display:none } so an empty bag shows no badge.
+    {%- endcomment -%}
+    <a href="{{ routes.cart_url }}" class="ka-nav__bag" aria-label="View your bag">
+      <svg viewBox="0 0 24 24" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 8h12l-1 12H7L6 8z"/><path d="M9 8V6a3 3 0 0 1 6 0v2"/></svg>
+      <span class="ka-nav__bag__count" data-ka-bag-count data-count="{{ cart.item_count }}">{% if cart.item_count > 0 %}{{ cart.item_count }}{% endif %}</span>
+    </a>
     <button class="ka-nav__toggle" id="ka-nav-toggle" aria-label="Open menu" aria-expanded="false">
       <span></span><span></span><span></span>
     </button>
@@ -38,8 +68,17 @@
     <li><a href="{{ section.settings.link_collections }}">{{ section.settings.label_collections }}</a></li>
     <li><a href="{{ section.settings.link_diaries }}">{{ section.settings.label_diaries }}</a></li>
     <li><a href="{{ section.settings.link_about }}">About</a></li>
-    <li><a href="{{ section.settings.link_appointment }}">Book an Appointment</a></li>
+    <li><a href="#" data-ka-appt-link>Book an Appointment</a></li>
   </ul>
+  {%- comment -%}
+    My Bag row — Round 2 addition (R2-7), mobile-drawer equivalent of
+    the desktop .ka-nav__bag icon. Same [data-ka-bag-count] contract.
+  {%- endcomment -%}
+  <a href="{{ routes.cart_url }}" class="ka-mobile-nav__bag-row">
+    <svg viewBox="0 0 24 24" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 8h12l-1 12H7L6 8z"/><path d="M9 8V6a3 3 0 0 1 6 0v2"/></svg>
+    My Bag
+    <span class="ka-mobile-nav__bag-count" data-ka-bag-count data-count="{{ cart.item_count }}">{% if cart.item_count > 0 %}{{ cart.item_count }}{% endif %}</span>
+  </a>
   <div class="ka-mobile-nav__footer">
     <p>Concierge</p>
     <a href="https://wa.me/{{ settings.whatsapp_number }}" target="_blank" rel="noopener">
@@ -47,6 +86,15 @@
     </a>
   </div>
 </nav>
+
+<script>
+  document.addEventListener('click', function (e) {
+    var link = e.target.closest && e.target.closest('[data-ka-appt-link]');
+    if (!link) return;
+    e.preventDefault();
+    window.open('https://wa.me/919967543087', '_blank');
+  });
+</script>
 
 {% schema %}
 {
