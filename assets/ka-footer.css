@@ -147,6 +147,15 @@
 }
 .ka-footer__legal a:hover { color: rgba(255,255,255,0.5); }
 
+/* ── Locale line (Cart build-spec F1, resolved): plain static text,
+   no dropdown, no interactivity of any kind — see ka-footer.liquid. ── */
+.ka-footer__locale {
+  font-family: var(--f-sans);
+  font-size: 0.63rem; font-weight: 400;
+  color: rgba(255,255,255,0.32);
+  letter-spacing: 0.14em; text-transform: uppercase;
+}
+
 @media (max-width: 900px) {
   .ka-footer__top { grid-template-columns: 1fr 1fr; gap: var(--s-md); }
   .ka-footer__brand { grid-column: 1 / -1; }
