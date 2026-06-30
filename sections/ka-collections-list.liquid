@@ -7,29 +7,26 @@
   header). Built so that link has somewhere real to go instead of
   dead-ending or rendering Shopify's bare default collections-list markup.
 
-  Unlike the homepage's sections/ka-collections-directory.liquid (which
-  hand-curates a fixed 4-collection block list for the homepage teaser),
-  this section loops over Shopify's real `collections` object so it stays
-  accurate and complete as collections are added/removed/published or
-  unpublished in Admin — nothing here needs a manual update when the
-  catalogue changes. It reuses the exact same card markup/CSS classes as
+  Curated, block-based list (matches the convention already used by
+  sections/ka-bestsellers.liquid's native "collection" setting type) —
+  merchant picks which collections show via Theme Customizer blocks,
+  instead of this section auto-looping over every published collection.
+  Reuses the exact same card markup/CSS classes as
   ka-collections-directory.liquid (.ka-coll-card and children) for visual
-  consistency with the rest of the site, just sourced from `collections`
-  instead of curated blocks.
+  consistency with the rest of the site.
 
-  Pagination: Shopify's {% paginate %} tag caps at 50 items per page
-  (platform hard limit, confirmed via shopify.dev) — set below to a more
-  reasonable 24 per page for a 4-column grid (6 rows), with a simple
-  "Load More" link (plain href to paginate.next.url, real Shopify
-  pagination, no AJAX/JS dependency) since this is explicitly a soft-launch
-  placeholder, not bespoke. This is NOT the final design for this page —
-  it gets its own real design later through the normal Creative-Director-
-  approved pipeline, same as every other non-core page.
+  Per Suraj (2026-06-30): replaced the old "loop over every real
+  collection" version because it was surfacing unfinished/test/internal
+  collections he doesn't want customer-facing. Defaulted in
+  templates/list-collections.json to his 5 named collections: The Festive
+  Edit, The Bloom Soirée, Chamakk, Barre Oblique, The Wedding Festive
+  Collection. He (or Creative Director) can add/remove/reorder via
+  Theme Customizer blocks at any time — no code change needed.
+
+  This is NOT the final design for this page — it gets its own real
+  design later through the normal Creative-Director-approved pipeline,
+  same as every other non-core page.
 {%- endcomment -%}
-
-{% liquid
-  assign per_page = section.settings.collections_per_page | default: 24
-%}
 
 <section class="ka-collections-list" aria-label="All collections">
   <div class="ka-collections-list__inner">
@@ -38,11 +35,21 @@
       <h1 class="ka-collections-list__title">{{ section.settings.title }}</h1>
     </div>
 
-    {% paginate collections by per_page %}
-      {% if collections.size > 0 %}
-        <div class="ka-collections-list__grid">
-          {% for coll in collections %}
-            <a href="{{ coll.url }}" class="ka-coll-card">
+    {% liquid
+      assign visible_blocks = 0
+      for block in section.blocks
+        if block.settings.collection != blank
+          assign visible_blocks = visible_blocks | plus: 1
+        endif
+      endfor
+    %}
+
+    {% if visible_blocks > 0 %}
+      <div class="ka-collections-list__grid">
+        {% for block in section.blocks %}
+          {% assign coll = block.settings.collection %}
+          {% if coll != blank %}
+            <a href="{{ coll.url }}" class="ka-coll-card" {{ block.shopify_attributes }}>
               <div class="ka-coll-card__image">
                 {% if coll.image != blank %}
                   <img
@@ -64,23 +71,12 @@
                 <span class="ka-coll-card__arrow">Explore &rarr;</span>
               </div>
             </a>
-          {% endfor %}
-        </div>
-
-        {% if paginate.pages > 1 %}
-          <div class="ka-collections-list__pagination">
-            {% if paginate.next %}
-              <a href="{{ paginate.next.url }}" class="btn-outline-rose">Load More Collections</a>
-            {% endif %}
-            <span class="ka-collections-list__count">
-              Showing {{ paginate.current_offset | plus: collections.size }} of {{ paginate.items }} collections
-            </span>
-          </div>
-        {% endif %}
-      {% else %}
-        <p class="ka-collections-list__empty">{{ section.settings.empty_state_text }}</p>
-      {% endif %}
-    {% endpaginate %}
+          {% endif %}
+        {% endfor %}
+      </div>
+    {% else %}
+      <p class="ka-collections-list__empty">{{ section.settings.empty_state_text }}</p>
+    {% endif %}
   </div>
 </section>
 
@@ -92,21 +88,20 @@
   "settings": [
     {
       "type": "paragraph",
-      "content": "Soft-launch placeholder for the all-collections index page (/collections). Loops over every published collection automatically — no manual curation needed. Reuses the homepage Collections Directory's visual card pattern for consistency. Replace with a dedicated design later if this page needs its own bespoke treatment."
+      "content": "Curated /collections index. Add a block per collection you want shown (Theme Customizer), pick the collection in each block, reorder by dragging blocks. Defaults to 5 collections set in the template — edit anytime, no code change needed."
     },
     { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "Maison" },
     { "type": "text", "id": "title",   "label": "Page title", "default": "All Collections" },
-    {
-      "type": "range",
-      "id": "collections_per_page",
-      "label": "Collections per page",
-      "min": 8,
-      "max": 48,
-      "step": 4,
-      "default": 24,
-      "info": "Shopify's pagination hard limit is 50 per page."
-    },
     { "type": "text", "id": "empty_state_text", "label": "Empty state text", "default": "Collections are being prepared — please check back shortly, or explore our Signature edit." }
+  ],
+  "blocks": [
+    {
+      "type": "featured_collection",
+      "name": "Collection",
+      "settings": [
+        { "type": "collection", "id": "collection", "label": "Collection" }
+      ]
+    }
   ],
   "presets": [
     { "name": "Collections List" }
