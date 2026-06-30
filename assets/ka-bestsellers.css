@@ -1,4 +1,4 @@
-﻿/* ================================================================
+/* ================================================================
    KA-BESTSELLERS
 ================================================================ */
 .ka-bestsellers {
@@ -16,9 +16,11 @@
   overflow: hidden;
 }
 .ka-product-card__image {
+  display: block;
   aspect-ratio: 3/4;
   overflow: hidden;
   position: relative;
+  background: var(--c-smoke);
 }
 .ka-product-card__image img { transition: transform 1.2s var(--ease-luxury); }
 .ka-product-card:hover .ka-product-card__image img { transform: scale(1.04); }
@@ -42,6 +44,8 @@
   color: var(--c-charcoal);
   line-height: 1.25; margin-bottom: 8px;
 }
+.ka-product-card__name a { color: inherit; transition: color var(--dur-fast); }
+.ka-product-card__name a:hover { color: var(--c-rosegold-2); }
 .ka-product-card__fabric {
   font-family: var(--f-sans);
   font-size: 0.7rem; font-weight: 300;
@@ -60,10 +64,10 @@
   font-size: 0.6rem; font-weight: 400;
   letter-spacing: 0.18em; text-transform: uppercase;
   color: var(--c-rosegold-2);
-  opacity: 0; transform: translateX(-8px);
+  opacity: 0.55; transform: translateX(0);
   transition: opacity var(--dur-fast), transform var(--dur-med) var(--ease-luxury);
 }
-.ka-product-card:hover .ka-product-card__action { opacity: 1; transform: translateX(0); }
+.ka-product-card:hover .ka-product-card__action { opacity: 1; }
 
 @media (max-width: 900px) {
   .ka-bestsellers__grid { grid-template-columns: 1fr 1fr; gap: 2px; }

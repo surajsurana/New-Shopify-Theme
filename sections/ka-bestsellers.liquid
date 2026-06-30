@@ -19,7 +19,7 @@
   <div class="ka-bestsellers__grid">
     {% for product in featured_collection.products limit: limit %}
       <div class="ka-product-card reveal-img reveal-delay-{{ forloop.index | modulo: 4 }}">
-        <div class="ka-product-card__image">
+        <a href="{{ product.url }}" class="ka-product-card__image" aria-label="View {{ product.title | escape }}">
           {% if product.featured_image %}
             <img
               src="{{ product.featured_image | image_url: width: 800 }}"
@@ -33,9 +33,9 @@
           {% if product.tags contains 'made-to-order' or product.tags contains 'Made to Order' %}
             <span class="ka-product-card__badge">Made to Order</span>
           {% endif %}
-        </div>
+        </a>
         <div class="ka-product-card__info">
-          <h3 class="ka-product-card__name">{{ product.title }}</h3>
+          <h3 class="ka-product-card__name"><a href="{{ product.url }}">{{ product.title }}</a></h3>
           {% if product.metafields.custom.fabric_description != blank %}
             <p class="ka-product-card__fabric">{{ product.metafields.custom.fabric_description }}</p>
           {% endif %}
