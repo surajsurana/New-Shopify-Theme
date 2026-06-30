@@ -1,0 +1,92 @@
+{{ 'ka-cart-summary.css' | asset_url | stylesheet_tag }}
+<script src="{{ 'ka-cart.js' | asset_url }}" defer></script>
+
+{%- comment -%}
+  K&A Cart ("Selection") — Order Summary (sticky)
+  Spec: Docs/cart-build-spec.md, Section 3 §4/§5, F2, F3, F5, F7, CD Notes 2/3/5.
+
+  This is the theme's equivalent of Shopify's conventional `main-cart-footer`
+  section. It closes the `.ka-cart-wrap` grid opened by ka-cart-items.liquid
+  (see the ARCHITECTURE NOTE there) — these two sections are pinned adjacent
+  in templates/cart.json and must not be reordered or separated.
+
+  Renders nothing when the cart is empty (cart.item_count == 0) — there is
+  no order to summarise. ka-cart.js (loaded once here) handles real cart
+  AJAX for both this section and ka-cart-items.liquid: line-item remove via
+  /cart/change.js (F2) and notes persistence via /cart/update.js's `note`
+  param (F3). Checkout hands off to the real cart.checkout_url / a standard
+  form submit to /checkout (F7) — no platform risk.
+
+  No WhatsApp concierge CTA on the filled-cart summary (per Suraj, 30 June
+  2026 — overrides the earlier "Ask a Question Before You Checkout" CD
+  decision for this specific spot). The empty-state's concierge button in
+  ka-cart-items.liquid is untouched and still the page's only concierge
+  prompt when the cart has no items. The sitewide floating concierge
+  button (rendered globally from theme.liquid) is unrelated to this and
+  also untouched.
+{%- endcomment -%}
+
+{%- if cart.item_count > 0 -%}
+  <aside class="ka-summary reveal reveal-delay-1" id="kaSummaryPanel" data-ka-cart-summary>
+    <h2>Order Summary</h2>
+
+    <div class="ka-summary-row"><span>Subtotal</span><span class="v" data-ka-subtotal>{{ cart.original_total_price | money }}</span></div>
+    <div class="ka-summary-row ka-summary-row--ship"><span>Worldwide Delivery</span><span class="v">Complimentary</span></div>
+    {%- if cart.total_discount > 0 -%}
+      <div class="ka-summary-row"><span>Savings</span><span class="v" data-ka-savings>&minus;{{ cart.total_discount | money }}</span></div>
+    {%- endif -%}
+
+    <div class="ka-summary-divider"></div>
+
+    <div class="ka-summary-total">
+      <span class="lbl">Estimated Total</span>
+      <span class="amt" data-ka-total>{{ cart.total_price | money }}</span>
+    </div>
+    <div class="ka-summary-tax">Taxes included. Nothing further is added at checkout.</div>
+
+    <form action="{{ routes.cart_update_url }}" method="post" id="kaCartNotesForm">
+      <div class="ka-notes">
+        <label for="kaCartNotes">A Note for Your Atelier</label>
+        <p class="hint">Already shared your measurements with a stylist? Mention her name here, or leave any notes for your made-to-order piece.</p>
+        <textarea
+          id="kaCartNotes"
+          name="note"
+          placeholder="e.g. &ldquo;I&rsquo;ve shared my measurements with Aditi over WhatsApp on 26 June.&rdquo;"
+          data-ka-cart-note
+        >{{ cart.note }}</textarea>
+        <p class="ka-notes__status" data-ka-notes-status aria-live="polite"></p>
+      </div>
+    </form>
+
+    <div class="ka-reassure">
+      <div class="row"><span class="mk">✦</span><span>Each piece is cut, draped and hand-embroidered to order by our karigars — never machine-made.</span></div>
+      <div class="row"><span class="mk">✦</span><span>Crafted to order in 20–25 days. A personal advisor will confirm fit and measurements after you check out.</span></div>
+      <div class="row"><span class="mk">✦</span><span>Delivered worldwide, complimentary, by DHL Express, beautifully packaged.</span></div>
+    </div>
+
+    {%- comment -%}
+      F7: real checkout handoff. A plain <button name="checkout"> inside a
+      form posting to routes.cart_url is Shopify's own standard pattern
+      (identical to how Dawn's main-cart-footer submits to checkout) — it
+      works with JS disabled and needs no custom endpoint.
+    {%- endcomment -%}
+    <form action="{{ routes.cart_url }}" method="post" novalidate>
+      <button type="submit" name="checkout" class="ka-btn">Continue to Checkout</button>
+    </form>
+
+    <div class="ka-secure-note">Secure, encrypted checkout</div>
+  </aside>
+  </div><!-- /.ka-cart-wrap (opened in ka-cart-items.liquid) -->
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "Cart Order Summary",
+  "tag": "div",
+  "class": "ka-cart-summary-section",
+  "settings": [],
+  "presets": [
+    { "name": "Cart Order Summary" }
+  ]
+}
+{% endschema %}

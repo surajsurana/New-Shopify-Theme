@@ -1,0 +1,194 @@
+{{ 'ka-cart-items.css' | asset_url | stylesheet_tag }}
+
+{%- comment -%}
+  K&A Cart ("Selection") — Page Header + Couture Line-Item Cards + Empty State
+  Spec: Docs/cart-build-spec.md, Section 3 §2/§3/§6, Section 3 §10, F2, F4, F9.
+
+  This is the theme's equivalent of Shopify's conventional `main-cart-items`
+  section. It is the single source of truth for which cart state renders —
+  server-side, from cart.item_count — per F9. There is NO client-side toggle
+  here; that toggle existed only in the prototype (cart-page-v1.html) as
+  presentation scaffolding and is intentionally not carried over.
+
+  Customer-facing rename (v1.1, final): "Cart" → "Selection" everywhere a
+  customer sees it. The underlying Shopify object/file naming stays "cart".
+
+  This section also defines the shared .ka-btn / .ka-btn--ghost /
+  .ka-btn--concierge button family for the Cart page, the same way
+  ka-product-main.css does for the Product page (see build-spec Section 1,
+  the flagged "second legitimate button family" note) — ka-cart-summary.liquid
+  and ka-cart-cross-link.liquid and ka-cart-mobile-bar.liquid all reuse these
+  classes rather than redeclaring them.
+
+  No quantity stepper anywhere on this page (F4, CD Note 1, deliberate) —
+  .ka-item__one italic copy is shown instead for every line.
+
+  ARCHITECTURE NOTE — two-column sticky layout split across two sections:
+  The prototype's `.cart-wrap` is a single CSS grid (`1.6fr 1fr`) containing
+  both the line-item list and the sticky order-summary panel as siblings.
+  Shopify section-groups don't let two independent sections share one grid
+  parent cleanly, so this section opens `.ka-cart-wrap` and renders the
+  items column as the grid's first child; ka-cart-summary.liquid (the
+  `main-cart-footer` equivalent) renders the grid's second child and closes
+  the wrapping div. The two sections are pinned adjacent to each other in
+  templates/cart.json and must not be reordered or separated by another
+  section, or the grid will break. This is the same coupling Shopify's own
+  Dawn theme has between main-cart-items/main-cart-footer, just without
+  Dawn's markup baggage.
+{%- endcomment -%}
+
+{%- liquid
+  assign wa = settings.whatsapp_number
+  assign collections_url = section.settings.collections_url | default: '/collections'
+  assign wa_concierge_text = 'Hi, I' | append: '%27' | append: 'd like to ask a question before checking out.'
+  assign wa_concierge_url = 'https://wa.me/' | append: wa | append: '?text=' | append: wa_concierge_text
+-%}
+
+{%- if cart.item_count > 0 -%}
+
+  <div class="ka-cart-page-head reveal">
+    <div class="eyebrow">Made to Order</div>
+    <h1>Your Selection</h1>
+    <div class="ka-cart-count" id="kaCartCount">
+      {{ cart.item_count }} {% if cart.item_count == 1 %}piece{% else %}pieces{% endif %}, made to order for you
+    </div>
+  </div>
+
+  <div class="ka-cart-wrap" id="kaCartWrap">
+    {%- comment -%}
+      Plain div, not a <form> — there is no quantity stepper (F4) and
+      "Remove" is pure AJAX (data-ka-cart-remove, handled by ka-cart.js),
+      so there are no inputs here that need form semantics or a submit
+      target. The checkout and notes forms below are the page's only
+      real <form> elements.
+    {%- endcomment -%}
+    <div class="ka-cart-items" id="kaCartItemsList-wrap">
+      <div class="ka-cart-items__list" id="kaCartItemsList">
+        {%- for item in cart.items -%}
+          {%- liquid
+            assign size_value = null
+            assign colour_value = null
+            assign is_bespoke = false
+            for opt_name in item.options_with_values
+              assign opt_down = opt_name.name | downcase
+              if opt_down contains 'size'
+                assign size_value = opt_name.value
+                assign size_down = opt_name.value | downcase
+                if size_down contains 'measure' or size_down contains 'bespoke' or size_down contains 'custom'
+                  assign is_bespoke = true
+                endif
+              endif
+              if opt_down contains 'colour' or opt_down contains 'color'
+                assign colour_value = opt_name.value
+              endif
+            endfor
+            assign lead_time = item.product.metafields.custom.lead_time | default: '20–25 days'
+          -%}
+          <div class="ka-item reveal" data-ka-cart-item data-line="{{ forloop.index }}" data-key="{{ item.key }}">
+            <div class="ka-item__img">
+              {%- if item.image -%}
+                <img
+                  src="{{ item.image | image_url: width: 600 }}"
+                  alt="{{ item.image.alt | escape | default: item.product.title | escape }}"
+                  loading="lazy"
+                  width="600"
+                  height="800"
+                  class="img-filter"
+                />
+              {%- else -%}
+                <div style="background: var(--c-smoke); width:100%; height:100%;"></div>
+              {%- endif -%}
+            </div>
+            <div class="ka-item__body">
+              <div class="ka-item__top">
+                <div>
+                  {%- if item.product.collections.first -%}
+                    <div class="ka-item__ct">{{ item.product.collections.first.title }}</div>
+                  {%- endif -%}
+                  <div class="ka-item__name">{{ item.product.title }}</div>
+                </div>
+                <div class="ka-item__price">{{ item.final_line_price | money }}</div>
+              </div>
+
+              <div class="ka-item__meta">
+                {%- if is_bespoke -%}
+                  <div class="ka-item__meta-row">
+                    <span class="lbl">Fit</span>
+                    <span class="ka-bespoke-pill"><span class="dt"></span>Made to my measurements</span>
+                  </div>
+                {%- else -%}
+                  {%- if size_value -%}
+                    <div class="ka-item__meta-row"><span class="lbl">Size</span> {{ size_value }}</div>
+                  {%- endif -%}
+                  {%- if colour_value -%}
+                    <div class="ka-item__meta-row"><span class="lbl">Colour</span> {{ colour_value }}</div>
+                  {%- endif -%}
+                {%- endif -%}
+              </div>
+
+              <div class="ka-item__made">
+                {%- if is_bespoke -%}
+                  A style advisor will confirm your measurements after checkout
+                {%- else -%}
+                  Hand-embroidered to order · {{ lead_time }}
+                {%- endif -%}
+              </div>
+
+              <div class="ka-item__actions">
+                <div class="ka-item__one">One of one — made for you alone</div>
+                <button type="button" class="ka-item__remove" data-ka-cart-remove data-key="{{ item.key }}">Remove</button>
+              </div>
+            </div>
+          </div>
+        {%- endfor -%}
+      </div>
+
+      <div class="ka-continue-row reveal">
+        <a href="{{ collections_url }}">Continue Browsing the Collections</a>
+      </div>
+    </div>
+
+    {%- comment -%}
+      .ka-cart-wrap (opened above) is intentionally left open here — the
+      adjacent ka-cart-summary section renders the grid's second child and
+      closes this div. See the ARCHITECTURE NOTE in the comment block above.
+    {%- endcomment -%}
+
+{%- else -%}
+
+  <div class="ka-empty">
+    <div class="ka-empty__text reveal">
+      <div class="eyebrow">Your Selection</div>
+      <h1>Your Atelier<br>Awaits</h1>
+      <p>Nothing has found its way here yet. Explore our collections, or write to us directly — our style advisors are always glad to begin with a conversation rather than a cart.</p>
+      <div class="ka-empty__acts">
+        <a href="{{ collections_url }}" class="ka-btn">Explore the Collections</a>
+        <div class="ka-empty__or">or</div>
+        <a class="ka-btn ka-btn--concierge" href="{{ wa_concierge_url }}" target="_blank" rel="noopener"><span class="dot"></span>Speak with a Couture Concierge</a>
+      </div>
+    </div>
+    <div class="ka-empty__img reveal-img reveal-delay-1">
+      {%- if section.settings.empty_image != blank -%}
+        <img src="{{ section.settings.empty_image | image_url: width: 1200 }}" alt="{{ section.settings.empty_image.alt | escape | default: 'K&A Bridal Couture' }}" loading="lazy" width="1200" height="1500" class="img-filter-dark" />
+      {%- else -%}
+        <img src="{{ 'bloom-soiree-main.jpg' | asset_url }}" alt="K&amp;A Bridal Couture" loading="lazy" width="1200" height="1500" class="img-filter-dark" />
+      {%- endif -%}
+    </div>
+  </div>
+
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "Cart Items",
+  "tag": "div",
+  "class": "ka-cart-items-section",
+  "settings": [
+    { "type": "url", "id": "collections_url", "label": "Collections URL", "info": "Used by \"Continue Browsing the Collections\" and the empty-state \"Explore the Collections\" CTA. Defaults to /collections." },
+    { "type": "image_picker", "id": "empty_image", "label": "Empty-state hero image", "info": "Falls back to bloom-soiree-main.jpg (existing approved imagery) if left blank." }
+  ],
+  "presets": [
+    { "name": "Cart Items" }
+  ]
+}
+{% endschema %}
