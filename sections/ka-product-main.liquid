@@ -2,6 +2,12 @@
 
 {%- liquid
   assign wa = settings.whatsapp_number
+  # NOTE — appointment_url (schema setting below) is currently DORMANT.
+  # Round 2 (Docs/cta-architecture-revision.md) routes "Book an Appointment"
+  # through WhatsApp instead, as a TEMPORARY measure pending a real
+  # booking flow/calendar. The setting is left in the schema (not removed)
+  # so a future real booking flow has a ready slot to wire into — see
+  # data-ka-appt-link handling in ka-product.js.
   assign appt_url = section.settings.appointment_url | default: '/pages/appointments'
   assign price = product.price | money
 
@@ -99,16 +105,56 @@
           {%- for value in size_option.values -%}
             {%- assign v_down = value | downcase -%}
             {%- unless v_down contains 'measure' or v_down contains 'bespoke' or v_down contains 'custom' -%}
-              <button type="button" class="ka-size" data-value="{{ value | escape }}">{{ value }}</button>
+              {%- comment -%}
+                Find the matching variant for this size value so the button
+                can carry a real numeric Shopify variant ID — /cart/add.js
+                needs an id, not an option label. If the product has other
+                option dimensions (e.g. Colour) this takes the first
+                available variant matching this size; a single-option
+                "Size only" product (the common case here) matches exactly.
+              {%- endcomment -%}
+              {%- assign matched_variant = null -%}
+              {%- for v in product.variants -%}
+                {%- if v.available and matched_variant == null -%}
+                  {%- for opt_val in v.options -%}
+                    {%- if opt_val == value -%}
+                      {%- assign matched_variant = v -%}
+                    {%- endif -%}
+                  {%- endfor -%}
+                {%- endif -%}
+              {%- endfor -%}
+              {%- unless matched_variant -%}
+                {%- for v in product.variants -%}
+                  {%- if matched_variant == null -%}
+                    {%- for opt_val in v.options -%}
+                      {%- if opt_val == value -%}
+                        {%- assign matched_variant = v -%}
+                      {%- endif -%}
+                    {%- endfor -%}
+                  {%- endif -%}
+                {%- endfor -%}
+              {%- endunless -%}
+              <button
+                type="button"
+                class="ka-size{% if matched_variant == null or matched_variant.available == false %} ka-size--oos{% endif %}"
+                data-value="{{ value | escape }}"
+                data-variant-id="{{ matched_variant.id }}"
+                {% if matched_variant == null or matched_variant.available == false %}aria-disabled="true"{% endif %}
+              >{{ value }}</button>
             {%- endunless -%}
           {%- endfor -%}
         {%- else -%}
-          {%- comment -%} Fallback when no Size option exists yet on the product {%- endcomment -%}
-          <button type="button" class="ka-size" data-value="XS">XS</button>
-          <button type="button" class="ka-size" data-value="S">S</button>
-          <button type="button" class="ka-size" data-value="M">M</button>
-          <button type="button" class="ka-size" data-value="L">L</button>
-          <button type="button" class="ka-size" data-value="XL">XL</button>
+          {%- comment -%}
+            Fallback when no Size option exists yet on the product — there
+            is no real variant to map, so these render disabled rather than
+            pretending to be addable. A product launched without a Size
+            option is a content gap, not something JS can paper over.
+          {%- endcomment -%}
+          <button type="button" class="ka-size ka-size--oos" data-value="XS" data-variant-id="" aria-disabled="true">XS</button>
+          <button type="button" class="ka-size ka-size--oos" data-value="S" data-variant-id="" aria-disabled="true">S</button>
+          <button type="button" class="ka-size ka-size--oos" data-value="M" data-variant-id="" aria-disabled="true">M</button>
+          <button type="button" class="ka-size ka-size--oos" data-value="L" data-variant-id="" aria-disabled="true">L</button>
+          <button type="button" class="ka-size ka-size--oos" data-value="XL" data-variant-id="" aria-disabled="true">XL</button>
         {%- endif -%}
       </div>
 
@@ -132,12 +178,45 @@
         </div>
       </div>
 
-      <!-- CTAs — concierge-led, no Add to Cart -->
+      <!--
+        CTAs — Round 2 rebuild (Docs/cta-architecture-revision.md).
+        Real Add to Bag via Ajax Cart API, gated on a Size selection (or
+        the bespoke "Made to my measurements" path, which routes to
+        WhatsApp/appointment instead of a literal cart add — see the
+        OPEN DECISION note below). "Book an Appointment" is TEMPORARY:
+        it routes to the same WhatsApp concierge destination as the
+        Concierge button until a real appointment-booking flow/calendar
+        exists. Do not let this silently become permanent.
+
+        OPEN DECISION (resolved by Technical Director, this build):
+        "Made to my measurements" does NOT map to a literal cart-line
+        add. There is no fixed variant/SKU that represents "bespoke" —
+        the prototype's own MTM panel describes a human-mediated
+        measurement-confirmation step before production starts. Forcing
+        it into /cart/add.js against a placeholder variant would create
+        a paid cart line with no confirmed fit yet, which is friction in
+        the wrong direction (a customer paying before the order is even
+        specced). So: selecting bespoke + clicking "Add to Bag" routes
+        to the same WhatsApp/appointment flow as "Book an Appointment",
+        with on-page copy explaining why (see ka-product.js addToBag()).
+        Sized variants still add to the real cart with zero friction —
+        the common case stays a true one-click buy path, per CLAUDE.md's
+        "buy path primary" principle.
+      -->
       <div class="ka-cta-stack">
-        <a class="ka-btn" href="{{ appt_url }}">Book a Private Appointment</a>
-        <a class="ka-btn ka-btn--concierge" href="{{ wa_enquire }}" target="_blank" rel="noopener" id="ka-cta-concierge"><span class="dot"></span>Speak with a Couture Concierge</a>
-        <div class="ka-or">or enquire online</div>
-        <a class="ka-btn ka-btn--ghost" href="{{ wa_enquire }}" target="_blank" rel="noopener" id="ka-cta-enquire">Enquire on WhatsApp — {{ price }}</a>
+        <button type="button" class="ka-btn ka-btn--bag" id="ka-bag-btn" data-ka-add-to-bag aria-disabled="true">Add to Bag</button>
+        <p class="ka-size-required-hint" id="ka-size-hint">Please select a size, or choose Made to my measurements.</p>
+        <button type="button" class="ka-btn ka-btn--ghost" id="ka-cta-appt" data-ka-appt-link>Book an Appointment</button>
+      </div>
+
+      <!-- Toast: shared component, CSS in ka-base.css, JS in ka-theme.js (window.kaShowToast) -->
+      <div class="ka-toast" id="kaToast" role="status" aria-live="polite">
+        <span class="ka-toast__mark" aria-hidden="true">&#10022;</span>
+        <div class="ka-toast__body">
+          <div class="ka-toast__title">Added to Your Bag</div>
+          <div class="ka-toast__sub" id="kaToastSub">&nbsp;</div>
+        </div>
+        <a class="ka-toast__action" href="{{ routes.cart_url }}">View Bag &rarr;</a>
       </div>
 
       <!-- ASSURANCES -->
@@ -215,17 +294,20 @@
       </div>
     </div>
     <div class="ka-minibar__r">
-      <a class="ka-btn ka-btn--ghost" href="{{ appt_url }}">Book Appointment</a>
-      <a class="ka-btn ka-btn--concierge" href="{{ wa_enquire }}" target="_blank" rel="noopener"><span class="dot"></span>Concierge</a>
+      <button type="button" class="ka-btn ka-btn--ghost" data-ka-appt-link>Book an Appointment</button>
+      <button type="button" class="ka-btn ka-btn--bag" id="ka-minibar-bag" data-ka-add-to-bag aria-disabled="true">Add to Bag</button>
     </div>
   </div>
 </div>
 
 <!-- ── Mobile sticky action bar ── -->
+<!-- "Appointment" + "Add to Bag" per Round 2; Concierge is kept as a
+     secondary WhatsApp-questions affordance, not the primary buy path
+     (CLAUDE.md: buy path stays clear/simple/primary; WhatsApp secondary). -->
 <div class="ka-mobile-bar">
-  <a class="ka-btn ka-btn--ghost" href="{{ appt_url }}">Appointment</a>
-  <a class="ka-btn ka-btn--concierge" href="{{ wa_enquire }}" target="_blank" rel="noopener">Concierge</a>
-  <a class="ka-btn" href="{{ wa_enquire }}" target="_blank" rel="noopener">Enquire</a>
+  <button type="button" class="ka-btn ka-btn--ghost" data-ka-appt-link>Appointment</button>
+  <a class="ka-btn ka-btn--concierge" href="{{ wa_enquire }}" target="_blank" rel="noopener"><span class="dot"></span>Concierge</a>
+  <button type="button" class="ka-btn ka-btn--bag" id="ka-mobilebar-bag" data-ka-add-to-bag aria-disabled="true">Add to Bag</button>
 </div>
 
 <!-- ── Lightbox (desktop/tablet only, disabled <900px via JS) ── -->
@@ -241,7 +323,7 @@
   "name": "Product Main",
   "tag": "section",
   "settings": [
-    { "type": "url",  "id": "appointment_url", "label": "Appointment booking URL", "info": "Destination for the Book a Private Appointment CTAs." },
+    { "type": "url",  "id": "appointment_url", "label": "Appointment booking URL (dormant — interim WhatsApp routing active)", "info": "Not currently used. \"Book an Appointment\" routes to WhatsApp until a real booking flow exists (Round 2, Docs/cta-architecture-revision.md). Kept here so a future booking flow has a ready setting to wire up." },
     { "type": "text", "id": "default_lead_time", "label": "Default lead time", "default": "20–25 days", "info": "Used when a product has no custom.lead_time metafield." },
     {
       "type": "header",
