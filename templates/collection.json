@@ -12,6 +12,11 @@
     "ka-nav": {
       "type": "ka-nav",
       "settings": {
+        "utility_1": "Complimentary Worldwide Delivery",
+        "utility_2": "Hand-Embroidered to Order",
+        "utility_3": "Private & Virtual Appointments",
+        "logo_text": "Karishma Ashita",
+        "logo_subline": "Bridal Couture · Mumbai",
         "label_bestsellers": "Signature",
         "link_bestsellers": "/collections/bestsellers",
         "label_collections": "Collections",
@@ -86,11 +91,18 @@
       "type": "ka-footer",
       "settings": {
         "brand_name": "Karishma Ashita",
+        "logo_subline": "Bridal Couture · Mumbai",
         "tagline": "Bridal couture, handcrafted\nin Mumbai.",
         "instagram_url": "https://instagram.com/karishmaashita",
         "pinterest_url": "",
         "email": "info@karishmaashita.com",
-        "address": "Mumbai, India\nComplimentary worldwide shipping"
+        "address": "Mumbai, India\nComplimentary worldwide shipping",
+        "news_title": "The Inner Circle",
+        "news_body": "Collection previews, styling notes and private trunk show invitations — delivered quietly to your inbox.",
+        "news_placeholder": "Your email address",
+        "news_submit": "Join",
+        "news_success": "Welcome in. You are one of us now.",
+        "service_line": "Mumbai · Worldwide Delivery · DHL Express"
       }
     }
   },

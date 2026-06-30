@@ -1,80 +1,101 @@
 {{ 'ka-cart-cross-link.css' | asset_url | stylesheet_tag }}
 
 {%- comment -%}
-  K&A Cart ("Bag") Cross-link section.
-  Spec: Docs/cart-build-spec.md Section 3, F6/F10.
-  Two copy variants server-rendered based on cart.item_count:
-  - Filled cart: "You May Also Love" / "From the Same Atelier"
-  - Empty cart:  "Begin Here" / "Recently Loved"
-  Collection-driven fallback logic below.
+  K&A Cart ("Bag") — Cross-Link Strip
+  Spec: Docs/cart-build-spec.md, Section 3 §7, F5 (n/a here), CD Note 4.
+
+  Two copy variants, same markup, conditional on cart.item_count (server-
+  rendered, not the prototype's client-side toggle — F9):
+  - Filled cart: "You May Also Love" / "From the Same Atelier" — pulls from
+    the same collection as items already in the cart.
+  - Empty cart: "Begin Here" / "Recently Loved" — pulls from the store's
+    recommended/bestsellers collection (general best-sellers, since there
+    is no cart context to pair against).
+
+  Query logic mirrors ka-product-related.liquid's pattern: a curated
+  metafield list takes priority if present, else falls back to a
+  collection-driven pull — same content-model decision already proven on
+  the Product page.
 {%- endcomment -%}
 
 {%- liquid
-  assign is_empty = false
-  if cart.item_count == 0
-    assign is_empty = true
+  assign limit = section.settings.products_limit | default: 4
+
+  if cart.item_count > 0
+    assign eyebrow = 'You May Also Love'
+    assign heading = 'From the Same Atelier'
+    assign supporting = "A few pieces our style advisors often pair with what's already in your bag."
+    assign curated = section.settings.filled_collection
+    assign source_collection = curated
+    if source_collection == blank
+      assign first_item = cart.items.first
+      assign source_collection = first_item.product.collections.first
+    endif
+  else
+    assign eyebrow = 'Begin Here'
+    assign heading = 'Recently Loved'
+    assign supporting = 'A few pieces our clients and their families have returned to this season.'
+    assign source_collection = section.settings.empty_collection
+    if source_collection == blank
+      assign source_collection = collections['bestsellers']
+    endif
   endif
 
-  assign cross_collection = section.settings.collection
-  if cross_collection == blank
-    assign cross_collection = collections['bestsellers']
-  endif
+  assign related = source_collection.products
 -%}
 
-<section class="ka-cart-cross" aria-label="Recommended pieces">
-  <div class="ka-cart-cross__header">
-    {% if is_empty %}
-      <p class="eyebrow eyebrow--muted reveal">{{ section.settings.empty_eyebrow | default: 'Recently Loved' }}</p>
-      <h2 class="ka-cart-cross__title reveal reveal-delay-1">{{ section.settings.empty_title | default: 'Begin Here' }}</h2>
-    {% else %}
-      <p class="eyebrow eyebrow--muted reveal">{{ section.settings.filled_eyebrow | default: 'From the Same Atelier' }}</p>
-      <h2 class="ka-cart-cross__title reveal reveal-delay-1">{{ section.settings.filled_title | default: 'You May Also Love' }}</h2>
-    {% endif %}
+<section class="ka-cross">
+  <div class="ka-cross__head reveal">
+    <div class="rule" style="margin:0 auto"></div>
+    <div class="eyebrow" style="margin-top:22px">{{ eyebrow }}</div>
+    <h2>{{ heading }}</h2>
+    <p>{{ supporting }}</p>
   </div>
 
-  <div class="ka-cart-cross__grid">
-    {% for product in cross_collection.products limit: 4 %}
-      <div class="ka-cart-cross__card reveal-img reveal-delay-{{ forloop.index | modulo: 4 }}">
-        <a href="{{ product.url }}" class="ka-cart-cross__image" aria-label="View {{ product.title | escape }}">
-          {% if product.featured_image %}
-            <img
-              src="{{ product.featured_image | image_url: width: 600 }}"
-              alt="{{ product.featured_image.alt | escape | default: product.title | escape }}"
-              loading="lazy"
-              width="600"
-              height="800"
-            />
-          {% endif %}
+  <div class="ka-r-grid">
+    {%- assign shown = 0 -%}
+    {%- for p in related -%}
+      {%- if shown < limit -%}
+        {%- assign shown = shown | plus: 1 -%}
+        <a class="ka-r-card reveal-img reveal-delay-{{ forloop.index | modulo: 4 }}" href="{{ p.url }}">
+          <div class="ph">
+            {%- if p.featured_image -%}
+              <img src="{{ p.featured_image | image_url: width: 800 }}" alt="{{ p.featured_image.alt | escape | default: p.title | escape }}" loading="lazy" width="800" height="1066" class="img-filter" />
+            {%- else -%}
+              <div style="background: var(--c-smoke); width:100%; height:100%;"></div>
+            {%- endif -%}
+          </div>
+          <div class="ct">{{ p.collections.first.title | default: 'K&A' }}</div>
+          <h3>{{ p.title }}</h3>
+          <div class="pr">{{ p.price | money }} <span style="color:var(--c-ink-muted)">onward</span></div>
         </a>
-        <div class="ka-cart-cross__info">
-          <h3 class="ka-cart-cross__name"><a href="{{ product.url }}">{{ product.title }}</a></h3>
-          <p class="ka-cart-cross__price">{{ product.price | money }}</p>
-        </div>
-      </div>
-    {% endfor %}
+      {%- endif -%}
+    {%- endfor -%}
   </div>
 </section>
 
 {% schema %}
 {
-  "name": "Cart Cross-link",
+  "name": "Cart Cross-Link",
   "tag": "section",
+  "class": "ka-cart-cross-link-section",
   "settings": [
     {
       "type": "collection",
-      "id": "collection",
-      "label": "Collection",
-      "info": "Leave blank to default to the 'bestsellers' collection."
+      "id": "filled_collection",
+      "label": "Filled-cart source collection",
+      "info": "Optional override. If left blank, pulls from the same collection as the first item already in the cart."
     },
-    { "type": "header", "content": "Filled-cart copy" },
-    { "type": "text", "id": "filled_eyebrow", "label": "Eyebrow", "default": "From the Same Atelier" },
-    { "type": "text", "id": "filled_title",   "label": "Title",   "default": "You May Also Love" },
-    { "type": "header", "content": "Empty-cart copy" },
-    { "type": "text", "id": "empty_eyebrow", "label": "Eyebrow", "default": "Recently Loved" },
-    { "type": "text", "id": "empty_title",   "label": "Title",   "default": "Begin Here" }
+    {
+      "type": "collection",
+      "id": "empty_collection",
+      "label": "Empty-cart source collection",
+      "info": "Optional override. If left blank, falls back to the 'bestsellers' collection handle."
+    },
+    { "type": "range", "id": "products_limit", "label": "Max products", "min": 2, "max": 8, "step": 1, "default": 4 }
   ],
   "presets": [
-    { "name": "Cart Cross-link" }
+    { "name": "Cart Cross-Link" }
   ]
 }
 {% endschema %}
