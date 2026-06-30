@@ -62,7 +62,8 @@
         "news_placeholder": "Your email address",
         "news_submit": "Join",
         "news_success": "Welcome in. You are one of us now.",
-        "service_line": "Mumbai · Worldwide Delivery · DHL Express"
+        "service_line": "Mumbai · Worldwide Delivery · DHL Express",
+        "locale_line": "Ships worldwide, priced in INR"
       }
     },
     "ka-cart-mobile-bar": {
