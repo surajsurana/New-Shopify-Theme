@@ -29,10 +29,32 @@
     },
     "ka-collections-list": {
       "type": "ka-collections-list",
+      "blocks": {
+        "festive-edit": {
+          "type": "featured_collection",
+          "settings": { "collection": "the-festive-edit" }
+        },
+        "bloom-soiree": {
+          "type": "featured_collection",
+          "settings": { "collection": "the-bloom-soiree" }
+        },
+        "chamakk": {
+          "type": "featured_collection",
+          "settings": { "collection": "chamak" }
+        },
+        "barre-oblique": {
+          "type": "featured_collection",
+          "settings": { "collection": "barre-oblique" }
+        },
+        "wedding-festive": {
+          "type": "featured_collection",
+          "settings": { "collection": "the-wedding-festive-collection-22" }
+        }
+      },
+      "block_order": ["festive-edit", "bloom-soiree", "chamakk", "barre-oblique", "wedding-festive"],
       "settings": {
         "eyebrow": "Maison",
         "title": "All Collections",
-        "collections_per_page": 24,
         "empty_state_text": "Collections are being prepared — please check back shortly, or explore our Signature edit."
       }
     },
