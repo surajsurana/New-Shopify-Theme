@@ -19,9 +19,24 @@
   so it works with JS disabled (traditional pagination), and ka-collection.js
   intercepts the click to fetch + append instead when JS is available.
 
-  "Enquire on WhatsApp" is the only conversion affordance on every card — per CD
-  Note 1, never add an Add to Cart button here even if a future Shopify default
-  introduces one.
+  Round 2 (Docs/cta-architecture-revision.md) — SUPERSEDES the note that used
+  to live here. "Enquire on WhatsApp" is no longer the only conversion
+  affordance: each card image is now a real link to the PDP, plus a working
+  "+ Add to Bag" quick-add veil button (replacing the WhatsApp veil link)
+  and an always-visible "View Details →" line. WhatsApp/concierge remains
+  available sitewide (header, footer, floating button) but is no longer
+  this grid's only path to a sale — see CLAUDE.md's "buy path primary"
+  standing principle.
+
+  OPEN DECISION (resolved by Technical Director, this build) — multi-variant
+  quick-add behaviour: quick-add adds product.selected_or_first_available_variant
+  (Shopify's own standard "default/first available variant" concept, the same
+  one Dawn's native quick-add uses) rather than prompting for a size inline or
+  forcing a click-through to the PDP first. Reasoning: the grid is a browsing/
+  discovery context, not a sizing moment — surfacing a "Select Size" picker
+  here would add friction exactly where CLAUDE.md says not to. The size can
+  still be changed afterwards from the Bag, and the PDP remains one click away
+  via the image link / "View Details" for anyone who wants to choose first.
 {%- endcomment -%}
 
 {% liquid
@@ -32,8 +47,17 @@
 {% paginate collection.products by per_page %}
   <div class="ka-product-grid" id="ka-product-grid-{{ section.id }}" data-ka-product-grid>
     {% for product in collection.products %}
+      {%- assign quickadd_variant = product.selected_or_first_available_variant -%}
       <div class="ka-p-card reveal-img">
         <div class="ka-p-card__image">
+          {%- comment -%}
+            Sibling (not nested) absolutely-positioned layers: the image-link
+            anchor and the quick-add veil button both live inside this
+            non-anchor wrapper div, so neither is ever an <a> nested inside
+            another <a> (invalid HTML). z-index keeps the veil's button
+            clickable above the link on hover.
+          {%- endcomment -%}
+          <a href="{{ product.url }}" class="ka-p-card__image-link" aria-label="View {{ product.title | escape }}"></a>
           {% if product.featured_image %}
             <img
               src="{{ product.featured_image | image_url: width: 800 }}"
@@ -50,12 +74,14 @@
             <span class="ka-p-card__badge">Made to Order</span>
           {% endif %}
           <div class="ka-p-card__veil">
-            <a
-              href="https://wa.me/{{ settings.whatsapp_number }}?text=Hi%2C%20I%27d%20like%20to%20enquire%20about%20the%20{{ product.title | url_param_escape }}"
-              class="ka-p-card__veil-link"
-              target="_blank"
-              rel="noopener"
-            >Enquire on WhatsApp</a>
+            <button
+              type="button"
+              class="ka-p-card__veil-quickadd{% if quickadd_variant == nil %} ka-p-card__veil-quickadd--oos{% endif %}"
+              data-ka-quickadd
+              data-variant-id="{{ quickadd_variant.id }}"
+              data-product-title="{{ product.title | escape }}"
+              {% if quickadd_variant == nil %}aria-disabled="true"{% endif %}
+            >{% if quickadd_variant == nil %}Sold Out{% else %}+ Add to Bag{% endif %}</button>
           </div>
         </div>
         <div class="ka-p-card__info">
@@ -64,6 +90,7 @@
             <p class="ka-p-card__fabric">{{ product.metafields.custom.fabric_description }}</p>
           {% endif %}
           <p class="ka-p-card__price">{{ product.price | money }} <span>onward</span></p>
+          <a href="{{ product.url }}" class="ka-p-card__action">View Details &rarr;</a>
         </div>
       </div>
 
@@ -120,6 +147,17 @@
     </span>
   </div>
 {% endpaginate %}
+
+<!-- Toast: shared component, CSS in ka-base.css, JS in ka-theme.js (window.kaShowToast).
+     Rendered once here for quick-add confirmations on this page. -->
+<div class="ka-toast" id="kaToast" role="status" aria-live="polite">
+  <span class="ka-toast__mark" aria-hidden="true">&#10022;</span>
+  <div class="ka-toast__body">
+    <div class="ka-toast__title">Added to Your Bag</div>
+    <div class="ka-toast__sub" id="kaToastSub">&nbsp;</div>
+  </div>
+  <a class="ka-toast__action" href="{{ routes.cart_url }}">View Bag &rarr;</a>
+</div>
 
 {% schema %}
 {
