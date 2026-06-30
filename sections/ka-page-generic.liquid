@@ -1,0 +1,48 @@
+{{ 'ka-page-generic.css' | asset_url | stylesheet_tag }}
+
+{%- comment -%}
+  K&A Generic Page (soft-launch placeholder)
+
+  This is the deliberately plain, non-bespoke fallback template for any
+  Shopify Page (About Us, Client Diaries, Contact, Wash & Care, Shipping,
+  FAQ, etc.) that doesn't yet have its own Creative-Director-approved page
+  design. Built so existing Pages render on-brand (same nav/footer, same
+  Cormorant/Jost type system, same colour tokens from assets/ka-base.css)
+  instead of broken or default-Shopify-ugly during the soft-launch window
+  for the 4 core pages (Home, Collection, Product, Cart).
+
+  This is NOT a finished bespoke page design — no imagery, no custom
+  layout per page, just page.title + page.content in a simple readable
+  column. Each page this covers (About Us, Client Diaries, Contact, etc.)
+  is expected to get its own real design later through the normal
+  Creative-Director-prototype-approval pipeline (per CLAUDE.md's build
+  order), at which point it should move to its own dedicated template +
+  section and stop using this one. Superseded page-by-page, not all at
+  once.
+{%- endcomment -%}
+
+<section class="ka-page-generic" aria-label="{{ page.title | escape }}">
+  <div class="ka-page-generic__inner">
+    <h1 class="ka-page-generic__title">{{ page.title }}</h1>
+    <div class="ka-page-generic__body">
+      {{ page.content }}
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Generic Page",
+  "tag": "section",
+  "class": "ka-page-generic-section",
+  "settings": [
+    {
+      "type": "paragraph",
+      "content": "Soft-launch placeholder only. Renders page.title and page.content with the site's standard type/colour tokens — no per-page customisation. Replace with a dedicated template + section once a page gets its own approved design."
+    }
+  ],
+  "presets": [
+    { "name": "Generic Page" }
+  ]
+}
+{% endschema %}

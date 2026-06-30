@@ -1,0 +1,115 @@
+{{ 'ka-collections-list.css' | asset_url | stylesheet_tag }}
+
+{%- comment -%}
+  K&A All Collections Index (soft-launch placeholder)
+
+  Fallback for the nav's "/collections" link (already live in every page's
+  header). Built so that link has somewhere real to go instead of
+  dead-ending or rendering Shopify's bare default collections-list markup.
+
+  Unlike the homepage's sections/ka-collections-directory.liquid (which
+  hand-curates a fixed 4-collection block list for the homepage teaser),
+  this section loops over Shopify's real `collections` object so it stays
+  accurate and complete as collections are added/removed/published or
+  unpublished in Admin — nothing here needs a manual update when the
+  catalogue changes. It reuses the exact same card markup/CSS classes as
+  ka-collections-directory.liquid (.ka-coll-card and children) for visual
+  consistency with the rest of the site, just sourced from `collections`
+  instead of curated blocks.
+
+  Pagination: Shopify's {% paginate %} tag caps at 50 items per page
+  (platform hard limit, confirmed via shopify.dev) — set below to a more
+  reasonable 24 per page for a 4-column grid (6 rows), with a simple
+  "Load More" link (plain href to paginate.next.url, real Shopify
+  pagination, no AJAX/JS dependency) since this is explicitly a soft-launch
+  placeholder, not bespoke. This is NOT the final design for this page —
+  it gets its own real design later through the normal Creative-Director-
+  approved pipeline, same as every other non-core page.
+{%- endcomment -%}
+
+{% liquid
+  assign per_page = section.settings.collections_per_page | default: 24
+%}
+
+<section class="ka-collections-list" aria-label="All collections">
+  <div class="ka-collections-list__inner">
+    <div class="ka-collections-list__header">
+      <p class="eyebrow eyebrow--on-dark" style="margin-bottom: 16px;">{{ section.settings.eyebrow }}</p>
+      <h1 class="ka-collections-list__title">{{ section.settings.title }}</h1>
+    </div>
+
+    {% paginate collections by per_page %}
+      {% if collections.size > 0 %}
+        <div class="ka-collections-list__grid">
+          {% for coll in collections %}
+            <a href="{{ coll.url }}" class="ka-coll-card">
+              <div class="ka-coll-card__image">
+                {% if coll.image != blank %}
+                  <img
+                    src="{{ coll.image | image_url: width: 700 }}"
+                    alt="{{ coll.image.alt | escape | default: coll.title | escape }}"
+                    loading="lazy"
+                    width="700"
+                    height="1050"
+                    class="img-filter-collection"
+                  />
+                {% else %}
+                  <div style="background: var(--c-charcoal-2); width:100%; height:100%;"></div>
+                {% endif %}
+              </div>
+              <div class="ka-coll-card__overlay"></div>
+              <div class="ka-coll-card__label">
+                <p class="ka-coll-card__number">{{ forloop.index | prepend: '0' | slice: -2, 2 }}</p>
+                <h3 class="ka-coll-card__name">{{ coll.title }}</h3>
+                <span class="ka-coll-card__arrow">Explore &rarr;</span>
+              </div>
+            </a>
+          {% endfor %}
+        </div>
+
+        {% if paginate.pages > 1 %}
+          <div class="ka-collections-list__pagination">
+            {% if paginate.next %}
+              <a href="{{ paginate.next.url }}" class="btn-outline-rose">Load More Collections</a>
+            {% endif %}
+            <span class="ka-collections-list__count">
+              Showing {{ paginate.current_offset | plus: collections.size }} of {{ paginate.items }} collections
+            </span>
+          </div>
+        {% endif %}
+      {% else %}
+        <p class="ka-collections-list__empty">{{ section.settings.empty_state_text }}</p>
+      {% endif %}
+    {% endpaginate %}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Collections List",
+  "tag": "section",
+  "class": "ka-collections-list-section",
+  "settings": [
+    {
+      "type": "paragraph",
+      "content": "Soft-launch placeholder for the all-collections index page (/collections). Loops over every published collection automatically — no manual curation needed. Reuses the homepage Collections Directory's visual card pattern for consistency. Replace with a dedicated design later if this page needs its own bespoke treatment."
+    },
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "Maison" },
+    { "type": "text", "id": "title",   "label": "Page title", "default": "All Collections" },
+    {
+      "type": "range",
+      "id": "collections_per_page",
+      "label": "Collections per page",
+      "min": 8,
+      "max": 48,
+      "step": 4,
+      "default": 24,
+      "info": "Shopify's pagination hard limit is 50 per page."
+    },
+    { "type": "text", "id": "empty_state_text", "label": "Empty state text", "default": "Collections are being prepared — please check back shortly, or explore our Signature edit." }
+  ],
+  "presets": [
+    { "name": "Collections List" }
+  ]
+}
+{% endschema %}
