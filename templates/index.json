@@ -12,6 +12,11 @@
     "ka-nav": {
       "type": "ka-nav",
       "settings": {
+        "utility_1": "Complimentary Worldwide Delivery",
+        "utility_2": "Hand-Embroidered to Order",
+        "utility_3": "Private & Virtual Appointments",
+        "logo_text": "Karishma Ashita",
+        "logo_subline": "Bridal Couture · Mumbai",
         "label_bestsellers": "Signature",
         "link_bestsellers": "/collections/bestsellers",
         "label_collections": "Collections",
@@ -92,25 +97,25 @@
         "review-1": {
           "type": "review",
           "settings": {
-            "quote": "",
-            "reviewer_name": "",
-            "occasion": ""
+            "quote": "Absolutely loved working with the team for my wedding reception outfit! The outfit fit like a glove and many of my guests said it was their absolute favorite outfit of mine. They even made me an extra lighter skirt for my first dance. Highly recommend!",
+            "reviewer_name": "Simran J.",
+            "occasion": "Wedding Reception"
           }
         },
         "review-2": {
           "type": "review",
           "settings": {
-            "quote": "",
-            "reviewer_name": "",
-            "occasion": ""
+            "quote": "I love their designs, it is so good and fits perfectly. Twinkle helped me so much to figure what would look good and they also made the lehenga customised for me. Absolutely love their corsets.",
+            "reviewer_name": "Kezia D.",
+            "occasion": "Custom Lehenga"
           }
         },
         "review-3": {
           "type": "review",
           "settings": {
-            "quote": "",
-            "reviewer_name": "",
-            "occasion": ""
+            "quote": "Thank you for making perfect corset sari for my daughter's graduation ceremony. Amazing quality beautiful fit. Thank you so much!",
+            "reviewer_name": "Kavita S.",
+            "occasion": "Graduation, Corset Saree"
           }
         }
       },
@@ -120,13 +125,13 @@
         "review-3"
       ],
       "settings": {
-        "show_section": false,
+        "show_section": true,
         "eyebrow": "What Brides Say",
         "title": "The words of\nour brides.",
-        "rating_number": "",
-        "rating_label": "",
+        "rating_number": "4.7",
+        "rating_label": "4.7 · 64 Google Reviews",
         "google_cta_label": "Read all reviews on Google",
-        "google_url": ""
+        "google_url": "https://www.google.com/maps/search/?api=1&query=Karishma+and+Ashita+Santacruz+Mumbai"
       }
     },
     "ka-collections-directory": {
@@ -228,11 +233,18 @@
       "type": "ka-footer",
       "settings": {
         "brand_name": "Karishma Ashita",
+        "logo_subline": "Bridal Couture · Mumbai",
         "tagline": "Bridal couture, handcrafted\nin Mumbai.",
         "instagram_url": "https://instagram.com/karishmaashita",
         "pinterest_url": "",
         "email": "info@karishmaashita.com",
-        "address": "Mumbai, India\nComplimentary worldwide shipping"
+        "address": "Mumbai, India\nComplimentary worldwide shipping",
+        "news_title": "The Inner Circle",
+        "news_body": "Collection previews, styling notes and private trunk show invitations — delivered quietly to your inbox.",
+        "news_placeholder": "Your email address",
+        "news_submit": "Join",
+        "news_success": "Welcome in. You are one of us now.",
+        "service_line": "Mumbai · Worldwide Delivery · DHL Express"
       }
     }
   },
