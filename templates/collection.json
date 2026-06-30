@@ -23,7 +23,7 @@
         "link_collections": "/collections",
         "label_diaries": "Client Diaries",
         "link_diaries": "/pages/client-diaries",
-        "link_about": "/pages/about",
+        "link_about": "/pages/about-us",
         "link_appointment": "/pages/appointments"
       }
     },
