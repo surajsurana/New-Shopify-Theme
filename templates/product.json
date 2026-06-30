@@ -36,8 +36,8 @@
       "settings": {
         "appointment_url": "/pages/appointments",
         "default_lead_time": "20–25 days",
-        "rating_score": "4.9",
-        "rating_count": "217"
+        "rating_score": "4.7",
+        "rating_count": "64"
       }
     },
     "ka-product-note": {
@@ -93,18 +93,20 @@
     "ka-product-reviews": {
       "type": "ka-product-reviews",
       "settings": {
-        "rating_score": "4.9",
-        "rating_count": "217",
+        "rating_score": "4.7",
+        "rating_count": "64",
         "heading": "Loved by brides & their families, across the world.",
-        "google_url": "",
-        "disclaimer": "Sample reviews shown — to be connected to the live Google profile"
+        "google_url": "https://www.google.com/maps/search/?api=1&query=Karishma+and+Ashita+Santacruz+Mumbai",
+        "disclaimer": ""
       },
       "blocks": {
-        "review-1": { "type": "review", "settings": { "quote": "I felt like the piece was made for my body — because it was. Three fittings over video from London, and it arrived perfect. I have never felt more myself at a wedding.", "reviewer_name": "Aisha R.", "source": "via Google" } },
-        "review-2": { "type": "review", "settings": { "quote": "I am the bride's mother and was nervous about ordering online. The concierge held my hand through every step. The embroidery in person is breathtaking.", "reviewer_name": "Meera S.", "source": "via Google" } },
-        "review-3": { "type": "review", "settings": { "quote": "Wore the corset drape to my sister's reception. Every single person asked where it was from. The fit was flawless and the fabric moves like water.", "reviewer_name": "Kavya N.", "source": "via Google" } }
+        "review-1": { "type": "review", "settings": { "quote": "Absolutely loved working with the team for my wedding reception outfit! The outfit fit like a glove and many of my guests said it was their absolute favorite outfit of mine. They even made me an extra lighter skirt for my first dance. Highly recommend!", "reviewer_name": "Simran J.", "source": "via Google" } },
+        "review-2": { "type": "review", "settings": { "quote": "I love their designs, it is so good and fits perfectly. Twinkle helped me so much to figure what would look good and they also made the lehenga customised for me. Absolutely love their corsets.", "reviewer_name": "Kezia D.", "source": "via Google" } },
+        "review-3": { "type": "review", "settings": { "quote": "Thank you for making perfect corset sari for my daughter's graduation ceremony. Amazing quality beautiful fit. Thank you so much!", "reviewer_name": "Kavita S.", "source": "via Google" } },
+        "review-4": { "type": "review", "settings": { "quote": "Loved the collection, really cool styles. Twinkle was really helpful.", "reviewer_name": "Shivani R.", "source": "via Google" } },
+        "review-5": { "type": "review", "settings": { "quote": "A very smooth experience! Got my outfit online and it fit like a glove! Loved it! Got so many compliments! Can't wait to shop more!", "reviewer_name": "Ragini G.", "source": "via Google" } }
       },
-      "block_order": ["review-1", "review-2", "review-3"]
+      "block_order": ["review-1", "review-2", "review-3", "review-4", "review-5"]
     },
     "ka-product-invite": {
       "type": "ka-product-invite",
