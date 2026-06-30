@@ -1,0 +1,165 @@
+/* ================================================================
+   KA-COLLECTION-GRID + EDITORIAL INSERT + LOAD MORE
+================================================================ */
+.ka-product-grid {
+  max-width: var(--max-wide);
+  margin: 0 auto;
+  padding: var(--s-lg) var(--gutter) var(--s-md);
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: clamp(2px, 0.3vw, 32px) clamp(2px, 0.3vw, 32px);
+}
+.ka-editorial-insert { grid-column: 1 / -1; margin: var(--s-md) 0; }
+
+.ka-p-card { position: relative; }
+.ka-p-card__image {
+  position: relative;
+  display: block;
+  aspect-ratio: 3/4;
+  overflow: hidden;
+  background: var(--c-smoke);
+}
+.ka-p-card__image-link { position: absolute; inset: 0; z-index: 1; }
+.ka-p-card__image img { position: relative; z-index: 0; transition: transform 1.2s var(--ease-luxury); }
+.ka-p-card:hover .ka-p-card__image img { transform: scale(1.045); }
+
+.ka-p-card__badge {
+  position: absolute;
+  top: 16px;
+  left: 16px;
+  z-index: 2;
+  font-family: var(--f-sans);
+  font-size: 0.6rem;
+  font-weight: 400;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: white;
+  background: rgba(26,23,20,0.78);
+  padding: 7px 14px;
+}
+
+.ka-p-card__veil {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(26,23,20,0.42);
+  opacity: 0;
+  transition: opacity var(--dur-fast);
+}
+.ka-p-card:hover .ka-p-card__veil { opacity: 1; }
+.ka-p-card__veil-quickadd {
+  font-family: var(--f-sans);
+  font-size: 0.66rem;
+  font-weight: 400;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: white;
+  background: transparent;
+  border: 1px solid rgba(255,255,255,0.65);
+  padding: 12px 26px;
+  cursor: pointer;
+  transform: translateY(8px);
+  transition: transform var(--dur-med) var(--ease-luxury), background var(--dur-fast), color var(--dur-fast);
+}
+.ka-p-card:hover .ka-p-card__veil-quickadd { transform: translateY(0); }
+.ka-p-card__veil-quickadd:hover { background: white; color: var(--c-charcoal); }
+.ka-p-card__veil-quickadd--oos,
+.ka-p-card__veil-quickadd[aria-disabled="true"] {
+  cursor: not-allowed; opacity: 0.6; border-color: rgba(255,255,255,0.35);
+}
+.ka-p-card__veil-quickadd--oos:hover,
+.ka-p-card__veil-quickadd[aria-disabled="true"]:hover { background: transparent; color: white; }
+
+.ka-p-card__info { padding: 20px 4px 0; position: relative; z-index: 1; }
+.ka-p-card__name {
+  font-family: var(--f-display);
+  font-size: clamp(1rem, 1.6vw, 1.25rem);
+  font-weight: 400;
+  font-style: italic;
+  color: var(--c-charcoal);
+  line-height: 1.3;
+  margin-bottom: 6px;
+}
+.ka-p-card__fabric {
+  font-family: var(--f-sans);
+  font-size: 0.74rem;
+  font-weight: 300;
+  color: var(--c-ink-muted);
+  margin-bottom: 10px;
+  line-height: 1.6;
+}
+.ka-p-card__price {
+  font-family: var(--f-sans);
+  font-size: 0.78rem;
+  font-weight: 400;
+  letter-spacing: 0.04em;
+  color: var(--c-ink);
+}
+.ka-p-card__price span {
+  color: var(--c-ink-muted);
+  font-weight: 300;
+  margin-left: 6px;
+}
+.ka-p-card__action {
+  display: inline-block;
+  margin-top: 10px;
+  font-family: var(--f-sans);
+  font-size: 0.68rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--c-rosegold-2);
+  opacity: 0.7;
+  transition: opacity var(--dur-fast);
+}
+.ka-p-card__action:hover { opacity: 1; }
+
+.ka-editorial-insert__frame {
+  position: relative;
+  height: 56vh;
+  min-height: 380px;
+  max-height: 620px;
+  overflow: hidden;
+}
+.ka-editorial-insert__caption {
+  position: absolute;
+  bottom: 32px;
+  left: 32px;
+  right: 32px;
+  font-family: var(--f-display);
+  font-size: clamp(1.3rem, 2.4vw, 2rem);
+  font-style: italic;
+  color: white;
+  line-height: 1.3;
+  max-width: 640px;
+}
+.ka-editorial-insert__overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgba(15,12,10,0.55) 0%, transparent 55%);
+}
+
+.ka-load-more {
+  text-align: center;
+  padding-bottom: var(--s-2xl);
+}
+.ka-load-more__count {
+  display: block;
+  margin-top: 16px;
+  font-family: var(--f-sans);
+  font-size: 0.66rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--c-ink-muted);
+}
+
+@media (max-width: 900px) {
+  .ka-product-grid { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 600px) {
+  .ka-product-grid { grid-template-columns: repeat(2, 1fr); gap: 2px; padding: var(--s-md) 16px var(--s-md); }
+  .ka-p-card__info { padding: 14px 2px 0; }
+  .ka-editorial-insert__frame { height: 42vh; min-height: 320px; }
+}
