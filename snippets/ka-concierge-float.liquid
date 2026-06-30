@@ -1,0 +1,22 @@
+{%- comment -%}
+  Global floating concierge button — present on every page.
+  z-index 110: above utility bar (101), nav (100), product minibar (70).
+  Espresso/gold chip — deliberately NOT WhatsApp green.
+  Reuses the single settings.whatsapp_number source of truth (F4).
+  On the product page, hidden below 900px (the mobile action bar covers
+  the Concierge action there) — see ka-product.css media query.
+{%- endcomment -%}
+{{ 'ka-concierge-float.css' | asset_url | stylesheet_tag }}
+
+{%- if settings.whatsapp_number != blank -%}
+  <a
+    href="https://wa.me/{{ settings.whatsapp_number }}"
+    class="ka-concierge-float"
+    target="_blank"
+    rel="noopener"
+    title="Speak with a Couture Concierge"
+    aria-label="Speak with a Couture Concierge on WhatsApp"
+  >
+    <span class="ka-concierge-float__dot" aria-hidden="true"></span>Concierge
+  </a>
+{%- endif -%}

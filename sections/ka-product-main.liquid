@@ -1,0 +1,255 @@
+{{ 'ka-product-main.css' | asset_url | stylesheet_tag }}
+
+{%- liquid
+  assign wa = settings.whatsapp_number
+  assign appt_url = section.settings.appointment_url | default: '/pages/appointments'
+  assign price = product.price | money
+
+  # Pre-filled WhatsApp enquiry with product context (F2)
+  assign wa_text = 'Hi, I' | append: '%27' | append: 'd like to enquire about the ' | append: product.title
+  assign wa_text_enc = wa_text | url_param_escape
+  assign wa_enquire = 'https://wa.me/' | append: wa | append: '?text=' | append: wa_text_enc
+
+  # Detect the Size option (case-insensitive) for variant-driven selection
+  assign size_option = null
+  for opt in product.options_with_values
+    assign opt_down = opt.name | downcase
+    if opt_down contains 'size'
+      assign size_option = opt
+    endif
+  endfor
+
+  # Per-product metafields (custom namespace) with graceful fallbacks
+  assign poem = product.metafields.custom.poem_tagline
+  assign lead_time = product.metafields.custom.lead_time | default: section.settings.default_lead_time
+  assign mf_atelier = product.metafields.custom.atelier_process
+  assign mf_fabric = product.metafields.custom.fabric_embroidery
+  assign mf_sizefit = product.metafields.custom.size_fit_notes
+  assign mf_delivery = product.metafields.custom.delivery_care
+-%}
+
+<section class="ka-product" id="ka-product">
+
+  <!-- ── Gallery: sticky thumbnail rail + stage ── -->
+  <div class="ka-media" id="ka-media">
+    <div class="ka-thumbs" id="ka-thumbs">
+      {%- for image in product.images -%}
+        <button
+          type="button"
+          class="ka-thumb{% if forloop.first %} active{% endif %}"
+          data-full="{{ image | image_url: width: 1400 }}"
+          data-tag="{{ image.alt | escape }}"
+          aria-label="View image {{ forloop.index }}"
+          style="background-image:url('{{ image | image_url: width: 200 }}');"
+        ></button>
+      {%- else -%}
+        <button type="button" class="ka-thumb active ka-thumb--ph" aria-label="Product image"></button>
+      {%- endfor -%}
+    </div>
+
+    {%- assign first_image = product.featured_image -%}
+    <div
+      class="ka-stage{% unless first_image %} ka-stage--ph{% endunless %}"
+      id="ka-stage"
+      {% if first_image %}style="background-image:url('{{ first_image | image_url: width: 1400 }}');"{% endif %}
+    >
+      {%- if first_image and first_image.alt != blank -%}
+        <span class="ka-stage__tag" id="ka-stage-tag">{{ first_image.alt | escape }}</span>
+      {%- else -%}
+        <span class="ka-stage__tag" id="ka-stage-tag" style="opacity:0;"></span>
+      {%- endif -%}
+      <span class="ka-stage__idx" id="ka-stage-idx">01 / {% if product.images.size > 0 %}{{ product.images.size | prepend: '0' | slice: -2, 2 }}{% else %}01{% endif %}</span>
+      <span class="ka-stage__zoom" aria-hidden="true">&#10530; Zoom</span>
+    </div>
+  </div>
+
+  <!-- ── Info panel ── -->
+  <div class="ka-info-wrap">
+    <div class="ka-panel">
+      {%- if product.collections.first -%}
+        <a href="{{ product.collections.first.url }}" class="eyebrow ka-collection-tag">{{ product.collections.first.title }}</a>
+      {%- endif -%}
+
+      <h1 class="ka-p-title">{{ product.title }}</h1>
+
+      {%- if poem != blank -%}
+        <p class="ka-p-poem">{{ poem }}</p>
+      {%- endif -%}
+
+      <button type="button" class="ka-grating" id="ka-grating" title="Read our Google reviews">
+        <span class="ka-grating__stars">&#9733;&#9733;&#9733;&#9733;&#9733;</span>
+        <span class="ka-grating__tx"><b>{{ section.settings.rating_score }}</b> · {{ section.settings.rating_count }} reviews on</span>
+        <span class="ka-glogo"><span class="b">G</span><span class="r">o</span><span class="y">o</span><span class="b">g</span><span class="g2">l</span><span class="r">e</span></span>
+      </button>
+
+      <div class="ka-p-price-row">
+        <div class="ka-p-price">{{ price }}</div>
+        <div class="ka-p-tax">Taxes included</div>
+      </div>
+      <div class="ka-p-made">Made to measure · Crafted to order in {{ lead_time }}</div>
+
+      <!-- SIZE + BESPOKE (mapped to Shopify variant option) -->
+      <div class="ka-opt-head">
+        <span class="ka-opt-label">Select Your Size</span>
+        <button type="button" class="ka-btn-line" data-open-acc="size">Size &amp; Fit Guide</button>
+      </div>
+
+      <div class="ka-size-grid" id="ka-sizes">
+        {%- if size_option -%}
+          {%- for value in size_option.values -%}
+            {%- assign v_down = value | downcase -%}
+            {%- unless v_down contains 'measure' or v_down contains 'bespoke' or v_down contains 'custom' -%}
+              <button type="button" class="ka-size" data-value="{{ value | escape }}">{{ value }}</button>
+            {%- endunless -%}
+          {%- endfor -%}
+        {%- else -%}
+          {%- comment -%} Fallback when no Size option exists yet on the product {%- endcomment -%}
+          <button type="button" class="ka-size" data-value="XS">XS</button>
+          <button type="button" class="ka-size" data-value="S">S</button>
+          <button type="button" class="ka-size" data-value="M">M</button>
+          <button type="button" class="ka-size" data-value="L">L</button>
+          <button type="button" class="ka-size" data-value="XL">XL</button>
+        {%- endif -%}
+      </div>
+
+      <button class="ka-bespoke" id="ka-bespoke" type="button">
+        <span class="ka-bespoke__dot" aria-hidden="true"></span>
+        <span class="ka-bespoke__k">Made to my measurements</span>
+        <span class="ka-bespoke__s">Recommended</span>
+      </button>
+
+      <!-- MADE-TO-MEASURE reveal -->
+      <div class="ka-mtm" id="ka-mtm">
+        <div class="ka-mtm__inner">
+          <h4>Tailored to You — How It Works</h4>
+          <ul class="ka-mtm__steps">
+            <li>Send your enquiry on WhatsApp or book an appointment — no need to finalise measurements yet.</li>
+            <li>Share your measurements with your style advisor, in person, virtually, or over chat — whichever you prefer.</li>
+            <li>Once confirmed, our atelier cuts, drapes and hand-embroiders the piece to you alone.</li>
+          </ul>
+          <p class="ka-mtm__foot">Your piece is then pressed, quality-checked and delivered worldwide in {{ lead_time }}.</p>
+          <button type="button" class="ka-mtm__link" data-open-acc="size">View the measurement guide &rarr;</button>
+        </div>
+      </div>
+
+      <!-- CTAs — concierge-led, no Add to Cart -->
+      <div class="ka-cta-stack">
+        <a class="ka-btn" href="{{ appt_url }}">Book a Private Appointment</a>
+        <a class="ka-btn ka-btn--concierge" href="{{ wa_enquire }}" target="_blank" rel="noopener" id="ka-cta-concierge"><span class="dot"></span>Speak with a Couture Concierge</a>
+        <div class="ka-or">or enquire online</div>
+        <a class="ka-btn ka-btn--ghost" href="{{ wa_enquire }}" target="_blank" rel="noopener" id="ka-cta-enquire">Enquire on WhatsApp — {{ price }}</a>
+      </div>
+
+      <!-- ASSURANCES -->
+      <div class="ka-assure">
+        <div class="ka-assure__row"><span class="mk" aria-hidden="true">&#10022;</span><span>Each piece is cut, draped and hand-embroidered to order by our karigars — never machine-made.</span></div>
+        <div class="ka-assure__row"><span class="mk" aria-hidden="true">&#10022;</span><span>Complimentary worldwide delivery by DHL Express, beautifully packaged.</span></div>
+        <div class="ka-assure__row"><span class="mk" aria-hidden="true">&#10022;</span><span>A personal advisor accompanies every order, confirming your measurements and fit after you enquire.</span></div>
+      </div>
+
+      <!-- ACCORDION -->
+      <div class="ka-accordion" id="ka-accordion">
+        <div class="ka-acc" data-acc="atelier">
+          <button class="ka-acc__head" type="button">The Atelier Process<span class="ka-acc__pm" aria-hidden="true">+</span></button>
+          <div class="ka-acc__body"><div class="ka-acc__inner">
+            {%- if mf_atelier != blank -%}{{ mf_atelier }}{%- else -%}
+              Every Karishma &amp; Ashita piece is made to measure. After your enquiry, our atelier cuts and constructs the garment to your individual measurements, then hand-embroiders the corset over several weeks before a final press and quality check. Your piece reaches you in {{ lead_time }}.
+            {%- endif -%}
+          </div></div>
+        </div>
+        <div class="ka-acc" data-acc="fabric">
+          <button class="ka-acc__head" type="button">Fabric &amp; Embroidery<span class="ka-acc__pm" aria-hidden="true">+</span></button>
+          <div class="ka-acc__body"><div class="ka-acc__inner">
+            {%- if mf_fabric != blank -%}{{ mf_fabric }}{%- else -%}
+              <ul>
+                <li>Modal satin drape with a richly hand-embroidered structured corset</li>
+                <li>Natural-fibre base fabrics — breathable, fluid and soothing to wear</li>
+                <li>Hand embroidery in pearl, crystal and thread by master karigars</li>
+                <li>Concealed boning and structure for a sculpted, confident silhouette</li>
+              </ul>
+            {%- endif -%}
+          </div></div>
+        </div>
+        <div class="ka-acc" data-acc="size">
+          <button class="ka-acc__head" type="button">Size &amp; Fit Guide<span class="ka-acc__pm" aria-hidden="true">+</span></button>
+          <div class="ka-acc__body"><div class="ka-acc__inner">
+            {%- if mf_sizefit != blank -%}{{ mf_sizefit }}{%- else -%}
+              All measurements in inches. For a true couture fit, select <em>Made to my measurements</em> and share your details with your style advisor.
+              <table>
+                <tr><th></th><th>Bust</th><th>Waist</th><th>Hip</th></tr>
+                <tr><th>XS</th><td>32</td><td>26</td><td>35</td></tr>
+                <tr><th>S</th><td>34</td><td>28</td><td>38</td></tr>
+                <tr><th>M</th><td>36</td><td>30</td><td>39</td></tr>
+                <tr><th>L</th><td>38</td><td>32</td><td>40</td></tr>
+                <tr><th>XL</th><td>40</td><td>34</td><td>42</td></tr>
+              </table>
+            {%- endif -%}
+          </div></div>
+        </div>
+        <div class="ka-acc" data-acc="delivery">
+          <button class="ka-acc__head" type="button">Delivery &amp; Care<span class="ka-acc__pm" aria-hidden="true">+</span></button>
+          <div class="ka-acc__body"><div class="ka-acc__inner">
+            {%- if mf_delivery != blank -%}{{ mf_delivery }}{%- else -%}
+              <ul>
+                <li>Crafted to order in {{ lead_time }}</li>
+                <li>Complimentary worldwide shipping via DHL Express</li>
+                <li>Dry clean only — store flat, away from direct light</li>
+                <li>As each piece is made to measure, kindly review our exchange policy with your style advisor</li>
+              </ul>
+            {%- endif -%}
+          </div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── Sticky minibar (desktop) ── -->
+<div class="ka-minibar" id="ka-minibar">
+  <div class="ka-minibar__in">
+    <div class="ka-minibar__l">
+      <div class="ka-minibar__thumb"{% if product.featured_image %} style="background-image:url('{{ product.featured_image | image_url: width: 120 }}');"{% endif %}></div>
+      <div>
+        <div class="ka-minibar__name">{{ product.title }}</div>
+        <div class="ka-minibar__price">{{ price }}{% if product.collections.first %} · {{ product.collections.first.title }}{% endif %}</div>
+      </div>
+    </div>
+    <div class="ka-minibar__r">
+      <a class="ka-btn ka-btn--ghost" href="{{ appt_url }}">Book Appointment</a>
+      <a class="ka-btn ka-btn--concierge" href="{{ wa_enquire }}" target="_blank" rel="noopener"><span class="dot"></span>Concierge</a>
+    </div>
+  </div>
+</div>
+
+<!-- ── Mobile sticky action bar ── -->
+<div class="ka-mobile-bar">
+  <a class="ka-btn ka-btn--ghost" href="{{ appt_url }}">Appointment</a>
+  <a class="ka-btn ka-btn--concierge" href="{{ wa_enquire }}" target="_blank" rel="noopener">Concierge</a>
+  <a class="ka-btn" href="{{ wa_enquire }}" target="_blank" rel="noopener">Enquire</a>
+</div>
+
+<!-- ── Lightbox (desktop/tablet only, disabled <900px via JS) ── -->
+<div class="ka-lb" id="ka-lb">
+  <span class="ka-lb__x" aria-hidden="true">Close &#10005;</span>
+  <div class="ka-lb__frame" id="ka-lb-frame"></div>
+</div>
+
+<script src="{{ 'ka-product.js' | asset_url }}" defer></script>
+
+{% schema %}
+{
+  "name": "Product Main",
+  "tag": "section",
+  "settings": [
+    { "type": "url",  "id": "appointment_url", "label": "Appointment booking URL", "info": "Destination for the Book a Private Appointment CTAs." },
+    { "type": "text", "id": "default_lead_time", "label": "Default lead time", "default": "20–25 days", "info": "Used when a product has no custom.lead_time metafield." },
+    {
+      "type": "header",
+      "content": "Google rating row (sitewide aggregate)"
+    },
+    { "type": "text", "id": "rating_score", "label": "Rating score", "default": "4.9" },
+    { "type": "text", "id": "rating_count", "label": "Review count", "default": "217" }
+  ],
+  "presets": [{ "name": "Product Main" }]
+}
+{% endschema %}

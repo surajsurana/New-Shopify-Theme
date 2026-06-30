@@ -29,9 +29,9 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 
-  <!-- Google Fonts: Bodoni Moda + Jost (exact weights from spec) -->
+  <!-- Google Fonts: Cormorant Garamond + Jost (exact weights from spec v2.0) -->
   <link
-    href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400;0,6..96,500;1,6..96,400;1,6..96,500&family=Jost:wght@200;300;400;500&display=swap"
+    href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Jost:wght@200;300;400;500&display=swap"
     rel="stylesheet"
   />
 
@@ -41,8 +41,11 @@
   {{ content_for_header }}
 </head>
 
-<body>
+<body class="template-{{ request.page_type }}">
   {{ content_for_layout }}
+
+  <!-- Global floating concierge button — renders on every page (z-index 110) -->
+  {% render 'ka-concierge-float' %}
 
   <!-- Global theme JS: nav scroll, reveals, parallax, mobile nav, newsletter -->
   <script src="{{ 'ka-theme.js' | asset_url }}" defer></script>

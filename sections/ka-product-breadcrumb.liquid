@@ -1,0 +1,24 @@
+{{ 'ka-product-breadcrumb.css' | asset_url | stylesheet_tag }}
+
+{%- assign primary_collection = product.collections.first -%}
+
+<nav class="ka-pb" aria-label="Breadcrumb">
+  <div class="ka-pb__inner">
+    <a href="{{ routes.root_url }}">Home</a>
+    <span class="ka-pb__sep" aria-hidden="true">/</span>
+    {%- if primary_collection -%}
+      <a href="{{ primary_collection.url }}">{{ primary_collection.title }}</a>
+      <span class="ka-pb__sep" aria-hidden="true">/</span>
+    {%- endif -%}
+    <span class="ka-pb__current">{{ product.title }}</span>
+  </div>
+</nav>
+
+{% schema %}
+{
+  "name": "Product Breadcrumb",
+  "tag": "section",
+  "settings": [],
+  "presets": [{ "name": "Product Breadcrumb" }]
+}
+{% endschema %}
