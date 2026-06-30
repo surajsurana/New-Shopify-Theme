@@ -63,7 +63,9 @@
         "eyebrow": "Most Loved",
         "title": "Signature Pieces",
         "view_all_label": "View the Signature edit",
-        "view_all_url": "/collections/bestsellers"
+        "view_all_url": "/collections/bestsellers",
+        "collection": "bestsellers",
+        "products_limit": 3
       }
     },
     "ka-celebrity": {
