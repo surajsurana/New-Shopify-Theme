@@ -1,0 +1,29 @@
+{{ 'ka-cart-breadcrumb.css' | asset_url | stylesheet_tag }}
+
+{%- comment -%}
+  K&A Cart ("Selection") Breadcrumb
+  Spec: Docs/cart-build-spec.md, Section 3 ("Section 1 — Breadcrumb"), Section 2.
+  Quiet wayfinding strip: Home / Selection. No collection segment — this page
+  isn't scoped to one collection. Customer-facing label is "Selection" per the
+  v1.1 rename decision; internal file/section name stays "cart".
+{%- endcomment -%}
+
+<div class="ka-cart-breadcrumb">
+  <div class="ka-cart-breadcrumb__inner">
+    <a href="/">Home</a>
+    <span class="ka-cart-breadcrumb__sep">/</span>
+    <span class="ka-cart-breadcrumb__current">Selection</span>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Cart Breadcrumb",
+  "tag": "div",
+  "class": "ka-cart-breadcrumb-section",
+  "settings": [],
+  "presets": [
+    { "name": "Cart Breadcrumb" }
+  ]
+}
+{% endschema %}
