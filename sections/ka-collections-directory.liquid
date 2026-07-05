@@ -1,6 +1,6 @@
 {{ 'ka-collections-directory.css' | asset_url | stylesheet_tag }}
 
-<section class="ka-collections-dir" aria-label="Collections directory">
+<section class="ka-collections-dir" id="collections" aria-label="Collections directory">
   <div class="ka-collections-dir__inner">
     <div class="ka-collections-dir__header reveal">
       <p class="eyebrow eyebrow--on-dark" style="margin-bottom: 16px;">{{ section.settings.eyebrow }}</p>
@@ -24,17 +24,17 @@
             {% else %}
               {% assign card_name_lower = block.settings.name | downcase %}
               {% case card_name_lower %}
+                {% when 'first love' %}
+                  <img src="{{ 'first-love-card.jpg' | asset_url }}" alt="{{ block.settings.name }}" loading="lazy" width="700" height="1050" class="img-filter-collection" />
                 {% when 'the festive edit' %}
-                  {%- comment -%} Placeholder stand-in (no capsule shoot yet) — see Docs/collection-build-spec.md {%- endcomment -%}
+                  {%- comment -%} Interim stand-in — no capsule shoot yet. Flag for studio shoot. {%- endcomment -%}
                   <img src="{{ 'celebrity-editorial.jpg' | asset_url }}" alt="{{ block.settings.name }}" loading="lazy" width="700" height="1050" class="img-filter-collection" />
                 {% when 'the bloom soirée' %}
-                  <img src="{{ 'bloom-soiree-main.jpg' | asset_url }}" alt="{{ block.settings.name }}" loading="lazy" width="700" height="1050" class="img-filter-collection" />
+                  <img src="{{ 'bloom-soiree-card.jpg' | asset_url }}" alt="{{ block.settings.name }}" loading="lazy" width="700" height="1050" class="img-filter-collection" />
                 {% when 'chamakk' %}
-                  {%- comment -%} Placeholder stand-in (no capsule shoot yet) — see Docs/collection-build-spec.md {%- endcomment -%}
-                  <img src="{{ 'collection-secondary-1.jpg' | asset_url }}" alt="{{ block.settings.name }}" loading="lazy" width="700" height="1050" class="img-filter-collection" />
+                  <img src="{{ 'chamak-card.jpg' | asset_url }}" alt="{{ block.settings.name }}" loading="lazy" width="700" height="1050" class="img-filter-collection" />
                 {% when 'barre oblique' %}
-                  {%- comment -%} Placeholder stand-in (no capsule shoot yet) — see Docs/collection-build-spec.md {%- endcomment -%}
-                  <img src="{{ 'collection-secondary-2.jpg' | asset_url }}" alt="{{ block.settings.name }}" loading="lazy" width="700" height="1050" class="img-filter-collection" />
+                  <img src="{{ 'barre-card.jpg' | asset_url }}" alt="{{ block.settings.name }}" loading="lazy" width="700" height="1050" class="img-filter-collection" />
                 {% else %}
                   <div style="background: var(--c-charcoal-2); width:100%; height:100%;"></div>
               {% endcase %}
@@ -64,7 +64,7 @@
     {
       "type": "collection_card",
       "name": "Collection card",
-      "limit": 4,
+      "limit": 5,
       "settings": [
         { "type": "image_picker", "id": "image",      "label": "Card image" },
         { "type": "text",         "id": "name",       "label": "Collection name", "default": "The Festive Edit" },
