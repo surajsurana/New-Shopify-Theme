@@ -6,37 +6,44 @@
   Editorial description + a facts strip (Silhouettes / Made to Order / Price Range /
   Sizing) that replaces a filter sidebar with the information a bride actually needs.
 
-  All five values are collection-level metafields (namespace "custom"):
-    custom.intro_copy, custom.silhouettes, custom.lead_time,
-    custom.price_range_display, custom.sizing_note
-  Per scope boundary #2 of this build: where the spec has not drafted real copy yet
-  (The Festive Edit, Barre Oblique), the metafield will be blank in Admin until
-  Creative Director supplies it. The Liquid below falls back to an explicitly
-  temporary scaffolding string in that case, rather than inventing brand copy.
+  Content priority (highest to lowest):
+    1. Section settings — editable from Theme Editor when a per-collection template
+       (templates/collection.{handle}.json) is assigned to the collection in Admin.
+    2. Collection metafields — custom.intro_copy, custom.silhouettes, custom.lead_time,
+       custom.price_range_display, custom.sizing_note. Edit in Admin > Collections >
+       [collection name] > scroll to Metafields at the bottom of the page.
+    3. Hardcoded placeholder — shown when neither source has data yet.
+
   Per CD Note 4 (spec Section 7): price range is always a manually maintained
-  metafield string, never computed from collection.products min/max.
+  string, never computed from collection.products min/max.
 {%- endcomment -%}
 
+{%- liquid
+  assign intro_copy  = section.settings.intro_copy          | default: collection.metafields.custom.intro_copy          | default: "Intro copy pending — Creative Director, see collection-build-spec.md §4"
+  assign silhouettes = section.settings.silhouettes         | default: collection.metafields.custom.silhouettes         | default: "—"
+  assign lead_time   = section.settings.lead_time           | default: collection.metafields.custom.lead_time           | default: "—"
+  assign price_range = section.settings.price_range_display | default: collection.metafields.custom.price_range_display | default: "—"
+  assign sizing_note = section.settings.sizing_note         | default: collection.metafields.custom.sizing_note         | default: "Made to Measure"
+-%}
+
 <section class="ka-coll-intro">
-  <p class="ka-coll-intro__body reveal">
-    {{ collection.metafields.custom.intro_copy | default: "Intro copy pending — Creative Director, see collection-build-spec.md §4" }}
-  </p>
+  <p class="ka-coll-intro__body reveal">{{ intro_copy }}</p>
   <div class="ka-coll-intro__facts reveal reveal-delay-1">
     <div>
       <p class="ka-coll-intro__fact-label">Silhouettes</p>
-      <p class="ka-coll-intro__fact-value">{{ collection.metafields.custom.silhouettes | default: "Pending — see §4" }}</p>
+      <p class="ka-coll-intro__fact-value">{{ silhouettes }}</p>
     </div>
     <div>
       <p class="ka-coll-intro__fact-label">Made to Order</p>
-      <p class="ka-coll-intro__fact-value">{{ collection.metafields.custom.lead_time | default: "Pending — see §4" }}</p>
+      <p class="ka-coll-intro__fact-value">{{ lead_time }}</p>
     </div>
     <div>
       <p class="ka-coll-intro__fact-label">Price Range</p>
-      <p class="ka-coll-intro__fact-value">{{ collection.metafields.custom.price_range_display | default: "Pending — see §4" }}</p>
+      <p class="ka-coll-intro__fact-value">{{ price_range }}</p>
     </div>
     <div>
       <p class="ka-coll-intro__fact-label">Sizing</p>
-      <p class="ka-coll-intro__fact-value">{{ collection.metafields.custom.sizing_note | default: "Made to Measure" }}</p>
+      <p class="ka-coll-intro__fact-value">{{ sizing_note }}</p>
     </div>
   </div>
 </section>
@@ -49,8 +56,13 @@
   "settings": [
     {
       "type": "paragraph",
-      "content": "Content for this section is pulled from collection metafields (namespace custom: intro_copy, silhouettes, lead_time, price_range_display, sizing_note), not from settings here — edit per collection in Shopify Admin > Collections > [collection] > Metafields."
-    }
+      "content": "Fill these fields to edit from Theme Editor (requires a per-collection template assigned in Admin). Leave blank to fall back to the collection’s metafields."
+    },
+    { "type": "textarea", "id": "intro_copy",          "label": "Intro copy" },
+    { "type": "text",     "id": "silhouettes",         "label": "Silhouettes (e.g. Corsets, Lehengas)" },
+    { "type": "text",     "id": "lead_time",           "label": "Lead time (e.g. 6–8 Weeks, Made to Order)" },
+    { "type": "text",     "id": "price_range_display", "label": "Price range (e.g. ₹42,000–₹85,000+)" },
+    { "type": "text",     "id": "sizing_note",         "label": "Sizing note", "default": "Made to Measure" }
   ],
   "presets": [
     { "name": "Collection Intro" }
