@@ -109,14 +109,21 @@
             {% else %}
               {%- assign handle_lower = collection.handle | downcase -%}
               {%- case handle_lower -%}
+                {%- when 'first-love' -%}
+                  <img src="{{ 'first-love-editorial.jpg' | asset_url }}" alt="{{ collection.title }}" loading="lazy" width="1800" height="1000" class="img-filter-coll-page-dark" />
                 {%- when 'the-bloom-soiree' -%}
                   <img src="{{ 'bloom-soiree-main.jpg' | asset_url }}" alt="{{ collection.title }}" loading="lazy" width="1800" height="1000" class="img-filter-coll-page-dark" />
                 {%- when 'the-festive-edit' -%}
+                  {%- comment -%} Interim — no suitable editorial insert for Festive Edit yet. {%- endcomment -%}
                   <img src="{{ 'celebrity-editorial.jpg' | asset_url }}" alt="{{ collection.title }}" loading="lazy" width="1800" height="1000" class="img-filter-coll-page-dark" />
                 {%- when 'chamak' -%}
-                  <img src="{{ 'collection-secondary-2.jpg' | asset_url }}" alt="{{ collection.title }}" loading="lazy" width="1800" height="1000" class="img-filter-coll-page-dark" />
+                  <img src="{{ 'chamak-insert.jpg' | asset_url }}" alt="{{ collection.title }}" loading="lazy" width="1800" height="1000" class="img-filter-coll-page-dark" />
                 {%- when 'barre-oblique' -%}
-                  <img src="{{ 'collection-secondary-1.jpg' | asset_url }}" alt="{{ collection.title }}" loading="lazy" width="1800" height="1000" class="img-filter-coll-page-dark" />
+                  <img src="{{ 'barre-insert.jpg' | asset_url }}" alt="{{ collection.title }}" loading="lazy" width="1800" height="1000" class="img-filter-coll-page-dark" />
+                {%- when 'wedding-festive' -%}
+                  <img src="{{ 'wedding-festive-insert.jpg' | asset_url }}" alt="{{ collection.title }}" loading="lazy" width="1800" height="1000" class="img-filter-coll-page-dark" />
+                {%- when 'bestsellers' -%}
+                  <img src="{{ 'bestsellers-insert.jpg' | asset_url }}" alt="{{ collection.title }}" loading="lazy" width="1800" height="1000" class="img-filter-coll-page-dark" />
                 {%- else -%}
                   <div style="background: var(--c-charcoal-2); width:100%; height:100%;"></div>
               {%- endcase -%}

@@ -33,17 +33,21 @@
     {% else %}
       {%- assign handle_lower = collection.handle | downcase -%}
       {%- case handle_lower -%}
+        {%- when 'first-love' -%}
+          <img src="{{ 'first-love-hero.jpg' | asset_url }}" alt="{{ collection.title }}" loading="eager" fetchpriority="high" width="1800" height="1100" class="img-filter-coll-page-dark" />
         {%- when 'the-bloom-soiree' -%}
-          <img src="{{ 'bloom-soiree-main.jpg' | asset_url }}" alt="{{ collection.title }}" loading="eager" fetchpriority="high" width="1800" height="1100" class="img-filter-coll-page-dark" />
+          <img src="{{ 'bloom-soiree-hero.jpg' | asset_url }}" alt="{{ collection.title }}" loading="eager" fetchpriority="high" width="1800" height="1100" class="img-filter-coll-page-dark" />
         {%- when 'the-festive-edit' -%}
-          {%- comment -%} Placeholder stand-in (no capsule shoot yet) — see Docs/collection-build-spec.md Section 5 {%- endcomment -%}
+          {%- comment -%} Interim stand-in — no suitable studio image yet. Flag for dedicated shoot. {%- endcomment -%}
           <img src="{{ 'celebrity-editorial.jpg' | asset_url }}" alt="{{ collection.title }}" loading="eager" fetchpriority="high" width="1800" height="1100" class="img-filter-coll-page-dark" />
         {%- when 'chamak' -%}
-          {%- comment -%} Placeholder stand-in (no capsule shoot yet) — see Docs/collection-build-spec.md Section 5 {%- endcomment -%}
-          <img src="{{ 'collection-secondary-1.jpg' | asset_url }}" alt="{{ collection.title }}" loading="eager" fetchpriority="high" width="1800" height="1100" class="img-filter-coll-page-dark" />
+          <img src="{{ 'chamak-hero.jpg' | asset_url }}" alt="{{ collection.title }}" loading="eager" fetchpriority="high" width="1800" height="1100" class="img-filter-coll-page-dark" />
         {%- when 'barre-oblique' -%}
-          {%- comment -%} Placeholder stand-in (no capsule shoot yet) — see Docs/collection-build-spec.md Section 5 {%- endcomment -%}
-          <img src="{{ 'collection-secondary-2.jpg' | asset_url }}" alt="{{ collection.title }}" loading="eager" fetchpriority="high" width="1800" height="1100" class="img-filter-coll-page-dark" />
+          <img src="{{ 'barre-hero.jpg' | asset_url }}" alt="{{ collection.title }}" loading="eager" fetchpriority="high" width="1800" height="1100" class="img-filter-coll-page-dark" />
+        {%- when 'wedding-festive' -%}
+          <img src="{{ 'wedding-festive-hero.jpg' | asset_url }}" alt="{{ collection.title }}" loading="eager" fetchpriority="high" width="1800" height="1100" class="img-filter-coll-page-dark" />
+        {%- when 'bestsellers' -%}
+          <img src="{{ 'bestsellers-hero.jpg' | asset_url }}" alt="{{ collection.title }}" loading="eager" fetchpriority="high" width="1800" height="1100" class="img-filter-coll-page-dark" />
         {%- else -%}
           <div style="background: var(--c-charcoal-2); width:100%; height:100%;"></div>
       {%- endcase -%}
