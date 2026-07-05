@@ -61,7 +61,24 @@
                     class="img-filter-collection"
                   />
                 {% else %}
-                  <div style="background: var(--c-charcoal-2); width:100%; height:100%;"></div>
+                  {%- case coll.handle -%}
+                    {%- when 'first-love' -%}
+                      <img src="{{ 'first-love-card.jpg' | asset_url }}" alt="{{ coll.title }}" loading="lazy" width="700" height="1050" class="img-filter-collection" />
+                    {%- when 'the-bloom-soiree' -%}
+                      <img src="{{ 'bloom-soiree-card.jpg' | asset_url }}" alt="{{ coll.title }}" loading="lazy" width="700" height="1050" class="img-filter-collection" />
+                    {%- when 'the-festive-edit' -%}
+                      <img src="{{ 'celebrity-editorial.jpg' | asset_url }}" alt="{{ coll.title }}" loading="lazy" width="700" height="1050" class="img-filter-collection" />
+                    {%- when 'chamak' -%}
+                      <img src="{{ 'chamak-card.jpg' | asset_url }}" alt="{{ coll.title }}" loading="lazy" width="700" height="1050" class="img-filter-collection" />
+                    {%- when 'barre-oblique' -%}
+                      <img src="{{ 'barre-card.jpg' | asset_url }}" alt="{{ coll.title }}" loading="lazy" width="700" height="1050" class="img-filter-collection" />
+                    {%- when 'bestsellers' -%}
+                      <img src="{{ 'bestsellers-card.jpg' | asset_url }}" alt="{{ coll.title }}" loading="lazy" width="700" height="1050" class="img-filter-collection" />
+                    {%- when 'wedding-festive', 'the-wedding-festive-collection-22' -%}
+                      <img src="{{ 'wedding-festive-card.jpg' | asset_url }}" alt="{{ coll.title }}" loading="lazy" width="700" height="1050" class="img-filter-collection" />
+                    {%- else -%}
+                      <div style="background: var(--c-charcoal-2); width:100%; height:100%;"></div>
+                  {%- endcase -%}
                 {% endif %}
               </div>
               <div class="ka-coll-card__overlay"></div>
