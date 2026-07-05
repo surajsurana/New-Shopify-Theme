@@ -27,7 +27,7 @@
   position: relative; overflow: hidden; display: block;
 }
 .ka-coll-card__image { aspect-ratio: 2/3; overflow: hidden; }
-.ka-coll-card__image img { transition: transform 1.4s var(--ease-luxury); }
+.ka-coll-card__image img { transition: transform 1.4s var(--ease-luxury); object-position: top; }
 .ka-coll-card:hover .ka-coll-card__image img { transform: scale(1.05); }
 
 .ka-coll-card__overlay {
