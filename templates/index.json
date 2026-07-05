@@ -34,8 +34,8 @@
         "title_line1": "Bridal",
         "title_line2": "Couture",
         "subtitle": "Made-to-order bridal wear — corsets, lehengas, Indo-Western — conceived in Mumbai and worn across the world.",
-        "cta_primary_label": "Explore Collections",
-        "cta_primary_url": "/collections",
+        "cta_primary_label": "Explore Collection",
+        "cta_primary_url": "shopify://collections/first-love",
         "cta_secondary_label": "Book a Styling Appointment",
         "cta_secondary_url": "/pages/appointments"
       }
