@@ -1,0 +1,126 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "sections": {
+    "ka-nav": {
+      "type": "ka-nav",
+      "settings": {
+        "utility_1": "Complimentary Worldwide Delivery",
+        "utility_2": "Hand-Embroidered to Order",
+        "utility_3": "Private & Virtual Appointments",
+        "logo_text": "Karishma Ashita",
+        "logo_subline": "Bridal Couture · Mumbai",
+        "label_bestsellers": "Signature",
+        "link_bestsellers": "/collections/bestsellers",
+        "label_collections": "Collections",
+        "link_collections": "/collections",
+        "label_diaries": "Client Diaries",
+        "link_diaries": "/pages/client-diaries",
+        "link_about": "/pages/about-us",
+        "link_appointment": "/pages/appointments"
+      }
+    },
+    "ka-collection-breadcrumb": {
+      "type": "ka-collection-breadcrumb",
+      "settings": {}
+    },
+    "ka-collection-hero": {
+      "type": "ka-collection-hero",
+      "settings": {
+        "position": ""
+      }
+    },
+    "ka-collection-intro": {
+      "type": "ka-collection-intro",
+      "settings": {
+        "intro_copy": "Signature gathers the pieces our clients return to first — silhouettes proven across a hundred fittings, refined again with each one. This is not a single story but a curated edit: the corsets, drapes and lehengas that have already found their occasion, waiting to find yours.",
+        "silhouettes": "Corsets, Lehengas, Sarees",
+        "lead_time": "6–8 Weeks, Made to Order",
+        "price_range_display": "₹38,000–₹95,000+",
+        "sizing_note": "Made to Measure"
+      }
+    },
+    "ka-collection-refine-bar": {
+      "type": "ka-collection-refine-bar",
+      "blocks": {
+        "chip-1": {
+          "type": "chip",
+          "settings": {
+            "chip_label": "Corsets"
+          }
+        },
+        "chip-2": {
+          "type": "chip",
+          "settings": {
+            "chip_label": "Lehengas"
+          }
+        },
+        "chip-3": {
+          "type": "chip",
+          "settings": {
+            "chip_label": "Indo-Western"
+          }
+        }
+      },
+      "block_order": [
+        "chip-1",
+        "chip-2",
+        "chip-3"
+      ],
+      "settings": {}
+    },
+    "ka-collection-grid": {
+      "type": "ka-collection-grid",
+      "settings": {
+        "products_per_page": 9,
+        "insert_after_index": 6
+      }
+    },
+    "ka-collection-cross-link": {
+      "type": "ka-collection-cross-link",
+      "settings": {}
+    },
+    "ka-collection-concierge": {
+      "type": "ka-collection-concierge",
+      "settings": {
+        "styling_session_url": "/pages/appointments"
+      }
+    },
+    "ka-footer": {
+      "type": "ka-footer",
+      "settings": {
+        "brand_name": "Karishma Ashita",
+        "logo_subline": "Bridal Couture · Mumbai",
+        "tagline": "Bridal couture, handcrafted\nin Mumbai.",
+        "instagram_url": "https://instagram.com/karishmaashita",
+        "pinterest_url": "",
+        "email": "info@karishmaashita.com",
+        "address": "Mumbai, India\nComplimentary worldwide shipping",
+        "news_title": "The Inner Circle",
+        "news_body": "Collection previews, styling notes and private trunk show invitations — delivered quietly to your inbox.",
+        "news_placeholder": "Your email address",
+        "news_submit": "Join",
+        "news_success": "Welcome in. You are one of us now.",
+        "service_line": "Mumbai · Worldwide Delivery · DHL Express"
+      }
+    }
+  },
+  "order": [
+    "ka-nav",
+    "ka-collection-breadcrumb",
+    "ka-collection-hero",
+    "ka-collection-intro",
+    "ka-collection-refine-bar",
+    "ka-collection-grid",
+    "ka-collection-cross-link",
+    "ka-collection-concierge",
+    "ka-footer"
+  ]
+}
