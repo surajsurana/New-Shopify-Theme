@@ -72,7 +72,8 @@
       "type": "ka-celebrity",
       "settings": {
         "eyebrow": "Maison",
-        "quote": "“Worn by those who believe a garment should tell a story.”"
+        "quote": "“Worn by those who believe a garment should tell a story.”",
+        "attribution": ""
       }
     },
     "ka-client-diaries": {
@@ -80,6 +81,8 @@
       "settings": {
         "eyebrow": "Real Brides",
         "title": "Client Diaries",
+        "image_tall": "shopify://shop_images/661649555_18570101080054193_8933496818549991120_n.jpg",
+        "image_mid_2": "shopify://shop_images/611596402_18301683607277002_759606649633695221_n.jpg",
         "caption_1_name": "The Bloom Soirée Lehenga",
         "caption_1_garment": "Blush & Gold — Made to Order",
         "caption_2_name": "The Snow Veil Corset",
@@ -87,7 +90,7 @@
         "caption_3_name": "The Column Corset",
         "caption_3_garment": "White & Ivory — Made to Order",
         "text_eyebrow": "Stories",
-        "text_title": "Every bride becomes\npart of our diary.",
+        "text_title": "Every bride becomespart of our diary.",
         "text_body": "From the first conversation to the last pin, we document the journey of every K&A bride. Each diary entry is a story of craft, emotion, and the precise moment a woman becomes a bride.",
         "text_cta_label": "Read the diaries",
         "text_cta_url": "/pages/client-diaries"
@@ -143,6 +146,7 @@
           "type": "collection_card",
           "settings": {
             "name": "First Love",
+            "collection": "",
             "card_url": "/collections/first-love"
           }
         },
@@ -150,6 +154,7 @@
           "type": "collection_card",
           "settings": {
             "name": "The Festive Edit",
+            "collection": "",
             "card_url": "/collections/the-festive-edit"
           }
         },
@@ -157,6 +162,7 @@
           "type": "collection_card",
           "settings": {
             "name": "The Bloom Soirée",
+            "collection": "",
             "card_url": "/collections/the-bloom-soiree"
           }
         },
@@ -164,6 +170,7 @@
           "type": "collection_card",
           "settings": {
             "name": "Chamakk",
+            "collection": "",
             "card_url": "/collections/chamak"
           }
         },
@@ -171,6 +178,7 @@
           "type": "collection_card",
           "settings": {
             "name": "Barre Oblique",
+            "collection": "",
             "card_url": "/collections/barre-oblique"
           }
         }
@@ -254,7 +262,11 @@
         "news_placeholder": "Your email address",
         "news_submit": "Join",
         "news_success": "Welcome in. You are one of us now.",
-        "service_line": "Mumbai · Worldwide Delivery · DHL Express"
+        "service_line": "Mumbai · Worldwide Delivery · DHL Express",
+        "locale_line": "Ships worldwide, priced in INR",
+        "privacy_url": "",
+        "terms_url": "",
+        "shipping_url": ""
       }
     }
   },
