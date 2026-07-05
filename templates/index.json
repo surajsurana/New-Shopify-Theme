@@ -51,10 +51,10 @@
       "type": "ka-collection-story",
       "settings": {
         "eyebrow": "Introducing",
-        "title": "The Bloom\nSoirée",
-        "body": "Blushing rose petals pressed into organza. Ivory silk worked by hand into structures that hold their shape across a twelve-hour celebration. The Bloom Soirée begins where traditional bridal ends — in the quiet confidence of craft that needs no introduction.",
+        "title": "First\nLove",
+        "body": "Some garments are made to be worn. First Love was made to be remembered. A bridal collection built around silhouettes that hold their shape and their meaning — heavily embroidered lehengas, sculptural corset gowns, draped forms that move like ceremony. Each piece made to order, each detail placed with intention.",
         "cta_label": "Explore the collection",
-        "cta_url": "/collections/the-bloom-soiree"
+        "cta_url": "/collections/first-love"
       }
     },
     "ka-bestsellers": {
@@ -139,6 +139,13 @@
     "ka-collections-directory": {
       "type": "ka-collections-directory",
       "blocks": {
+        "first-love": {
+          "type": "collection_card",
+          "settings": {
+            "name": "First Love",
+            "card_url": "/collections/first-love"
+          }
+        },
         "the-festive-edit": {
           "type": "collection_card",
           "settings": {
@@ -169,6 +176,7 @@
         }
       },
       "block_order": [
+        "first-love",
         "the-festive-edit",
         "the-bloom-soiree",
         "chamakk",
