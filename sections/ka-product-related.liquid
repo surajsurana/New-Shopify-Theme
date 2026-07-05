@@ -6,12 +6,16 @@
 
   # Build the list of products to show:
   # 1) curated metafield list (product_list) if present,
-  # 2) else same-collection products (excluding current),
-  # 3) Shopify-native recommendations also available via the Recommendations API
-  #    in admin — kept here as the collection-driven default per F7.
+  # 2) else section setting "default_collection" (merchant-controlled via Theme Editor),
+  # 3) else same-collection products (excluding current).
   assign related = curated
   if related == blank
-    assign related = product.collections.first.products
+    assign fallback_coll = section.settings.default_collection
+    if fallback_coll != blank
+      assign related = fallback_coll.products
+    else
+      assign related = product.collections.first.products
+    endif
   endif
 -%}
 
@@ -47,6 +51,7 @@
   "name": "Related Products",
   "tag": "section",
   "settings": [
+    { "type": "collection", "id": "default_collection", "label": "Default collection to show", "info": "Products from this collection appear in Related Products on every product page (unless the product has a custom.related_products metafield). Set to Signature to always show Signature pieces." },
     { "type": "text",  "id": "eyebrow", "label": "Eyebrow", "default": "Continue the Collection" },
     { "type": "text",  "id": "title",   "label": "Title (blank = collection name)" },
     { "type": "text",  "id": "fallback_tag", "label": "Fallback card tag", "default": "K&A" },

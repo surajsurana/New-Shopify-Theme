@@ -49,6 +49,7 @@
   height: 280px;
 }
 .ka-collection-story__image-secondary { overflow: hidden; }
+.ka-collection-story__image-secondary img { object-position: top; }
 
 @media (max-width: 900px) {
   .ka-collection-story { grid-template-columns: 1fr; min-height: auto; }
