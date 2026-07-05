@@ -30,6 +30,10 @@
     "ka-collections-list": {
       "type": "ka-collections-list",
       "blocks": {
+        "first-love": {
+          "type": "featured_collection",
+          "settings": { "collection": "first-love" }
+        },
         "festive-edit": {
           "type": "featured_collection",
           "settings": { "collection": "the-festive-edit" }
@@ -51,7 +55,7 @@
           "settings": { "collection": "the-wedding-festive-collection-22" }
         }
       },
-      "block_order": ["festive-edit", "bloom-soiree", "chamakk", "barre-oblique", "wedding-festive"],
+      "block_order": ["first-love", "festive-edit", "bloom-soiree", "chamakk", "barre-oblique", "wedding-festive"],
       "settings": {
         "eyebrow": "Maison",
         "title": "All Collections",
