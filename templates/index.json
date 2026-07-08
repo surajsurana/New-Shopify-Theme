@@ -51,10 +51,13 @@
       "type": "ka-collection-story",
       "settings": {
         "eyebrow": "Introducing",
-        "title": "First\nLove",
+        "title": "FirstLove",
         "body": "Some garments are made to be worn. First Love was made to be remembered. A bridal collection built around silhouettes that hold their shape and their meaning — heavily embroidered lehengas, sculptural corset gowns, draped forms that move like ceremony. Each piece made to order, each detail placed with intention.",
         "cta_label": "Explore the collection",
-        "cta_url": "/collections/first-love"
+        "cta_url": "/collections/first-love",
+        "image_main": "shopify://shop_images/K_A_BRIDAL_10th_JUNE_2026_0639.jpg",
+        "image_secondary_1": "shopify://shop_images/K_A_BRIDAL_10th_JUNE_2026_1979.jpg",
+        "image_secondary_2": "shopify://shop_images/K_A_BRIDAL_10th_JUNE_2026_1104.jpg"
       }
     },
     "ka-bestsellers": {
