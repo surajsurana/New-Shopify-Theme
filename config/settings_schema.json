@@ -36,5 +36,17 @@
         "info": "Used when no page-specific image is available. Recommended: 1200x630px."
       }
     ]
+  },
+  {
+    "name": "Currency Converter",
+    "settings": [
+      {
+        "type": "checkbox",
+        "id": "enable_currency_converter",
+        "label": "Enable currency converter",
+        "default": true,
+        "info": "Display-only price converter (INR / USD / GBP / CAD / AED) for international visitors — a chip in the header lets them browse in their own currency. Shopify checkout always stays in Indian Rupees; this setting never changes what a customer is actually charged. Turn off instantly (no redeploy needed) if the exchange-rate service ever misbehaves — every price reverts to its normal server-rendered INR display with nothing else affected."
+      }
+    ]
   }
 ]

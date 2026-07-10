@@ -67,7 +67,7 @@
           </div>
           <div class="ct">{{ p.collections.first.title | default: 'K&A' }}</div>
           <h3>{{ p.title }}</h3>
-          <div class="pr">{{ p.price | money }} <span style="color:var(--c-ink-muted)">onward</span></div>
+          <div class="pr"><span data-price="{{ p.price }}">{{ p.price | money }}</span> <span style="color:var(--c-ink-muted)">onward</span></div>
         </a>
       {%- endif -%}
     {%- endfor -%}

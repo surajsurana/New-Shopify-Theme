@@ -44,6 +44,18 @@
   assign insert_after_index = section.settings.insert_after_index | default: 6
 %}
 
+{%- if collection.products_count == 0 -%}
+  <div class="ka-collection-empty">
+    <p class="eyebrow eyebrow--muted">Coming Soon</p>
+    <h2 class="ka-collection-empty__title">{{ collection.title }}</h2>
+    <p class="ka-collection-empty__body">This collection is being prepared with great care. Be among the first to see the pieces when they arrive.</p>
+    <div class="ka-collection-empty__actions">
+      <a href="https://wa.me/{{ settings.whatsapp_number }}?text=Hi%2C%20I%27d%20love%20to%20be%20the%20first%20to%20see%20{{ collection.title | url_encode }}" class="btn-dark" target="_blank" rel="noopener">Be the First to Know</a>
+      <a href="/collections" class="btn-outline-rose">Browse All Collections</a>
+    </div>
+  </div>
+{%- else -%}
+
 {% paginate collection.products by per_page %}
   <div class="ka-product-grid" id="ka-product-grid-{{ section.id }}" data-ka-product-grid>
     {% for product in collection.products %}
@@ -89,7 +101,7 @@
           {% if product.metafields.custom.fabric_description != blank %}
             <p class="ka-p-card__fabric">{{ product.metafields.custom.fabric_description }}</p>
           {% endif %}
-          <p class="ka-p-card__price">{{ product.price | money }} <span>onward</span></p>
+          <p class="ka-p-card__price"><span data-price="{{ product.price }}">{{ product.price | money_without_trailing_zeros | replace: 'Rs.', '₹' }}</span> <span>onward</span></p>
           <a href="{{ product.url }}" class="ka-p-card__action">View Details &rarr;</a>
         </div>
       </div>
@@ -154,6 +166,7 @@
     </span>
   </div>
 {% endpaginate %}
+{%- endif -%}
 
 <!-- Toast: shared component, CSS in ka-base.css, JS in ka-theme.js (window.kaShowToast).
      Rendered once here for quick-add confirmations on this page. -->

@@ -9,7 +9,7 @@
   # so a future real booking flow has a ready slot to wire into — see
   # data-ka-appt-link handling in ka-product.js.
   assign appt_url = section.settings.appointment_url | default: '/pages/appointments'
-  assign price = product.price | money
+  assign price = product.price | money_without_trailing_zeros | replace: 'Rs.', '₹'
 
   # Pre-filled WhatsApp enquiry with product context (F2)
   assign wa_text = 'Hi, I' | append: '%27' | append: 'd like to enquire about the ' | append: product.title
@@ -91,7 +91,7 @@
       </button>
 
       <div class="ka-p-price-row">
-        <div class="ka-p-price">{{ price }}</div>
+        <div class="ka-p-price" data-price="{{ product.price }}">{{ price }}</div>
         <div class="ka-p-tax">Taxes included</div>
       </div>
       <div class="ka-p-made">Made to measure · Crafted to order in {{ lead_time }}</div>
@@ -160,7 +160,36 @@
         {%- endif -%}
       </div>
 
-      <button class="ka-bespoke" id="ka-bespoke" type="button">
+      {%- comment -%}
+        Find the "Made to my measurements" / bespoke variant (any size option
+        value that contains 'measure' or 'bespoke') so the button can carry
+        a real Shopify variant ID — this lets Add to Bag do a literal cart add
+        instead of routing to WhatsApp. If no such variant exists on the product,
+        the button renders without data-variant-id and ka-product.js gracefully
+        falls back to the WhatsApp flow.
+      {%- endcomment -%}
+      {%- assign bespoke_variant = null -%}
+      {%- for v in product.variants -%}
+        {%- if bespoke_variant == null -%}
+          {%- for opt_val in v.options -%}
+            {%- assign ov_down = opt_val | downcase -%}
+            {%- if ov_down contains 'measure' or ov_down contains 'bespoke' -%}
+              {%- assign bespoke_variant = v -%}
+            {%- endif -%}
+          {%- endfor -%}
+        {%- endif -%}
+      {%- endfor -%}
+      {%- if bespoke_variant -%}
+        {%- comment -%}Real MTM variant — add to cart directly, no special properties needed.{%- endcomment -%}
+        <button class="ka-bespoke" id="ka-bespoke" type="button" data-variant-id="{{ bespoke_variant.id }}">
+      {%- else -%}
+        {%- comment -%}No dedicated MTM variant — use first available variant as fallback.
+          ka-product.js will add "Size: Made to my measurements" as a line-item property
+          so the order reads correctly for the style advisor.{%- endcomment -%}
+        <button class="ka-bespoke" id="ka-bespoke" type="button"
+          data-variant-id="{{ product.selected_or_first_available_variant.id }}"
+          data-mtm-fallback="true">
+      {%- endif -%}
         <span class="ka-bespoke__dot" aria-hidden="true"></span>
         <span class="ka-bespoke__k">Made to my measurements</span>
         <span class="ka-bespoke__s">Recommended</span>
@@ -290,7 +319,7 @@
       <div class="ka-minibar__thumb"{% if product.featured_image %} style="background-image:url('{{ product.featured_image | image_url: width: 120 }}');"{% endif %}></div>
       <div>
         <div class="ka-minibar__name">{{ product.title }}</div>
-        <div class="ka-minibar__price">{{ price }}{% if product.collections.first %} · {{ product.collections.first.title }}{% endif %}</div>
+        <div class="ka-minibar__price"><span data-price="{{ product.price }}">{{ price }}</span>{% if product.collections.first %} · {{ product.collections.first.title }}{% endif %}</div>
       </div>
     </div>
     <div class="ka-minibar__r">

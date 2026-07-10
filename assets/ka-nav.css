@@ -1,33 +1,51 @@
 /* ================================================================
    KA-NAV — global header: utility bar + navigation + mobile drawer
-   Z-index stack: mobile drawer 200 > concierge float 110 >
-   utility bar 101 > nav 100 > (product minibar 70) > content.
+   Z-index stack: currency menu/sheet 210 (assets/ka-currency.css,
+   Task 86) > mobile drawer 200 > concierge float 110 > utility bar
+   101 > nav 100 > (product minibar 70) > content.
    NOTE: .scrolled must NEVER change the nav `top` — it stays at
    top:34px (desktop) / 30px (mobile) at every scroll position so it
    can never collide with the utility bar's permanent top:0/z-index:101.
 ================================================================ */
 
+/* ── Utility bar (permanent, never moves) ──
+   Task 86: restructured from a single centered text block to a
+   3-part flex row (spacer / track-wrap / currency chip) so the
+   currency chip can sit permanently at the right edge without ever
+   overlapping the scrolling trust-message marquee, at any breakpoint.
+   The spacer only renders (in ka-nav.liquid) when the currency
+   converter is enabled, so with the setting off this collapses back
+   to exactly the old single-centered-block appearance — zero visual
+   change for that case. Chip/divider visual styling lives in
+   assets/ka-currency.css, not here (per-component scoping). */
 .ka-utility-bar {
   position: fixed;
   top: 0; left: 0; right: 0;
   z-index: 101;
   background: var(--c-charcoal);
   color: rgba(233,224,210,0.78);
-  text-align: center;
   font-family: var(--f-sans);
   font-size: 0.62rem;
   font-weight: 400;
   letter-spacing: 0.18em;
   text-transform: uppercase;
+  display: flex;
+  align-items: center;
   padding: 9px 16px;
 }
+.ka-utility-bar__spacer { flex: 0 0 auto; width: 108px; }
+.ka-utility-bar__track-wrap { flex: 1 1 auto; overflow: hidden; text-align: center; }
 .ka-utility-bar span { opacity: 0.55; margin: 0 14px; }
 .ka-utility-bar b { font-weight: 400; opacity: 0.95; }
+/* Round 3 fix (R3-3): scroller track. Desktop: static, single line, no
+   change in appearance from before. Mobile: see @media block below for
+   the animation activation + reduced-motion fallback. */
 .ka-utility-bar__track { display: inline-flex; white-space: nowrap; }
 .ka-utility-bar__group { display: inline-flex; align-items: center; flex: 0 0 auto; }
 .ka-utility-bar__group[aria-hidden="true"] { display: none; }
 @keyframes utility-scroll { from { transform: translateX(0); } to { transform: translateX(-50%); } }
 
+/* ── Nav ── */
 .ka-nav {
   position: fixed;
   top: 34px; left: 0; right: 0;
@@ -42,6 +60,8 @@
     backdrop-filter var(--dur-med) var(--ease-soft);
 }
 
+/* Crystallised state — applied on homepage via .scrolled (JS),
+   and permanently on interior pages via .ka-nav--settled. */
 .ka-nav.scrolled,
 .ka-nav--settled {
   background: rgba(247,243,236,0.94);
@@ -115,6 +135,9 @@
   gap: 24px;
 }
 
+/* ── Bag icon — Round 2 addition (R2-7). Minimal line-drawn bag glyph,
+     matching the approved prototype, not a generic cart/trolley icon.
+     Lives in every template via this one shared nav section. ── */
 .ka-nav__bag {
   position: relative;
   display: inline-flex;
@@ -161,6 +184,7 @@
 .ka-nav.scrolled .ka-nav__toggle span,
 .ka-nav--settled .ka-nav__toggle span { background: var(--c-charcoal); }
 
+/* ── Mobile nav drawer ── */
 .ka-mobile-nav {
   position: fixed;
   inset: 0;
@@ -205,6 +229,9 @@
 }
 .ka-mobile-nav__links a:hover { color: var(--c-rosegold); }
 
+/* ── My Bag row — Round 2 addition (R2-7), mobile-drawer equivalent of
+     the desktop bag icon. Sits between the nav links and the
+     Concierge footer, same row treatment as the links list. ── */
 .ka-mobile-nav__bag-row {
   display: flex;
   align-items: center;
@@ -251,7 +278,11 @@
 
 @media (max-width: 900px) {
   .ka-utility-bar { font-size: 0.54rem; letter-spacing: 0.12em; padding: 8px 12px; overflow: hidden; }
+  .ka-utility-bar__spacer { display: none; } /* Task 86: chip sits at the marquee's trailing edge on mobile, per approved prototype */
   .ka-utility-bar span { margin: 0 8px; }
+  /* Round 3 fix (R3-3): mobile-only marquee, desktop completely
+     unchanged. The duplicate .ka-utility-bar__group is revealed and
+     the track scrolls continuously instead of wrapping to two lines. */
   .ka-utility-bar__track { animation: utility-scroll 20s linear infinite; }
   .ka-utility-bar__group[aria-hidden="true"] { display: inline-flex; }
   @media (prefers-reduced-motion: reduce) {

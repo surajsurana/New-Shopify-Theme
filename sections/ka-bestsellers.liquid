@@ -19,6 +19,13 @@
   <div class="ka-bestsellers__grid">
     {% for product in featured_collection.products limit: limit %}
       <div class="ka-product-card reveal-img reveal-delay-{{ forloop.index | modulo: 4 }}">
+        {%- comment -%}
+          Round 2 (Docs/cta-architecture-revision.md) — homepage stays teaser
+          only, deliberately NO quick-add here (unlike the Collection grid).
+          Image and title are real direct <a href="product.url"> links — no
+          competing quick-add veil on this page, so no sibling-link
+          workaround is needed (contrast with ka-collection-grid.liquid).
+        {%- endcomment -%}
         <a href="{{ product.url }}" class="ka-product-card__image" aria-label="View {{ product.title | escape }}">
           {% if product.featured_image %}
             <img
@@ -39,7 +46,7 @@
           {% if product.metafields.custom.fabric_description != blank %}
             <p class="ka-product-card__fabric">{{ product.metafields.custom.fabric_description }}</p>
           {% endif %}
-          <p class="ka-product-card__price">{{ product.price | money }}</p>
+          <p class="ka-product-card__price" data-price="{{ product.price }}">{{ product.price | money_without_trailing_zeros | replace: 'Rs.', '₹' }}</p>
         </div>
         <a href="{{ product.url }}" class="ka-product-card__action">View piece &rarr;</a>
       </div>

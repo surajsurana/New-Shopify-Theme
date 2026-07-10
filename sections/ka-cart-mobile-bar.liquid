@@ -15,7 +15,7 @@
   <div class="ka-mobile-bar" id="kaMobileBar" data-ka-mobile-bar>
     <div class="ka-mobile-bar__amt">
       <small>Estimated Total</small>
-      <span data-ka-mobile-total>{{ cart.total_price | money }}</span>
+      <span data-ka-mobile-total data-price="{{ cart.total_price }}">{{ cart.total_price | money }}</span>
     </div>
     <form action="{{ routes.cart_url }}" method="post" novalidate>
       <button type="submit" name="checkout" class="ka-btn">Checkout</button>

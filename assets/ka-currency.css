@@ -1,0 +1,231 @@
+/* ================================================================
+   K&A CURRENCY MODULE — ka-currency.css
+   Task 86. Scoped strictly to the currency chip, the shared dropdown/
+   bottom-sheet menu, and the cart conversion bridge line. No page
+   redesign — every value reuses existing ka-base.css tokens (spec
+   Section 1: no new colour/type tokens). Loaded sitewide from
+   layout/theme.liquid, only when settings.enable_currency_converter
+   is on, alongside ka-nav.css (utility bar structure) and each price
+   surface's own section CSS (untouched — this file never overrides
+   price typography, only adds the chip/menu/bridge components).
+
+   Z-index: this module's menu/sheet sits at 210 — above the mobile
+   drawer (200). See the stacking-order comment at the top of
+   ka-nav.css, which documents the full sitewide stack.
+================================================================ */
+
+/* ── Anti-flash gate (F2) — hides every [data-price] element while
+     layout/theme.liquid's inline pre-paint script has determined the
+     visitor needs a non-INR currency and conversion hasn't finished
+     yet. Only ever engages for non-INR visitors; Indian visitors
+     never carry this attribute, so there is zero effect for them. ── */
+html[data-ka-currency-pending] [data-price] {
+  visibility: hidden;
+}
+
+/* ── Utility-bar currency chip (Section 2.1) ── */
+.ka-currency-divider {
+  flex: 0 0 auto;
+  width: 1px;
+  height: 13px;
+  background: rgba(233, 224, 210, 0.28);
+  margin: 0 16px;
+}
+.ka-currency-chip {
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  font-family: var(--f-sans);
+  font-size: 0.62rem;
+  font-weight: 400;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: rgba(233, 224, 210, 0.92);
+  transition: color var(--dur-fast);
+}
+.ka-currency-chip:hover { color: var(--c-rosegold-pale); }
+.ka-currency-chip__label { transition: opacity 0.18s var(--ease-soft); }
+.ka-currency-chip__caret {
+  display: inline-block;
+  color: var(--c-rosegold-pale);
+  font-size: 0.68rem;
+  transition: transform var(--dur-fast) var(--ease-luxury);
+}
+.ka-currency-chip[aria-expanded="true"] .ka-currency-chip__caret { transform: rotate(180deg); }
+
+/* ── Mobile-drawer currency row (Section 2.2) — same row treatment
+     as .ka-mobile-nav__bag-row, reused deliberately for visual
+     consistency (icon + label + right-aligned value + caret). ── */
+.ka-mobile-nav__currency-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 18px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+  font-family: var(--f-sans);
+  font-size: 0.78rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: white;
+}
+.ka-mobile-nav__currency-row svg {
+  width: 18px;
+  height: 18px;
+  stroke: currentColor;
+  fill: none;
+  flex: 0 0 auto;
+  opacity: 0.85;
+}
+.ka-mobile-nav__currency-row .val {
+  margin-left: auto;
+  color: var(--c-rosegold-pale);
+  font-size: 0.72rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/* ── Shared currency menu (Section 2.3) — one element, two shells.
+     >900px: anchored dropdown under the utility-bar chip.
+     <=900px: full-width bottom sheet (see @media block below). ── */
+.ka-currency-scrim {
+  position: fixed;
+  inset: 0;
+  z-index: 205;
+  background: rgba(20, 17, 14, 0.4);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity var(--dur-med) var(--ease-soft);
+  display: none;
+}
+.ka-currency-scrim.show { opacity: 1; pointer-events: auto; }
+
+.ka-currency-menu {
+  position: fixed;
+  z-index: 210;
+  top: 46px;
+  right: var(--gutter);
+  width: 336px;
+  background: var(--c-paper);
+  border: 1px solid var(--line);
+  box-shadow: 0 18px 50px rgba(0, 0, 0, 0.28); /* same shadow value as .ka-toast, per spec */
+  padding: 22px 22px 18px;
+  opacity: 0;
+  transform: translateY(-8px);
+  visibility: hidden;
+  pointer-events: none;
+  transition: opacity 0.4s var(--ease-luxury), transform 0.4s var(--ease-luxury), visibility 0s linear 0.4s;
+}
+.ka-currency-menu.open {
+  opacity: 1;
+  transform: translateY(0);
+  visibility: visible;
+  pointer-events: auto;
+  transition: opacity 0.4s var(--ease-luxury), transform 0.4s var(--ease-luxury), visibility 0s linear 0s;
+}
+.ka-currency-menu__eyebrow { margin-bottom: 14px; }
+.ka-currency-menu__list { list-style: none; }
+.ka-currency-menu__row {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 11px 2px;
+  border-bottom: 1px solid var(--line);
+  font-family: var(--f-sans);
+  text-align: left;
+  color: var(--c-ink);
+  transition: background var(--dur-fast);
+}
+.ka-currency-menu__list li:last-child .ka-currency-menu__row { border-bottom: none; }
+.ka-currency-menu__row:hover { background: var(--c-paper-deep); }
+.ka-currency-menu__dot {
+  flex: 0 0 auto;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--c-rosegold);
+  opacity: 0;
+  transition: opacity var(--dur-fast);
+}
+.ka-currency-menu__row[aria-selected="true"] .ka-currency-menu__dot { opacity: 1; }
+.ka-currency-menu__row[aria-selected="true"] .ka-currency-menu__code { color: var(--c-rosegold-2); }
+.ka-currency-menu__code { flex: 0 0 auto; width: 76px; font-size: 0.86rem; letter-spacing: 0.02em; }
+.ka-currency-menu__name { flex: 1 1 auto; font-size: 0.76rem; color: var(--c-ink-muted); text-align: right; }
+.ka-currency-menu__note {
+  margin-top: 16px;
+  padding-top: 14px;
+  border-top: 1px solid var(--line);
+  font-family: var(--f-sans);
+  font-size: 0.72rem;
+  line-height: 1.6;
+  color: var(--c-ink-muted);
+}
+.ka-currency-menu__close { display: none; }
+.ka-currency-menu__handle { display: none; }
+
+@media (max-width: 900px) {
+  .ka-currency-divider { margin: 0 10px; }
+  .ka-currency-chip { font-size: 0.56rem; letter-spacing: 0.1em; }
+
+  .ka-currency-scrim { display: block; }
+  .ka-currency-menu {
+    top: auto;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    width: auto;
+    border: none;
+    border-top: 1px solid var(--line);
+    box-shadow: 0 -18px 50px rgba(0, 0, 0, 0.28);
+    padding: 14px var(--gutter) 30px;
+    transform: translateY(100%);
+    transition: transform 0.5s var(--ease-luxury), visibility 0s linear 0.5s;
+  }
+  .ka-currency-menu.open {
+    transform: translateY(0);
+    transition: transform 0.5s var(--ease-luxury), visibility 0s linear 0s;
+  }
+  .ka-currency-menu__handle {
+    display: block;
+    width: 36px;
+    height: 3px;
+    background: var(--line-strong);
+    margin: 0 auto 20px;
+  }
+  .ka-currency-menu__close {
+    display: block;
+    position: absolute;
+    top: 14px;
+    right: 18px;
+    font-family: var(--f-sans);
+    font-size: 0.6rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--c-ink-muted);
+    padding: 8px;
+  }
+  .ka-currency-menu__row { padding: 14px 2px; }
+  .ka-currency-menu__code { font-size: 0.92rem; }
+}
+
+/* ── Cart conversion bridge line (Section 2.5) — the one deliberate
+     exception to "replace, never append." Lives inside
+     ka-cart-summary.liquid, directly beneath Estimated Total. Only
+     shown when the active currency isn't INR (JS toggles .show).
+     Must always read larger than .ka-summary-tax beneath it — never
+     smaller, so it never reads as fine print (CD Note 5). ── */
+.ka-currency-bridge {
+  display: none;
+  font-family: var(--f-sans);
+  font-size: 0.85rem;
+  letter-spacing: 0;
+  color: var(--c-ink);
+  font-variant-numeric: tabular-nums;
+  margin-bottom: 10px;
+  transition: opacity 0.18s var(--ease-soft);
+}
+.ka-currency-bridge.show { display: block; }
+.ka-currency-bridge .op { color: var(--c-ink-muted); margin: 0 7px; font-weight: 300; }

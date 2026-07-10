@@ -30,18 +30,35 @@
   <aside class="ka-summary reveal reveal-delay-1" id="kaSummaryPanel" data-ka-cart-summary>
     <h2>Order Summary</h2>
 
-    <div class="ka-summary-row"><span>Subtotal</span><span class="v" data-ka-subtotal>{{ cart.original_total_price | money }}</span></div>
+    <div class="ka-summary-row"><span>Subtotal</span><span class="v" data-ka-subtotal data-price="{{ cart.original_total_price }}">{{ cart.original_total_price | money }}</span></div>
     <div class="ka-summary-row ka-summary-row--ship"><span>Worldwide Delivery</span><span class="v">Complimentary</span></div>
     {%- if cart.total_discount > 0 -%}
-      <div class="ka-summary-row"><span>Savings</span><span class="v" data-ka-savings>&minus;{{ cart.total_discount | money }}</span></div>
+      <div class="ka-summary-row"><span>Savings</span><span class="v" data-ka-savings>&minus;<span data-price="{{ cart.total_discount }}">{{ cart.total_discount | money }}</span></span></div>
     {%- endif -%}
 
     <div class="ka-summary-divider"></div>
 
     <div class="ka-summary-total">
       <span class="lbl">Estimated Total</span>
-      <span class="amt" data-ka-total>{{ cart.total_price | money }}</span>
+      <span class="amt" data-ka-total data-price="{{ cart.total_price }}">{{ cart.total_price | money }}</span>
     </div>
+
+    {%- if settings.enable_currency_converter -%}
+      {%- comment -%}
+        Cart conversion bridge line (Task 86, Section 2.5) — the one
+        deliberate exception to "replace, never append." Rendered
+        empty/hidden server-side (display:none via ka-currency.css
+        until ka-currency.js adds .show) so JS-disabled visitors never
+        see a blank or malformed line; only shown when the active
+        currency isn't INR. data-price carries the real cart total in
+        Shopify's raw cents so the bridge always reflects what
+        checkout will actually charge.
+      {%- endcomment -%}
+      <div class="ka-currency-bridge" id="ka-currency-bridge" data-price="{{ cart.total_price }}">
+        <span class="ka-currency-bridge__amt"></span><span class="op">&times;</span><span class="ka-currency-bridge__rate"></span><span class="op">=</span><span class="ka-currency-bridge__inr"></span>
+      </div>
+    {%- endif -%}
+
     <div class="ka-summary-tax">Taxes included. Nothing further is added at checkout.</div>
 
     <form action="{{ routes.cart_update_url }}" method="post" id="kaCartNotesForm">

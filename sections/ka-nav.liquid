@@ -23,14 +23,39 @@
   Spec: Docs/cta-architecture-revision.md Round 3 / R3-3.
 {%- endcomment -%}
 <div class="ka-utility-bar" role="complementary" aria-label="Service messages">
-  <div class="ka-utility-bar__track">
-    <span class="ka-utility-bar__group">
-      <b>{{ section.settings.utility_1 }}</b><span aria-hidden="true">·</span><b>{{ section.settings.utility_2 }}</b><span aria-hidden="true">·</span><b>{{ section.settings.utility_3 }}</b>
-    </span>
-    <span class="ka-utility-bar__group" aria-hidden="true">
-      <b>{{ section.settings.utility_1 }}</b><span aria-hidden="true">·</span><b>{{ section.settings.utility_2 }}</b><span aria-hidden="true">·</span><b>{{ section.settings.utility_3 }}</b>
-    </span>
+  {%- if settings.enable_currency_converter -%}<div class="ka-utility-bar__spacer" aria-hidden="true"></div>{%- endif -%}
+  <div class="ka-utility-bar__track-wrap">
+    <div class="ka-utility-bar__track">
+      <span class="ka-utility-bar__group">
+        <b>{{ section.settings.utility_1 }}</b><span aria-hidden="true">·</span><b>{{ section.settings.utility_2 }}</b><span aria-hidden="true">·</span><b>{{ section.settings.utility_3 }}</b>
+      </span>
+      <span class="ka-utility-bar__group" aria-hidden="true">
+        <b>{{ section.settings.utility_1 }}</b><span aria-hidden="true">·</span><b>{{ section.settings.utility_2 }}</b><span aria-hidden="true">·</span><b>{{ section.settings.utility_3 }}</b>
+      </span>
+    </div>
   </div>
+  {%- if settings.enable_currency_converter -%}
+    {%- comment -%}
+      Currency chip (Task 86) — the single, permanent, always-visible
+      indicator of the active currency and the primary way to change
+      it. Symbol + ISO code only, no flag, no country name (spec
+      Section 2.1 + CD Note 2). Opens the shared menu below (2.3).
+      Label starts as "₹ INR" server-side so JS-disabled visitors see
+      a correct, sensible default; ka-currency.js overwrites it on load.
+    {%- endcomment -%}
+    <div class="ka-currency-divider" aria-hidden="true"></div>
+    <button
+      type="button"
+      class="ka-currency-chip"
+      id="ka-currency-chip"
+      aria-haspopup="listbox"
+      aria-expanded="false"
+      aria-controls="ka-currency-menu"
+    >
+      <span class="ka-currency-chip__label" data-ka-currency-chip-label>₹ INR</span>
+      <span class="ka-currency-chip__caret" aria-hidden="true">&#9662;</span>
+    </button>
+  {%- endif -%}
 </div>
 
 <nav class="ka-nav{% unless is_home %} ka-nav--settled{% endunless %}" id="ka-nav" role="navigation" aria-label="Main navigation">
@@ -79,6 +104,28 @@
     My Bag
     <span class="ka-mobile-nav__bag-count" data-ka-bag-count data-count="{{ cart.item_count }}">{% if cart.item_count > 0 %}{{ cart.item_count }}{% endif %}</span>
   </a>
+  {%- if settings.enable_currency_converter -%}
+    {%- comment -%}
+      Currency row (Task 86, Section 2.2) — the drawer (z-index 200)
+      renders above the utility bar (z-index 101), so the chip above
+      is physically hidden while the drawer is open. This row is the
+      same control, relocated so it's reachable here — sibling of the
+      "My Bag" row, above the Concierge footer, same list-row language.
+      Opens the identical shared menu below (2.3) — one source of truth.
+    {%- endcomment -%}
+    <button
+      type="button"
+      class="ka-mobile-nav__currency-row"
+      id="ka-currency-chip-mobile"
+      aria-haspopup="listbox"
+      aria-expanded="false"
+      aria-controls="ka-currency-menu"
+    >
+      <svg viewBox="0 0 24 24" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+      Currency
+      <span class="val"><span data-ka-currency-chip-label>₹ INR</span><span class="ka-currency-chip__caret" aria-hidden="true">&#9662;</span></span>
+    </button>
+  {%- endif -%}
   <div class="ka-mobile-nav__footer">
     <p>Concierge</p>
     <a href="https://wa.me/{{ settings.whatsapp_number }}" target="_blank" rel="noopener">
@@ -86,6 +133,27 @@
     </a>
   </div>
 </nav>
+
+{%- if settings.enable_currency_converter -%}
+  {%- comment -%}
+    Shared currency menu (Task 86, Section 2.3) — one DOM element,
+    two presentations depending on viewport (dropdown >900px, bottom
+    sheet <=900px, see ka-currency.css). Reachable from both the
+    utility-bar chip and the mobile-drawer row above. Rendered once
+    here since ka-nav.liquid renders exactly once per page (no
+    section-group duplication across templates). List rows are built
+    client-side by ka-currency.js so the active-state dot always
+    reflects real detected/overridden state, never a guessed default.
+  {%- endcomment -%}
+  <div class="ka-currency-scrim" id="ka-currency-scrim"></div>
+  <div class="ka-currency-menu" id="ka-currency-menu" role="listbox" aria-label="Select display currency" aria-hidden="true">
+    <button type="button" class="ka-currency-menu__close" id="ka-currency-menu-close">Close</button>
+    <div class="ka-currency-menu__handle" aria-hidden="true"></div>
+    <div class="eyebrow ka-currency-menu__eyebrow">Currency</div>
+    <ul class="ka-currency-menu__list" id="ka-currency-menu-list"></ul>
+    <p class="ka-currency-menu__note">Prices shown for your convenience. Checkout completes in Indian Rupees.</p>
+  </div>
+{%- endif -%}
 
 <script>
   /* "Book an Appointment" — TEMPORARY interim routing, same pattern as

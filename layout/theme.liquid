@@ -1,26 +1,98 @@
 <!doctype html>
-<html lang="{{ request.locale.iso_code }}">
+<html lang="{{ request.locale.iso_code }}"{% if settings.enable_currency_converter %} data-ka-country="{{ localization.country.iso_code }}"{% endif %}>
 <head>
+  {%- if settings.enable_currency_converter -%}
+    {%- comment -%}
+      K&A CURRENCY MODULE — anti-flash pre-paint script (Task 86, F2).
+      Must run synchronously, before first paint, so it can set
+      data-ka-currency-pending BEFORE the render-blocking ka-currency.css
+      stylesheet (loaded below) is evaluated. That CSS rule hides every
+      [data-price] element while the attribute is present; ka-currency.js
+      (loaded defer, at the end of body) removes the attribute once real
+      conversion has run, revealing prices already correct — no flash of
+      ₹ INR that then jumps to the detected/overridden currency.
+
+      Mirrors the exact same override → country-map → INR-default logic
+      ka-currency.js uses (see assets/ka-currency.js, detectCurrency()).
+      Country comes from Shopify's own `localization.country` object,
+      rendered server-side into data-ka-country above — this is available
+      sitewide via Shopify's built-in visitor geolocation and does NOT
+      require enabling Shopify Markets' multi-currency checkout (F1);
+      it is a read-only signal, never a checkout-currency change.
+
+      Defensive 2.5s fallback: if ka-currency.js never runs (blocked,
+      network failure, ad blocker on the rate-fetch host), prices reveal
+      anyway rather than staying hidden forever — they simply show the
+      server-rendered INR fallback text, which is always correct.
+    {%- endcomment -%}
+    <script>
+      (function () {
+        try {
+          var COUNTRY_MAP = { US: 'USD', GB: 'GBP', CA: 'CAD', AE: 'AED' };
+          var VALID = { USD: 1, GBP: 1, CAD: 1, AED: 1 };
+          var override = localStorage.getItem('ka_currency_override');
+          var target = 'INR';
+          if (override && VALID[override]) {
+            target = override;
+          } else {
+            var country = document.documentElement.getAttribute('data-ka-country');
+            if (country && COUNTRY_MAP[country]) target = COUNTRY_MAP[country];
+          }
+          if (target !== 'INR') {
+            document.documentElement.setAttribute('data-ka-currency-pending', target);
+            setTimeout(function () {
+              document.documentElement.removeAttribute('data-ka-currency-pending');
+            }, 2500);
+          }
+        } catch (e) { /* localStorage unavailable (private mode etc.) — no pre-hide, no harm */ }
+      })();
+    </script>
+  {%- endif -%}
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>
-    {% if page_title == shop.name %}
+    {%- if request.page_type == 'index' -%}
+      Karishma &amp; Ashita — Bridal Couture, Mumbai
+    {%- elsif request.page_type == 'cart' -%}
+      Your Bag — Karishma &amp; Ashita
+    {%- elsif page_title == shop.name or page_title == blank -%}
       {{ shop.name }} — Bridal Couture, Mumbai
-    {% else %}
+    {%- else -%}
       {{ page_title }} — {{ shop.name }}
-    {% endif %}
+    {%- endif -%}
   </title>
 
-  {% if page_description %}
+  {%- if request.page_type == 'index' -%}
+    <meta name="description" content="Karishma &amp; Ashita — luxury bridal couture, handcrafted in Mumbai. Corsets, lehengas and draped sarees made to your exact measurements. Complimentary worldwide delivery." />
+  {%- elsif page_description -%}
     <meta name="description" content="{{ page_description | escape }}" />
-  {% endif %}
+  {%- endif -%}
 
   {%- liquid
+    if request.page_type == 'index'
+      assign og_title = 'Karishma & Ashita — Bridal Couture, Mumbai'
+    elsif request.page_type == 'cart'
+      assign og_title = 'Your Bag — Karishma & Ashita'
+    elsif page_title == blank or page_title == shop.name
+      assign og_title = shop.name | append: ' — Bridal Couture, Mumbai'
+    else
+      assign og_title = page_title | append: ' — ' | append: shop.name
+    endif
     assign og_image = page_image | default: settings.share_image
   -%}
-  {% if og_image %}
+  <meta property="og:title" content="{{ og_title | escape }}" />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="{{ canonical_url }}" />
+  {%- if og_image -%}
     <meta property="og:image" content="{{ og_image | image_url: width: 1200 }}" />
-  {% endif %}
+  {%- else -%}
+    <meta property="og:image" content="{{ 'first-love-hero.jpg' | asset_url }}" />
+  {%- endif -%}
+  {%- if request.page_type == 'index' -%}
+    <meta property="og:description" content="Karishma &amp; Ashita — luxury bridal couture, handcrafted in Mumbai. Corsets, lehengas and draped sarees made to your exact measurements. Complimentary worldwide delivery." />
+  {%- elsif page_description -%}
+    <meta property="og:description" content="{{ page_description | escape }}" />
+  {%- endif -%}
 
   <!-- Canonical -->
   <link rel="canonical" href="{{ canonical_url }}" />
@@ -38,6 +110,16 @@
   <!-- Global design tokens + reset -->
   {{ 'ka-base.css' | asset_url | stylesheet_tag }}
 
+  {%- if settings.enable_currency_converter -%}
+    <!-- K&A Currency module (Task 86) — global chip/menu/bridge styling + anti-flash rule.
+         Loaded sitewide here (not per-section) because the same component appears across
+         ka-nav.liquid, ka-product-main.liquid, ka-collection-grid.liquid, ka-bestsellers.liquid,
+         ka-product-related.liquid, ka-cart-items.liquid, ka-cart-summary.liquid and
+         ka-cart-cross-link.liquid — the one genuinely cross-cutting exception to this theme's
+         usual per-section CSS scoping rule, same reasoning as ka-base.css/ka-theme.js. -->
+    {{ 'ka-currency.css' | asset_url | stylesheet_tag }}
+  {%- endif -%}
+
   {{ content_for_header }}
 </head>
 
@@ -49,5 +131,11 @@
 
   <!-- Global theme JS: nav scroll, reveals, parallax, mobile nav, newsletter -->
   <script src="{{ 'ka-theme.js' | asset_url }}" defer></script>
+
+  {%- if settings.enable_currency_converter -%}
+    <!-- K&A Currency module (Task 86) — display-only price conversion, sitewide.
+         See assets/ka-currency.js header comment for the full mechanism. -->
+    <script src="{{ 'ka-currency.js' | asset_url }}" defer></script>
+  {%- endif -%}
 </body>
 </html>
