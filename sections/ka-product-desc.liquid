@@ -1,0 +1,17 @@
+{{ 'ka-product-desc.css' | asset_url | stylesheet_tag }}
+
+{%- if product.description != blank -%}
+<section class="ka-product-desc">
+  <div class="ka-product-desc__inner">
+    {{ product.description }}
+  </div>
+</section>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "Product Description",
+  "tag": "div",
+  "class": "ka-product-desc-section"
+}
+{% endschema %}

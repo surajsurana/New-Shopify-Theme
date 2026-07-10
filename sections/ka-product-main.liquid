@@ -29,9 +29,11 @@
   assign poem = product.metafields.custom.poem_tagline
   assign lead_time = product.metafields.custom.lead_time | default: section.settings.default_lead_time
   assign mf_atelier = product.metafields.custom.atelier_process
-  assign mf_fabric = product.metafields.custom.fabric_embroidery
-  assign mf_sizefit = product.metafields.custom.size_fit_notes
-  assign mf_delivery = product.metafields.custom.delivery_care
+  # custom.fabric is a single_line_text_field (e.g. "Georgette") — shown as a label in the accordion
+  assign mf_fabric = product.metafields.custom.fabric
+  # custom.size_chart and custom.shipping are page_reference metafields — use .value to get the Page object, then .content for body HTML
+  assign mf_sizefit = product.metafields.custom.size_chart.value
+  assign mf_delivery = product.metafields.custom.shipping.value
 -%}
 
 <section class="ka-product" id="ka-product">
@@ -167,11 +169,11 @@
       <!-- MADE-TO-MEASURE reveal -->
       <div class="ka-mtm" id="ka-mtm">
         <div class="ka-mtm__inner">
-          <h4>Tailored to You — How It Works</h4>
+          <h4>How Your Piece Comes to Life</h4>
           <ul class="ka-mtm__steps">
-            <li>Send your enquiry on WhatsApp or book an appointment — no need to finalise measurements yet.</li>
-            <li>Share your measurements with your style advisor, in person, virtually, or over chat — whichever you prefer.</li>
-            <li>Once confirmed, our atelier cuts, drapes and hand-embroiders the piece to you alone.</li>
+            <li>Place your order — no measurements needed yet. Your personal style advisor will be in touch within 24 hours to begin. Already have your measurements? Add them to the order notes at checkout and we will take it from there.</li>
+            <li>Confirm your fit with your advisor — over WhatsApp, on a virtual call, or in our Mumbai atelier. We work at your pace, entirely.</li>
+            <li>Our atelier cuts, drapes and hand-embroiders your piece to your exact measurements. Every element made for you alone.</li>
           </ul>
           <p class="ka-mtm__foot">Your piece is then pressed, quality-checked and delivered worldwide in {{ lead_time }}.</p>
           <button type="button" class="ka-mtm__link" data-open-acc="size">View the measurement guide &rarr;</button>
@@ -239,20 +241,18 @@
         <div class="ka-acc" data-acc="fabric">
           <button class="ka-acc__head" type="button">Fabric &amp; Embroidery<span class="ka-acc__pm" aria-hidden="true">+</span></button>
           <div class="ka-acc__body"><div class="ka-acc__inner">
-            {%- if mf_fabric != blank -%}{{ mf_fabric }}{%- else -%}
-              <ul>
-                <li>Modal satin drape with a richly hand-embroidered structured corset</li>
-                <li>Natural-fibre base fabrics — breathable, fluid and soothing to wear</li>
-                <li>Hand embroidery in pearl, crystal and thread by master karigars</li>
-                <li>Concealed boning and structure for a sculpted, confident silhouette</li>
-              </ul>
-            {%- endif -%}
+            {%- if mf_fabric != blank -%}<p class="ka-acc__fabric-label"><strong>Fabric:</strong> {{ mf_fabric }}</p>{%- endif -%}
+            <ul>
+              <li>Natural-fibre base fabrics — breathable, fluid and soothing to wear</li>
+              <li>Hand embroidery in pearl, crystal and thread by master karigars</li>
+              <li>Concealed boning and structure for a sculpted, confident silhouette</li>
+            </ul>
           </div></div>
         </div>
         <div class="ka-acc" data-acc="size">
           <button class="ka-acc__head" type="button">Size &amp; Fit Guide<span class="ka-acc__pm" aria-hidden="true">+</span></button>
           <div class="ka-acc__body"><div class="ka-acc__inner">
-            {%- if mf_sizefit != blank -%}{{ mf_sizefit }}{%- else -%}
+            {%- if mf_sizefit != blank -%}{{ mf_sizefit.content }}{%- else -%}
               All measurements in inches. For a true couture fit, select <em>Made to my measurements</em> and share your details with your style advisor.
               <table>
                 <tr><th></th><th>Bust</th><th>Waist</th><th>Hip</th></tr>
@@ -268,7 +268,7 @@
         <div class="ka-acc" data-acc="delivery">
           <button class="ka-acc__head" type="button">Delivery &amp; Care<span class="ka-acc__pm" aria-hidden="true">+</span></button>
           <div class="ka-acc__body"><div class="ka-acc__inner">
-            {%- if mf_delivery != blank -%}{{ mf_delivery }}{%- else -%}
+            {%- if mf_delivery != blank -%}{{ mf_delivery.content }}{%- else -%}
               <ul>
                 <li>Crafted to order in {{ lead_time }}</li>
                 <li>Complimentary worldwide shipping via DHL Express</li>
