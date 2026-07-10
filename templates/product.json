@@ -52,6 +52,7 @@
     "ka-product-craft": {
       "type": "ka-product-craft",
       "settings": {
+        "image": "shopify://shop_images/K_A_BRIDAL_10th_JUNE_2026_0543.jpg",
         "eyebrow": "The Hand of the Maker",
         "fallback_hours": "180+",
         "stat_label": "Hours of Hand Embroidery",
@@ -160,6 +161,7 @@
         "chip-8"
       ],
       "settings": {
+        "image": "shopify://shop_images/A_sculpted_silhouette_elevated_with_intricate_hand_embellishments_of_pearls_glassbeads_stones_1.jpg",
         "eyebrow": "Styling Notes",
         "title": "One House, Every Celebration",
         "body": "<p>This piece was made to move through a wedding season. Worn long and fluid for a reception, it is pure drama. Styled with heirloom jewels for a sangeet, it becomes a memory. Our style advisors will tailor the silhouette, length and embroidery to your role in the celebration.</p>",
