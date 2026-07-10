@@ -237,8 +237,9 @@
     "ka-product-related": {
       "type": "ka-product-related",
       "settings": {
+        "default_collection": "bestsellers",
         "eyebrow": "Continue the Collection",
-        "title": "",
+        "title": "Signature Pieces",
         "fallback_tag": "K&A",
         "products_limit": 4
       }
