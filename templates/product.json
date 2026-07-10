@@ -243,9 +243,9 @@
     "ka-product-related": {
       "type": "ka-product-related",
       "settings": {
-        "default_collection": "",
+        "default_collection": "bestsellers",
         "eyebrow": "Continue the Collection",
-        "title": "",
+        "title": "Signature Designs",
         "fallback_tag": "K&A",
         "products_limit": 4
       }
