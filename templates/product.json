@@ -40,6 +40,10 @@
         "rating_count": "64"
       }
     },
+    "ka-product-desc": {
+      "type": "ka-product-desc",
+      "settings": {}
+    },
     "ka-product-note": {
       "type": "ka-product-note",
       "settings": {
@@ -52,7 +56,6 @@
     "ka-product-craft": {
       "type": "ka-product-craft",
       "settings": {
-        "image": "shopify://shop_images/K_A_BRIDAL_10th_JUNE_2026_0543.jpg",
         "eyebrow": "The Hand of the Maker",
         "fallback_hours": "180+",
         "stat_label": "Hours of Hand Embroidery",
@@ -61,171 +64,53 @@
     },
     "ka-product-atelier": {
       "type": "ka-product-atelier",
-      "blocks": {
-        "step-1": {
-          "type": "step",
-          "settings": {
-            "numeral": "I",
-            "heading": "The Consultation",
-            "body": "Begin with a private appointment — in our Mumbai atelier or virtually from anywhere in the world. We listen, we sketch, we advise."
-          }
-        },
-        "step-2": {
-          "type": "step",
-          "settings": {
-            "numeral": "II",
-            "heading": "Made to Your Measure",
-            "body": "Your garment is cut and hand-embroidered to your exact measurements, with any personalisation worked into the design."
-          }
-        },
-        "step-3": {
-          "type": "step",
-          "settings": {
-            "numeral": "III",
-            "heading": "The Final Fitting",
-            "body": "Hand-finished, pressed and quality-checked, then delivered to your door worldwide by DHL Express — ready for your moment."
-          }
-        }
-      },
-      "block_order": [
-        "step-1",
-        "step-2",
-        "step-3"
-      ],
       "settings": {
         "eyebrow": "Made for You Alone",
         "title": "The Couture Journey",
         "intro": "From the first conversation to the final fitting, your piece is created around you — and you alone."
-      }
+      },
+      "blocks": {
+        "step-1": { "type": "step", "settings": { "numeral": "I",   "heading": "The Consultation",     "body": "Begin with a private appointment — in our Mumbai atelier or virtually from anywhere in the world. We listen, we sketch, we advise." } },
+        "step-2": { "type": "step", "settings": { "numeral": "II",  "heading": "Made to Your Measure", "body": "Your garment is cut and hand-embroidered to your exact measurements, with any personalisation worked into the design." } },
+        "step-3": { "type": "step", "settings": { "numeral": "III", "heading": "The Final Fitting",    "body": "Hand-finished, pressed and quality-checked, then delivered to your door worldwide by DHL Express — ready for your moment." } }
+      },
+      "block_order": ["step-1", "step-2", "step-3"]
     },
     "ka-product-styling": {
       "type": "ka-product-styling",
-      "blocks": {
-        "chip-1": {
-          "type": "chip",
-          "settings": {
-            "label": "The Bride"
-          }
-        },
-        "chip-2": {
-          "type": "chip",
-          "settings": {
-            "label": "Sister of the Bride"
-          }
-        },
-        "chip-3": {
-          "type": "chip",
-          "settings": {
-            "label": "Mother of the Bride"
-          }
-        },
-        "chip-4": {
-          "type": "chip",
-          "settings": {
-            "label": "Reception"
-          }
-        },
-        "chip-5": {
-          "type": "chip",
-          "settings": {
-            "label": "Cocktail"
-          }
-        },
-        "chip-6": {
-          "type": "chip",
-          "settings": {
-            "label": "Sangeet"
-          }
-        },
-        "chip-7": {
-          "type": "chip",
-          "settings": {
-            "label": "Engagement"
-          }
-        },
-        "chip-8": {
-          "type": "chip",
-          "settings": {
-            "label": "Festive"
-          }
-        }
-      },
-      "block_order": [
-        "chip-1",
-        "chip-2",
-        "chip-3",
-        "chip-4",
-        "chip-5",
-        "chip-6",
-        "chip-7",
-        "chip-8"
-      ],
       "settings": {
-        "image": "shopify://shop_images/A_sculpted_silhouette_elevated_with_intricate_hand_embellishments_of_pearls_glassbeads_stones_1.jpg",
         "eyebrow": "Styling Notes",
-        "title": "One House, Every Celebration",
-        "body": "<p>This piece was made to move through a wedding season. Worn long and fluid for a reception, it is pure drama. Styled with heirloom jewels for a sangeet, it becomes a memory. Our style advisors will tailor the silhouette, length and embroidery to your role in the celebration.</p>",
-        "accent": "Whether you are the bride, her sister, her mother, or the guest everyone remembers — there is a way to wear it that is entirely yours."
-      }
+        "title": "One House, Every Celebration"
+      },
+      "blocks": {
+        "chip-1": { "type": "chip", "settings": { "label": "The Bride" } },
+        "chip-2": { "type": "chip", "settings": { "label": "Sister of the Bride" } },
+        "chip-3": { "type": "chip", "settings": { "label": "Mother of the Bride" } },
+        "chip-4": { "type": "chip", "settings": { "label": "Reception" } },
+        "chip-5": { "type": "chip", "settings": { "label": "Cocktail" } },
+        "chip-6": { "type": "chip", "settings": { "label": "Sangeet" } },
+        "chip-7": { "type": "chip", "settings": { "label": "Engagement" } },
+        "chip-8": { "type": "chip", "settings": { "label": "Festive" } }
+      },
+      "block_order": ["chip-1", "chip-2", "chip-3", "chip-4", "chip-5", "chip-6", "chip-7", "chip-8"]
     },
     "ka-product-reviews": {
       "type": "ka-product-reviews",
-      "blocks": {
-        "review-1": {
-          "type": "review",
-          "settings": {
-            "quote": "Absolutely loved working with the team for my wedding reception outfit! The outfit fit like a glove and many of my guests said it was their absolute favorite outfit of mine. They even made me an extra lighter skirt for my first dance. Highly recommend!",
-            "reviewer_name": "Simran J.",
-            "source": "via Google"
-          }
-        },
-        "review-2": {
-          "type": "review",
-          "settings": {
-            "quote": "I love their designs, it is so good and fits perfectly. Twinkle helped me so much to figure what would look good and they also made the lehenga customised for me. Absolutely love their corsets.",
-            "reviewer_name": "Kezia D.",
-            "source": "via Google"
-          }
-        },
-        "review-3": {
-          "type": "review",
-          "settings": {
-            "quote": "Thank you for making perfect corset sari for my daughter's graduation ceremony. Amazing quality beautiful fit. Thank you so much!",
-            "reviewer_name": "Kavita S.",
-            "source": "via Google"
-          }
-        },
-        "review-4": {
-          "type": "review",
-          "settings": {
-            "quote": "Loved the collection, really cool styles. Twinkle was really helpful.",
-            "reviewer_name": "Shivani R.",
-            "source": "via Google"
-          }
-        },
-        "review-5": {
-          "type": "review",
-          "settings": {
-            "quote": "A very smooth experience! Got my outfit online and it fit like a glove! Loved it! Got so many compliments! Can't wait to shop more!",
-            "reviewer_name": "Ragini G.",
-            "source": "via Google"
-          }
-        }
-      },
-      "block_order": [
-        "review-1",
-        "review-2",
-        "review-3",
-        "review-4",
-        "review-5"
-      ],
       "settings": {
         "rating_score": "4.7",
         "rating_count": "64",
         "heading": "Loved by brides & their families, across the world.",
         "google_url": "https://www.google.com/maps/search/?api=1&query=Karishma+and+Ashita+Santacruz+Mumbai",
         "disclaimer": ""
-      }
+      },
+      "blocks": {
+        "review-1": { "type": "review", "settings": { "quote": "Absolutely loved working with the team for my wedding reception outfit! The outfit fit like a glove and many of my guests said it was their absolute favorite outfit of mine. They even made me an extra lighter skirt for my first dance. Highly recommend!", "reviewer_name": "Simran J.", "source": "via Google" } },
+        "review-2": { "type": "review", "settings": { "quote": "I love their designs, it is so good and fits perfectly. Twinkle helped me so much to figure what would look good and they also made the lehenga customised for me. Absolutely love their corsets.", "reviewer_name": "Kezia D.", "source": "via Google" } },
+        "review-3": { "type": "review", "settings": { "quote": "Thank you for making perfect corset sari for my daughter's graduation ceremony. Amazing quality beautiful fit. Thank you so much!", "reviewer_name": "Kavita S.", "source": "via Google" } },
+        "review-4": { "type": "review", "settings": { "quote": "Loved the collection, really cool styles. Twinkle was really helpful.", "reviewer_name": "Shivani R.", "source": "via Google" } },
+        "review-5": { "type": "review", "settings": { "quote": "A very smooth experience! Got my outfit online and it fit like a glove! Loved it! Got so many compliments! Can't wait to shop more!", "reviewer_name": "Ragini G.", "source": "via Google" } }
+      },
+      "block_order": ["review-1", "review-2", "review-3", "review-4", "review-5"]
     },
     "ka-product-invite": {
       "type": "ka-product-invite",
@@ -239,9 +124,8 @@
     "ka-product-related": {
       "type": "ka-product-related",
       "settings": {
-        "default_collection": "bestsellers",
         "eyebrow": "Continue the Collection",
-        "title": "Signature Pieces",
+        "title": "",
         "fallback_tag": "K&A",
         "products_limit": 4
       }
@@ -261,11 +145,7 @@
         "news_placeholder": "Your email address",
         "news_submit": "Join",
         "news_success": "Welcome in. You are one of us now.",
-        "service_line": "Mumbai · Worldwide Delivery · DHL Express",
-        "locale_line": "Ships worldwide, priced in INR",
-        "privacy_url": "",
-        "terms_url": "",
-        "shipping_url": ""
+        "service_line": "Mumbai · Worldwide Delivery · DHL Express"
       }
     }
   },
@@ -273,6 +153,7 @@
     "ka-nav",
     "ka-product-breadcrumb",
     "ka-product-main",
+    "ka-product-desc",
     "ka-product-note",
     "ka-product-craft",
     "ka-product-atelier",
