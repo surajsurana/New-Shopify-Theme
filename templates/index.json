@@ -156,6 +156,7 @@
         "the-festive-edit": {
           "type": "collection_card",
           "settings": {
+            "image": "shopify://shop_images/Wearing_-_karishmaashita_Captured_by_the_best-_pradhumna.sharma_Glammed_by-_makeup_by_d_3.jpg",
             "name": "The Festive Edit",
             "collection": "",
             "card_url": "/collections/the-festive-edit"
@@ -180,6 +181,7 @@
         "barre-oblique": {
           "type": "collection_card",
           "settings": {
+            "image": "shopify://shop_images/K_A_Riya_Priya_10_JUNE_2023_20156.jpg",
             "name": "Barre Oblique",
             "collection": "",
             "card_url": "/collections/barre-oblique"

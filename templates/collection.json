@@ -34,12 +34,19 @@
     "ka-collection-hero": {
       "type": "ka-collection-hero",
       "settings": {
+        "hero_image": "shopify://shop_images/bhavdeep_kaur_an_absolute_Divaa_in_this_Mustard_Yellow_jacquard_cut_out_corset_with_drape_s_3.jpg",
         "position": "01"
       }
     },
     "ka-collection-intro": {
       "type": "ka-collection-intro",
-      "settings": {}
+      "settings": {
+        "intro_copy": "",
+        "silhouettes": "",
+        "lead_time": "",
+        "price_range_display": "",
+        "sizing_note": "Made to Measure"
+      }
     },
     "ka-collection-refine-bar": {
       "type": "ka-collection-refine-bar",
@@ -74,7 +81,8 @@
       "type": "ka-collection-grid",
       "settings": {
         "products_per_page": 9,
-        "insert_after_index": 6
+        "insert_after_index": 6,
+        "insert_image": "shopify://shop_images/3.jpg"
       }
     },
     "ka-collection-cross-link": {
@@ -102,7 +110,11 @@
         "news_placeholder": "Your email address",
         "news_submit": "Join",
         "news_success": "Welcome in. You are one of us now.",
-        "service_line": "Mumbai · Worldwide Delivery · DHL Express"
+        "service_line": "Mumbai · Worldwide Delivery · DHL Express",
+        "locale_line": "Ships worldwide, priced in INR",
+        "privacy_url": "",
+        "terms_url": "",
+        "shipping_url": ""
       }
     }
   },
