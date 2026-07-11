@@ -99,16 +99,16 @@
         "brand_name": "Karishma Ashita",
         "logo_subline": "Bridal Couture · Mumbai",
         "tagline": "Bridal couture, handcrafted\nin Mumbai.",
-        "instagram_url": "https://instagram.com/karishmaashita",
-        "pinterest_url": "",
+        "instagram_url": "https://www.instagram.com/karishmaashita",
+        "youtube_url": "https://www.youtube.com/@KarishmaAshita",
+        "pinterest_url": "https://www.pinterest.com/karishmaashita/",
         "email": "info@karishmaashita.com",
-        "address": "Mumbai, India\nComplimentary worldwide shipping",
+        "address": "Mumbai, India\nComplimentary worldwide shipping via DHL Express",
         "news_title": "The Inner Circle",
         "news_body": "Collection previews, styling notes and private trunk show invitations — delivered quietly to your inbox.",
         "news_placeholder": "Your email address",
         "news_submit": "Join",
-        "news_success": "Welcome in. You are one of us now.",
-        "service_line": "Mumbai · Worldwide Delivery · DHL Express"
+        "news_success": "Welcome in. You are one of us now."
       }
     }
   },

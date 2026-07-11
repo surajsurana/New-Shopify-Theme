@@ -61,7 +61,7 @@
 }
 .ka-footer__links a:hover { color: var(--c-rosegold-pale); }
 
-.ka-footer__contact { display: flex; flex-direction: column; gap: 12px; }
+.ka-footer__contact-items { display: flex; flex-direction: column; gap: 12px; }
 .ka-footer__contact-item {
   font-family: var(--f-sans);
   font-size: 0.78rem; font-weight: 300;
@@ -109,24 +109,20 @@
   line-height: 1.6;
 }
 
+/* Bottom bar — SIMPLIFIED to one row (copyright + legal). The old
+   service_line + locale_line row is removed outright, not relocated —
+   its one non-redundant fact (DHL Express) is folded into the Contact
+   column's address block instead, so the logistics story is told
+   exactly once (Docs/search-404-footer-build-spec.md §3.2). */
 .ka-footer__bottom {
-  display: flex; flex-direction: column; gap: 16px;
-  padding-top: 22px;
-}
-.ka-footer__bottom-row {
   display: flex; align-items: center; justify-content: space-between;
   gap: 24px; flex-wrap: wrap;
+  padding-top: 22px;
 }
 .ka-footer__copy {
   font-family: var(--f-sans);
   font-size: 0.63rem; font-weight: 300;
   color: #7E7567; letter-spacing: 0.1em;
-}
-.ka-footer__service-line {
-  font-family: var(--f-sans);
-  font-size: 0.63rem; font-weight: 400;
-  color: #7E7567;
-  letter-spacing: 0.14em; text-transform: uppercase;
 }
 .ka-footer__legal { display: flex; gap: 24px; list-style: none; }
 .ka-footer__legal a {
@@ -137,18 +133,67 @@
 }
 .ka-footer__legal a:hover { color: var(--c-rosegold-pale); }
 
-.ka-footer__locale {
-  font-family: var(--f-sans);
-  font-size: 0.63rem; font-weight: 400;
-  color: #7E7567;
-  letter-spacing: 0.14em; text-transform: uppercase;
-}
-
+/* ── Tablet tier (≤900px) — Docs/search-404-footer-build-spec.md §3.2.
+   Every column gets an explicit grid-column assignment instead of
+   relying on source-order auto-flow, so pairing is deliberate:
+   Collections+Maison (both "browse" columns) pair together;
+   Contact+Inner Circle (both "do something now" columns) pair
+   together. Fixes a real bug — the old auto-flow left Contact orphaned
+   next to an empty grid cell at this width (spec §3.1(b)1). DOM order
+   stays unchanged (Brand, Collections, Maison, Contact, News) — only
+   visual placement changes, so tab order and source order stay in sync. */
 @media (max-width: 900px) {
   .ka-footer__top { grid-template-columns: 1fr 1fr; gap: var(--s-md); }
-  .ka-footer__brand { grid-column: 1 / -1; }
-  .ka-footer__news  { grid-column: 1 / -1; }
+  .ka-footer__brand       { grid-column: 1 / -1; }
+  .ka-footer__collections { grid-column: 1; }
+  .ka-footer__maison      { grid-column: 2; }
+  .ka-footer__contact     { grid-column: 1; }
+  .ka-footer__news        { grid-column: 1 / -1; }
 }
-@media (max-width: 600px) {
-  .ka-footer__top { grid-template-columns: 1fr; }
+
+/* ── Phone tier (≤480px) — REVISED v2 (two-column layout, cuts scroll
+   length) then v3 (divider cleanup). Docs/search-404-footer-build-
+   spec.md §3.2/§3.3. Every block gets an explicit grid-column AND
+   grid-row — none rely on auto-flow — so this can't reintroduce the
+   900px tier's orphaned-cell bug.
+     Row 1 — Brand+Social | Collections   ("who we are" beside "what we sell")
+     Row 2 — Maison | Contact             ("Book an Appointment" sits directly
+       beside the phone/WhatsApp line — a deliberate pairing, not the
+       same as the 900px tier's Contact+Inner Circle pairing)
+     Row 3 — Inner Circle, full width, alone — holds a real email input +
+       submit button; halving its width would cramp it below a
+       comfortable touch/typing size.
+   v3 divider cleanup: v2 shipped this with a horizontal rule under each
+   row PLUS a vertical rule splitting each row into columns (5 rule
+   lines total) — read as a spreadsheet/table grid. Fixed: every
+   internal divider removed (both row-dividers and the column hairline)
+   — the existing padding (--s-sm/--s-md/--s-lg, already generous) does
+   the separating work alone, the same way the desktop 5-column
+   .ka-footer__top already separates its columns with gap only, zero
+   rules. Only one hairline survives, below .ka-footer__news — that's
+   not a new divider, it's the same closing line desktop already has
+   under .ka-footer__top before the copyright bar, kept for cross-
+   breakpoint consistency. Net: 5 rule lines -> 1, single axis (horizontal). */
+@media (max-width: 480px) {
+  .ka-footer__top { grid-template-columns: 1fr 1fr; gap: 0; border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+
+  .ka-footer__brand,
+  .ka-footer__collections { grid-row: 1; padding-top: 0; padding-bottom: var(--s-md); }
+  .ka-footer__maison,
+  .ka-footer__contact     { grid-row: 2; padding-top: var(--s-md); padding-bottom: var(--s-md); }
+
+  .ka-footer__brand,
+  .ka-footer__maison      { grid-column: 1; padding-right: var(--s-sm); }
+  .ka-footer__collections,
+  .ka-footer__contact     { grid-column: 2; padding-left: var(--s-sm); }
+
+  .ka-footer__news {
+    grid-column: 1 / -1; grid-row: 3;
+    padding-top: var(--s-md); padding-bottom: var(--s-lg);
+    border-bottom: 1px solid rgba(201,191,174,0.18);
+    margin-bottom: var(--s-lg);
+  }
+
+  .ka-footer__logo { font-size: 1.32rem; line-height: 1.15; }
+  .ka-footer__bottom { flex-direction: column; align-items: flex-start; gap: 14px; }
 }

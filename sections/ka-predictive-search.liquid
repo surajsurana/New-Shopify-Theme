@@ -1,0 +1,68 @@
+{%- comment -%}
+  K&A Predictive Search — Section Rendering API endpoint ONLY.
+
+  This section is never placed in any template's "order" array and has
+  no presets, so it can never be added from the theme editor's section
+  picker (same convention Dawn uses for its own predictive-search.liquid).
+  It exists solely to be fetched by assets/ka-search.js via:
+
+    /search/suggest.json?q=QUERY&resources[type]=product&section_id=ka-predictive-search
+
+  Passing `section_id` is Shopify's documented Section Rendering hook for
+  the predictive search endpoint — it returns this section's rendered
+  HTML instead of raw JSON, using the `predictive_search` Liquid object.
+
+  Card markup below is copied verbatim from sections/ka-collection-grid.liquid's
+  .ka-p-card block (image, name, fabric, price with the same [data-price]
+  contract ka-currency.js already sweeps sitewide — spec S3) minus the
+  quick-add veil, which needs a real product-page context/variant picker
+  a search preview shouldn't try to replicate. Styling comes from
+  assets/ka-collection-grid.css (loaded sitewide via ka-nav.liquid) and
+  assets/ka-search.css's .ka-search-results__grid wrapper.
+
+  Deliberately renders ONLY the grid, no "N pieces found for '...'" meta
+  line — the `predictive_search` Liquid object exposes `resources.results.*`
+  but does NOT expose the query string itself (unlike the native `search`
+  object's `search.terms`/`search.performed`, used on the /search results
+  page instead). assets/ka-search.js already holds the exact query it sent
+  and builds that meta line client-side once this fragment arrives, rather
+  than this section guessing at an unsupported Liquid property.
+{%- endcomment -%}
+
+{%- assign products = predictive_search.resources.results.products -%}
+<div class="ka-search-results__grid">
+  {%- for product in products -%}
+    <div class="ka-p-card">
+      <a href="{{ product.url }}" class="ka-p-card__image" aria-label="View {{ product.title | escape }}">
+        {%- if product.featured_image -%}
+          <img
+            src="{{ product.featured_image | image_url: width: 800 }}"
+            alt="{{ product.featured_image.alt | escape | default: product.title | escape }}"
+            loading="lazy"
+            width="800"
+            height="1067"
+            class="img-filter-coll-page"
+          />
+        {%- else -%}
+          <div style="background: var(--c-smoke); width:100%; height:100%;"></div>
+        {%- endif -%}
+      </a>
+      <div class="ka-p-card__info">
+        <p class="ka-p-card__name"><a href="{{ product.url }}">{{ product.title }}</a></p>
+        {%- if product.metafields.custom.fabric_description != blank -%}
+          <p class="ka-p-card__fabric">{{ product.metafields.custom.fabric_description }}</p>
+        {%- endif -%}
+        <p class="ka-p-card__price">
+          <span data-price="{{ product.price }}">{{ product.price | money_without_trailing_zeros | replace: 'Rs.', '₹' }}</span>
+        </p>
+      </div>
+    </div>
+  {%- endfor -%}
+</div>
+
+{% schema %}
+{
+  "name": "Predictive Search (fetch-only)",
+  "settings": []
+}
+{% endschema %}

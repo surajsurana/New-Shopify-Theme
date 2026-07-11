@@ -7,18 +7,29 @@
       <span class="ka-footer__logo">{{ section.settings.brand_name }}<small>{{ section.settings.logo_subline }}</small></span>
       <p class="ka-footer__tagline">{{ section.settings.tagline | newline_to_br }}</p>
       <div class="ka-footer__social">
+        {%- comment -%}
+          Order: Instagram -> YouTube -> Pinterest -> Concierge (browsing
+          platforms first, in descending order of the brand's actual
+          channel activity per CLAUDE.md, then the pivot from "look" to
+          "ask" last). youtube_url follows the exact same blank-check
+          pattern as instagram_url/pinterest_url — Docs/search-404-footer-
+          build-spec.md §3.2 "YouTube link".
+        {%- endcomment -%}
         {% if section.settings.instagram_url != blank %}
           <a href="{{ section.settings.instagram_url }}" target="_blank" rel="noopener">Instagram</a>
         {% endif %}
-        <a href="https://wa.me/{{ settings.whatsapp_number }}" target="_blank" rel="noopener">Concierge</a>
+        {% if section.settings.youtube_url != blank %}
+          <a href="{{ section.settings.youtube_url }}" target="_blank" rel="noopener">YouTube</a>
+        {% endif %}
         {% if section.settings.pinterest_url != blank %}
           <a href="{{ section.settings.pinterest_url }}" target="_blank" rel="noopener">Pinterest</a>
         {% endif %}
+        <a href="https://wa.me/{{ settings.whatsapp_number }}" target="_blank" rel="noopener">Concierge</a>
       </div>
     </div>
 
     <!-- Column 2: Collections -->
-    <div>
+    <div class="ka-footer__collections">
       <p class="ka-footer__col-title">Collections</p>
       <ul class="ka-footer__links">
         {% for link in linklists['footer-collections'].links %}
@@ -35,7 +46,7 @@
     </div>
 
     <!-- Column 3: Maison -->
-    <div>
+    <div class="ka-footer__maison">
       <p class="ka-footer__col-title">Maison</p>
       <ul class="ka-footer__links">
         {% for link in linklists['footer-the-house'].links %}
@@ -56,15 +67,28 @@
           {%- endcomment -%}
           <li><a href="/pages/appointments" data-ka-appt-link data-ka-appt-text="Hi, I'd like to book an appointment">Book an Appointment</a></li>
           <li><a href="https://wa.me/{{ settings.whatsapp_number }}" target="_blank" rel="noopener">Concierge</a></li>
-          <li><a href="/pages/press">Press</a></li>
+          {%- comment -%}
+            Press link removed per direct instruction (Docs/search-404-
+            footer-build-spec.md §3.2 "Press link removal") — no live
+            page exists behind /pages/press yet. Reintroduce when real
+            press content exists.
+          {%- endcomment -%}
         {% endif %}
       </ul>
     </div>
 
     <!-- Column 4: Contact -->
-    <div>
+    <div class="ka-footer__contact">
       <p class="ka-footer__col-title">Contact</p>
-      <div class="ka-footer__contact">
+      {%- comment -%}
+        ka-footer__contact-items (not ka-footer__contact — that's the
+        outer column wrapper above, added per Docs/search-404-footer-
+        build-spec.md §T1 for grid-column targeting at the new mobile
+        breakpoints; the two must stay distinct classes or the outer
+        column would inherit the inner flex-column rule meant only for
+        the contact-item list).
+      {%- endcomment -%}
+      <div class="ka-footer__contact-items">
         {% if settings.whatsapp_number != blank %}
           <p class="ka-footer__contact-item">
             <a href="https://wa.me/{{ settings.whatsapp_number }}">{{ settings.whatsapp_display }}</a>
@@ -106,29 +130,24 @@
     </div>
   </div>
 
+  {%- comment -%}
+    Bottom bar — SIMPLIFIED to one row (copyright + legal), Docs/search-
+    404-footer-build-spec.md §3.2. The old service_line + locale_line
+    row is removed outright, not relocated — its one non-redundant fact
+    (DHL Express) is folded into the Contact column's address setting
+    above instead, so the logistics story is told exactly once, in the
+    one place a visitor actually looks for it (spec §3.1/§3.2 "Copy fix").
+    Do not re-add a country/currency selector here — Cart build-spec F1
+    deliberately kept this bar static-text-only; that reasoning still
+    applies, there's just no second logistics line to carry it anymore.
+  {%- endcomment -%}
   <div class="ka-footer__bottom">
-    <div class="ka-footer__bottom-row">
-      <p class="ka-footer__copy">&copy; {{ 'now' | date: '%Y' }} {{ section.settings.brand_name }}. All rights reserved.</p>
-      <ul class="ka-footer__legal">
-        <li><a href="{{ section.settings.privacy_url | default: '/policies/privacy-policy' }}">Privacy Policy</a></li>
-        <li><a href="{{ section.settings.terms_url | default: '/policies/terms-of-service' }}">Terms of Service</a></li>
-        <li><a href="{{ section.settings.shipping_url | default: '/policies/shipping-policy' }}">Shipping &amp; Returns</a></li>
-      </ul>
-    </div>
-    <div class="ka-footer__bottom-row">
-      <p class="ka-footer__service-line">{{ section.settings.service_line }}</p>
-      {%- comment -%}
-        Cart build-spec F1 (resolved, final): static text only, no dropdown,
-        no {{ localization.available_countries }} loop, no interactive
-        component of any kind. This single line is the entire resolution to
-        the old Dawn cart's tripled 200-row country/region dropdown bug —
-        folded into the one shared global footer per the spec rather than
-        forking a cart-specific footer. Do not turn this into a functional
-        Markets/localization selector; that is explicitly out of scope here
-        (see CLAUDE.md Backlog re: the future currency-converter module).
-      {%- endcomment -%}
-      <p class="ka-footer__locale">{{ section.settings.locale_line }}</p>
-    </div>
+    <p class="ka-footer__copy">&copy; {{ 'now' | date: '%Y' }} {{ section.settings.brand_name }}. All rights reserved.</p>
+    <ul class="ka-footer__legal">
+      <li><a href="{{ section.settings.privacy_url | default: '/policies/privacy-policy' }}">Privacy Policy</a></li>
+      <li><a href="{{ section.settings.terms_url | default: '/policies/terms-of-service' }}">Terms of Service</a></li>
+      <li><a href="{{ section.settings.shipping_url | default: '/policies/shipping-policy' }}">Shipping &amp; Returns</a></li>
+    </ul>
   </div>
 </footer>
 
@@ -144,14 +163,19 @@
       "type": "header",
       "content": "Social links"
     },
-    { "type": "url", "id": "instagram_url", "label": "Instagram URL" },
+    { "type": "url", "id": "instagram_url", "label": "Instagram URL", "info": "Leave blank to hide the Instagram link." },
+    { "type": "url", "id": "youtube_url",   "label": "YouTube URL",   "info": "Leave blank to hide the YouTube link." },
     { "type": "url", "id": "pinterest_url", "label": "Pinterest URL", "info": "Leave blank to hide the Pinterest link." },
     {
       "type": "header",
       "content": "Contact column"
     },
+    {
+      "type": "paragraph",
+      "content": "This address block is the site's single authoritative logistics line (Docs/search-404-footer-build-spec.md §3.2) — Mumbai + worldwide shipping is stated here once, not repeated elsewhere in the footer."
+    },
     { "type": "text",     "id": "email",   "label": "Email address", "default": "info@karishmaashita.com" },
-    { "type": "textarea", "id": "address", "label": "Address / shipping note", "default": "Mumbai, India\nComplimentary worldwide shipping" },
+    { "type": "textarea", "id": "address", "label": "Address / shipping note", "default": "Mumbai, India\nComplimentary worldwide shipping via DHL Express" },
     {
       "type": "header",
       "content": "Inner Circle (newsletter column)"
@@ -161,12 +185,6 @@
     { "type": "text",     "id": "news_placeholder", "label": "Input placeholder", "default": "Your email address" },
     { "type": "text",     "id": "news_submit",      "label": "Submit button",  "default": "Join" },
     { "type": "text",     "id": "news_success",     "label": "Success message", "default": "Welcome in. You are one of us now." },
-    {
-      "type": "header",
-      "content": "Bottom bar"
-    },
-    { "type": "text", "id": "service_line", "label": "Service line", "default": "Mumbai · Worldwide Delivery · DHL Express" },
-    { "type": "text", "id": "locale_line", "label": "Locale line", "default": "Ships worldwide, priced in INR", "info": "Static text only (Cart build-spec F1, resolved) — no functional country/currency selector. Do not wire this to a Markets/localization picker." },
     {
       "type": "header",
       "content": "Legal links"

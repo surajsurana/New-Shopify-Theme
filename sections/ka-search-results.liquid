@@ -1,0 +1,151 @@
+{{ 'ka-collection-breadcrumb.css' | asset_url | stylesheet_tag }}
+{{ 'ka-search.css' | asset_url | stylesheet_tag }}
+<script src="{{ 'ka-collection.js' | asset_url }}" defer></script>
+
+{%- comment -%}
+  K&A Search Results — templates/search.json ONLY (Shopify's reserved
+  template name, auto-served at /search — F1, no routing config needed).
+  Spec: Docs/search-404-footer-build-spec.md, Section 1.2 ("Dedicated
+  /search results page").
+
+  Mirrors the Collection page's exact grid/breadcrumb/pagination pattern
+  (sections/ka-collection-grid.liquid), reusing:
+    - .ka-p-card verbatim (assets/ka-collection-grid.css, loaded sitewide
+      via ka-nav.liquid) — same card as Collection page and the search
+      overlay's predictive results, zero new card pattern.
+    - .ka-collection-empty verbatim for the no-results state — zero new
+      CSS for that state (spec §1.2).
+    - The same AJAX "Load More" mechanism as ka-collection-grid.liquid
+      (assets/ka-collection.js, Section Rendering API keyed off
+      section.id) — real <a href> progressive-enhancement fallback,
+      intercepted by JS when available.
+
+  Scoped to products only: the query string always carries &type=product
+  (set by the search overlay's hidden field and by every /search link
+  sitewide), matching the predictive overlay's product-only scope. The
+  `item.object_type == 'product'` guard below is defensive only, for a
+  visitor who edits the URL by hand and drops the type param.
+{%- endcomment -%}
+
+<div class="ka-coll-breadcrumb">
+  <div class="ka-coll-breadcrumb__inner">
+    <a href="/">Maison</a>
+    <span class="ka-coll-breadcrumb__sep">/</span>
+    {%- if search.performed -%}
+      <span class="ka-coll-breadcrumb__current">Search results for &ldquo;{{ search.terms | escape }}&rdquo;</span>
+    {%- else -%}
+      <span class="ka-coll-breadcrumb__current">Search</span>
+    {%- endif -%}
+  </div>
+</div>
+
+<div class="ka-search-overlay__inner" style="padding-top: var(--s-md); padding-bottom: 0;">
+  <form action="/search" method="get">
+    <input type="hidden" name="type" value="product" />
+    <div class="ka-search-overlay__field">
+      <input
+        type="search"
+        name="q"
+        class="ka-search-overlay__input"
+        value="{{ search.terms | escape }}"
+        placeholder="Search pieces, collections, stories…"
+        autocomplete="off"
+        aria-label="Search pieces, collections, stories"
+      />
+    </div>
+  </form>
+</div>
+
+{%- if search.performed and search.results_count == 0 -%}
+  <div class="ka-collection-empty">
+    <p class="eyebrow eyebrow--muted">No Results</p>
+    <h2 class="ka-collection-empty__title">We couldn&rsquo;t find &ldquo;{{ search.terms | escape }}&rdquo;</h2>
+    <p class="ka-collection-empty__body">Our styling concierge knows every piece in the atelier — send us a message and we'll help you find exactly what you're picturing.</p>
+    <div class="ka-collection-empty__actions">
+      <a
+        href="https://wa.me/{{ settings.whatsapp_number }}?text={{ 'Hi, I could not find what I was looking for on your website. Could you help?' | url_param_escape }}"
+        class="btn-dark" target="_blank" rel="noopener"
+      >Ask Our Styling Concierge</a>
+      <a href="/collections" class="btn-outline-rose">Browse All Collections</a>
+    </div>
+  </div>
+{%- elsif search.performed -%}
+  {% paginate search.results by 12 %}
+    <div class="ka-product-grid" id="ka-product-grid-{{ section.id }}" data-ka-product-grid>
+      {%- for item in search.results -%}
+        {%- if item.object_type == 'product' -%}
+          {%- assign product = item -%}
+          <div class="ka-p-card reveal-img">
+            <div class="ka-p-card__image">
+              <a href="{{ product.url }}" class="ka-p-card__image-link" aria-label="View {{ product.title | escape }}"></a>
+              {%- if product.featured_image -%}
+                <img
+                  src="{{ product.featured_image | image_url: width: 800 }}"
+                  alt="{{ product.featured_image.alt | escape | default: product.title | escape }}"
+                  loading="lazy"
+                  width="800"
+                  height="1067"
+                  class="img-filter-coll-page"
+                />
+              {%- else -%}
+                <div style="background: var(--c-smoke); width:100%; height:100%;"></div>
+              {%- endif -%}
+            </div>
+            <div class="ka-p-card__info">
+              <h3 class="ka-p-card__name"><a href="{{ product.url }}">{{ product.title }}</a></h3>
+              {%- if product.metafields.custom.fabric_description != blank -%}
+                <p class="ka-p-card__fabric">{{ product.metafields.custom.fabric_description }}</p>
+              {%- endif -%}
+              <p class="ka-p-card__price"><span data-price="{{ product.price }}">{{ product.price | money_without_trailing_zeros | replace: 'Rs.', '₹' }}</span> <span>onward</span></p>
+              <a href="{{ product.url }}" class="ka-p-card__action">View Details &rarr;</a>
+            </div>
+          </div>
+        {%- endif -%}
+      {%- endfor -%}
+    </div>
+
+    <div class="ka-load-more reveal" data-ka-load-more
+      data-section-id="{{ section.id }}"
+      data-current-page="{{ paginate.current_page }}"
+      data-pages="{{ paginate.pages }}"
+      data-items="{{ paginate.items }}"
+      data-per-page="12"
+      data-next-url="{% if paginate.next %}{{ paginate.next.url }}{% endif %}"
+    >
+      {%- if paginate.next -%}
+        <a href="{{ paginate.next.url }}" class="btn-outline-rose" data-ka-load-more-btn>View More Results</a>
+      {%- endif -%}
+      <span class="ka-load-more__count" data-ka-load-more-count>
+        Showing {{ paginate.current_offset | plus: search.results.size }} of {{ paginate.items }} pieces
+      </span>
+    </div>
+  {% endpaginate %}
+{%- else -%}
+  <div class="ka-collection-empty">
+    <p class="eyebrow eyebrow--muted">Search</p>
+    <h2 class="ka-collection-empty__title">What are you looking for?</h2>
+    <p class="ka-collection-empty__body">Enter a piece, collection or story above to browse the atelier.</p>
+  </div>
+{%- endif -%}
+
+<!-- Toast: shared component, CSS in ka-base.css, JS in ka-theme.js (window.kaShowToast). -->
+<div class="ka-toast" id="kaToast" role="status" aria-live="polite">
+  <span class="ka-toast__mark" aria-hidden="true">&#10022;</span>
+  <div class="ka-toast__body">
+    <div class="ka-toast__title">Added to Your Bag</div>
+    <div class="ka-toast__sub" id="kaToastSub">&nbsp;</div>
+  </div>
+  <a class="ka-toast__action" href="{{ routes.cart_url }}">View Bag &rarr;</a>
+</div>
+
+{% schema %}
+{
+  "name": "Search Results",
+  "tag": "div",
+  "class": "ka-search-results-section",
+  "settings": [],
+  "presets": [
+    { "name": "Search Results" }
+  ]
+}
+{% endschema %}

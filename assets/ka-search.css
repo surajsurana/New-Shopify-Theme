@@ -1,0 +1,120 @@
+/* ================================================================
+   KA-SEARCH — full-viewport search overlay
+   Spec: Docs/search-404-footer-build-spec.md, Section 1.
+   Prototype: Prototypes/search-404-footer-v1.html, "2 — SEARCH OVERLAY".
+   z-index 220 — the top of the header's stacking order:
+   search overlay 220 > currency menu/sheet 210 (ka-currency.css) >
+   mobile drawer 200 (ka-nav.css) > concierge float 110 > utility bar
+   101 > nav 100 > content. Documented in both places on purpose.
+
+   .ka-chip is intentionally redefined here (not imported from
+   ka-collection-refine-bar.css) — that file only loads on the
+   Collection template, but this overlay renders sitewide via
+   ka-nav.liquid. Per this project's per-component CSS scoping rule,
+   duplicating ~12 lines here is preferable to pulling in an entire
+   unrelated stylesheet on every page just for one shared class.
+================================================================ */
+.ka-search-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 220;
+  background: var(--c-paper);
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transform: translateY(-14px);
+  transition: opacity 0.5s var(--ease-luxury), transform 0.5s var(--ease-luxury), visibility 0s linear 0.5s;
+  overflow-y: auto;
+}
+.ka-search-overlay.open {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+  transform: translateY(0);
+  transition: opacity 0.5s var(--ease-luxury), transform 0.5s var(--ease-luxury), visibility 0s linear 0s;
+}
+.ka-search-overlay__close {
+  position: absolute;
+  top: 26px;
+  right: var(--gutter);
+  font-family: var(--f-sans);
+  font-size: 0.63rem;
+  font-weight: 400;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--c-ink-muted);
+  padding: 8px;
+  transition: color var(--dur-fast);
+}
+.ka-search-overlay__close:hover { color: var(--c-charcoal); }
+.ka-search-overlay__inner { max-width: 900px; margin: 0 auto; padding: 120px var(--gutter) var(--s-2xl); }
+.ka-search-overlay__eyebrow { text-align: center; margin-bottom: 18px; }
+.ka-search-overlay__field {
+  position: relative;
+  border-bottom: 1px solid var(--line-strong);
+  padding-bottom: 18px;
+  margin-bottom: var(--s-lg);
+}
+.ka-search-overlay__input {
+  width: 100%;
+  border: none;
+  outline: none;
+  background: none;
+  font-family: var(--f-display);
+  font-style: italic;
+  font-weight: 400;
+  font-size: clamp(1.6rem, 4.4vw, 2.8rem);
+  color: var(--c-charcoal);
+  text-align: center;
+}
+.ka-search-overlay__input::placeholder { color: var(--c-ink-muted); opacity: 0.6; }
+
+/* Shared chip component (see file header note above) */
+.ka-chip {
+  font-family: var(--f-sans);
+  font-size: 0.66rem;
+  font-weight: 400;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--c-ink-mid);
+  border: 1px solid var(--line-strong);
+  padding: 9px 20px;
+  display: inline-block;
+  transition: background var(--dur-fast), color var(--dur-fast), border-color var(--dur-fast);
+  cursor: pointer;
+}
+.ka-chip:hover { border-color: var(--c-rosegold-2); color: var(--c-charcoal); }
+
+.ka-search-empty__label { text-align: center; margin-bottom: 20px; }
+.ka-search-empty__chips { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin-bottom: var(--s-xl); }
+.ka-search-empty__tiles { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px; }
+.ka-search-empty__tile { position: relative; aspect-ratio: 3/4; overflow: hidden; display: block; }
+.ka-search-empty__tile img { transition: transform 1.1s var(--ease-luxury); }
+.ka-search-empty__tile:hover img { transform: scale(1.05); }
+.ka-search-empty__tile span {
+  position: absolute; left: 0; right: 0; bottom: 0; padding: 16px;
+  background: linear-gradient(to top, rgba(15,12,10,0.55), transparent);
+  color: #fff; font-family: var(--f-sans); font-size: 0.66rem; letter-spacing: 0.14em; text-transform: uppercase;
+}
+
+.ka-search-results__meta { text-align: center; margin-bottom: var(--s-md); font-family: var(--f-sans); font-size: 0.78rem; color: var(--c-ink-muted); letter-spacing: 0.04em; }
+.ka-search-results__grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 22px 18px; margin-bottom: var(--s-lg); }
+.ka-search-results__more { text-align: center; }
+
+.ka-search-noresults { text-align: center; max-width: 480px; margin: 0 auto; padding: var(--s-lg) 0; }
+.ka-search-noresults__title { font-family: var(--f-display); font-style: italic; font-size: clamp(1.5rem, 3vw, 2.1rem); color: var(--c-charcoal); margin-bottom: 14px; }
+.ka-search-noresults__body { font-family: var(--f-sans); font-size: 0.88rem; color: var(--c-ink-mid); line-height: 1.85; margin-bottom: 30px; }
+.ka-search-noresults__actions { display: flex; gap: 20px; justify-content: center; flex-wrap: wrap; align-items: center; }
+
+@media (max-width: 900px) {
+  .ka-search-empty__tiles { grid-template-columns: repeat(3, 1fr); }
+  .ka-search-results__grid { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 600px) {
+  .ka-search-overlay__inner { padding: 96px 20px var(--s-xl); }
+  .ka-search-overlay__input { font-size: clamp(1.4rem, 8vw, 2rem); }
+  .ka-search-empty__tiles { grid-template-columns: repeat(3, 1fr); gap: 1px; }
+  .ka-search-empty__tile span { padding: 10px; font-size: 0.58rem; }
+  .ka-search-results__grid { grid-template-columns: repeat(2, 1fr); gap: 16px 10px; }
+  .ka-search-noresults__actions { flex-direction: column; align-items: stretch; }
+}

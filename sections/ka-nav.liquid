@@ -1,4 +1,16 @@
 {{ 'ka-nav.css' | asset_url | stylesheet_tag }}
+{%- comment -%}
+  ka-collection-grid.css lives here (not just in sections/ka-collection-grid.liquid)
+  because .ka-p-card is now a genuinely sitewide component, not a Collection-page-only
+  one: the search overlay (below) and templates/search.json both reuse it verbatim,
+  and ka-nav.liquid renders on every template. sections/ka-collection-grid.liquid keeps
+  its own stylesheet_tag too (harmless duplicate <link> only on Collection pages,
+  browsers dedupe the fetch) rather than removing it and creating a hidden cross-file
+  dependency that would break the Collection page if this file's load order ever changed.
+{%- endcomment -%}
+{{ 'ka-collection-grid.css' | asset_url | stylesheet_tag }}
+{{ 'ka-search.css' | asset_url | stylesheet_tag }}
+<script src="{{ 'ka-search.js' | asset_url }}" defer></script>
 
 {%- comment -%}
   Global header: utility bar (z-index 101, top:0, permanent) + nav (z-index 100, top:34px).
@@ -6,6 +18,13 @@
   by ka-theme.js). Collection / Product / all other templates have no dark hero behind the
   nav, so they render permanently in the settled (opaque/blurred) state via .ka-nav--settled
   and need no scroll listener. The nav NEVER changes `top` on scroll (utility bar overlap fix).
+
+  Search — Docs/search-404-footer-build-spec.md Section 1. Trigger icon lives here in
+  .ka-nav__actions (peer to the bag icon), NOT the utility bar (spec §1.2: would crowd
+  the Task 86 currency chip and mix two different jobs in one strip). The overlay itself
+  is rendered once, inline, near the bottom of this file (snippets/ka-search-overlay.liquid)
+  — same pattern already used here for the mobile nav drawer and the shared currency menu,
+  rather than a separate section requiring duplication across every template's settings.
 {%- endcomment -%}
 
 {%- assign is_home = false -%}
@@ -59,6 +78,18 @@
 </div>
 
 <nav class="ka-nav{% unless is_home %} ka-nav--settled{% endunless %}" id="ka-nav" role="navigation" aria-label="Main navigation">
+  {%- comment -%}
+    Toggle moved OUT of .ka-nav__actions and given its own grid-column:1
+    position (revision v2, spec §1.2/§1.4) — mobile only (display:none at
+    desktop, where .ka-nav__links occupies column 1 instead; the two are
+    mutually exclusive per breakpoint, never simultaneously in the
+    layout, so no grid conflict). It's also first in DOM order now, ahead
+    of .ka-nav__links, so mobile tab order reads hamburger -> logo ->
+    search -> bag, matching the new left-to-right visual order (spec §1.5).
+  {%- endcomment -%}
+  <button class="ka-nav__toggle" id="ka-nav-toggle" aria-label="Open menu" aria-expanded="false">
+    <span></span><span></span><span></span>
+  </button>
   <ul class="ka-nav__links">
     <li><a href="{{ section.settings.link_bestsellers }}">{{ section.settings.label_bestsellers }}</a></li>
     <li><a href="{{ section.settings.link_collections }}"{% if template contains 'collection' %} class="is-active"{% endif %}>{{ section.settings.label_collections }}</a></li>
@@ -69,6 +100,23 @@
 
   <div class="ka-nav__actions">
     {%- comment -%}
+      Search trigger — Docs/search-404-footer-build-spec.md §1.2. Shares
+      the bag icon's exact stroke spec (24x24 viewBox, stroke-width:1.4,
+      round caps) via the common .ka-nav__icon-btn class, immediately
+      left of the bag icon on every template.
+    {%- endcomment -%}
+    <button
+      type="button"
+      class="ka-nav__icon-btn"
+      id="ka-search-trigger"
+      aria-label="Search"
+      aria-haspopup="dialog"
+      aria-controls="ka-search-overlay"
+      aria-expanded="false"
+    >
+      <svg viewBox="0 0 24 24" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M20 20l-4.8-4.8"/></svg>
+    </button>
+    {%- comment -%}
       Bag icon — Round 2 addition (R2-7). Lives in every template via
       this shared section. Count badge is updated sitewide by
       window.kaUpdateBagCount() in ka-theme.js, which targets every
@@ -76,13 +124,10 @@
       data-count="0" attribute pairs with ka-nav.css's
       [data-count="0"] { display:none } so an empty bag shows no badge.
     {%- endcomment -%}
-    <a href="{{ routes.cart_url }}" class="ka-nav__bag" aria-label="View your bag">
+    <a href="{{ routes.cart_url }}" class="ka-nav__icon-btn ka-nav__bag" aria-label="View your bag">
       <svg viewBox="0 0 24 24" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 8h12l-1 12H7L6 8z"/><path d="M9 8V6a3 3 0 0 1 6 0v2"/></svg>
       <span class="ka-nav__bag__count" data-ka-bag-count data-count="{{ cart.item_count }}">{% if cart.item_count > 0 %}{{ cart.item_count }}{% endif %}</span>
     </a>
-    <button class="ka-nav__toggle" id="ka-nav-toggle" aria-label="Open menu" aria-expanded="false">
-      <span></span><span></span><span></span>
-    </button>
   </div>
 </nav>
 
@@ -133,6 +178,17 @@
     </a>
   </div>
 </nav>
+
+{%- comment -%}
+  Search overlay (Docs/search-404-footer-build-spec.md Section 1) —
+  rendered once here, same reasoning as the currency menu below: this
+  section renders exactly once per page (no section-group duplication
+  across templates), so one shared DOM node is correct. `section` is
+  passed explicitly since snippets don't inherit it automatically —
+  the overlay's popular-search chips/tiles read their labels, URLs and
+  images straight from this section's own schema settings below.
+{%- endcomment -%}
+{%- render 'ka-search-overlay', section: section -%}
 
 {%- if settings.enable_currency_converter -%}
   {%- comment -%}
@@ -220,7 +276,42 @@
       "content": "Mobile nav additional links"
     },
     { "type": "url",  "id": "link_about",       "label": "About page URL" },
-    { "type": "url",  "id": "link_appointment",  "label": "Appointment page URL" }
+    { "type": "url",  "id": "link_appointment",  "label": "Appointment page URL" },
+    {
+      "type": "header",
+      "content": "Search — popular search chips"
+    },
+    {
+      "type": "paragraph",
+      "content": "Shown in the empty state of the search overlay (query typed so far is under 2 characters). Leave a label blank to hide that chip."
+    },
+    { "type": "text", "id": "search_chip_1_label", "label": "Chip 1 label", "default": "Signature" },
+    { "type": "url",  "id": "search_chip_1_url",   "label": "Chip 1 link",  "default": "/collections/bestsellers" },
+    { "type": "text", "id": "search_chip_2_label", "label": "Chip 2 label", "default": "The Bloom Soirée" },
+    { "type": "url",  "id": "search_chip_2_url",   "label": "Chip 2 link",  "default": "/collections/the-bloom-soiree" },
+    { "type": "text", "id": "search_chip_3_label", "label": "Chip 3 label", "default": "Chamakk" },
+    { "type": "url",  "id": "search_chip_3_url",   "label": "Chip 3 link",  "default": "/collections/chamak" },
+    { "type": "text", "id": "search_chip_4_label", "label": "Chip 4 label", "default": "Barre Oblique" },
+    { "type": "url",  "id": "search_chip_4_url",   "label": "Chip 4 link",  "default": "/collections/barre-oblique" },
+    { "type": "text", "id": "search_chip_5_label", "label": "Chip 5 label", "default": "The Festive Edit" },
+    { "type": "url",  "id": "search_chip_5_url",   "label": "Chip 5 link",  "default": "/collections/the-festive-edit" },
+    {
+      "type": "header",
+      "content": "Search — empty-state image tiles"
+    },
+    {
+      "type": "paragraph",
+      "content": "Three tiles shown below the popular-search chips. Leave an image blank to use the matching collection's existing card image as a launch-ready fallback (same fallback pattern as the Collection page's editorial insert)."
+    },
+    { "type": "image_picker", "id": "search_tile_1_image",   "label": "Tile 1 image" },
+    { "type": "text",         "id": "search_tile_1_caption", "label": "Tile 1 caption", "default": "The Bloom Soirée" },
+    { "type": "url",          "id": "search_tile_1_url",     "label": "Tile 1 link",    "default": "/collections/the-bloom-soiree" },
+    { "type": "image_picker", "id": "search_tile_2_image",   "label": "Tile 2 image" },
+    { "type": "text",         "id": "search_tile_2_caption", "label": "Tile 2 caption", "default": "Chamakk" },
+    { "type": "url",          "id": "search_tile_2_url",     "label": "Tile 2 link",    "default": "/collections/chamak" },
+    { "type": "image_picker", "id": "search_tile_3_image",   "label": "Tile 3 image" },
+    { "type": "text",         "id": "search_tile_3_caption", "label": "Tile 3 caption", "default": "Barre Oblique" },
+    { "type": "url",          "id": "search_tile_3_url",     "label": "Tile 3 link",    "default": "/collections/barre-oblique" }
   ],
   "presets": [
     { "name": "Navigation" }

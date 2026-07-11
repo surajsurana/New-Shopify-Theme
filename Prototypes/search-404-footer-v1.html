@@ -1,0 +1,805 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>K&amp;A — Search · 404 · Footer — Component Prototype v1</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Jost:wght@200;300;400;500&display=swap" rel="stylesheet" />
+
+<style>
+/* ═══════════════════════════════════════════════════════════════
+   DESIGN TOKENS — verbatim from assets/ka-base.css :root. No new
+   tokens invented for these three components; two small new
+   component-level values are introduced and flagged inline where
+   they occur (search overlay z-index, footer mobile breakpoint).
+═══════════════════════════════════════════════════════════════ */
+:root {
+  --c-paper:      #F7F3EC;
+  --c-paper-deep: #EFE8DD;
+  --c-smoke:      #E9E1D2;
+  --c-charcoal:   #2A2420;
+  --c-charcoal-2: #1D1916;
+  --c-ink:        #2A2420;
+  --c-ink-mid:    #6E655B;
+  --c-ink-muted:  #9C9389;
+  --c-rosegold:   #9A7B4F;
+  --c-rosegold-2: #7E6440;
+  --c-rosegold-pale: #B99B6E;
+  --line:         rgba(42,36,32,0.12);
+  --line-strong:  rgba(42,36,32,0.20);
+  --line-light:   rgba(154,123,79,0.28);
+  --line-on-dark: rgba(154,123,79,0.22);
+  --f-display: 'Cormorant Garamond', Georgia, 'Times New Roman', serif;
+  --f-sans:    'Jost', 'Helvetica Neue', Arial, sans-serif;
+  --t-hero:    clamp(3.6rem, 8vw, 8rem);
+  --t-display: clamp(2.6rem, 5.5vw, 5.2rem);
+  --t-h2:      clamp(2rem, 3.5vw, 3.2rem);
+  --t-h3:      clamp(1.4rem, 2.2vw, 2rem);
+  --t-eyebrow: 0.66rem;
+  --t-body-l:  1.1rem;
+  --t-body:    1rem;
+  --t-caption: 0.76rem;
+  --s-xs:  8px; --s-sm: 16px; --s-md: 32px; --s-lg: 64px; --s-xl: 96px; --s-2xl: 140px; --s-3xl: 200px;
+  --max-wide: 1680px;
+  --max-text: 720px;
+  --gutter:   clamp(20px, 5vw, 80px);
+  --ease-luxury: cubic-bezier(0.16, 0.84, 0.44, 1);
+  --ease-soft:   cubic-bezier(0.22, 0.61, 0.36, 1);
+  --dur-slow: 1s; --dur-med: 0.65s; --dur-fast: 0.35s;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; font-size: 16px; }
+body {
+  background: var(--c-paper);
+  color: var(--c-ink);
+  font-family: var(--f-sans);
+  font-weight: 300;
+  line-height: 1.75;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+img { display: block; width: 100%; height: 100%; object-fit: cover; }
+a { text-decoration: none; color: inherit; }
+button { border: none; background: none; cursor: pointer; font-family: inherit; }
+
+.eyebrow {
+  font-family: var(--f-sans); font-size: var(--t-eyebrow); font-weight: 400;
+  letter-spacing: 0.24em; text-transform: uppercase; color: var(--c-rosegold-2);
+}
+
+.btn-dark {
+  display: inline-flex; align-items: center; gap: 16px;
+  font-family: var(--f-sans); font-size: 0.68rem; font-weight: 400;
+  letter-spacing: 0.2em; text-transform: uppercase; color: var(--c-charcoal);
+  border-bottom: 1px solid var(--c-rosegold-pale); padding-bottom: 6px;
+  transition: border-color var(--dur-fast), color var(--dur-fast);
+  width: fit-content;
+}
+.btn-dark::after { content: '\2192'; font-size: 0.9em; transition: transform var(--dur-med) var(--ease-luxury); }
+.btn-dark:hover { color: var(--c-rosegold-2); border-color: var(--c-rosegold-2); }
+.btn-dark:hover::after { transform: translateX(6px); }
+
+.btn-outline-rose {
+  font-family: var(--f-sans); font-size: 0.66rem; font-weight: 400;
+  letter-spacing: 0.2em; text-transform: uppercase; color: var(--c-rosegold);
+  border: 1px solid rgba(196,168,130,0.4); padding: 14px 36px;
+  transition: background var(--dur-fast), color var(--dur-fast), border-color var(--dur-fast);
+  display: inline-block;
+}
+.btn-outline-rose:hover { background: var(--c-rosegold); color: var(--c-charcoal); border-color: var(--c-rosegold); }
+
+.ka-chip {
+  font-family: var(--f-sans); font-size: 0.66rem; font-weight: 400;
+  letter-spacing: 0.1em; text-transform: uppercase; color: var(--c-ink-mid);
+  border: 1px solid var(--line-strong); padding: 9px 20px; display: inline-block;
+  transition: background var(--dur-fast), color var(--dur-fast), border-color var(--dur-fast);
+  cursor: pointer;
+}
+.ka-chip:hover { border-color: var(--c-rosegold-2); color: var(--c-charcoal); }
+.ka-chip.is-active { background: var(--c-charcoal); color: white; border-color: var(--c-charcoal); }
+
+/* ─────────────────────────────────────────────────────────────
+   PRESENTATION-ONLY CHROME — not part of the site. Deliberately
+   built in a different, plain system font so it can never be
+   mistaken for brand UI. Ribbon + section labels only.
+───────────────────────────────────────────────────────────── */
+.proto-ribbon {
+  position: sticky; top: 0; z-index: 500;
+  background: #14212B; color: #cfe0ea;
+  font-family: -apple-system, Segoe UI, Arial, sans-serif;
+  font-size: 12.5px; letter-spacing: 0.02em;
+  padding: 10px 20px; display: flex; align-items: center; justify-content: space-between;
+  gap: 16px; flex-wrap: wrap;
+}
+.proto-ribbon strong { color: #fff; font-weight: 600; }
+.proto-ribbon nav { display: flex; gap: 14px; flex-wrap: wrap; }
+.proto-ribbon a { color: #9fd0e6; border-bottom: 1px dotted rgba(159,208,230,0.5); }
+.proto-ribbon a:hover { color: #fff; }
+.proto-section-label {
+  font-family: -apple-system, Segoe UI, Arial, sans-serif;
+  background: #EDEFF1; color: #445; padding: 26px var(--gutter) 18px;
+  border-top: 6px solid #14212B;
+}
+.proto-section-label b { display: block; font-size: 20px; color: #14212B; margin-bottom: 6px; }
+.proto-section-label p { font-size: 13.5px; line-height: 1.6; max-width: 900px; color: #556; }
+.proto-note {
+  font-family: -apple-system, Segoe UI, Arial, sans-serif;
+  font-size: 12.5px; color: #778; background: #fff; border: 1px dashed #ccd;
+  padding: 10px 14px; margin: 14px var(--gutter) 0; max-width: 900px;
+}
+.proto-devicebar {
+  display: flex; gap: 8px; align-items: center; padding: 14px var(--gutter);
+  background: #EDEFF1; font-family: -apple-system, Segoe UI, Arial, sans-serif;
+}
+.proto-devicebar span { font-size: 12px; color: #667; margin-right: 6px; }
+.proto-devicebar button {
+  font-size: 12px; padding: 7px 14px; border: 1px solid #99a; color: #334; background: #fff;
+}
+.proto-devicebar button.is-on { background: #14212B; color: #fff; border-color: #14212B; }
+.proto-framewrap { background: #dfe3e6; padding: 30px var(--gutter); display: flex; justify-content: center; }
+.proto-frame { width: 100%; max-width: 1440px; margin: 0 auto; background: var(--c-paper); box-shadow: 0 10px 40px rgba(0,0,0,0.18); transition: max-width 0.35s ease; overflow: hidden; }
+.proto-frame.is-tablet { max-width: 820px; }
+.proto-frame.is-mobile { max-width: 390px; }
+
+/* ═══════════════════════════════════════════════════════════════
+   1 — GLOBAL NAV (adapted from sections/ka-nav.liquid +
+   assets/ka-nav.css). Shown here permanently in the "settled"
+   state (.ka-nav--settled) since that's the state search will be
+   used from on nearly every page. Transparent-hero behaviour is
+   unchanged/out of scope — new search icon inherits the same
+   colour-state rules the bag icon already uses.
+═══════════════════════════════════════════════════════════════ */
+.ka-utility-bar {
+  position: sticky; top: 0; z-index: 101; background: var(--c-charcoal);
+  color: rgba(233,224,210,0.78); font-size: 0.62rem; font-weight: 400;
+  letter-spacing: 0.18em; text-transform: uppercase;
+  display: flex; align-items: center; justify-content: center; padding: 9px 16px;
+}
+.ka-utility-bar span { opacity: 0.55; margin: 0 14px; }
+.ka-utility-bar b { font-weight: 400; opacity: 0.95; }
+
+.ka-nav {
+  position: sticky; top: 34px; z-index: 100;
+  padding: 14px var(--gutter);
+  display: grid;
+  grid-template-columns: 1fr auto 1fr; /* mobile pattern shown live below */
+  align-items: center;
+  background: rgba(247,243,236,0.96);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--line);
+}
+@media (min-width: 901px) {
+  .ka-nav { grid-template-columns: 1fr auto 1fr; }
+}
+.ka-nav__links { display: flex; gap: 32px; list-style: none; grid-column: 1; }
+.ka-nav__links a {
+  font-size: 0.66rem; font-weight: 400; letter-spacing: 0.16em; text-transform: uppercase;
+  color: var(--c-ink-mid); transition: color var(--dur-fast);
+}
+.ka-nav__links a:hover, .ka-nav__links a.is-active { color: var(--c-charcoal); }
+.ka-nav__logo {
+  grid-column: 2; text-align: center; font-family: var(--f-display);
+  font-size: clamp(1.2rem, 2.2vw, 1.6rem); font-weight: 400; letter-spacing: 0.1em;
+  color: var(--c-charcoal); line-height: 1;
+}
+.ka-nav__logo small {
+  display: block; font-size: 0.5rem; letter-spacing: 0.32em; text-transform: uppercase;
+  color: var(--c-rosegold-2); margin-top: 6px;
+}
+.ka-nav__actions { display: flex; align-items: center; justify-content: flex-end; gap: 22px; grid-column: 3; }
+
+/* Search + bag share one minimal line-icon language (24x24 viewBox,
+   stroke-width 1.4, round caps — identical spec to the existing bag
+   icon in ka-nav.css) so the pair reads as one considered icon set,
+   not two different UI eras. */
+.ka-nav__icon-btn {
+  position: relative; display: inline-flex; align-items: center; justify-content: center;
+  width: 30px; height: 30px; padding: 4px; color: var(--c-charcoal);
+}
+.ka-nav__icon-btn svg { width: 20px; height: 20px; stroke: currentColor; fill: none; }
+.ka-nav__bag__count {
+  position: absolute; top: -2px; right: -4px; min-width: 15px; height: 15px; border-radius: 50%;
+  background: var(--c-rosegold); color: #fff; font-size: 0.56rem; line-height: 15px; text-align: center; padding: 0 3px;
+}
+.ka-nav__bag__count[data-count="0"] { display: none; }
+/* Mobile-only, lives OUTSIDE .ka-nav__actions as its own grid item
+   in column 1 (revision v2: was previously grouped inside
+   .ka-nav__actions alongside search+bag, which put all three
+   mobile controls in one cramped cluster on the right and pushed
+   .ka-nav__logo off true-centre — confirmed not working on a real
+   device). Desktop keeps display:none, so it never occupies column
+   1's space at ≥901px (.ka-nav__links sits there instead) — the
+   two are mutually exclusive per breakpoint, never simultaneously
+   in the layout. */
+.ka-nav__toggle { display: none; flex-direction: column; gap: 5px; padding: 4px; grid-column: 1; align-items: flex-start; }
+.ka-nav__toggle span { display: block; width: 24px; height: 1px; background: var(--c-charcoal); }
+@media (max-width: 900px) {
+  .ka-nav { padding: 14px 20px; }
+  .ka-nav__links { display: none; }
+  /* min-width matches .ka-nav__actions' mobile min-content width
+     (two 30px icon-btns + 14px gap = 74px) so both flanking grid
+     columns share an equal content floor and .ka-nav__logo sits on
+     true optical centre — same fix pattern as the original mobile
+     grid-centering fix, now re-applied because the icon count on
+     each side changed (1 left / 2 right instead of 0 left / 3
+     right). */
+  .ka-nav__toggle { display: flex; min-width: 74px; }
+  .ka-nav__actions { gap: 14px; }
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   2 — SEARCH OVERLAY  (new: sections/ka-search.liquid,
+   assets/ka-search.css, assets/ka-search.js)
+   Full-viewport takeover, entering top-anchored since its trigger
+   lives in the nav row — completes the header's existing
+   directional-motion language: hamburger drawer slides from the
+   side, currency sheet rises from the bottom on mobile, search
+   drops from the top. z-index 220 — the one new stacking value in
+   this file, sitting above the currency menu (210, highest
+   previously) since a full-page takeover should never be able to
+   be obscured. Documented for assets/ka-nav.css's stacking-order
+   comment block.
+═══════════════════════════════════════════════════════════════ */
+.ka-search-overlay {
+  position: fixed; inset: 0; z-index: 220;
+  background: var(--c-paper);
+  opacity: 0; visibility: hidden; pointer-events: none;
+  transform: translateY(-14px);
+  transition: opacity 0.5s var(--ease-luxury), transform 0.5s var(--ease-luxury), visibility 0s linear 0.5s;
+  overflow-y: auto;
+}
+.ka-search-overlay.open {
+  opacity: 1; visibility: visible; pointer-events: auto; transform: translateY(0);
+  transition: opacity 0.5s var(--ease-luxury), transform 0.5s var(--ease-luxury), visibility 0s linear 0s;
+}
+.ka-search-overlay__close {
+  position: absolute; top: 26px; right: var(--gutter);
+  font-size: 0.63rem; font-weight: 400; letter-spacing: 0.22em; text-transform: uppercase;
+  color: var(--c-ink-muted); padding: 8px; transition: color var(--dur-fast);
+}
+.ka-search-overlay__close:hover { color: var(--c-charcoal); }
+.ka-search-overlay__inner { max-width: 900px; margin: 0 auto; padding: 120px var(--gutter) var(--s-2xl); }
+.ka-search-overlay__eyebrow { text-align: center; margin-bottom: 18px; }
+.ka-search-overlay__field { position: relative; border-bottom: 1px solid var(--line-strong); padding-bottom: 18px; margin-bottom: var(--s-lg); }
+.ka-search-overlay__input {
+  width: 100%; border: none; outline: none; background: none;
+  font-family: var(--f-display); font-style: italic; font-weight: 400;
+  font-size: clamp(1.6rem, 4.4vw, 2.8rem); color: var(--c-charcoal); text-align: center;
+}
+.ka-search-overlay__input::placeholder { color: var(--c-ink-muted); opacity: 0.6; }
+
+.ka-search-empty__label { text-align: center; margin-bottom: 20px; }
+.ka-search-empty__chips { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin-bottom: var(--s-xl); }
+.ka-search-empty__tiles { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px; }
+.ka-search-empty__tile { position: relative; aspect-ratio: 3/4; overflow: hidden; display: block; }
+.ka-search-empty__tile img { transition: transform 1.1s var(--ease-luxury); }
+.ka-search-empty__tile:hover img { transform: scale(1.05); }
+.ka-search-empty__tile span {
+  position: absolute; left: 0; right: 0; bottom: 0; padding: 16px;
+  background: linear-gradient(to top, rgba(15,12,10,0.55), transparent);
+  color: #fff; font-size: 0.66rem; letter-spacing: 0.14em; text-transform: uppercase;
+}
+
+.ka-search-results__meta { text-align: center; margin-bottom: var(--s-md); font-size: 0.78rem; color: var(--c-ink-muted); letter-spacing: 0.04em; }
+.ka-search-results__grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 22px 18px; margin-bottom: var(--s-lg); }
+.ka-search-results__more { text-align: center; }
+
+.ka-search-noresults { text-align: center; max-width: 480px; margin: 0 auto; padding: var(--s-lg) 0; }
+.ka-search-noresults__title { font-family: var(--f-display); font-style: italic; font-size: clamp(1.5rem, 3vw, 2.1rem); color: var(--c-charcoal); margin-bottom: 14px; }
+.ka-search-noresults__body { font-size: 0.88rem; color: var(--c-ink-mid); line-height: 1.85; margin-bottom: 30px; }
+.ka-search-noresults__actions { display: flex; gap: 20px; justify-content: center; flex-wrap: wrap; align-items: center; }
+
+/* Reused verbatim: assets/ka-collection-grid.css .ka-p-card, so
+   search results are pixel-identical to Collection page cards — no
+   new card pattern invented for search. */
+.ka-p-card { position: relative; }
+.ka-p-card__image { position: relative; display: block; aspect-ratio: 3/4; overflow: hidden; background: var(--c-smoke); }
+.ka-p-card__image img { transition: transform 1.2s var(--ease-luxury); }
+.ka-p-card:hover .ka-p-card__image img { transform: scale(1.045); }
+.ka-p-card__info { padding: 16px 4px 0; }
+.ka-p-card__name { font-family: var(--f-display); font-size: clamp(1rem, 1.6vw, 1.15rem); font-weight: 400; font-style: italic; color: var(--c-charcoal); line-height: 1.3; margin-bottom: 6px; }
+.ka-p-card__fabric { font-size: 0.74rem; font-weight: 300; color: var(--c-ink-muted); margin-bottom: 10px; line-height: 1.6; }
+.ka-p-card__price { font-size: 0.78rem; font-weight: 400; letter-spacing: 0.04em; color: var(--c-ink); }
+
+@media (max-width: 900px) {
+  .ka-search-empty__tiles { grid-template-columns: repeat(3, 1fr); }
+  .ka-search-results__grid { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 600px) {
+  .ka-search-overlay__inner { padding: 96px 20px var(--s-xl); }
+  .ka-search-overlay__input { font-size: clamp(1.4rem, 8vw, 2rem); }
+  .ka-search-empty__tiles { grid-template-columns: repeat(3, 1fr); gap: 1px; }
+  .ka-search-empty__tile span { padding: 10px; font-size: 0.58rem; }
+  .ka-search-results__grid { grid-template-columns: repeat(2, 1fr); gap: 16px 10px; }
+  .ka-search-noresults__actions { flex-direction: column; align-items: stretch; }
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   3 — 404 PAGE  (new: templates/404.json, sections/ka-404.liquid,
+   assets/ka-404.css). Utility-scoped page, same tier of ambition as
+   the Client Diaries "Coming Soon" frame — quiet typography, two
+   real CTAs plus one quiet concierge sentence, deliberately no
+   photography (see rationale in build spec).
+═══════════════════════════════════════════════════════════════ */
+.ka-404 { padding: 160px var(--gutter) var(--s-3xl); min-height: 72vh; display: flex; align-items: center; justify-content: center; }
+.ka-404__inner { max-width: 560px; margin: 0 auto; text-align: center; }
+.ka-404__rule { width: 40px; height: 1px; background: var(--line-light); margin: 0 auto 26px; }
+.ka-404__eyebrow { margin-bottom: 22px; }
+.ka-404__title { font-family: var(--f-display); font-style: italic; font-weight: 400; font-size: var(--t-display); color: var(--c-charcoal); line-height: 1.1; margin-bottom: 22px; }
+.ka-404__body { font-size: 0.95rem; color: var(--c-ink-mid); line-height: 1.9; max-width: 420px; margin: 0 auto var(--s-lg); }
+.ka-404__actions { display: flex; align-items: center; justify-content: center; gap: 28px; flex-wrap: wrap; margin-bottom: var(--s-lg); }
+.ka-404__concierge { font-size: 0.82rem; color: var(--c-ink-muted); }
+.ka-404__concierge a { color: var(--c-rosegold-2); text-decoration: underline; text-decoration-color: var(--line-light); text-underline-offset: 3px; transition: color var(--dur-fast); }
+.ka-404__concierge a:hover { color: var(--c-rosegold); }
+@media (max-width: 600px) {
+  .ka-404 { padding: 120px 20px var(--s-2xl); }
+  .ka-404__actions { flex-direction: column; align-items: stretch; gap: 16px; }
+  .ka-404__actions .btn-outline-rose,
+  .ka-404__actions .btn-dark { justify-content: center; text-align: center; }
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   4 — FOOTER  (rebuild of sections/ka-footer.liquid +
+   assets/ka-footer.css). See build spec for exact copy/schema diff.
+═══════════════════════════════════════════════════════════════ */
+.ka-footer { background: var(--c-charcoal); color: #C9BFAE; padding: var(--s-2xl) var(--gutter) var(--s-lg); }
+.ka-footer__top {
+  display: grid; grid-template-columns: 1.2fr 0.8fr 0.8fr 0.8fr 1.2fr; gap: var(--s-lg);
+  padding-bottom: var(--s-xl); border-bottom: 1px solid rgba(201,191,174,0.18); margin-bottom: var(--s-lg);
+}
+.ka-footer__logo { font-family: var(--f-display); font-size: 1.7rem; font-weight: 400; letter-spacing: 0.06em; color: #F4ECDE; margin-bottom: 6px; display: block; }
+.ka-footer__logo small { display: block; font-size: 0.5rem; font-weight: 400; letter-spacing: 0.32em; text-transform: uppercase; color: var(--c-rosegold-pale); margin-top: 8px; }
+.ka-footer__tagline { font-family: var(--f-display); font-style: italic; font-size: 0.95rem; color: #A89E8E; line-height: 1.65; margin: 20px 0 28px; max-width: 260px; }
+.ka-footer__social { display: flex; gap: 16px; flex-wrap: wrap; }
+.ka-footer__social a { font-size: 0.6rem; font-weight: 400; letter-spacing: 0.18em; text-transform: uppercase; color: #A89E8E; transition: color var(--dur-fast); }
+.ka-footer__social a:hover { color: var(--c-rosegold-pale); }
+.ka-footer__col-title { font-size: 0.6rem; font-weight: 500; letter-spacing: 0.24em; text-transform: uppercase; color: #E6DCCC; margin-bottom: 20px; }
+.ka-footer__links { list-style: none; display: flex; flex-direction: column; gap: 12px; }
+.ka-footer__links a { font-size: 0.78rem; font-weight: 300; color: #A89E8E; transition: color var(--dur-fast); letter-spacing: 0.04em; }
+.ka-footer__links a:hover { color: var(--c-rosegold-pale); }
+.ka-footer__contact { display: flex; flex-direction: column; gap: 12px; }
+.ka-footer__contact-item { font-size: 0.78rem; font-weight: 300; color: #A89E8E; line-height: 1.8; letter-spacing: 0.04em; }
+.ka-footer__contact-item a { color: #A89E8E; transition: color var(--dur-fast); }
+.ka-footer__contact-item a:hover { color: var(--c-rosegold-pale); }
+.ka-footer__news p { font-size: 0.78rem; font-weight: 300; line-height: 1.7; color: #A89E8E; margin-bottom: 18px; letter-spacing: 0.02em; }
+.ka-footer__news-form { display: flex; border: 1px solid rgba(201,191,174,0.22); }
+.ka-footer__news-input { flex: 1; background: none; border: none; outline: none; font-size: 0.74rem; font-weight: 300; color: #F4ECDE; letter-spacing: 0.04em; padding: 13px 14px; }
+.ka-footer__news-input::placeholder { color: #7E7567; }
+.ka-footer__news-submit { font-size: 0.6rem; font-weight: 400; letter-spacing: 0.16em; text-transform: uppercase; color: var(--c-rosegold-pale); border-left: 1px solid rgba(201,191,174,0.22); padding: 0 18px; white-space: nowrap; transition: color var(--dur-fast); }
+.ka-footer__news-submit:hover { color: #fff; }
+
+/* Bottom bar — SIMPLIFIED to one row (copyright + legal). The old
+   service_line + locale_line row is removed outright, not relocated
+   — its one non-redundant fact (DHL Express) is folded into the
+   Contact column's address block instead (see markup below), so the
+   logistics story is told exactly once, in the one place a visitor
+   looks for it. */
+.ka-footer__bottom { display: flex; align-items: center; justify-content: space-between; gap: 20px; flex-wrap: wrap; padding-top: 22px; }
+.ka-footer__copy { font-size: 0.63rem; font-weight: 300; color: #7E7567; letter-spacing: 0.1em; }
+.ka-footer__legal { display: flex; gap: 24px; list-style: none; flex-wrap: wrap; }
+.ka-footer__legal a { font-size: 0.63rem; font-weight: 300; color: #7E7567; letter-spacing: 0.1em; transition: color var(--dur-fast); }
+.ka-footer__legal a:hover { color: var(--c-rosegold-pale); }
+
+/* ── Tablet tier (≤900px) — UNCHANGED by revision v2, approved as-is.
+   Every column below 900px gets an explicit grid-column assignment
+   instead of relying on source-order auto-flow, so pairing is
+   deliberate: Collections+Maison (both "browse" columns) pair
+   together; Contact+Inner Circle (both "do something now" columns)
+   pair together. This fixed a real bug — the old auto-flow left
+   Contact orphaned next to an empty grid cell at this width. DOM
+   order stays unchanged (Brand, Collections, Maison, Contact, News)
+   — only visual placement changes — so tab order and source order
+   stay in sync. */
+@media (max-width: 900px) {
+  .ka-footer__top { grid-template-columns: 1fr 1fr; gap: var(--s-md); }
+  .ka-footer__brand      { grid-column: 1 / -1; }
+  .ka-footer__collections{ grid-column: 1; }
+  .ka-footer__maison     { grid-column: 2; }
+  .ka-footer__contact    { grid-column: 1; }
+  .ka-footer__news       { grid-column: 2; }
+}
+
+/* ── Phone tier (≤480px) — REVISED in v2. Was a single-column stack
+   with a hairline under every block; Suraj confirmed the footer
+   design overall but asked for two columns here specifically, to
+   cut how far the footer scrolls on a real phone. Accordion/collapse
+   was considered and rejected for the same reason it was rejected
+   before (reads as utility/SaaS chrome, not a confident luxury
+   choice) — a two-column grid halves scroll length without hiding
+   any content behind a tap.
+
+   Pairing logic (deliberately different from the 900px tier's
+   pairing above, because the constraint is different): every one of
+   the five blocks below gets its own explicit grid-column AND
+   grid-row — none rely on auto-flow — specifically so this cannot
+   reintroduce the same orphaned-cell bug the 900px tier already had
+   to fix once.
+     Row 1 — Brand+Social | Collections   ("who we are" beside "what
+       we sell": the wordmark/social column and the shoppable
+       collections list, side by side as the footer's opening row).
+     Row 2 — Maison | Contact             (About/Client Diaries/Book
+       an Appointment sitting directly beside the phone number and
+       WhatsApp link is a deliberate pairing, not incidental — it
+       puts the "Book an Appointment" link and the means to actually
+       act on it, phone/WhatsApp, in the same visual row).
+     Row 3 — Inner Circle, full width, alone (grid-column: 1 / -1) —
+       kept off the 2-column grid entirely because it holds a real
+       email input + submit button; halving its width would cramp
+       the input field below a comfortable touch/typing size.
+   (v2 originally added a vertical hairline between the two columns
+   in rows 1–2, plus a horizontal hairline under each row — 5 rule
+   lines total. Superseded by v3 below: all of that is removed in
+   favour of padding alone, see the v3 comment directly below for
+   the full rationale.)
+   Brand's wordmark is set smaller here (1.32rem, tighter
+   line-height) since it now sits in a half-width column rather than
+   full width; it may still wrap to two lines ("Karishma" / "Ashita")
+   at very small phone widths, which is an accepted, elegant
+   treatment (a stacked wordmark), not a defect — Chanel and other
+   maisons do the same in their own tightest mobile spaces. */
+@media (max-width: 480px) {
+  /* Revision v3 — divider cleanup (Suraj: 3 horizontal + 2 vertical hairlines
+     stacked in one mobile footer reads as a spreadsheet/table grid, conflicts
+     with the site's own calm/editorial standard). Fix: drop every internal
+     divider — both row-dividers AND the column hairline — and let the
+     existing padding values (already generous, --s-sm/--s-md/--s-lg) carry
+     the separation alone, exactly the way the desktop 5-column
+     .ka-footer__top already separates its columns (gap only, zero vertical
+     rules). The one hairline that survives (below, under .ka-footer__news)
+     isn't a new row-separator — it's the same functional line desktop has
+     under .ka-footer__top, closing the brand-content block before the
+     copyright/legal bar, so it stays for cross-breakpoint consistency. */
+  .ka-footer__top { grid-template-columns: 1fr 1fr; gap: 0; border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+
+  .ka-footer__brand,
+  .ka-footer__collections { grid-row: 1; padding-top: 0; padding-bottom: var(--s-md); }
+  .ka-footer__maison,
+  .ka-footer__contact     { grid-row: 2; padding-top: var(--s-md); padding-bottom: var(--s-md); }
+
+  .ka-footer__brand,
+  .ka-footer__maison      { grid-column: 1; padding-right: var(--s-sm); }
+  .ka-footer__collections,
+  .ka-footer__contact     { grid-column: 2; padding-left: var(--s-sm); }
+
+  .ka-footer__news {
+    grid-column: 1 / -1; grid-row: 3;
+    padding-top: var(--s-md); padding-bottom: var(--s-lg);
+    border-bottom: 1px solid rgba(201,191,174,0.18);
+    margin-bottom: var(--s-lg);
+  }
+
+  .ka-footer__logo { font-size: 1.32rem; line-height: 1.15; }
+  .ka-footer__bottom { flex-direction: column; align-items: flex-start; gap: 14px; }
+}
+</style>
+</head>
+<body>
+
+<!-- ══════════════ PRESENTATION RIBBON (not part of the site) ══════════════ -->
+<div class="proto-ribbon">
+  <div><strong>K&amp;A Prototype</strong> — Search · 404 · Footer — Component Review v1</div>
+  <nav>
+    <a href="#sec-search">1 — Search</a>
+    <a href="#sec-404">2 — 404 Page</a>
+    <a href="#sec-footer">3 — Footer</a>
+  </nav>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════════
+     SECTION 1 — SEARCH
+═══════════════════════════════════════════════════════════════ -->
+<div id="sec-search"></div>
+<div class="proto-section-label">
+  <b>1 — Search</b>
+  <p>Trigger lives in the main nav row, beside the bag icon — not the utility bar, which stays untouched (Task 86's currency-chip balance is delicate; adding search there would crowd it). Click the magnifying glass below to open the real overlay. Use the quick-demo buttons to preview all three states without needing to type an exact match.</p>
+</div>
+<div class="proto-note"><strong>Revision v2 (mobile trigger placement):</strong> on mobile the hamburger has moved to the far left of the nav row, on its own; Search and Bag now sit grouped together at the far right (the classic hamburger-left / logo-centre / utility-icons-right pattern Chanel and Dior both use on mobile). Previously all three controls — search, bag, hamburger — were clustered together on the right, which read as cramped next to the logo on a real device. Resize the frame below to Mobile to see it live. See build spec §1.4 for the full rationale, including why this required re-doing the logo-centring fix (matching content-floor widths on both flanking grid columns, not just equal <code>fr</code> units).</div>
+
+<div class="proto-devicebar" data-target="nav-frame">
+  <span>Preview width:</span>
+  <button data-w="desktop" class="is-on">Desktop</button>
+  <button data-w="tablet">Tablet</button>
+  <button data-w="mobile">Mobile</button>
+</div>
+<div class="proto-framewrap">
+<div class="proto-frame" id="nav-frame">
+
+  <div class="ka-utility-bar">
+    <span><b>Complimentary Worldwide Delivery</b></span><span>·</span><span><b>Hand-Embroidered to Order</b></span><span>·</span><span><b>Private &amp; Virtual Appointments</b></span>
+  </div>
+
+  <nav class="ka-nav">
+    <button class="ka-nav__toggle" aria-label="Open menu"><span></span><span></span><span></span></button>
+    <ul class="ka-nav__links">
+      <li><a href="#">Signature</a></li>
+      <li><a href="#">Collections</a></li>
+      <li><a href="#">Client Diaries</a></li>
+    </ul>
+    <a href="#" class="ka-nav__logo">Karishma Ashita<small>Bridal Couture · Mumbai</small></a>
+    <div class="ka-nav__actions">
+      <button class="ka-nav__icon-btn" id="kaSearchTrigger" aria-label="Search" aria-haspopup="dialog" aria-controls="kaSearchOverlay">
+        <svg viewBox="0 0 24 24" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M20 20l-4.8-4.8"/></svg>
+      </button>
+      <a href="#" class="ka-nav__icon-btn" aria-label="View your bag">
+        <svg viewBox="0 0 24 24" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8h12l-1 12H7L6 8z"/><path d="M9 8V6a3 3 0 0 1 6 0v2"/></svg>
+        <span class="ka-nav__bag__count" data-count="0"></span>
+      </a>
+    </div>
+  </nav>
+
+  <div style="padding:64px var(--gutter);text-align:center;color:var(--c-ink-muted);font-size:0.82rem;">
+    ↑ Page content sits below the nav as usual. Click the search icon above.
+  </div>
+</div>
+</div>
+
+<!-- Search overlay -->
+<div class="ka-search-overlay" id="kaSearchOverlay" role="dialog" aria-modal="true" aria-hidden="true">
+  <button class="ka-search-overlay__close" id="kaSearchClose">Close</button>
+  <div class="ka-search-overlay__inner">
+    <div class="ka-search-overlay__eyebrow eyebrow">Search</div>
+    <div class="ka-search-overlay__field">
+      <input type="search" class="ka-search-overlay__input" id="kaSearchInput" placeholder="Search pieces, collections, stories…" autocomplete="off" />
+    </div>
+
+    <!-- Empty state -->
+    <div id="kaSearchEmpty">
+      <div class="ka-search-empty__label eyebrow">Popular Searches</div>
+      <div class="ka-search-empty__chips">
+        <span class="ka-chip" data-query="Signature">Signature</span>
+        <span class="ka-chip" data-query="Bloom Soirée">The Bloom Soirée</span>
+        <span class="ka-chip" data-query="Chamakk">Chamakk</span>
+        <span class="ka-chip" data-query="Barre Oblique">Barre Oblique</span>
+        <span class="ka-chip" data-query="Festive Edit">The Festive Edit</span>
+      </div>
+      <div class="ka-search-empty__tiles">
+        <a href="#" class="ka-search-empty__tile"><img src="../assets/bloom-soiree-card.jpg" alt="The Bloom Soirée" /><span>The Bloom Soirée</span></a>
+        <a href="#" class="ka-search-empty__tile"><img src="../assets/chamak-card.jpg" alt="Chamakk" /><span>Chamakk</span></a>
+        <a href="#" class="ka-search-empty__tile"><img src="../assets/barre-card.jpg" alt="Barre Oblique" /><span>Barre Oblique</span></a>
+      </div>
+    </div>
+
+    <!-- Results state -->
+    <div id="kaSearchResults" style="display:none;">
+      <div class="ka-search-results__meta" id="kaSearchResultsMeta"></div>
+      <div class="ka-search-results__grid" id="kaSearchResultsGrid"></div>
+      <div class="ka-search-results__more"><a href="#" class="btn-dark">View All Results</a></div>
+    </div>
+
+    <!-- No-results state -->
+    <div id="kaSearchNoResults" class="ka-search-noresults" style="display:none;">
+      <div class="ka-search-noresults__title">We couldn't find that piece</div>
+      <p class="ka-search-noresults__body">Our styling concierge knows every piece in the atelier — send us a message and we'll help you find exactly what you're picturing.</p>
+      <div class="ka-search-noresults__actions">
+        <a href="https://wa.me/919967543087" target="_blank" rel="noopener" class="btn-outline-rose">Ask Our Styling Concierge</a>
+        <a href="#" class="btn-dark">Browse All Collections</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════════
+     SECTION 2 — 404 PAGE
+═══════════════════════════════════════════════════════════════ -->
+<div id="sec-404"></div>
+<div class="proto-section-label">
+  <b>2 — 404 Page</b>
+  <p>Utility-scoped, same tier as the Client Diaries "Coming Soon" frame — not a flagship moment. Deliberately no photography: a hero image tied to one collection would read as stray/promotional to a visitor who arrived here by accident, and would need constant updating to stay seasonally correct. Quiet typography carries it instead. Two real CTAs (Explore the Collections is the heavier, business-priority action; Return Home is the lighter fallback) plus one quiet Concierge sentence — not a third competing button.</p>
+</div>
+
+<div class="ka-utility-bar" style="position:static;">
+  <span><b>Complimentary Worldwide Delivery</b></span><span>·</span><span><b>Hand-Embroidered to Order</b></span><span>·</span><span><b>Private &amp; Virtual Appointments</b></span>
+</div>
+<nav class="ka-nav" style="position:static;">
+  <ul class="ka-nav__links"><li><a href="#">Signature</a></li><li><a href="#">Collections</a></li><li><a href="#">Client Diaries</a></li></ul>
+  <a href="#" class="ka-nav__logo">Karishma Ashita<small>Bridal Couture · Mumbai</small></a>
+  <div class="ka-nav__actions">
+    <button class="ka-nav__icon-btn" aria-label="Search"><svg viewBox="0 0 24 24" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M20 20l-4.8-4.8"/></svg></button>
+    <a href="#" class="ka-nav__icon-btn" aria-label="View your bag"><svg viewBox="0 0 24 24" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8h12l-1 12H7L6 8z"/><path d="M9 8V6a3 3 0 0 1 6 0v2"/></svg></a>
+  </div>
+</nav>
+
+<section class="ka-404">
+  <div class="ka-404__inner">
+    <div class="ka-404__rule"></div>
+    <div class="ka-404__eyebrow eyebrow">Page Not Found</div>
+    <h1 class="ka-404__title">This Page Has Stepped Away</h1>
+    <p class="ka-404__body">The page you were looking for may have moved, changed its name, or simply isn't ready yet. Let us guide you back to the collections.</p>
+    <div class="ka-404__actions">
+      <a href="#" class="btn-outline-rose">Explore the Collections</a>
+      <a href="#" class="btn-dark">Return Home</a>
+    </div>
+    <p class="ka-404__concierge">Can't find what you're looking for? Message our <a href="https://wa.me/919967543087?text=Hi%2C%20I%20couldn%27t%20find%20what%20I%20was%20looking%20for%20on%20your%20website.%20Could%20you%20help%3F" target="_blank" rel="noopener">styling concierge on WhatsApp</a>.</p>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════════════════════
+     SECTION 3 — FOOTER
+═══════════════════════════════════════════════════════════════ -->
+<div id="sec-footer"></div>
+<div class="proto-section-label">
+  <b>3 — Footer Redesign</b>
+  <p><strong>Copy fix:</strong> "Mumbai" / worldwide-shipping messaging previously appeared three times (logo sub-line, address block, bottom service line) plus a fourth near-duplicate ("Ships worldwide" locale line). Now: the logo sub-line's "Mumbai" stays as brand identity (heritage marker, like Sabyasachi's "Kolkata"), and the Contact column's address becomes the single authoritative logistics line, with the DHL Express detail folded in rather than repeated separately. The bottom bar's redundant service/locale lines are removed outright, not relocated — it now carries only copyright + legal links, the calm luxury-standard bottom bar.</p>
+  <p><strong>Mobile fix:</strong> resize below using the device buttons. Watch Contact + Inner Circle pair correctly at tablet width (no orphaned empty cell, the old bug), then watch the small-phone view move to two columns — <strong>Revision v2:</strong> Suraj approved the footer design overall but asked for a two-column phone layout to cut scroll length (was previously one hairline-divided column all the way down). Now: Brand+Social pairs with Collections, Maison pairs with Contact (so "Book an Appointment" sits directly beside the phone/WhatsApp line), and Inner Circle stays full-width alone since it holds a real email form. Every block carries an explicit grid-column and grid-row at this width — none rely on auto-flow — specifically so the tablet tier's orphaned-cell bug can't recur here. YouTube added to the social row; Press removed from the Maison column (no live page exists behind it yet).</p>
+  <p><strong>Revision v3 (divider cleanup):</strong> v2's phone layout paired its two columns with a horizontal rule under each row PLUS a vertical rule splitting each row into columns — 5 rule lines stacked in one footer. Suraj: too many dividers, reads as a spreadsheet grid. Fixed: all internal dividers removed — both the row-dividers and the column hairline — relying purely on the existing padding (already generous) to separate the three stacked blocks, the same way the desktop 5-column footer above separates its columns with gap alone and zero rules. Only one hairline survives, below the newsletter block — that's not a new divider, it's the same closing line desktop already has before its copyright bar, kept for cross-breakpoint consistency. Resize to Mobile below to see it live.</p>
+</div>
+
+<div class="proto-devicebar" data-target="footer-frame">
+  <span>Preview width:</span>
+  <button data-w="desktop" class="is-on">Desktop</button>
+  <button data-w="tablet">Tablet</button>
+  <button data-w="mobile">Mobile</button>
+</div>
+<div class="proto-framewrap">
+<div class="proto-frame" id="footer-frame">
+  <!-- Footer markup (see below for the one shared instance) -->
+  <div id="footer-instance-1"></div>
+</div>
+</div>
+
+<div class="proto-note" style="margin-bottom:40px;">Below: the same footer shown full-bleed, in its natural context directly under the 404 page — exactly how it will always appear on the live site.</div>
+
+<!-- Full-bleed real-context instance -->
+<footer class="ka-footer" aria-label="Site footer">
+  <div class="ka-footer__top">
+    <div class="ka-footer__brand">
+      <span class="ka-footer__logo">Karishma Ashita<small>Bridal Couture · Mumbai</small></span>
+      <p class="ka-footer__tagline">Bridal couture, handcrafted<br>in Mumbai.</p>
+      <div class="ka-footer__social">
+        <a href="#" target="_blank" rel="noopener">Instagram</a>
+        <a href="#" target="_blank" rel="noopener">YouTube</a>
+        <a href="#" target="_blank" rel="noopener">Pinterest</a>
+        <a href="https://wa.me/919967543087" target="_blank" rel="noopener">Concierge</a>
+      </div>
+    </div>
+    <div class="ka-footer__collections">
+      <p class="ka-footer__col-title">Collections</p>
+      <ul class="ka-footer__links">
+        <li><a href="#">The Festive Edit</a></li>
+        <li><a href="#">The Bloom Soirée</a></li>
+        <li><a href="#">Chamakk</a></li>
+        <li><a href="#">Barre Oblique</a></li>
+        <li><a href="#">Signature</a></li>
+      </ul>
+    </div>
+    <div class="ka-footer__maison">
+      <p class="ka-footer__col-title">Maison</p>
+      <ul class="ka-footer__links">
+        <li><a href="#">About Karishma &amp; Ashita</a></li>
+        <li><a href="#">Client Diaries</a></li>
+        <li><a href="#">Book an Appointment</a></li>
+        <li><a href="https://wa.me/919967543087" target="_blank" rel="noopener">Concierge</a></li>
+      </ul>
+    </div>
+    <div class="ka-footer__contact">
+      <p class="ka-footer__col-title">Contact</p>
+      <div class="ka-footer__contact-item-wrap" style="display:flex;flex-direction:column;gap:12px;">
+        <p class="ka-footer__contact-item"><a href="https://wa.me/919967543087">+91 99675 43087</a></p>
+        <p class="ka-footer__contact-item"><a href="mailto:info@karishmaashita.com">info@karishmaashita.com</a></p>
+        <p class="ka-footer__contact-item">Mumbai, India<br>Complimentary worldwide shipping via DHL Express</p>
+      </div>
+    </div>
+    <div class="ka-footer__news">
+      <p class="ka-footer__col-title">The Inner Circle</p>
+      <p>Collection previews, styling notes and private trunk show invitations — delivered quietly to your inbox.</p>
+      <div class="ka-footer__news-form">
+        <input type="email" class="ka-footer__news-input" placeholder="Your email address" />
+        <button type="button" class="ka-footer__news-submit">Join</button>
+      </div>
+    </div>
+  </div>
+  <div class="ka-footer__bottom">
+    <p class="ka-footer__copy">&copy; 2026 Karishma Ashita. All rights reserved.</p>
+    <ul class="ka-footer__legal">
+      <li><a href="#">Privacy Policy</a></li>
+      <li><a href="#">Terms of Service</a></li>
+      <li><a href="#">Shipping &amp; Returns</a></li>
+    </ul>
+  </div>
+</footer>
+
+<script>
+/* ── Search overlay ─────────────────────────────────────────── */
+var PRODUCTS = [
+  { name: 'Bloom Soirée Lehenga',     fabric: 'Hand-embroidered silk, blush rosegold', price: '₹68,000', img: '../assets/product-bloom-lehenga.jpg', tags: 'bloom soiree soirée lehenga silk blush' },
+  { name: 'Ivory Column Corset',      fabric: 'Corset bodice, silk column drape',       price: '₹52,000', img: '../assets/product-ivory-column-corset.jpg', tags: 'signature ivory column corset silk' },
+  { name: 'Snow Veil Corset',         fabric: 'Corset with ivory tulle drape saree',    price: '₹58,000', img: '../assets/product-snow-veil-corset.jpg', tags: 'signature snow veil corset saree tulle' },
+  { name: 'Chamakk Sequin Lehenga',   fabric: 'Hand-embellished sequin, festive gold',  price: '₹46,000', img: '../assets/chamak-card.jpg', tags: 'chamakk festive sequin lehenga gold' },
+  { name: 'Barre Oblique Indo-Western', fabric: 'Structured drape, contemporary cut',   price: '₹42,000', img: '../assets/barre-card.jpg', tags: 'barre oblique indo western set' },
+  { name: 'The Wedding Festive Drape', fabric: 'Hand-embroidered chanderi drape saree', price: '₹49,000', img: '../assets/wedding-festive-card.jpg', tags: 'wedding festive drape saree chanderi' },
+  { name: 'First Love Bridal Lehenga', fabric: 'Hand-embroidered silk, ivory blush',    price: '₹72,000', img: '../assets/first-love-card.jpg', tags: 'first love bridal lehenga silk' },
+  { name: 'Signature Rosegold Lehenga', fabric: 'Hand-embroidered silk, rosegold',      price: '₹64,000', img: '../assets/bestsellers-card.jpg', tags: 'signature bestseller rosegold lehenga' }
+];
+
+var overlay = document.getElementById('kaSearchOverlay');
+var trigger = document.getElementById('kaSearchTrigger');
+var closeBtn = document.getElementById('kaSearchClose');
+var input = document.getElementById('kaSearchInput');
+var emptyEl = document.getElementById('kaSearchEmpty');
+var resultsEl = document.getElementById('kaSearchResults');
+var noResultsEl = document.getElementById('kaSearchNoResults');
+var resultsGrid = document.getElementById('kaSearchResultsGrid');
+var resultsMeta = document.getElementById('kaSearchResultsMeta');
+var debounceTimer = null;
+
+function openSearch() {
+  overlay.classList.add('open');
+  overlay.setAttribute('aria-hidden', 'false');
+  document.body.style.overflow = 'hidden';
+  setTimeout(function () { input.focus(); }, 260);
+}
+function closeSearch() {
+  overlay.classList.remove('open');
+  overlay.setAttribute('aria-hidden', 'true');
+  document.body.style.overflow = '';
+  trigger.focus();
+}
+trigger.addEventListener('click', openSearch);
+closeBtn.addEventListener('click', closeSearch);
+document.addEventListener('keydown', function (e) { if (e.key === 'Escape') closeSearch(); });
+
+function renderCard(p) {
+  return '<div class="ka-p-card"><a href="#" class="ka-p-card__image"><img src="' + p.img + '" alt="' + p.name + '" /></a>' +
+    '<div class="ka-p-card__info"><p class="ka-p-card__name">' + p.name + '</p>' +
+    '<p class="ka-p-card__fabric">' + p.fabric + '</p>' +
+    '<p class="ka-p-card__price">' + p.price + '</p></div></div>';
+}
+
+function runSearch(query) {
+  query = query.trim().toLowerCase();
+  if (query.length < 2) {
+    emptyEl.style.display = ''; resultsEl.style.display = 'none'; noResultsEl.style.display = 'none';
+    return;
+  }
+  var matches = PRODUCTS.filter(function (p) { return p.tags.indexOf(query) !== -1; });
+  emptyEl.style.display = 'none';
+  if (matches.length) {
+    resultsEl.style.display = ''; noResultsEl.style.display = 'none';
+    resultsMeta.textContent = matches.length + (matches.length === 1 ? ' piece' : ' pieces') + ' found for "' + query + '"';
+    resultsGrid.innerHTML = matches.slice(0, 8).map(renderCard).join('');
+  } else {
+    resultsEl.style.display = 'none'; noResultsEl.style.display = '';
+    noResultsEl.querySelector('.ka-search-noresults__title').textContent = 'We couldn’t find "' + query + '"';
+  }
+}
+
+input.addEventListener('input', function () {
+  clearTimeout(debounceTimer);
+  var val = input.value;
+  debounceTimer = setTimeout(function () { runSearch(val); }, 250);
+});
+
+document.querySelectorAll('[data-query]').forEach(function (chip) {
+  chip.addEventListener('click', function () {
+    input.value = chip.getAttribute('data-query');
+    runSearch(input.value);
+  });
+});
+
+/* ── Device-width preview toggles (presentation-only) ────────── */
+document.querySelectorAll('.proto-devicebar').forEach(function (bar) {
+  var targetId = bar.getAttribute('data-target');
+  var frame = document.getElementById(targetId);
+  bar.querySelectorAll('button').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      bar.querySelectorAll('button').forEach(function (b) { b.classList.remove('is-on'); });
+      btn.classList.add('is-on');
+      frame.classList.remove('is-tablet', 'is-mobile');
+      var w = btn.getAttribute('data-w');
+      if (w === 'tablet') frame.classList.add('is-tablet');
+      if (w === 'mobile') frame.classList.add('is-mobile');
+    });
+  });
+});
+
+/* Clone the shared footer markup into the resizable preview frame,
+   so both instances stay perfectly in sync (edit once above). */
+document.getElementById('footer-instance-1').outerHTML =
+  document.querySelector('footer.ka-footer').outerHTML;
+</script>
+
+</body>
+</html>
