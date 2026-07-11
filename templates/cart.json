@@ -37,10 +37,6 @@
         "collections_url": "/collections"
       }
     },
-    "ka-cart-summary": {
-      "type": "ka-cart-summary",
-      "settings": {}
-    },
     "ka-cart-cross-link": {
       "type": "ka-cart-cross-link",
       "settings": {
@@ -75,7 +71,6 @@
     "ka-nav",
     "ka-cart-breadcrumb",
     "ka-cart-items",
-    "ka-cart-summary",
     "ka-cart-cross-link",
     "ka-footer",
     "ka-cart-mobile-bar"

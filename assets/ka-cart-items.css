@@ -1,8 +1,8 @@
 /* ================================================================
    KA-CART-ITEMS — page header, couture line-item cards, empty-cart
-   state, and the .ka-cart-wrap grid opener (closed by
-   ka-cart-summary.css's sticky panel — see ARCHITECTURE NOTE in
-   ka-cart-items.liquid).
+   state, and the .ka-cart-wrap grid (opens and closes within the
+   single merged sections/ka-cart-items.liquid — see ARCHITECTURE NOTE
+   there for the two-section split this replaced, 11 July 2026).
 
    Also defines the shared .ka-btn / .ka-btn--ghost / .ka-btn--concierge
    button family for the Cart page (mirrors ka-product-main.css's
@@ -37,7 +37,7 @@
 .ka-cart-page-head h1 { font-family: var(--f-display); font-size: var(--t-display); font-weight: 300; line-height: 1.05; color: var(--c-ink); }
 .ka-cart-count { font-family: var(--f-sans); font-size: 0.82rem; letter-spacing: 0.04em; color: var(--c-ink-mid); margin-top: 14px; }
 
-/* ── layout grid (opened here, closed by ka-cart-summary.css) ── */
+/* ── layout grid (opens and closes within sections/ka-cart-items.liquid) ── */
 .ka-cart-wrap {
   max-width: var(--max-wide); margin: 0 auto; padding: var(--s-lg) var(--gutter) var(--s-2xl);
   display: grid; grid-template-columns: 1.6fr 1fr; gap: 64px; align-items: start;

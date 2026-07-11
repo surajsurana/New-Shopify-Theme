@@ -1,14 +1,18 @@
 {{ 'ka-cart-items.css' | asset_url | stylesheet_tag }}
+{{ 'ka-cart-summary.css' | asset_url | stylesheet_tag }}
+<script src="{{ 'ka-cart.js' | asset_url }}" defer></script>
 
 {%- comment -%}
-  K&A Cart ("Bag") — Page Header + Couture Line-Item Cards + Empty State
-  Spec: Docs/cart-build-spec.md, Section 3 §2/§3/§6, Section 3 §10, F2, F4, F9.
+  K&A Cart ("Bag") — Page Header + Line-Item List + Sticky Order Summary + Empty State
+  Spec: Docs/cart-build-spec.md, Section 3 §2/§3/§4/§5/§6, Section 3 §10,
+  F2, F3, F4, F5, F7, F9, CD Notes 2/3/5.
 
   This is the theme's equivalent of Shopify's conventional `main-cart-items`
-  section. It is the single source of truth for which cart state renders —
-  server-side, from cart.item_count — per F9. There is NO client-side toggle
-  here; that toggle existed only in the prototype (cart-page-v1.html) as
-  presentation scaffolding and is intentionally not carried over.
+  AND `main-cart-footer` sections, merged into one. It is the single source
+  of truth for which cart state renders — server-side, from cart.item_count
+  — per F9. There is NO client-side toggle here; that toggle existed only in
+  the prototype (cart-page-v1.html) as presentation scaffolding and is
+  intentionally not carried over.
 
   Customer-facing rename (Round 3 / R3-2, final): "Cart" → "Bag" everywhere a
   customer sees it (supersedes the earlier v1.1 "Selection" rename, which is
@@ -18,25 +22,55 @@
   This section also defines the shared .ka-btn / .ka-btn--ghost /
   .ka-btn--concierge button family for the Cart page, the same way
   ka-product-main.css does for the Product page (see build-spec Section 1,
-  the flagged "second legitimate button family" note) — ka-cart-summary.liquid
-  and ka-cart-cross-link.liquid and ka-cart-mobile-bar.liquid all reuse these
-  classes rather than redeclaring them.
+  the flagged "second legitimate button family" note) — ka-cart-cross-link.liquid
+  and ka-cart-mobile-bar.liquid reuse these classes rather than redeclaring them.
 
   No quantity stepper anywhere on this page (F4, CD Note 1, deliberate) —
   .ka-item__one italic copy is shown instead for every line.
 
-  ARCHITECTURE NOTE — two-column sticky layout split across two sections:
+  ARCHITECTURE NOTE — single-section merge (bug fix, 11 July 2026):
   The prototype's `.cart-wrap` is a single CSS grid (`1.6fr 1fr`) containing
   both the line-item list and the sticky order-summary panel as siblings.
-  Shopify section-groups don't let two independent sections share one grid
-  parent cleanly, so this section opens `.ka-cart-wrap` and renders the
-  items column as the grid's first child; ka-cart-summary.liquid (the
-  `main-cart-footer` equivalent) renders the grid's second child and closes
-  the wrapping div. The two sections are pinned adjacent to each other in
-  templates/cart.json and must not be reordered or separated by another
-  section, or the grid will break. This is the same coupling Shopify's own
-  Dawn theme has between main-cart-items/main-cart-footer, just without
-  Dawn's markup baggage.
+  This used to be split across two Shopify sections — this file opened
+  `.ka-cart-wrap` and rendered the items column as the grid's first child,
+  and the now-removed ka-cart-summary.liquid rendered the grid's second
+  child and closed the wrapping div — relying on the two sections being
+  pinned adjacent in templates/cart.json with nothing between them.
+
+  That split was a real, always-present bug: Shopify wraps every section in
+  its own auto-generated wrapper div in the actual rendered page, and that
+  wrapper sits between the two sections' markup. So the closing `</div>`
+  from the second section never actually closed the `<div class="ka-cart-wrap">`
+  opened by the first — the two tags mis-paired around Shopify's own
+  wrapper, and the order-summary panel ended up outside `.ka-cart-wrap`
+  entirely instead of being its second grid column (verified against a real
+  HTML5 parser, not just visual inspection). Fixed by merging both sections
+  into this single file, so `.ka-cart-wrap` now opens and closes within one
+  section's own markup with exactly two real children — `.ka-cart-items`
+  and `.ka-summary` — and can no longer be pulled apart by Shopify's
+  per-section wrapping, regardless of template ordering.
+
+  This section loads both original stylesheets (ka-cart-items.css and
+  ka-cart-summary.css — kept as two separate asset files; there are no
+  class-name collisions between them so there was no need to merge the CSS
+  itself, only the Liquid markup) and ka-cart.js once, here, for the whole
+  page.
+
+  ka-cart.js handles real cart AJAX for this entire merged section:
+  line-item remove via /cart/change.js (F2) and notes persistence via
+  /cart/update.js's `note` param (F3). Checkout hands off to the real
+  cart.checkout_url / a standard form submit to /checkout (F7) — no
+  platform risk. It reloads the full page after a successful remove rather
+  than re-rendering sections independently via AJAX, so merging the items
+  list and the summary into one section does not change or break its
+  behaviour.
+
+  No WhatsApp concierge CTA on the filled-cart summary (per Suraj, 30 June
+  2026 — overrides the earlier "Ask a Question Before You Checkout" CD
+  decision for this specific spot). The empty-state's concierge button
+  below is untouched and still the page's only concierge prompt when the
+  cart has no items. The sitewide floating concierge button (rendered
+  globally from theme.liquid) is unrelated to this and also untouched.
 {%- endcomment -%}
 
 {%- liquid
@@ -157,11 +191,73 @@
       </div>
     </div>
 
-    {%- comment -%}
-      .ka-cart-wrap (opened above) is intentionally left open here — the
-      adjacent ka-cart-summary section renders the grid's second child and
-      closes this div. See the ARCHITECTURE NOTE in the comment block above.
-    {%- endcomment -%}
+    <aside class="ka-summary reveal reveal-delay-1" id="kaSummaryPanel" data-ka-cart-summary>
+      <h2>Order Summary</h2>
+
+      <div class="ka-summary-row"><span>Subtotal</span><span class="v" data-ka-subtotal data-price="{{ cart.original_total_price }}">{{ cart.original_total_price | money }}</span></div>
+      <div class="ka-summary-row ka-summary-row--ship"><span>Worldwide Delivery</span><span class="v">Complimentary</span></div>
+      {%- if cart.total_discount > 0 -%}
+        <div class="ka-summary-row"><span>Savings</span><span class="v" data-ka-savings>&minus;<span data-price="{{ cart.total_discount }}">{{ cart.total_discount | money }}</span></span></div>
+      {%- endif -%}
+
+      <div class="ka-summary-divider"></div>
+
+      <div class="ka-summary-total">
+        <span class="lbl">Estimated Total</span>
+        <span class="amt" data-ka-total data-price="{{ cart.total_price }}">{{ cart.total_price | money }}</span>
+      </div>
+
+      {%- if settings.enable_currency_converter -%}
+        {%- comment -%}
+          Cart conversion bridge line (Task 86, Section 2.5) — the one
+          deliberate exception to "replace, never append." Rendered
+          empty/hidden server-side (display:none via ka-currency.css
+          until ka-currency.js adds .show) so JS-disabled visitors never
+          see a blank or malformed line; only shown when the active
+          currency isn't INR. data-price carries the real cart total in
+          Shopify's raw cents so the bridge always reflects what
+          checkout will actually charge.
+        {%- endcomment -%}
+        <div class="ka-currency-bridge" id="ka-currency-bridge" data-price="{{ cart.total_price }}">
+          <span class="ka-currency-bridge__amt"></span><span class="op">&times;</span><span class="ka-currency-bridge__rate"></span><span class="op">=</span><span class="ka-currency-bridge__inr"></span>
+        </div>
+      {%- endif -%}
+
+      <div class="ka-summary-tax">Taxes included. Nothing further is added at checkout.</div>
+
+      <form action="{{ routes.cart_update_url }}" method="post" id="kaCartNotesForm">
+        <div class="ka-notes">
+          <label for="kaCartNotes">A Note for Your Atelier</label>
+          <p class="hint">Already shared your measurements with a stylist? Mention her name here, or leave any notes for your made-to-order piece.</p>
+          <textarea
+            id="kaCartNotes"
+            name="note"
+            placeholder="e.g. &ldquo;I&rsquo;ve shared my measurements with Aditi over WhatsApp on 26 June.&rdquo;"
+            data-ka-cart-note
+          >{{ cart.note }}</textarea>
+          <p class="ka-notes__status" data-ka-notes-status aria-live="polite"></p>
+        </div>
+      </form>
+
+      <div class="ka-reassure">
+        <div class="row"><span class="mk">✦</span><span>Each piece is cut, draped and hand-embroidered to order by our karigars — never machine-made.</span></div>
+        <div class="row"><span class="mk">✦</span><span>Crafted to order in 20–25 days. A personal advisor will confirm fit and measurements after you check out.</span></div>
+        <div class="row"><span class="mk">✦</span><span>Delivered worldwide, complimentary, by DHL Express, beautifully packaged.</span></div>
+      </div>
+
+      {%- comment -%}
+        F7: real checkout handoff. A plain <button name="checkout"> inside a
+        form posting to routes.cart_url is Shopify's own standard pattern
+        (identical to how Dawn's main-cart-footer submits to checkout) — it
+        works with JS disabled and needs no custom endpoint.
+      {%- endcomment -%}
+      <form action="{{ routes.cart_url }}" method="post" novalidate>
+        <button type="submit" name="checkout" class="ka-btn">Continue to Checkout</button>
+      </form>
+
+      <div class="ka-secure-note">Secure, encrypted checkout</div>
+    </aside>
+  </div><!-- /.ka-cart-wrap — exactly two children above: .ka-cart-items and .ka-summary -->
 
 {%- else -%}
 
@@ -189,7 +285,7 @@
 
 {% schema %}
 {
-  "name": "Cart Items",
+  "name": "Cart Items & Order Summary",
   "tag": "div",
   "class": "ka-cart-items-section",
   "settings": [
@@ -197,7 +293,7 @@
     { "type": "image_picker", "id": "empty_image", "label": "Empty-state hero image", "info": "Falls back to bloom-soiree-main.jpg (existing approved imagery) if left blank." }
   ],
   "presets": [
-    { "name": "Cart Items" }
+    { "name": "Cart Items & Order Summary" }
   ]
 }
 {% endschema %}

@@ -1,8 +1,9 @@
 /* ================================================================
    K&A CART ("SELECTION") PAGE JS — ka-cart.js
    Vanilla JS only. No third-party libraries. Loaded ONLY from
-   templates/cart.json (via ka-cart-summary.liquid) per the project's
-   per-section/page CSS/JS scoping rule.
+   templates/cart.json (via sections/ka-cart-items.liquid, the merged
+   items + order-summary section) per the project's per-section/page
+   CSS/JS scoping rule.
 
    Real Shopify cart AJAX — NOT the prototype's DOM-only demo logic
    (cart-page-v1.html's removeItem()/toggleState() are presentation

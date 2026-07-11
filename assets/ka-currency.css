@@ -213,10 +213,12 @@ html[data-ka-currency-pending] [data-price] {
 
 /* ── Cart conversion bridge line (Section 2.5) — the one deliberate
      exception to "replace, never append." Lives inside
-     ka-cart-summary.liquid, directly beneath Estimated Total. Only
-     shown when the active currency isn't INR (JS toggles .show).
-     Must always read larger than .ka-summary-tax beneath it — never
-     smaller, so it never reads as fine print (CD Note 5). ── */
+     sections/ka-cart-items.liquid (the merged items + order-summary
+     section, formerly ka-cart-summary.liquid), directly beneath
+     Estimated Total. Only shown when the active currency isn't INR
+     (JS toggles .show). Must always read larger than .ka-summary-tax
+     beneath it — never smaller, so it never reads as fine print
+     (CD Note 5). ── */
 .ka-currency-bridge {
   display: none;
   font-family: var(--f-sans);

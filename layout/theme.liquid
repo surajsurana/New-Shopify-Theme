@@ -114,9 +114,10 @@
     <!-- K&A Currency module (Task 86) — global chip/menu/bridge styling + anti-flash rule.
          Loaded sitewide here (not per-section) because the same component appears across
          ka-nav.liquid, ka-product-main.liquid, ka-collection-grid.liquid, ka-bestsellers.liquid,
-         ka-product-related.liquid, ka-cart-items.liquid, ka-cart-summary.liquid and
-         ka-cart-cross-link.liquid — the one genuinely cross-cutting exception to this theme's
-         usual per-section CSS scoping rule, same reasoning as ka-base.css/ka-theme.js. -->
+         ka-product-related.liquid, ka-cart-items.liquid (the merged items + order-summary
+         section, formerly split with ka-cart-summary.liquid) and ka-cart-cross-link.liquid —
+         the one genuinely cross-cutting exception to this theme's usual per-section CSS
+         scoping rule, same reasoning as ka-base.css/ka-theme.js. -->
     {{ 'ka-currency.css' | asset_url | stylesheet_tag }}
   {%- endif -%}
 
