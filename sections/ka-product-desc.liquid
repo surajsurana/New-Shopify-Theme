@@ -1,15 +1,31 @@
 {{ 'ka-product-desc.css' | asset_url | stylesheet_tag }}
 
-{%- if product.description != blank -%}
+{%- comment -%}
+  product.description != blank is not reliable on its own: Shopify's rich-text
+  editor often leaves behind visually-empty markup (e.g. <p>&nbsp;</p> or
+  <p></p>) after a merchant clears the field. That string is neither empty
+  nor whitespace-only, so `!= blank` alone would still render the whole
+  section (padding + ornament) with nothing visible inside it. Strip tags and
+  decode the common nbsp entity before checking for real text, and separately
+  check for actual embeddable media (img/video/iframe) so an images-only
+  description still renders.
+{%- endcomment -%}
+{%- assign desc_text = product.description | strip_html | replace: '&nbsp;', ' ' | replace: '&#160;', ' ' | strip -%}
+{%- assign desc_has_media = false -%}
+{%- if product.description contains '<img' or product.description contains '<video' or product.description contains '<iframe' -%}
+  {%- assign desc_has_media = true -%}
+{%- endif -%}
+
+{%- if desc_text != blank or desc_has_media -%}
 <section class="ka-product-desc">
   <div class="ka-product-desc__orn" aria-hidden="true">&#10022;</div>
   <div class="ka-product-desc__inner" id="ka-desc-root">
     {{ product.description }}
   </div>
 </section>
-{%- endif -%}
 
 <script src="{{ 'ka-product-desc-gallery.js' | asset_url }}" defer></script>
+{%- endif -%}
 
 {% schema %}
 {

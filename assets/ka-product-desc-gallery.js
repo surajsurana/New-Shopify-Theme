@@ -3,10 +3,16 @@
   K&A · Product Description · Compact Image Gallery + Lightbox
 
   Extracts <img> tags from {{ product.description }} output inside
-  #ka-desc-root, removes their now-empty <p> wrappers, builds a
+  #ka-desc-root, removes their now-empty <p>/<figure> wrappers, builds a
   2-column .ka-desc-gallery grid, and appends it at the bottom of
   the description. Text content (headings, paragraphs, lists) stays
   in place above. Click any image to open a fullscreen lightbox.
+
+  Before extracting images, also sweeps #ka-desc-root for editor-inserted
+  "empty" block elements (e.g. <p>&nbsp;</p>, <p></p>) that Shopify's
+  rich-text editor commonly leaves behind and that aren't tied to any
+  image — left alone, these render as blank space via their own
+  margin/line-height even though they carry no visible content.
 
   CSS lives in ka-product-desc.css. No dependencies.
 */
@@ -15,6 +21,37 @@
 
   var root = document.getElementById('ka-desc-root');
   if (!root) return;
+
+  /* An element counts as "empty" if it has no embeddable media and no
+     real text once non-breaking spaces are treated as whitespace.
+     String.prototype.trim() strips U+00A0 (non-breaking space) per the
+     ECMAScript WhiteSpace production, so an editor-inserted
+     "<p>&nbsp;</p>" correctly trims down to an empty string here. */
+  function isEmptyNode(el) {
+    if (el.querySelector('img, video, iframe')) return false;
+    var text = el.textContent.trim();
+    return text === '';
+  }
+
+  /* Walk up from el, removing each ancestor that has become empty,
+     stopping at root (never remove root itself). */
+  function removeIfEmpty(el) {
+    while (el && el !== root && el.parentElement) {
+      if (!isEmptyNode(el)) break;
+      var parent = el.parentElement;
+      parent.removeChild(el);
+      el = parent;
+    }
+  }
+
+  /* ── Sweep: drop stray empty paragraphs/wrappers not tied to any
+     image (e.g. a leftover <p>&nbsp;</p> before/after an image block).
+     Runs first so it never touches elements that still contain media. */
+  Array.prototype.forEach.call(root.querySelectorAll('p, div, figure'), function (el) {
+    if (el.parentElement && isEmptyNode(el)) {
+      el.parentElement.removeChild(el);
+    }
+  });
 
   var rawImgs = root.querySelectorAll('img');
   if (!rawImgs.length) return;
@@ -25,7 +62,8 @@
   rawImgs.forEach(function (img) {
     var caption = '';
     var figure = img.closest('figure');
-    if (figure) {
+    var inFigure = figure && root.contains(figure);
+    if (inFigure) {
       var fc = figure.querySelector('figcaption');
       if (fc) caption = fc.textContent.trim();
     }
@@ -38,19 +76,20 @@
       caption: caption
     });
 
-    var parent = img.parentElement;
-    parent.removeChild(img);
-
-    // Remove parent wrapper if now empty (e.g. <p></p>)
-    if (parent !== root) {
-      if (
-        parent.textContent.trim() === '' &&
-        parent.querySelectorAll('*').length === 0
-      ) {
-        if (parent.parentElement) {
-          parent.parentElement.removeChild(parent);
-        }
+    if (inFigure) {
+      // The figure's whole job (image + caption) has been captured above —
+      // remove it outright. Leaving it in place (even once the <img> is
+      // gone) still renders an orphaned figcaption plus the figure's own
+      // block margin, i.e. more unwanted empty-looking space.
+      if (figure.parentElement) {
+        figure.parentElement.removeChild(figure);
       }
+    } else {
+      var parent = img.parentElement;
+      parent.removeChild(img);
+      // Climb up removing now-empty wrappers (e.g. <p></p>, or nested
+      // <div><p><img></p></div>), not just the immediate parent.
+      removeIfEmpty(parent);
     }
   });
 
