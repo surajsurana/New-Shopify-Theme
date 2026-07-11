@@ -1,0 +1,66 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "sections": {
+    "ka-nav": {
+      "type": "ka-nav",
+      "settings": {
+        "utility_1": "Complimentary Worldwide Delivery",
+        "utility_2": "Hand-Embroidered to Order",
+        "utility_3": "Private & Virtual Appointments",
+        "logo_text": "Karishma Ashita",
+        "logo_subline": "Bridal Couture · Mumbai",
+        "label_bestsellers": "Signature",
+        "link_bestsellers": "/collections/bestsellers",
+        "label_collections": "Collections",
+        "link_collections": "/collections",
+        "label_diaries": "Client Diaries",
+        "link_diaries": "/pages/client-diaries",
+        "link_about": "/pages/about-us",
+        "link_appointment": "/pages/appointments"
+      }
+    },
+    "ka-diary-coming-soon": {
+      "type": "ka-diary-coming-soon",
+      "settings": {
+        "eyebrow": "Coming Soon",
+        "title": "The Diaries Are Being Written.",
+        "body": "Every page of this diary begins with a real client — a bride, a mother, a sister dressing for her own occasion. We are gathering these stories with the same care we give each garment, and will share them here soon.",
+        "cta_primary_label": "Explore the Collections",
+        "cta_primary_url": "/collections",
+        "cta_secondary_label": "Share Your Story"
+      }
+    },
+    "ka-footer": {
+      "type": "ka-footer",
+      "settings": {
+        "brand_name": "Karishma Ashita",
+        "logo_subline": "Bridal Couture · Mumbai",
+        "tagline": "Bridal couture, handcrafted\nin Mumbai.",
+        "instagram_url": "https://instagram.com/karishmaashita",
+        "pinterest_url": "",
+        "email": "info@karishmaashita.com",
+        "address": "Mumbai, India\nComplimentary worldwide shipping",
+        "news_title": "The Inner Circle",
+        "news_body": "Collection previews, styling notes and private trunk show invitations — delivered quietly to your inbox.",
+        "news_placeholder": "Your email address",
+        "news_submit": "Join",
+        "news_success": "Welcome in. You are one of us now.",
+        "service_line": "Mumbai · Worldwide Delivery · DHL Express",
+        "locale_line": "Ships worldwide, priced in INR"
+      }
+    }
+  },
+  "order": [
+    "ka-nav",
+    "ka-diary-coming-soon",
+    "ka-footer"
+  ]
+}

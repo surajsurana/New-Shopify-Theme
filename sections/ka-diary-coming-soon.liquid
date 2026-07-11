@@ -1,0 +1,119 @@
+{{ 'ka-diary-coming-soon.css' | asset_url | stylesheet_tag }}
+{{ 'ka-animations.css' | asset_url | stylesheet_tag }}
+
+{%- comment -%}
+  K&A Diary Coming Soon — single held cinematic frame.
+
+  Built from Prototypes/client-diaries-coming-soon-v1.html (approved by
+  Suraj 10 Jul 2026). The prototype's inline nav/footer are NOT
+  reproduced here — this section is designed to slot between the real
+  sections/ka-nav.liquid and sections/ka-footer.liquid on
+  templates/page.client-diaries.json, exactly like every other section
+  on every other page.
+
+  Structurally this is the same "full-bleed dark CTA frame" pattern as
+  ka-appointment.liquid (bg image + gradient overlay + centered content
+  + two .btn-outline-white CTAs) — reused deliberately rather than
+  inventing a new component shape for a single-section page.
+
+  Entry motion: the prototype uses a bespoke double-rAF "loaded" class
+  on page load (identical mechanism to ka-hero.liquid's #ka-hero-bg,
+  which is hardcoded to that one section's ID in ka-theme.js). Rather
+  than hardcode a second one-off ID into the shared global JS for a
+  single niche page, this section reuses the theme's general
+  .reveal-img / IntersectionObserver mechanism (ka-theme.js +
+  ka-base.css) already used by ka-appointment.liquid. Because this
+  section is fully in-viewport on load, the IO fires effectively
+  immediately, producing the same scale-in entry visually with zero
+  new JS.
+{%- endcomment -%}
+
+<section class="ka-diary-soon" aria-label="Client Diaries — coming soon">
+  <div class="ka-diary-soon__bg reveal-img">
+    {%- if section.settings.image != blank -%}
+      <img
+        src="{{ section.settings.image | image_url: width: 1800 }}"
+        alt="{{ section.settings.image.alt | escape | default: 'A K&A client, coming soon to the Client Diaries' }}"
+        loading="eager"
+        fetchpriority="high"
+        width="1800"
+        height="2400"
+        class="img-filter-editorial"
+      />
+    {%- else -%}
+      <img
+        src="{{ 'client-diaries-coming-soon-hero.jpg' | asset_url }}"
+        alt="A K&A bride in a sequined peplum gown, back turned, reaching to touch a sheer curtain panel — a quiet moment before the story begins. Client Diaries, coming soon"
+        loading="eager"
+        fetchpriority="high"
+        width="1800"
+        height="2400"
+        class="img-filter-editorial"
+      />
+    {%- endif -%}
+  </div>
+  <div class="ka-diary-soon__overlay"></div>
+
+  <div class="ka-diary-soon__content">
+    <p class="eyebrow eyebrow--on-dark ka-diary-soon__eyebrow">{{ section.settings.eyebrow }}</p>
+    <h1 class="ka-diary-soon__title">{{ section.settings.title }}</h1>
+    <p class="ka-diary-soon__body">{{ section.settings.body }}</p>
+    <div class="ka-diary-soon__options">
+      <a href="{{ section.settings.cta_primary_url | default: '/collections' }}" class="btn-outline-white">
+        {{ section.settings.cta_primary_label }}
+      </a>
+      <span class="ka-diary-soon__divider">or</span>
+      {%- if settings.whatsapp_number != blank -%}
+        {%- liquid
+          assign wa_message = "Hi, I'm a K&A client and I'd love to share my story for the Client Diaries" | url_param_escape
+          assign wa_share_url = 'https://wa.me/' | append: settings.whatsapp_number | append: '?text=' | append: wa_message
+        -%}
+        <a href="{{ wa_share_url }}" class="btn-outline-white" target="_blank" rel="noopener">
+          {{ section.settings.cta_secondary_label }}
+        </a>
+      {%- endif -%}
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Diary Coming Soon",
+  "tag": "section",
+  "settings": [
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "Background image",
+      "info": "Falls back to the approved editorial hero (client-diaries-coming-soon-hero.jpg) if none is chosen here. Object position keeps the subject in the upper portion of frame."
+    },
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "Coming Soon" },
+    { "type": "text", "id": "title", "label": "Headline", "default": "The Diaries Are Being Written." },
+    {
+      "type": "textarea",
+      "id": "body",
+      "label": "Body copy",
+      "default": "Every page of this diary begins with a real client — a bride, a mother, a sister dressing for her own occasion. We are gathering these stories with the same care we give each garment, and will share them here soon."
+    },
+    {
+      "type": "header",
+      "content": "CTAs"
+    },
+    { "type": "text", "id": "cta_primary_label", "label": "Primary CTA label", "default": "Explore the Collections" },
+    { "type": "url", "id": "cta_primary_url", "label": "Primary CTA URL", "info": "Defaults to /collections." },
+    {
+      "type": "text",
+      "id": "cta_secondary_label",
+      "label": "Secondary CTA label (WhatsApp)",
+      "default": "Share Your Story"
+    },
+    {
+      "type": "paragraph",
+      "content": "The Share Your Story CTA always opens WhatsApp using the site-wide WhatsApp number (Theme Settings → Concierge/WhatsApp), pre-filled with a Client Diaries story-submission message. It cannot be repointed to a different URL here."
+    }
+  ],
+  "presets": [
+    { "name": "Diary Coming Soon" }
+  ]
+}
+{% endschema %}

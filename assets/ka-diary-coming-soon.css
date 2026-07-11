@@ -1,0 +1,104 @@
+/* ================================================================
+   KA-DIARY-COMING-SOON — single held cinematic frame
+   Source: Prototypes/client-diaries-coming-soon-v1.html (.diary-soon)
+   All values are existing tokens from assets/ka-base.css. No new
+   design tokens introduced (per Creative Director sign-off).
+
+   Deliberately NOT the diary-hero's bottom-left asymmetric
+   composition (that choreography assumes scrollable content below
+   it). This is a resolved, centered, single-screen moment — the
+   page has nowhere further to lead the eye, so the composition
+   reads as complete, not as the opening beat of a sequence.
+================================================================ */
+.ka-diary-soon {
+  position: relative;
+  height: 100vh;
+  height: 100svh;
+  min-height: 620px;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.ka-diary-soon__bg { position: absolute; inset: 0; }
+.ka-diary-soon__bg img { object-position: center 24%; }
+
+.ka-diary-soon__overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to bottom,
+    rgba(15,12,10,0.42) 0%,
+    rgba(15,12,10,0.50) 45%,
+    rgba(15,12,10,0.72) 100%
+  );
+}
+
+.ka-diary-soon__content {
+  position: relative;
+  z-index: 1;
+  max-width: 620px;
+  margin: 0 auto;
+  padding: 0 var(--gutter);
+  text-align: center;
+}
+
+.ka-diary-soon__eyebrow {
+  margin-bottom: 22px;
+  opacity: 0;
+  animation: fadeUp 1s var(--ease-luxury) 0.5s forwards;
+}
+
+.ka-diary-soon__title {
+  font-family: var(--f-display);
+  font-size: var(--t-display);
+  font-weight: 400;
+  font-style: italic;
+  line-height: 1.12;
+  color: white;
+  letter-spacing: -0.005em;
+  margin-bottom: 26px;
+  opacity: 0;
+  animation: fadeUp 1.2s var(--ease-luxury) 0.8s forwards;
+}
+
+.ka-diary-soon__body {
+  font-family: var(--f-sans);
+  font-size: 0.92rem;
+  font-weight: 300;
+  line-height: 1.9;
+  color: rgba(255,255,255,0.76);
+  letter-spacing: 0.015em;
+  max-width: 480px;
+  margin: 0 auto 44px;
+  opacity: 0;
+  animation: fadeUp 1s var(--ease-luxury) 1.15s forwards;
+}
+
+.ka-diary-soon__options {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+  flex-wrap: wrap;
+  opacity: 0;
+  animation: fadeUp 1s var(--ease-luxury) 1.5s forwards;
+}
+
+.ka-diary-soon__divider {
+  font-family: var(--f-sans);
+  font-size: 0.63rem;
+  letter-spacing: 0.1em;
+  color: rgba(255,255,255,0.3);
+}
+
+@media (max-width: 900px) {
+  .ka-diary-soon { min-height: 560px; }
+}
+
+@media (max-width: 600px) {
+  .ka-diary-soon__title { font-size: clamp(2.1rem, 9vw, 2.8rem); }
+  .ka-diary-soon__options { flex-direction: column; align-items: stretch; }
+  .ka-diary-soon__options .btn-outline-white { text-align: center; }
+}

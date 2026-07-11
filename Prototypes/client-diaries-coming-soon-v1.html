@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Client Diaries — Coming Soon — K&A by Karishma &amp; Ashita</title>
+<meta name="description" content="The Client Diaries are being written — real K&A brides, mothers and family, coming soon." />
+
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Jost:wght@200;300;400;500&display=swap" rel="stylesheet" />
+
+<style>
+/* ═══════════════════════════════════════════════════════════════
+   DESIGN TOKENS — verbatim from assets/ka-base.css and
+   Prototypes/client-diaries-v1.html. No new tokens introduced.
+═══════════════════════════════════════════════════════════════ */
+:root {
+  --c-paper:      #F7F3EC;
+  --c-paper-deep: #EFE8DD;
+  --c-smoke:      #E9E1D2;
+
+  --c-charcoal:   #2A2420;
+  --c-charcoal-2: #1D1916;
+  --c-ink:        #2A2420;
+  --c-ink-mid:    #6E655B;
+  --c-ink-muted:  #9C9389;
+
+  --c-rosegold:   #9A7B4F;
+  --c-rosegold-2: #7E6440;
+  --c-rosegold-pale: #B99B6E;
+
+  --f-display:  'Cormorant Garamond', Georgia, 'Times New Roman', serif;
+  --f-sans:     'Jost', 'Helvetica Neue', Arial, sans-serif;
+
+  --t-hero:      clamp(3.6rem, 8vw, 8rem);
+  --t-display:   clamp(2.6rem, 5.5vw, 5.2rem);
+  --t-h2:        clamp(2rem, 3.5vw, 3.2rem);
+  --t-h3:        clamp(1.4rem, 2.2vw, 2rem);
+  --t-eyebrow:   0.66rem;
+  --t-body-l:    1.1rem;
+  --t-body:      1rem;
+  --t-caption:   0.76rem;
+
+  --s-xs:   8px;
+  --s-sm:   16px;
+  --s-md:   32px;
+  --s-lg:   64px;
+  --s-xl:   96px;
+  --s-2xl:  140px;
+  --s-3xl:  200px;
+
+  --max-wide:   1680px;
+  --max-text:   720px;
+  --gutter:     clamp(20px, 5vw, 80px);
+
+  --ease-luxury:  cubic-bezier(0.16, 0.84, 0.44, 1);
+  --ease-soft:    cubic-bezier(0.22, 0.61, 0.36, 1);
+  --dur-slow:     1s;
+  --dur-med:      0.65s;
+  --dur-fast:     0.35s;
+
+  --line:         rgba(42,36,32,0.12);
+  --line-strong:  rgba(42,36,32,0.20);
+  --line-on-dark: rgba(154,123,79,0.22);
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; font-size: 16px; }
+
+body {
+  background: var(--c-paper);
+  color: var(--c-ink);
+  font-family: var(--f-sans);
+  font-weight: 300;
+  line-height: 1.75;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+}
+
+img { display: block; width: 100%; height: 100%; object-fit: cover; }
+a { text-decoration: none; color: inherit; }
+button { border: none; background: none; cursor: pointer; font-family: inherit; }
+
+.eyebrow {
+  font-family: var(--f-sans); font-size: var(--t-eyebrow); font-weight: 400;
+  letter-spacing: 0.24em; text-transform: uppercase; color: var(--c-rosegold-2);
+}
+.eyebrow--on-dark { color: var(--c-rosegold); }
+
+.img-editorial { filter: sepia(0.10) saturate(0.90) brightness(0.96); }
+
+@keyframes fadeUp { from { opacity: 0; transform: translateY(24px); } to { opacity: 1; transform: translateY(0); } }
+
+/* ═══════════════════════════════════════════════════════════════
+   GLOBAL HEADER — identical to approved Client Diaries page
+═══════════════════════════════════════════════════════════════ */
+.utility-bar {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 101;
+  background: var(--c-charcoal); color: rgba(233,224,210,0.78);
+  text-align: center; font-family: var(--f-sans); font-size: 0.62rem;
+  font-weight: 400; letter-spacing: 0.18em; text-transform: uppercase;
+  padding: 9px 16px; overflow: hidden;
+}
+.utility-bar span { opacity: 0.55; margin: 0 14px; }
+.utility-bar b { font-weight: 400; opacity: 0.95; }
+
+.nav {
+  position: fixed; top: 34px; left: 0; right: 0; z-index: 100;
+  padding: 14px var(--gutter);
+  display: grid; grid-template-columns: 1fr auto 1fr; align-items: center;
+  background: rgba(247,243,236,0.94);
+  backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--line);
+}
+.nav__links { display: flex; gap: 32px; list-style: none; }
+.nav__links a {
+  font-family: var(--f-sans); font-size: 0.66rem; font-weight: 400;
+  letter-spacing: 0.16em; text-transform: uppercase; color: var(--c-ink-mid);
+  transition: color var(--dur-fast); position: relative;
+}
+.nav__links a::after {
+  content: ''; position: absolute; left: 0; bottom: -3px; width: 0; height: 1px;
+  background: var(--c-rosegold); transition: width var(--dur-med) var(--ease-luxury);
+}
+.nav__links a:hover { color: var(--c-charcoal); }
+.nav__links a:hover::after, .nav__links a.is-current::after { width: 100%; }
+.nav__links a.is-current { color: var(--c-charcoal); }
+
+.nav__logo {
+  grid-column: 2; text-align: center; font-family: var(--f-display);
+  font-size: clamp(1.2rem, 2.2vw, 1.6rem); font-weight: 400; letter-spacing: 0.1em;
+  color: var(--c-charcoal); line-height: 1;
+}
+.nav__logo small {
+  display: block; font-family: var(--f-sans); font-size: 0.5rem; font-weight: 400;
+  letter-spacing: 0.32em; text-transform: uppercase; color: var(--c-rosegold-2); margin-top: 6px;
+}
+.nav__actions { display: flex; align-items: center; justify-content: flex-end; gap: 24px; }
+.nav__bag { position: relative; display: inline-flex; align-items: center; justify-content: center; width: 30px; height: 30px; padding: 4px; color: var(--c-charcoal); }
+.nav__bag svg { width: 20px; height: 20px; stroke: currentColor; fill: none; }
+.nav__toggle { display: none; flex-direction: column; gap: 5px; padding: 4px; }
+.nav__toggle span { display: block; width: 24px; height: 1px; background: var(--c-charcoal); }
+
+.concierge-float {
+  position: fixed; right: 26px; bottom: 26px; z-index: 110;
+  display: flex; align-items: center; gap: 10px;
+  background: var(--c-charcoal); color: var(--c-rosegold-pale);
+  border: 1px solid rgba(154,123,79,0.45); padding: 15px 22px;
+  font-family: var(--f-sans); font-size: 0.66rem; font-weight: 400;
+  letter-spacing: 0.2em; text-transform: uppercase;
+  box-shadow: 0 14px 34px rgba(42,36,32,0.28);
+  transition: background var(--dur-med) var(--ease-luxury), transform var(--dur-med) var(--ease-luxury), color var(--dur-med);
+}
+.concierge-float .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--c-rosegold); }
+.concierge-float:hover { background: var(--c-charcoal-2); transform: translateY(-3px); color: #F4ECDE; }
+
+.mobile-nav {
+  position: fixed; inset: 0; z-index: 200; background: var(--c-charcoal);
+  padding: 80px var(--gutter) var(--s-lg); display: flex; flex-direction: column;
+  transform: translateX(100%); transition: transform 0.5s var(--ease-luxury);
+}
+.mobile-nav.open { transform: translateX(0); }
+.mobile-nav__close {
+  position: absolute; top: 24px; right: var(--gutter); color: white;
+  font-family: var(--f-sans); font-size: 0.63rem; letter-spacing: 0.22em; text-transform: uppercase;
+}
+.mobile-nav__links { list-style: none; }
+.mobile-nav__links a {
+  display: block; font-family: var(--f-display); font-style: italic; color: white;
+  font-size: clamp(1.6rem, 6vw, 2.6rem); letter-spacing: 0.02em; padding: 18px 0;
+  border-bottom: 1px solid rgba(255,255,255,0.07); transition: color var(--dur-fast);
+}
+.mobile-nav__links a:hover { color: var(--c-rosegold); }
+.mobile-nav__footer { margin-top: auto; }
+.mobile-nav__footer p { font-family: var(--f-sans); font-size: 0.7rem; letter-spacing: 0.1em; color: rgba(255,255,255,0.3); margin-bottom: 8px; }
+.mobile-nav__footer a { font-family: var(--f-sans); font-size: 0.82rem; letter-spacing: 0.06em; color: var(--c-rosegold); }
+
+/* ═══════════════════════════════════════════════════════════════
+   COMING SOON — single held cinematic frame.
+   Deliberately NOT the diary-hero's bottom-left asymmetric
+   composition (that choreography assumes scrollable content below
+   it). This is a resolved, centered, single-screen moment — the
+   page has nowhere further to lead the eye, so the composition
+   should read as complete, not as the opening beat of a sequence.
+═══════════════════════════════════════════════════════════════ */
+.diary-soon {
+  position: relative; height: 100svh; min-height: 620px; overflow: hidden;
+  display: flex; align-items: center; justify-content: center;
+}
+.diary-soon__bg { position: absolute; inset: 0; transform: scale(1.05); transition: transform 2.4s var(--ease-luxury); }
+.diary-soon__bg.loaded { transform: scale(1); }
+.diary-soon__bg img { object-position: center 24%; }
+.diary-soon__overlay {
+  position: absolute; inset: 0;
+  background: linear-gradient(to bottom, rgba(15,12,10,0.42) 0%, rgba(15,12,10,0.5) 45%, rgba(15,12,10,0.72) 100%);
+}
+.diary-soon__content {
+  position: relative; z-index: 1; max-width: 620px; margin: 0 auto;
+  padding: 0 var(--gutter); text-align: center;
+}
+.diary-soon__eyebrow {
+  margin-bottom: 22px; opacity: 0; animation: fadeUp 1s var(--ease-luxury) 0.5s forwards;
+}
+.diary-soon__title {
+  font-family: var(--f-display); font-size: var(--t-display); font-weight: 400; font-style: italic;
+  line-height: 1.12; color: white; letter-spacing: -0.005em; margin-bottom: 26px;
+  opacity: 0; animation: fadeUp 1.2s var(--ease-luxury) 0.8s forwards;
+}
+.diary-soon__body {
+  font-family: var(--f-sans); font-size: 0.92rem; font-weight: 300; line-height: 1.9;
+  color: rgba(255,255,255,0.76); letter-spacing: 0.015em; max-width: 480px; margin: 0 auto 44px;
+  opacity: 0; animation: fadeUp 1s var(--ease-luxury) 1.15s forwards;
+}
+.diary-soon__options {
+  display: flex; align-items: center; justify-content: center; gap: 20px; flex-wrap: wrap;
+  opacity: 0; animation: fadeUp 1s var(--ease-luxury) 1.5s forwards;
+}
+.btn-outline-white {
+  font-family: var(--f-sans); font-size: 0.66rem; font-weight: 400; letter-spacing: 0.2em; text-transform: uppercase;
+  color: white; border: 1px solid rgba(255,255,255,0.45); padding: 14px 34px;
+  transition: background var(--dur-fast), border-color var(--dur-fast), color var(--dur-fast);
+}
+.btn-outline-white:hover { background: white; color: var(--c-charcoal); border-color: white; }
+.diary-soon__divider { font-family: var(--f-sans); font-size: 0.63rem; letter-spacing: 0.1em; color: rgba(255,255,255,0.3); }
+
+/* ═══════════════════════════════════════════════════════════════
+   FOOTER (condensed reference — shared global footer, per
+   homepage-build-spec.md Section 13, is not re-litigated here)
+═══════════════════════════════════════════════════════════════ */
+.footer { background: var(--c-charcoal); padding: var(--s-xl) var(--gutter) var(--s-lg); color: #C9BFAE; }
+.footer__inner { max-width: var(--max-wide); margin: 0 auto; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 24px; }
+.footer__logo { font-family: var(--f-display); font-size: 1.3rem; color: #F4ECDE; letter-spacing: 0.06em; }
+.footer__copy { font-family: var(--f-sans); font-size: 0.63rem; font-weight: 300; color: #7E7567; letter-spacing: 0.1em; text-transform: uppercase; }
+
+@media (max-width: 900px) {
+  .utility-bar { font-size: 0.54rem; letter-spacing: 0.12em; padding: 8px 12px; }
+  .nav { top: 30px; padding: 14px var(--gutter); }
+  .nav__links { display: none; }
+  .nav__toggle { display: flex; }
+  .concierge-float { right: 16px; bottom: 16px; padding: 13px 18px; font-size: 0.6rem; }
+  .diary-soon { min-height: 560px; }
+}
+@media (max-width: 600px) {
+  .diary-soon__title { font-size: clamp(2.1rem, 9vw, 2.8rem); }
+  .diary-soon__options { flex-direction: column; align-items: stretch; }
+  .btn-outline-white { text-align: center; }
+}
+</style>
+</head>
+<body>
+
+<!-- ══════════════ GLOBAL HEADER (shared, unchanged) ══════════════ -->
+<div class="utility-bar">
+  <b>Complimentary Worldwide Delivery</b><span>·</span><b>Hand-Embroidered to Order</b><span>·</span><b>Private &amp; Virtual Appointments</b>
+</div>
+
+<nav class="nav" id="nav">
+  <ul class="nav__links">
+    <li><a href="#">Signature</a></li>
+    <li><a href="#">Collections</a></li>
+    <li><a href="#" class="is-current">Client Diaries</a></li>
+  </ul>
+  <a href="#" class="nav__logo">Karishma Ashita<small>Bridal Couture · Mumbai</small></a>
+  <div class="nav__actions">
+    <a href="#" class="nav__bag" aria-label="View bag">
+      <svg viewBox="0 0 24 24"><path d="M6 8h12l-1 13H7L6 8z"/><path d="M9 8a3 3 0 0 1 6 0"/></svg>
+    </a>
+    <button class="nav__toggle" id="navToggle" aria-label="Open menu"><span></span><span></span><span></span></button>
+  </div>
+</nav>
+
+<div class="mobile-nav" id="mobileNav" aria-hidden="true">
+  <button class="mobile-nav__close" id="navClose">Close</button>
+  <ul class="mobile-nav__links">
+    <li><a href="#">Signature</a></li>
+    <li><a href="#">Collections</a></li>
+    <li><a href="#">Client Diaries</a></li>
+    <li><a href="#">About</a></li>
+    <li><a href="#">Book an Appointment</a></li>
+  </ul>
+  <div class="mobile-nav__footer">
+    <p>Concierge</p>
+    <a href="https://wa.me/919967543087" target="_blank" rel="noopener">+91 99675 43087</a>
+  </div>
+</div>
+
+<a class="concierge-float" href="https://wa.me/919967543087" target="_blank" rel="noopener">
+  <span class="dot"></span>Concierge
+</a>
+
+<!-- ══════════════ COMING SOON — single cinematic held frame ══════════════
+     RE-SOURCED from the proper external content library (D:\Content
+     Library), superseding the earlier Shopify-Files pick (Juhi Godambe,
+     quilted plum corset), which came from a query of already-uploaded
+     Shopify assets — not the richer native-resolution shoot library.
+
+     CHOSEN IMAGE — exact source, unambiguous for Technical Director:
+       D:\Content Library\COLLECTION\First Love 10th June 2026\
+       Bridal_shoot_selection\K&A BRIDAL (10th JUNE 2026)1576.jpg
+       (native 8736×11648px, First Love bridal shoot, 10 June 2026)
+
+     This is the image catalogued in D:\Content Library\CD-image-picks.md
+     under "Upgrade 3 — Collection Story editorial insert (First Love)"
+     — flagged there as "a strong, quiet image," not committed to any
+     locked slot on the First Love collection page. Re-purposed here
+     because it is the single best match in the entire library for this
+     page's specific brief: a quiet, candid, narrative frame rather than
+     a full-glamour editorial shot.
+
+     Why this frame over a Bloom Soirée / Barre Oblique / Chamakk
+     alternative (several were pulled and reviewed side by side before
+     this pick): the model's back is to camera, her face in soft profile,
+     one hand raised to touch a sheer curtain panel as though about to
+     step through it — she is not performing for the lens. The gunmetal-
+     navy sequined peplum gown (with its lace-up corset-back K&A
+     signature construction) holds cool, jewel-toned depth against warm
+     blush curtain panels and a softly blurred lamp glow at right, which
+     will read rich rather than washed-out under the dark gradient
+     overlay. Most importantly, the gesture itself — paused, reaching,
+     about to cross a threshold — is a natural visual metaphor for "The
+     Diaries Are Being Written": a story poised to begin, not a finished
+     campaign moment. This reads as the private beat before the story
+     starts, which is exactly the register this page needs.
+
+     Local preview copy: Prototypes/images/client-diaries-coming-soon-hero.jpg
+     (resized/compressed for browser preview only — Technical Director
+     must process the native D:\ source file above for actual
+     integration, not this compressed copy). -->
+<section class="diary-soon">
+  <div class="diary-soon__bg" id="soonBg">
+    <img class="img-editorial" src="images/client-diaries-coming-soon-hero.jpg" alt="A K&A bride in a gunmetal-navy sequined peplum gown, back turned, reaching to touch a sheer curtain panel — a quiet moment before the story begins. Client Diaries, coming soon" />
+  </div>
+  <div class="diary-soon__overlay"></div>
+  <div class="diary-soon__content">
+    <p class="eyebrow eyebrow--on-dark diary-soon__eyebrow">Coming Soon</p>
+    <h1 class="diary-soon__title">The Diaries Are Being Written.</h1>
+    <p class="diary-soon__body">Every page of this diary begins with a real client — a bride, a mother, a sister dressing for her own occasion. We are gathering these stories with the same care we give each garment, and will share them here soon.</p>
+    <div class="diary-soon__options">
+      <a href="/collections" class="btn-outline-white">Explore the Collections</a>
+      <span class="diary-soon__divider">or</span>
+      <a href="https://wa.me/919967543087?text=Hi%2C%20I%27m%20a%20K%26A%20client%20and%20I%27d%20love%20to%20share%20my%20story%20for%20the%20Client%20Diaries" class="btn-outline-white" target="_blank" rel="noopener">Share Your Story</a>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════ FOOTER (condensed reference) ══════════════ -->
+<footer class="footer">
+  <div class="footer__inner">
+    <span class="footer__logo">Karishma Ashita</span>
+    <span class="footer__copy">© 2026 Karishma Ashita. All rights reserved.</span>
+  </div>
+</footer>
+
+<script>
+(function () {
+  var bg = document.getElementById('soonBg');
+  if (bg) {
+    requestAnimationFrame(function () {
+      requestAnimationFrame(function () { bg.classList.add('loaded'); });
+    });
+  }
+  var navToggle = document.getElementById('navToggle');
+  var navClose  = document.getElementById('navClose');
+  var mobileNav = document.getElementById('mobileNav');
+  function openNav() {
+    mobileNav.classList.add('open');
+    mobileNav.setAttribute('aria-hidden', 'false');
+    document.body.style.overflow = 'hidden';
+  }
+  function closeNav() {
+    mobileNav.classList.remove('open');
+    mobileNav.setAttribute('aria-hidden', 'true');
+    document.body.style.overflow = '';
+  }
+  if (navToggle) navToggle.addEventListener('click', openNav);
+  if (navClose) navClose.addEventListener('click', closeNav);
+  document.addEventListener('keydown', function (e) { if (e.key === 'Escape') closeNav(); });
+})();
+</script>
+</body>
+</html>
