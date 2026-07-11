@@ -1,0 +1,60 @@
+{
+  "sections": {
+    "ka-nav": {
+      "type": "ka-nav",
+      "settings": {
+        "utility_1": "Complimentary Worldwide Delivery",
+        "utility_2": "Hand-Embroidered to Order",
+        "utility_3": "Private & Virtual Appointments",
+        "logo_text": "Karishma Ashita",
+        "logo_subline": "Bridal Couture · Mumbai",
+        "label_bestsellers": "Signature",
+        "link_bestsellers": "/collections/bestsellers",
+        "label_collections": "Collections",
+        "link_collections": "/collections",
+        "label_diaries": "Client Diaries",
+        "link_diaries": "/pages/client-diaries",
+        "link_about": "/pages/about-us",
+        "link_appointment": "/pages/appointments"
+      }
+    },
+    "ka-404": {
+      "type": "ka-404",
+      "settings": {
+        "eyebrow": "Page Not Found",
+        "title": "This Page Has Stepped Away",
+        "body": "The page you were looking for may have moved, changed its name, or simply isn't ready yet. Let us guide you back to the collections.",
+        "cta_primary_label": "Explore the Collections",
+        "cta_primary_url": "/collections",
+        "cta_secondary_label": "Return Home",
+        "cta_secondary_url": "/",
+        "concierge_prefix": "Can't find what you're looking for? Message our",
+        "concierge_link_label": "styling concierge on WhatsApp"
+      }
+    },
+    "ka-footer": {
+      "type": "ka-footer",
+      "settings": {
+        "brand_name": "Karishma Ashita",
+        "logo_subline": "Bridal Couture · Mumbai",
+        "tagline": "Bridal couture, handcrafted\nin Mumbai.",
+        "instagram_url": "https://instagram.com/karishmaashita",
+        "pinterest_url": "",
+        "email": "info@karishmaashita.com",
+        "address": "Mumbai, India\nComplimentary worldwide shipping",
+        "news_title": "The Inner Circle",
+        "news_body": "Collection previews, styling notes and private trunk show invitations — delivered quietly to your inbox.",
+        "news_placeholder": "Your email address",
+        "news_submit": "Join",
+        "news_success": "Welcome in. You are one of us now.",
+        "service_line": "Mumbai · Worldwide Delivery · DHL Express",
+        "locale_line": "Ships worldwide, priced in INR"
+      }
+    }
+  },
+  "order": [
+    "ka-nav",
+    "ka-404",
+    "ka-footer"
+  ]
+}

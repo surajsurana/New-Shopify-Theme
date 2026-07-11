@@ -1,0 +1,99 @@
+{{ 'ka-404.css' | asset_url | stylesheet_tag }}
+
+{%- comment -%}
+  K&A 404 — Page Not Found.
+
+  Built from Prototypes/search-404-footer-v1.html, "3 — 404 PAGE" block
+  (approved by Suraj as-is 11 Jul 2026; search and footer in the same
+  prototype are still under revision and are NOT part of this build).
+  Spec: Docs/search-404-footer-build-spec.md, Section 2.
+
+  Same pattern as sections/ka-diary-coming-soon.liquid: the prototype's
+  inline nav/footer markup is NOT reproduced here — this section slots
+  between the real sections/ka-nav.liquid and sections/ka-footer.liquid
+  on templates/404.json, exactly like every other page.
+
+  Deliberately no photography, no reveal-on-scroll motion, no blocks —
+  the whole page sits above the fold with nothing to scroll toward
+  (spec §2.5). Two real CTAs (Explore the Collections = heavier
+  .btn-outline-rose, Return Home = lighter .btn-dark) plus one quiet
+  inline concierge sentence, not a third boxed button (spec §2.2).
+  The concierge WhatsApp link uses the sitewide settings.whatsapp_number,
+  same pattern as ka-diary-coming-soon.liquid and ka-collection-concierge.liquid
+  — never hardcoded.
+{%- endcomment -%}
+
+<section class="ka-404" aria-label="Page not found">
+  <div class="ka-404__inner">
+    <div class="ka-404__rule"></div>
+    <p class="eyebrow ka-404__eyebrow">{{ section.settings.eyebrow }}</p>
+    <h1 class="ka-404__title">{{ section.settings.title }}</h1>
+    <p class="ka-404__body">{{ section.settings.body }}</p>
+    <div class="ka-404__actions">
+      <a href="{{ section.settings.cta_primary_url | default: '/collections' }}" class="btn-outline-rose">
+        {{ section.settings.cta_primary_label }}
+      </a>
+      <a href="{{ section.settings.cta_secondary_url | default: '/' }}" class="btn-dark">
+        {{ section.settings.cta_secondary_label }}
+      </a>
+    </div>
+    {%- if settings.whatsapp_number != blank -%}
+      {%- liquid
+        assign wa_message = "Hi, I couldn't find what I was looking for on your website. Could you help?" | url_param_escape
+        assign wa_url = 'https://wa.me/' | append: settings.whatsapp_number | append: '?text=' | append: wa_message
+      -%}
+      <p class="ka-404__concierge">
+        {{ section.settings.concierge_prefix }}
+        <a href="{{ wa_url }}" target="_blank" rel="noopener">{{ section.settings.concierge_link_label }}</a>.
+      </p>
+    {%- endif -%}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "404 — Page Not Found",
+  "tag": "section",
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "Page Not Found" },
+    { "type": "text", "id": "title", "label": "Headline", "default": "This Page Has Stepped Away" },
+    {
+      "type": "textarea",
+      "id": "body",
+      "label": "Body copy",
+      "default": "The page you were looking for may have moved, changed its name, or simply isn't ready yet. Let us guide you back to the collections."
+    },
+    {
+      "type": "header",
+      "content": "CTAs"
+    },
+    { "type": "text", "id": "cta_primary_label", "label": "Primary CTA label", "default": "Explore the Collections" },
+    { "type": "url", "id": "cta_primary_url", "label": "Primary CTA URL", "info": "Defaults to /collections." },
+    { "type": "text", "id": "cta_secondary_label", "label": "Secondary CTA label", "default": "Return Home" },
+    { "type": "url", "id": "cta_secondary_url", "label": "Secondary CTA URL", "info": "Defaults to / (homepage)." },
+    {
+      "type": "header",
+      "content": "Concierge line"
+    },
+    {
+      "type": "text",
+      "id": "concierge_prefix",
+      "label": "Concierge sentence (before link)",
+      "default": "Can't find what you're looking for? Message our"
+    },
+    {
+      "type": "text",
+      "id": "concierge_link_label",
+      "label": "Concierge link label",
+      "default": "styling concierge on WhatsApp"
+    },
+    {
+      "type": "paragraph",
+      "content": "The concierge link always opens WhatsApp using the site-wide WhatsApp number (Theme Settings → Concierge/WhatsApp), pre-filled with a 404-appropriate message. It cannot be repointed to a different URL here."
+    }
+  ],
+  "presets": [
+    { "name": "404 — Page Not Found" }
+  ]
+}
+{% endschema %}

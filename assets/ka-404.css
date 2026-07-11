@@ -1,0 +1,71 @@
+/*
+ * K&A 404 — Page Not Found
+ * Ported verbatim from Prototypes/search-404-footer-v1.html, "3 — 404 PAGE"
+ * block (approved by Suraj as-is, 11 Jul 2026). All values are existing
+ * tokens from assets/ka-base.css :root — no new tokens introduced, per
+ * Docs/search-404-footer-build-spec.md §2.4.
+ *
+ * .eyebrow, .btn-dark, .btn-outline-rose are global components already
+ * defined in assets/ka-base.css (loaded sitewide in layout/theme.liquid) —
+ * intentionally not redefined here.
+ */
+
+.ka-404 {
+  padding: 160px var(--gutter) var(--s-3xl);
+  min-height: 72vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.ka-404__inner {
+  max-width: 560px;
+  margin: 0 auto;
+  text-align: center;
+}
+.ka-404__rule {
+  width: 40px;
+  height: 1px;
+  background: var(--line-light);
+  margin: 0 auto 26px;
+}
+.ka-404__eyebrow { margin-bottom: 22px; }
+.ka-404__title {
+  font-family: var(--f-display);
+  font-style: italic;
+  font-weight: 400;
+  font-size: var(--t-display);
+  color: var(--c-charcoal);
+  line-height: 1.1;
+  margin-bottom: 22px;
+}
+.ka-404__body {
+  font-size: 0.95rem;
+  color: var(--c-ink-mid);
+  line-height: 1.9;
+  max-width: 420px;
+  margin: 0 auto var(--s-lg);
+}
+.ka-404__actions {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 28px;
+  flex-wrap: wrap;
+  margin-bottom: var(--s-lg);
+}
+.ka-404__concierge { font-size: 0.82rem; color: var(--c-ink-muted); }
+.ka-404__concierge a {
+  color: var(--c-rosegold-2);
+  text-decoration: underline;
+  text-decoration-color: var(--line-light);
+  text-underline-offset: 3px;
+  transition: color var(--dur-fast);
+}
+.ka-404__concierge a:hover { color: var(--c-rosegold); }
+
+@media (max-width: 600px) {
+  .ka-404 { padding: 120px 20px var(--s-2xl); }
+  .ka-404__actions { flex-direction: column; align-items: stretch; gap: 16px; }
+  .ka-404__actions .btn-outline-rose,
+  .ka-404__actions .btn-dark { justify-content: center; text-align: center; }
+}
