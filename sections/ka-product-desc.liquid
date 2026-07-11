@@ -2,11 +2,14 @@
 
 {%- if product.description != blank -%}
 <section class="ka-product-desc">
-  <div class="ka-product-desc__inner">
+  <div class="ka-product-desc__orn" aria-hidden="true">&#10022;</div>
+  <div class="ka-product-desc__inner" id="ka-desc-root">
     {{ product.description }}
   </div>
 </section>
 {%- endif -%}
+
+<script src="{{ 'ka-product-desc-gallery.js' | asset_url }}" defer></script>
 
 {% schema %}
 {

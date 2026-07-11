@@ -1,0 +1,18 @@
+/* KA-PRODUCT-CRAFT — craftsmanship band */
+.ka-craft { display: grid; grid-template-columns: 1fr 1fr; min-height: 88vh; }
+.ka-craft__img { overflow: hidden; background: linear-gradient(150deg, #9A7B4F, #2A2420 80%); }
+.ka-craft__img img { width: 100%; height: 100%; object-fit: cover; transition: transform 1.4s var(--ease-luxury); transform: scale(1.04); }
+.ka-craft__img.visible img { transform: scale(1); }
+.ka-craft__txt { display: flex; flex-direction: column; justify-content: center; padding: 9vw 6vw; background: var(--c-charcoal); color: #EDE4D5; }
+.ka-craft__txt .eyebrow { color: var(--c-rosegold-pale); }
+.ka-craft__big { font-family: var(--f-display); font-size: 4rem; font-weight: 300; line-height: 1; margin: 22px 0 6px; color: #F4ECDD; }
+.ka-craft__big small { display: block; font-size: 1.1rem; letter-spacing: 0.18em; text-transform: uppercase; font-family: var(--f-sans); color: var(--c-rosegold-pale); margin-top: 18px; }
+.ka-craft__txt p { font-size: 1.05rem; line-height: 1.7; color: #C9BFAE; font-weight: 300; max-width: 42ch; margin-top: 24px; }
+.ka-craft__rule { width: 50px; height: 1px; background: var(--c-rosegold-pale); margin-top: 30px; opacity: 0.7; }
+@media (max-width: 900px) {
+  .ka-craft { grid-template-columns: 1fr; }
+  .ka-craft__img { order: -1; min-height: 56vh; }
+  .ka-craft__txt { padding: var(--s-xl) 24px; }
+  .ka-craft__big { font-size: 2.8rem; }
+}
+@media (max-width: 600px) { .ka-craft__big { font-size: 2.2rem; } }

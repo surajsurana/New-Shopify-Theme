@@ -1,0 +1,52 @@
+/* ================================================================
+   KA-CART-SUMMARY — sticky order summary panel: totals, notes field,
+   reassurance list, checkout CTA. Reuses the .ka-btn
+   family defined in ka-cart-items.css.
+================================================================ */
+.ka-summary { position: sticky; top: 104px; background: var(--c-paper-deep); padding: 40px 36px; }
+.ka-summary h2 { font-family: var(--f-display); font-size: 1.6rem; font-weight: 400; margin-bottom: 26px; color: var(--c-ink); }
+
+.ka-summary-row { display: flex; justify-content: space-between; align-items: baseline; font-family: var(--f-sans); font-size: 0.86rem; color: var(--c-ink-mid); margin-bottom: 14px; }
+.ka-summary-row .v { color: var(--c-ink); }
+.ka-summary-row--ship .v { color: var(--c-rosegold-2); }
+.ka-summary-divider { height: 1px; background: var(--line); margin: 20px 0; }
+.ka-summary-total { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 6px; }
+.ka-summary-total .lbl { font-family: var(--f-sans); font-size: 0.72rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--c-ink); }
+.ka-summary-total .amt { font-family: var(--f-display); font-size: 2rem; font-weight: 400; color: var(--c-ink); }
+.ka-summary-tax { font-family: var(--f-sans); font-size: 0.7rem; color: var(--c-ink-muted); margin-bottom: 28px; }
+
+/* note field */
+.ka-notes { margin-bottom: 26px; }
+.ka-notes label { display: block; font-family: var(--f-sans); font-size: 0.66rem; letter-spacing: 0.16em; text-transform: uppercase; color: var(--c-ink); margin-bottom: 10px; }
+.ka-notes p.hint { font-family: var(--f-display); font-style: italic; font-size: 0.88rem; color: var(--c-ink-mid); margin-bottom: 12px; line-height: 1.5; }
+.ka-notes textarea {
+  width: 100%; min-height: 86px; resize: vertical;
+  background: var(--c-paper); border: 1px solid var(--line); padding: 14px 16px;
+  font-family: var(--f-sans); font-size: 0.84rem; color: var(--c-ink); line-height: 1.6;
+  transition: border-color 0.3s;
+}
+.ka-notes textarea::placeholder { color: var(--c-ink-muted); }
+.ka-notes textarea:focus { outline: none; border-color: var(--c-rosegold-pale); }
+.ka-notes__status {
+  font-family: var(--f-sans); font-size: 0.62rem; letter-spacing: 0.08em; text-transform: uppercase;
+  color: var(--c-rosegold-2); margin-top: 8px; min-height: 1em; opacity: 0; transition: opacity 0.3s;
+}
+.ka-notes__status.is-visible { opacity: 1; }
+
+/* reassurance list inside summary */
+.ka-reassure { display: flex; flex-direction: column; gap: 12px; margin: 26px 0 30px; }
+.ka-reassure .row { display: flex; gap: 11px; align-items: flex-start; font-family: var(--f-sans); font-size: 0.78rem; color: var(--c-ink-mid); line-height: 1.55; }
+.ka-reassure .row .mk { color: var(--c-rosegold); font-size: 0.8rem; line-height: 1.4; flex: 0 0 auto; }
+
+.ka-secure-note { display: flex; align-items: center; justify-content: center; gap: 8px; margin-top: 16px; font-family: var(--f-sans); font-size: 0.64rem; letter-spacing: 0.08em; color: var(--c-ink-muted); }
+
+/* ── responsive ── */
+@media (max-width: 1100px) {
+  .ka-summary { position: static; }
+}
+@media (max-width: 900px) {
+  .ka-summary { padding: 30px 22px; }
+}
+@media (max-width: 600px) {
+  .ka-summary-total .amt { font-size: 1.7rem; }
+}

@@ -1,0 +1,133 @@
+/* ================================================================
+   KA-CART-ITEMS — page header, couture line-item cards, empty-cart
+   state, and the .ka-cart-wrap grid opener (closed by
+   ka-cart-summary.css's sticky panel — see ARCHITECTURE NOTE in
+   ka-cart-items.liquid).
+
+   Also defines the shared .ka-btn / .ka-btn--ghost / .ka-btn--concierge
+   button family for the Cart page (mirrors ka-product-main.css's
+   .ka-btn family for the Product page) — reused verbatim by
+   ka-cart-summary.css, ka-cart-cross-link.css and ka-cart-mobile-bar.css.
+================================================================ */
+
+/* ── shared cart-page buttons ── */
+.ka-btn {
+  font-family: var(--f-sans); font-weight: 400; font-size: 0.7rem;
+  letter-spacing: 0.2em; text-transform: uppercase;
+  display: inline-flex; align-items: center; justify-content: center; gap: 0.6em;
+  padding: 18px 30px;
+  border: 1px solid var(--c-charcoal);
+  background: var(--c-charcoal);
+  color: var(--c-paper);
+  cursor: pointer;
+  transition: all 0.5s var(--ease-luxury);
+  width: 100%;
+}
+.ka-btn:hover { background: transparent; color: var(--c-charcoal); }
+.ka-btn--ghost { background: transparent; color: var(--c-charcoal); border-color: var(--c-charcoal); }
+.ka-btn--ghost:hover { background: var(--c-charcoal); color: var(--c-paper); }
+.ka-btn--concierge { background: var(--c-smoke); color: var(--c-charcoal); border: 1px solid var(--c-rosegold-pale); }
+.ka-btn--concierge:hover { background: var(--c-rosegold); border-color: var(--c-rosegold); color: #fff; }
+.ka-btn--concierge .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--c-rosegold); transition: background 0.4s; }
+.ka-btn--concierge:hover .dot { background: #fff; }
+
+/* ── page header ── */
+.ka-cart-page-head { max-width: var(--max-wide); margin: 0 auto; padding: 30px var(--gutter) 0; }
+.ka-cart-page-head .eyebrow { margin-bottom: 16px; }
+.ka-cart-page-head h1 { font-family: var(--f-display); font-size: var(--t-display); font-weight: 300; line-height: 1.05; color: var(--c-ink); }
+.ka-cart-count { font-family: var(--f-sans); font-size: 0.82rem; letter-spacing: 0.04em; color: var(--c-ink-mid); margin-top: 14px; }
+
+/* ── layout grid (opened here, closed by ka-cart-summary.css) ── */
+.ka-cart-wrap {
+  max-width: var(--max-wide); margin: 0 auto; padding: var(--s-lg) var(--gutter) var(--s-2xl);
+  display: grid; grid-template-columns: 1.6fr 1fr; gap: 64px; align-items: start;
+}
+.ka-cart-items { display: flex; flex-direction: column; min-width: 0; }
+.ka-cart-items__list { display: flex; flex-direction: column; }
+
+/* ── line item card ── */
+.ka-item {
+  display: grid; grid-template-columns: 168px 1fr; gap: 28px;
+  padding: 36px 0; border-bottom: 1px solid var(--line);
+  transition: opacity 0.4s var(--ease-luxury);
+}
+.ka-cart-items__list .ka-item:first-child { padding-top: 0; }
+.ka-item.ka-item--removing { opacity: 0; }
+.ka-item__img { overflow: hidden; aspect-ratio: 3/4; background: linear-gradient(135deg, #E9E1D2, #B99B6E); }
+.ka-item__body { display: flex; flex-direction: column; }
+.ka-item__top { display: flex; justify-content: space-between; gap: 18px; }
+.ka-item__ct { font-family: var(--f-sans); font-size: 0.6rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--c-rosegold-2); margin-bottom: 8px; }
+.ka-item__name { font-family: var(--f-display); font-size: 1.5rem; font-weight: 400; line-height: 1.2; color: var(--c-ink); }
+.ka-item__price { font-family: var(--f-display); font-size: 1.25rem; font-weight: 400; color: var(--c-ink); white-space: nowrap; }
+
+.ka-item__meta { display: flex; flex-direction: column; gap: 8px; margin: 16px 0 0; }
+.ka-item__meta-row { display: flex; align-items: center; gap: 10px; font-family: var(--f-sans); font-size: 0.78rem; color: var(--c-ink-mid); }
+.ka-item__meta-row .lbl { color: var(--c-ink-muted); text-transform: uppercase; letter-spacing: 0.1em; font-size: 0.64rem; min-width: 96px; }
+.ka-bespoke-pill {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-family: var(--f-sans); font-size: 0.66rem; letter-spacing: 0.1em; text-transform: uppercase;
+  color: var(--c-rosegold-2); border: 1px solid var(--line-light); padding: 5px 12px; background: var(--c-smoke);
+}
+.ka-bespoke-pill .dt { width: 5px; height: 5px; border-radius: 50%; background: var(--c-rosegold); }
+
+.ka-item__made {
+  margin-top: 14px; display: flex; align-items: center; gap: 9px;
+  font-family: var(--f-sans); font-size: 0.7rem; letter-spacing: 0.05em; color: var(--c-ink-mid);
+}
+.ka-item__made::before { content: "✦"; color: var(--c-rosegold); font-size: 0.7rem; }
+
+.ka-item__actions { display: flex; align-items: center; justify-content: space-between; margin-top: 22px; padding-top: 18px; border-top: 1px solid var(--line); }
+.ka-item__one {
+  font-family: var(--f-sans); font-size: 0.7rem; letter-spacing: 0.05em; color: var(--c-ink-muted); font-style: italic;
+}
+.ka-item__remove {
+  font-family: var(--f-sans); font-size: 0.64rem; letter-spacing: 0.14em; text-transform: uppercase;
+  color: var(--c-ink-muted); border-bottom: 1px solid transparent; transition: color 0.3s, border-color 0.3s;
+  background: none; border-top: none; border-left: none; border-right: none; cursor: pointer; padding: 0;
+}
+.ka-item__remove:hover { color: var(--c-rosegold-2); border-color: var(--c-rosegold-pale); }
+.ka-item__remove:disabled { opacity: 0.5; cursor: wait; }
+
+/* ── continue shopping link under items ── */
+.ka-continue-row { margin-top: 8px; }
+.ka-continue-row a {
+  display: inline-flex; align-items: center; gap: 10px;
+  font-family: var(--f-sans); font-size: 0.68rem; letter-spacing: 0.16em; text-transform: uppercase; color: var(--c-ink-mid);
+  transition: color var(--dur-fast);
+}
+.ka-continue-row a::before { content: '\2190'; transition: transform var(--dur-med) var(--ease-luxury); }
+.ka-continue-row a:hover { color: var(--c-charcoal); }
+.ka-continue-row a:hover::before { transform: translateX(-4px); }
+
+/* ── empty cart state ── */
+.ka-empty {
+  max-width: var(--max-wide); margin: 0 auto; padding: var(--s-md) var(--gutter) var(--s-3xl);
+  display: grid; grid-template-columns: 1fr 1fr; gap: 72px; align-items: center;
+}
+.ka-empty__img { overflow: hidden; aspect-ratio: 4/5; background: linear-gradient(135deg, #EFE8DD, #9A7B4F); }
+.ka-empty__text .eyebrow { margin-bottom: 22px; }
+.ka-empty__text h1 { font-family: var(--f-display); font-size: var(--t-display); font-weight: 300; line-height: 1.05; margin-bottom: 22px; }
+.ka-empty__text p { font-size: 1.05rem; color: var(--c-ink-mid); line-height: 1.75; font-weight: 300; max-width: 46ch; margin-bottom: 36px; }
+.ka-empty__acts { display: flex; flex-direction: column; gap: 12px; max-width: 360px; }
+.ka-empty__acts .ka-btn { width: 100%; }
+.ka-empty__or { display: flex; align-items: center; gap: 14px; color: var(--c-ink-muted); font-family: var(--f-sans); font-size: 0.6rem; letter-spacing: 0.2em; text-transform: uppercase; margin: 6px 0; max-width: 360px; }
+.ka-empty__or::before, .ka-empty__or::after { content: ""; flex: 1; height: 1px; background: var(--line); }
+
+/* ── responsive ── */
+@media (max-width: 1100px) {
+  .ka-cart-wrap { grid-template-columns: 1fr; gap: 48px; }
+}
+@media (max-width: 900px) {
+  .ka-cart-page-head { padding-top: 22px; }
+  .ka-cart-wrap { padding: var(--s-md) 20px var(--s-xl); }
+  .ka-item { grid-template-columns: 112px 1fr; gap: 18px; padding: 26px 0; }
+  .ka-item__name { font-size: 1.25rem; }
+  .ka-item__top { flex-direction: column; gap: 6px; }
+  .ka-item__price { font-size: 1.05rem; }
+  .ka-empty { grid-template-columns: 1fr; gap: 36px; padding: var(--s-md) 20px var(--s-xl); }
+  .ka-empty__img { order: -1; aspect-ratio: 16/10; }
+  .ka-empty__text h1 { font-size: 2.4rem; }
+  /* body bottom padding for the mobile sticky checkout bar is added by
+     ka-cart-mobile-bar.css, since that bar only renders (and only needs
+     clearance) on a filled cart — see that file for the rule. */
+}

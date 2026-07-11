@@ -1,0 +1,29 @@
+/* ================================================================
+   KA-CART-BREADCRUMB — quiet wayfinding strip.
+   Identical pattern/values to ka-collection-breadcrumb.css /
+   ka-product-breadcrumb.css. Clears the fixed header stack.
+================================================================ */
+.ka-cart-breadcrumb {
+  padding: 140px var(--gutter) 0;
+  max-width: var(--max-wide);
+  margin: 0 auto;
+}
+.ka-cart-breadcrumb__inner {
+  font-family: var(--f-sans);
+  font-size: 0.66rem;
+  font-weight: 400;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--c-ink-muted);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.ka-cart-breadcrumb__inner a { transition: color var(--dur-fast); }
+.ka-cart-breadcrumb__inner a:hover { color: var(--c-rosegold-2); }
+.ka-cart-breadcrumb__sep { opacity: 0.5; }
+.ka-cart-breadcrumb__current { color: var(--c-ink); }
+
+@media (max-width: 900px) {
+  .ka-cart-breadcrumb { padding-top: 122px; }
+}

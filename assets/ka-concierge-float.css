@@ -1,0 +1,55 @@
+/* ================================================================
+   KA-CONCIERGE-FLOAT — global floating WhatsApp concierge chip
+   z-index 110 (above utility bar 101, nav 100, product minibar 70)
+================================================================ */
+.ka-concierge-float {
+  position: fixed;
+  right: 26px;
+  bottom: 26px;
+  z-index: 110;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: var(--c-charcoal);
+  color: var(--c-rosegold-pale);
+  border: 1px solid rgba(154,123,79,0.45);
+  padding: 15px 22px;
+  font-family: var(--f-sans);
+  font-size: 0.66rem;
+  font-weight: 400;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  box-shadow: 0 14px 34px rgba(42,36,32,0.28);
+  transition: background var(--dur-med) var(--ease-luxury),
+              transform var(--dur-med) var(--ease-luxury),
+              color var(--dur-med);
+}
+.ka-concierge-float__dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--c-rosegold);
+}
+.ka-concierge-float:hover {
+  background: var(--c-charcoal-2);
+  transform: translateY(-3px);
+  color: #F4ECDE;
+}
+
+@media (max-width: 600px) {
+  .ka-concierge-float {
+    right: 16px;
+    bottom: 16px;
+    padding: 13px 18px;
+    font-size: 0.6rem;
+  }
+}
+
+/* On the product template the mobile action bar covers the Concierge
+   action below 900px, so the float is hidden there to avoid duplication. */
+.template-product .ka-concierge-float {
+  display: flex;
+}
+@media (max-width: 900px) {
+  .template-product .ka-concierge-float { display: none; }
+}

@@ -1,0 +1,68 @@
+/* ================================================================
+   KA-COLLECTION-REFINE-BAR
+   Deliberately not a Dawn filter sidebar — no price slider, no
+   in-stock checkbox. See CD Note 2 in collection-build-spec.md.
+================================================================ */
+.ka-refine-bar {
+  max-width: var(--max-wide);
+  margin: 0 auto;
+  padding: var(--s-md) var(--gutter);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  flex-wrap: wrap;
+  border-bottom: 1px solid var(--line);
+}
+.ka-refine-bar__chips {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.ka-chip {
+  font-family: var(--f-sans);
+  font-size: 0.66rem;
+  font-weight: 400;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--c-ink-mid);
+  border: 1px solid var(--line-strong);
+  padding: 9px 20px;
+  display: inline-block;
+  transition: background var(--dur-fast), color var(--dur-fast), border-color var(--dur-fast);
+}
+.ka-chip:hover { border-color: var(--c-rosegold-2); color: var(--c-charcoal); }
+.ka-chip.is-active {
+  background: var(--c-charcoal);
+  color: white;
+  border-color: var(--c-charcoal);
+}
+.ka-refine-bar__sort {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-family: var(--f-sans);
+  font-size: 0.66rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--c-ink-muted);
+}
+.ka-refine-bar__sort select {
+  font-family: var(--f-sans);
+  font-size: 0.66rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--c-charcoal);
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid var(--line-strong);
+  padding: 4px 18px 4px 0;
+  cursor: pointer;
+}
+
+@media (max-width: 900px) {
+  .ka-refine-bar { flex-direction: column; align-items: flex-start; }
+}
+@media (max-width: 600px) {
+  .ka-refine-bar { padding: var(--s-sm) 16px; }
+}

@@ -1,0 +1,122 @@
+/* ================================================================
+   KA-PAGE-GENERIC — soft-launch fallback page template.
+   Deliberately plain: a centred, max-width content column using the
+   site's existing global tokens (assets/ka-base.css). No imagery, no
+   per-page layout decisions. Superseded page-by-page as each Shopify
+   Page gets its own Creative-Director-approved design later.
+================================================================ */
+.ka-page-generic {
+  /* Top clearance matches the established convention for templates with
+     no breadcrumb section above the fold (ka-cart-breadcrumb.css /
+     ka-collection-breadcrumb.css use 110-140px desktop, scaling down on
+     mobile) — this section sits directly under the fixed utility bar +
+     nav stack with nothing else above it. */
+  padding: 150px var(--gutter) var(--s-2xl);
+  background: var(--c-paper);
+}
+.ka-page-generic__inner {
+  max-width: var(--max-text);
+  margin: 0 auto;
+}
+.ka-page-generic__title {
+  font-family: var(--f-display);
+  font-size: var(--t-display);
+  font-weight: 400;
+  font-style: italic;
+  color: var(--c-charcoal);
+  line-height: 1.08;
+  margin-bottom: var(--s-md);
+}
+
+/* page.content body copy — Shopify Page Editor HTML (p, h2-h4, ul/ol, a, etc.) */
+.ka-page-generic__body {
+  font-family: var(--f-sans);
+  font-size: var(--t-body-l);
+  font-weight: 300;
+  line-height: 1.85;
+  color: var(--c-ink);
+}
+.ka-page-generic__body > * + * { margin-top: var(--s-sm); }
+.ka-page-generic__body h2,
+.ka-page-generic__body h3,
+.ka-page-generic__body h4 {
+  font-family: var(--f-display);
+  font-weight: 400;
+  font-style: italic;
+  color: var(--c-charcoal);
+  line-height: 1.2;
+  margin-top: var(--s-lg);
+  margin-bottom: var(--s-xs);
+}
+.ka-page-generic__body h2 { font-size: var(--t-h2); }
+.ka-page-generic__body h3 { font-size: var(--t-h3); }
+.ka-page-generic__body h4 { font-size: 1.2rem; }
+.ka-page-generic__body p { margin: 0; }
+.ka-page-generic__body a {
+  color: var(--c-rosegold-2);
+  text-decoration: underline;
+  text-decoration-color: var(--line-light);
+  text-underline-offset: 3px;
+  transition: color var(--dur-fast);
+}
+.ka-page-generic__body a:hover { color: var(--c-rosegold); }
+.ka-page-generic__body ul,
+.ka-page-generic__body ol {
+  padding-left: 1.4em;
+}
+.ka-page-generic__body li + li { margin-top: 0.5em; }
+.ka-page-generic__body img {
+  width: 100%;
+  height: auto;
+  display: block;
+  margin: var(--s-sm) 0;
+}
+.ka-page-generic__body blockquote {
+  border-left: 1px solid var(--c-rosegold-pale);
+  padding-left: var(--s-sm);
+  font-style: italic;
+  color: var(--c-ink-mid);
+}
+.ka-page-generic__body hr {
+  border: none;
+  border-top: 1px solid var(--line);
+  margin: var(--s-md) 0;
+}
+
+@media (max-width: 900px) {
+  .ka-page-generic { padding-top: 130px; }
+}
+@media (max-width: 600px) {
+  .ka-page-generic { padding: 110px 20px var(--s-xl); }
+  .ka-page-generic__title { margin-bottom: var(--s-sm); }
+}
+
+/* Page-level Coming Soon state */
+.ka-page-coming-soon {
+  text-align: center;
+  padding: var(--s-3xl) var(--s-md);
+  max-width: 560px;
+  margin: 0 auto;
+}
+.ka-page-coming-soon__title {
+  font-family: var(--f-serif);
+  font-size: clamp(2rem, 5vw, 3.2rem);
+  font-weight: 300;
+  color: var(--c-espresso);
+  margin: 16px 0 24px;
+  line-height: 1.15;
+}
+.ka-page-coming-soon__body {
+  font-family: var(--f-sans);
+  font-size: 0.88rem;
+  color: var(--c-ink-muted);
+  line-height: 1.75;
+  margin-bottom: 40px;
+  letter-spacing: 0.02em;
+}
+.ka-page-coming-soon__actions {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+}

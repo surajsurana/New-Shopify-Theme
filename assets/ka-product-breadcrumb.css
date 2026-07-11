@@ -1,0 +1,28 @@
+/* ================================================================
+   KA-PRODUCT-BREADCRUMB — clears the fixed header stack
+================================================================ */
+.ka-pb {
+  padding: 140px var(--gutter) 0;
+  max-width: var(--max-wide);
+  margin: 0 auto;
+}
+.ka-pb__inner {
+  font-family: var(--f-sans);
+  font-size: 0.66rem;
+  font-weight: 400;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--c-ink-muted);
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+.ka-pb__inner a { transition: color var(--dur-fast); }
+.ka-pb__inner a:hover { color: var(--c-rosegold-2); }
+.ka-pb__sep { opacity: 0.5; }
+.ka-pb__current { color: var(--c-ink); }
+
+@media (max-width: 900px) {
+  .ka-pb { padding-top: 122px; }
+}

@@ -42,6 +42,7 @@
   var selectedSizeLabel = null;
   var selectedVariantId = null;
   var isBespokeSelected = false;
+  var isBespokeFallback = false;
   var sizeHint = document.getElementById('ka-size-hint');
   var bagButtons = Array.prototype.slice.call(document.querySelectorAll('[data-ka-add-to-bag]'));
 
@@ -74,7 +75,12 @@
       bespoke.classList.add('sel');
       if (mtm) mtm.classList.add('open');
       selectedSizeLabel = 'Made to my measurements';
-      selectedVariantId = null;
+      /* Read the variant ID baked into the button by Liquid.
+         · Real MTM variant: data-variant-id set, no data-mtm-fallback → plain cart add.
+         · Fallback: data-mtm-fallback="true" → cart add with "Size: Made to my
+           measurements" line-item property so the order reads correctly. */
+      selectedVariantId = bespoke.getAttribute('data-variant-id') || null;
+      isBespokeFallback = bespoke.getAttribute('data-mtm-fallback') === 'true';
       isBespokeSelected = true;
       if (sizeHint) sizeHint.classList.remove('show');
       refreshBagButtons();
@@ -98,10 +104,12 @@
   var KA_WHATSAPP_URL = 'https://wa.me/919967543087';
 
   function addToBag() {
-    if (isBespokeSelected) {
-      /* Bespoke routes to the appointment/WhatsApp flow rather than a
-         literal cart add — see the OPEN DECISION comment in
-         ka-product-main.liquid for the reasoning. */
+    if (isBespokeSelected && !selectedVariantId) {
+      /* No "Made to my measurements" variant configured on this product —
+         fall back to WhatsApp so the customer can still place a bespoke
+         enquiry. To enable cart-add for MTM, add a "Made to my measurements"
+         size variant to the product in Shopify Admin and this branch will
+         stop firing. */
       window.open(KA_WHATSAPP_URL, '_blank');
       return;
     }
@@ -117,11 +125,19 @@
 
     bagButtons.forEach(function (btn) { btn.setAttribute('aria-disabled', 'true'); btn.textContent = 'Adding…'; });
 
+    /* Build the line-item payload. When MTM is using a fallback variant (no
+       dedicated "Made to my measurements" Shopify variant on this product), include
+       a custom property so the style advisor sees the intent on the order. */
+    var lineItem = { id: selectedVariantId, quantity: 1 };
+    if (isBespokeSelected && isBespokeFallback) {
+      lineItem.properties = { 'Size': 'Made to my measurements' };
+    }
+
     fetch('/cart/add.js', {
       method: 'POST',
       credentials: 'same-origin',
       headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
-      body: JSON.stringify({ items: [{ id: selectedVariantId, quantity: 1 }] })
+      body: JSON.stringify({ items: [lineItem] })
     })
       .then(function (res) {
         if (!res.ok) return res.json().then(function (err) { throw err; });

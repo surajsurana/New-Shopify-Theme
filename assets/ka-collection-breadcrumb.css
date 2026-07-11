@@ -1,0 +1,53 @@
+/* ================================================================
+   KA-COLLECTION-BREADCRUMB
+   Quiet wayfinding strip beneath the fixed nav. Also forces the
+   global nav (#ka-nav) into its permanent "scrolled" visual state
+   on collection-type templates, since there is no dark hero image
+   sitting behind the nav on this page (spec Section 2 §1).
+================================================================ */
+#ka-nav {
+  background: rgba(248,244,239,0.96);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  padding: 16px var(--gutter);
+  border-bottom: 1px solid var(--line);
+}
+#ka-nav .ka-nav__links a,
+#ka-nav .ka-nav__logo,
+#ka-nav .ka-nav__whatsapp,
+#ka-nav .ka-nav__toggle span {
+  color: var(--c-charcoal);
+}
+#ka-nav .ka-nav__whatsapp {
+  border-color: var(--line-strong);
+}
+#ka-nav .ka-nav__toggle span {
+  background: var(--c-charcoal);
+}
+
+.ka-coll-breadcrumb {
+  padding: 110px var(--gutter) 0;
+  max-width: var(--max-wide);
+  margin: 0 auto;
+}
+.ka-coll-breadcrumb__inner {
+  font-family: var(--f-sans);
+  font-size: 0.66rem;
+  font-weight: 400;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--c-ink-muted);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.ka-coll-breadcrumb__inner a {
+  transition: color var(--dur-fast);
+}
+.ka-coll-breadcrumb__inner a:hover { color: var(--c-rosegold-2); }
+.ka-coll-breadcrumb__sep { opacity: 0.5; }
+.ka-coll-breadcrumb__current { color: var(--c-ink); }
+
+@media (max-width: 600px) {
+  .ka-coll-breadcrumb { padding-top: 96px; }
+}

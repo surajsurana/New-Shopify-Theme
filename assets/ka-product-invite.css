@@ -1,0 +1,13 @@
+/* KA-PRODUCT-INVITE — conversation CTA */
+.ka-invite { padding: var(--s-3xl) var(--gutter); text-align: center; background: var(--c-paper-deep); }
+.ka-invite__inner { max-width: 720px; margin: 0 auto; }
+.ka-invite h2 { font-family: var(--f-display); font-size: var(--t-h2); font-weight: 300; line-height: 1.12; margin: 24px 0 22px; color: var(--c-ink); }
+.ka-invite p { font-size: 1.1rem; color: var(--c-ink-mid); font-weight: 300; line-height: 1.65; margin-bottom: 40px; }
+.ka-invite__acts { display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; }
+.ka-invite__acts .ka-btn { width: auto; padding: 18px 40px; }
+@media (max-width: 900px) {
+  .ka-invite { padding: var(--s-xl) 20px; }
+  .ka-invite h2 { font-size: 1.9rem; }
+  .ka-invite__acts { flex-direction: column; }
+  .ka-invite__acts .ka-btn { width: 100%; }
+}

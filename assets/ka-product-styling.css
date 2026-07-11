@@ -1,0 +1,18 @@
+/* KA-PRODUCT-STYLING — styling notes + occasion chips */
+.ka-styling { padding: var(--s-3xl) var(--gutter); background: var(--c-paper); }
+.ka-styling__grid { max-width: 1280px; margin: 0 auto; display: grid; grid-template-columns: 1fr 1fr; gap: 72px; align-items: center; }
+.ka-styling__ph { overflow: hidden; background: linear-gradient(135deg, #EFE8DD, #B99B6E); aspect-ratio: 4/5; }
+.ka-styling__ph img { width: 100%; height: 100%; object-fit: cover; transition: transform 1.6s var(--ease-luxury); transform: scale(1.04); }
+.ka-styling__ph.visible img { transform: scale(1); }
+.ka-styling__ph:hover img { transform: scale(1.04); }
+.ka-styling h2 { font-family: var(--f-display); font-size: var(--t-h2); font-weight: 300; line-height: 1.12; margin: 22px 0 20px; color: var(--c-ink); }
+.ka-styling p { font-size: 1.05rem; color: var(--c-ink-mid); line-height: 1.7; font-weight: 300; margin-bottom: 14px; }
+.ka-styling__accent { color: var(--c-ink); font-style: italic; font-family: var(--f-display); font-size: 1.15rem; }
+.ka-chips { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 26px; }
+.ka-chip { font-family: var(--f-sans); font-size: 0.66rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--c-ink-mid); border: 1px solid var(--line); padding: 9px 16px; transition: all 0.4s var(--ease-luxury); }
+.ka-chip:hover { border-color: var(--c-rosegold); color: var(--c-ink); background: var(--c-paper-deep); }
+@media (max-width: 900px) {
+  .ka-styling { padding: var(--s-xl) 20px; }
+  .ka-styling__grid { grid-template-columns: 1fr; gap: 36px; }
+  .ka-styling__ph { order: -1; }
+}

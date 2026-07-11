@@ -1,0 +1,15 @@
+/* KA-PRODUCT-ATELIER — couture journey */
+.ka-atelier { padding: var(--s-3xl) var(--gutter); background: var(--c-paper-deep); }
+.ka-sec-head { max-width: 680px; margin: 0 auto 76px; text-align: center; }
+.ka-sec-head h2 { font-family: var(--f-display); font-size: var(--t-h2); font-weight: 300; line-height: 1.1; margin: 22px 0 18px; color: var(--c-ink); }
+.ka-sec-head p { font-size: 1.1rem; color: var(--c-ink-mid); font-weight: 300; line-height: 1.6; }
+.ka-steps { max-width: 1180px; margin: 0 auto; display: grid; grid-template-columns: repeat(3, 1fr); gap: 54px; }
+.ka-step { text-align: center; }
+.ka-step__no { font-family: var(--f-display); font-size: 1.2rem; font-style: italic; color: var(--c-rosegold); border: 1px solid var(--c-rosegold-pale); width: 64px; height: 64px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 26px; }
+.ka-step h3 { font-family: var(--f-display); font-size: 1.5rem; font-weight: 400; margin-bottom: 12px; color: var(--c-ink); }
+.ka-step p { font-size: 0.95rem; color: var(--c-ink-mid); line-height: 1.6; }
+@media (max-width: 900px) {
+  .ka-atelier { padding: var(--s-xl) 20px; }
+  .ka-steps { grid-template-columns: 1fr; gap: 46px; max-width: 420px; margin: 0 auto; }
+  .ka-sec-head h2 { font-size: 1.9rem; }
+}

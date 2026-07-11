@@ -163,3 +163,33 @@
   .ka-p-card__info { padding: 14px 2px 0; }
   .ka-editorial-insert__frame { height: 42vh; min-height: 320px; }
 }
+
+/* Empty state — Coming Soon */
+.ka-collection-empty {
+  text-align: center;
+  padding: var(--s-3xl) var(--s-md);
+  max-width: 560px;
+  margin: 0 auto;
+}
+.ka-collection-empty__title {
+  font-family: var(--f-serif);
+  font-size: clamp(2rem, 5vw, 3.2rem);
+  font-weight: 300;
+  color: var(--c-espresso);
+  margin: 16px 0 24px;
+  line-height: 1.15;
+}
+.ka-collection-empty__body {
+  font-family: var(--f-sans);
+  font-size: 0.88rem;
+  color: var(--c-ink-muted);
+  line-height: 1.75;
+  margin-bottom: 40px;
+  letter-spacing: 0.02em;
+}
+.ka-collection-empty__actions {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+}

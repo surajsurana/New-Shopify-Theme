@@ -23,10 +23,22 @@
 
 <section class="ka-page-generic" aria-label="{{ page.title | escape }}">
   <div class="ka-page-generic__inner">
-    <h1 class="ka-page-generic__title">{{ page.title }}</h1>
-    <div class="ka-page-generic__body">
-      {{ page.content }}
-    </div>
+    {%- if page.content != blank -%}
+      <h1 class="ka-page-generic__title">{{ page.title }}</h1>
+      <div class="ka-page-generic__body">
+        {{ page.content }}
+      </div>
+    {%- else -%}
+      <div class="ka-page-coming-soon">
+        <p class="eyebrow eyebrow--muted">Coming Soon</p>
+        <h1 class="ka-page-coming-soon__title">{{ page.title }}</h1>
+        <p class="ka-page-coming-soon__body">This page is being lovingly prepared. In the meantime, we are just a message away.</p>
+        <div class="ka-page-coming-soon__actions">
+          <a href="https://wa.me/{{ settings.whatsapp_number }}" class="btn-dark" target="_blank" rel="noopener">Speak with us on WhatsApp</a>
+          <a href="/" class="btn-outline-rose">Return Home</a>
+        </div>
+      </div>
+    {%- endif -%}
   </div>
 </section>
 

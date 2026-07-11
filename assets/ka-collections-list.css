@@ -1,0 +1,104 @@
+/* ================================================================
+   KA-COLLECTIONS-LIST — soft-launch all-collections index page.
+   Card markup/classes (.ka-coll-card and children) are intentionally
+   identical to assets/ka-collections-directory.css (homepage teaser)
+   for visual consistency — duplicated here rather than shared so this
+   section's CSS stays scoped/self-contained per the theme's per-section
+   CSS convention. If the two ever diverge, that's a deliberate edit in
+   one file, not a shared-dependency risk.
+================================================================ */
+.ka-collections-list {
+  background: var(--c-charcoal-2);
+  /* Top clearance matches the established convention for templates with
+     no breadcrumb section above the fold (ka-cart-breadcrumb.css /
+     ka-collection-breadcrumb.css use 110-140px desktop, scaling down on
+     mobile) — this section sits directly under the fixed utility bar +
+     nav stack with nothing else above it. */
+  padding: 150px var(--gutter) var(--s-2xl);
+  position: relative;
+}
+.ka-collections-list::before {
+  content: ''; position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 1px; background: var(--line-on-dark);
+}
+.ka-collections-list__inner { max-width: var(--max-wide); margin: 0 auto; }
+.ka-collections-list__header { margin-bottom: var(--s-xl); }
+.ka-collections-list__title {
+  font-family: var(--f-display);
+  font-size: var(--t-h2); font-weight: 400; font-style: italic;
+  color: white; line-height: 1.05;
+}
+
+.ka-collections-list__grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 2px;
+}
+
+/* Card pattern — verbatim from ka-collections-directory.css */
+.ka-coll-card { position: relative; overflow: hidden; display: block; }
+.ka-coll-card__image { aspect-ratio: 2/3; overflow: hidden; }
+.ka-coll-card__image img { transition: transform 1.4s var(--ease-luxury); }
+.ka-coll-card:hover .ka-coll-card__image img { transform: scale(1.05); }
+.ka-coll-card__overlay {
+  position: absolute; inset: 0;
+  background: linear-gradient(to top, rgba(26,23,20,0.80) 0%, rgba(26,23,20,0.15) 50%, transparent 100%);
+  transition: opacity var(--dur-med);
+}
+.ka-coll-card__label {
+  position: absolute; bottom: 28px; left: 24px; right: 24px;
+}
+.ka-coll-card__number {
+  font-family: var(--f-sans);
+  font-size: 0.56rem; font-weight: 400;
+  letter-spacing: 0.22em; text-transform: uppercase;
+  color: rgba(255,255,255,0.4); margin-bottom: 8px;
+}
+.ka-coll-card__name {
+  font-family: var(--f-display);
+  font-size: clamp(1.3rem, 2.2vw, 1.9rem);
+  font-weight: 400; font-style: italic;
+  color: white; line-height: 1.05;
+}
+.ka-coll-card__arrow {
+  display: inline-block; margin-top: 12px;
+  font-family: var(--f-sans);
+  font-size: 0.6rem; font-weight: 400;
+  letter-spacing: 0.18em; text-transform: uppercase;
+  color: var(--c-rosegold);
+  opacity: 0; transform: translateY(6px);
+  transition: opacity var(--dur-fast), transform var(--dur-med) var(--ease-luxury);
+}
+.ka-coll-card:hover .ka-coll-card__arrow { opacity: 1; transform: translateY(0); }
+
+/* Pagination + empty state (new to this page, not in the homepage directory) */
+.ka-collections-list__pagination {
+  text-align: center;
+  margin-top: var(--s-xl);
+}
+.ka-collections-list__count {
+  display: block;
+  margin-top: 16px;
+  font-family: var(--f-sans);
+  font-size: 0.66rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.45);
+}
+.ka-collections-list__empty {
+  font-family: var(--f-sans);
+  font-size: var(--t-body-l);
+  color: rgba(255,255,255,0.65);
+  text-align: center;
+  padding: var(--s-xl) 0;
+}
+
+@media (max-width: 900px) {
+  .ka-collections-list { padding-top: 130px; }
+  .ka-collections-list__grid { grid-template-columns: 1fr 1fr; gap: 2px; }
+}
+@media (max-width: 600px) {
+  .ka-collections-list { padding: 110px 16px var(--s-xl); }
+  .ka-collections-list__grid { grid-template-columns: 1fr 1fr; }
+}
