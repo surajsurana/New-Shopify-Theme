@@ -8,7 +8,7 @@
 }
 .ka-footer__top {
   display: grid;
-  grid-template-columns: 1.2fr 0.8fr 0.8fr 0.8fr 1.2fr;
+  grid-template-columns: minmax(0, 1.2fr) minmax(0, 0.8fr) minmax(0, 0.8fr) minmax(0, 0.8fr) minmax(0, 1.2fr);
   gap: var(--s-lg);
   padding-bottom: var(--s-xl);
   border-bottom: 1px solid rgba(201,191,174,0.18);
@@ -36,7 +36,7 @@
   color: #A89E8E;
   line-height: 1.65; margin: 20px 0 28px; max-width: 260px;
 }
-.ka-footer__social { display: flex; gap: 16px; }
+.ka-footer__social { display: flex; flex-wrap: wrap; gap: 16px; }
 .ka-footer__social a {
   font-family: var(--f-sans);
   font-size: 0.6rem; font-weight: 400;
@@ -52,7 +52,7 @@
   letter-spacing: 0.24em; text-transform: uppercase;
   color: #E6DCCC; margin-bottom: 20px;
 }
-.ka-footer__links { list-style: none; display: flex; flex-direction: column; gap: 12px; }
+.ka-footer__links { list-style: none; display: flex; flex-direction: column; gap: 12px; overflow-wrap: anywhere; }
 .ka-footer__links a {
   font-family: var(--f-sans);
   font-size: 0.78rem; font-weight: 300;
@@ -67,6 +67,7 @@
   font-size: 0.78rem; font-weight: 300;
   color: #A89E8E;
   line-height: 1.8; letter-spacing: 0.04em;
+  overflow-wrap: anywhere;
 }
 .ka-footer__contact-item a {
   color: #A89E8E;
@@ -143,7 +144,7 @@
    stays unchanged (Brand, Collections, Maison, Contact, News) — only
    visual placement changes, so tab order and source order stay in sync. */
 @media (max-width: 900px) {
-  .ka-footer__top { grid-template-columns: 1fr 1fr; gap: var(--s-md); }
+  .ka-footer__top { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: var(--s-md); }
   .ka-footer__brand       { grid-column: 1 / -1; }
   .ka-footer__collections { grid-column: 1; }
   .ka-footer__maison      { grid-column: 2; }
@@ -175,7 +176,7 @@
    under .ka-footer__top before the copyright bar, kept for cross-
    breakpoint consistency. Net: 5 rule lines -> 1, single axis (horizontal). */
 @media (max-width: 480px) {
-  .ka-footer__top { grid-template-columns: 1fr 1fr; gap: 0; border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+  .ka-footer__top { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 0; border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
 
   .ka-footer__brand,
   .ka-footer__collections { grid-row: 1; padding-top: 0; padding-bottom: var(--s-md); }
