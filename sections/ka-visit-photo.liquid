@@ -1,0 +1,76 @@
+{{ 'ka-visit-photo.css' | asset_url | stylesheet_tag }}
+
+{%- comment -%}
+  K&A Visit Us — Store Photo. Docs/store-location-build-spec.md
+  Section 3 ("Section 3 — Store Photo (NEW in v2.0)") + Section 6 + L5.
+  Built from Prototypes/store-location-v1.html §SECTION 3, v2.0.
+
+  CRITICAL (spec L5): the default image below (visit-store-placeholder.jpg)
+  is an explicitly temporary, generic Unsplash stock photo — NOT a photo
+  of K&A's own premises (no visible signage/branding). Suraj authorised
+  it as a stand-in on the explicit understanding it must be swappable
+  without a code change the moment real atelier photography exists.
+  Per that instruction, the image is wired ONLY as a real image_picker
+  setting here — never hardcoded — with the placeholder set as the
+  section's default value so it renders correctly out of the box.
+  Suraj can replace it himself from the theme editor at any time.
+
+  No "placeholder" or "coming soon" language appears on-page — the
+  caption reads as ordinary content ("The Atelier"). Placeholder status
+  is tracked here and in the build spec only (spec Section 3).
+
+  Caption pattern reused verbatim from sections/ka-about-founders.liquid
+  (.ka-about-founders__image-caption) rather than inventing a new
+  two-tier name/sub-label convention — see build spec Section 3.
+{%- endcomment -%}
+
+<section class="ka-visit-photo" aria-label="Inside the atelier">
+  <div class="ka-visit-photo__bg reveal-img">
+    {%- if section.settings.image != blank -%}
+      <img
+        src="{{ section.settings.image | image_url: width: 1600 }}"
+        alt="{{ section.settings.image.alt | escape | default: 'A warmly lit boutique interior, representative of the K&A atelier atmosphere' }}"
+        loading="lazy"
+        width="1600"
+        height="2134"
+      />
+    {%- else -%}
+      <img
+        src="{{ 'visit-store-placeholder.jpg' | asset_url }}"
+        alt="A warmly lit boutique interior, representative of the K&A atelier atmosphere"
+        loading="lazy"
+        width="1600"
+        height="2134"
+      />
+    {%- endif -%}
+  </div>
+  <div class="ka-visit-photo__overlay"></div>
+  <div class="ka-visit-photo__caption">
+    <span class="ka-visit-photo__name">{{ section.settings.caption_name }}</span>
+    <span class="ka-visit-photo__sub">{{ section.settings.caption_sub }}</span>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Visit — Store Photo",
+  "tag": "section",
+  "settings": [
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "Store photograph",
+      "info": "TEMPORARY: falls back to a generic placeholder (visit-store-placeholder.jpg, no real K&A branding/signage) if none is chosen. Replace with a real photo of the atelier as soon as one exists — no code change needed, just pick a new image here."
+    },
+    {
+      "type": "header",
+      "content": "Caption"
+    },
+    { "type": "text", "id": "caption_name", "label": "Caption — name", "default": "The Atelier" },
+    { "type": "text", "id": "caption_sub",  "label": "Caption — sub-label", "default": "Santacruz West, Mumbai" }
+  ],
+  "presets": [
+    { "name": "Visit — Store Photo" }
+  ]
+}
+{% endschema %}

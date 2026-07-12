@@ -1,0 +1,27 @@
+/* ================================================================
+   KA-VISIT-PHOTO
+   Single full-bleed image with a bottom-left two-tier caption —
+   mirrors the caption pattern in ka-about-founders.css. Docs/store-
+   location-build-spec.md Section 3/4.
+================================================================ */
+.ka-visit-photo { position: relative; min-height: 620px; overflow: hidden; }
+.ka-visit-photo__bg { position: absolute; inset: 0; }
+.ka-visit-photo__bg img { object-position: center 42%; }
+.ka-visit-photo__overlay {
+  position: absolute; inset: 0;
+  background: linear-gradient(to top, rgba(15,12,10,0.60) 0%, rgba(15,12,10,0.06) 34%, transparent 55%);
+  pointer-events: none;
+}
+.ka-visit-photo__caption { position: absolute; bottom: var(--s-lg); left: var(--gutter); }
+.ka-visit-photo__name {
+  font-family: var(--f-display); font-style: italic; font-weight: 400;
+  font-size: clamp(1.4rem, 3vw, 2rem); color: white; display: block; margin-bottom: 8px;
+}
+.ka-visit-photo__sub {
+  font-family: var(--f-sans); font-size: 0.64rem; font-weight: 400;
+  letter-spacing: 0.18em; text-transform: uppercase; color: rgba(255,255,255,0.68);
+}
+
+@media (max-width: 600px) {
+  .ka-visit-photo { min-height: 420px; }
+}

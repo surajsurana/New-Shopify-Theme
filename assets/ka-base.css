@@ -165,6 +165,21 @@ button { border: none; background: none; cursor: pointer; font-family: inherit; 
 }
 .btn-outline-white:hover { background: white; color: var(--c-charcoal); border-color: white; }
 
+/* .btn-outline-dark — dark-bordered button variant for light (--c-paper-deep
+   etc.) panels. Introduced by the Visit Us / Find Us section
+   (Docs/store-location-build-spec.md Section 4) and promoted here to
+   ka-base.css per that spec's own recommendation, since .btn-ghost /
+   .btn-outline-white are both built for dark grounds and any future
+   light-panel CTA can reuse this instead of a page-scoped duplicate. */
+.btn-outline-dark {
+  font-family: var(--f-sans); font-size: 0.66rem; font-weight: 400;
+  letter-spacing: 0.2em; text-transform: uppercase; color: var(--c-charcoal);
+  border: 1px solid var(--line-strong); padding: 14px 32px;
+  transition: background var(--dur-fast), color var(--dur-fast), border-color var(--dur-fast);
+  display: inline-block; box-shadow: none;
+}
+.btn-outline-dark:hover { background: var(--c-charcoal); color: white; border-color: var(--c-charcoal); }
+
 .section-header {
   display: flex; align-items: flex-end; justify-content: space-between;
   margin-bottom: var(--s-lg); gap: 24px;

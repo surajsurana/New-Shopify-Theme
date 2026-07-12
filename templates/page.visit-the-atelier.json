@@ -1,0 +1,163 @@
+/*
+ * ------------------------------------------------------------
+ * K&A Visit Us (Store Location) page template —
+ * Docs/store-location-build-spec.md (v2.1).
+ * Built from Prototypes/store-location-v1.html (v2.1, approved
+ * by Suraj — includes the follow-up redundancy fix: one
+ * "WhatsApp the Concierge" CTA, plain-text phone in the fact
+ * sheet, tightened Walk-Ins copy).
+ * Sections: Nav -> Arrival (dark, no photography) -> Find Us
+ * (real address/phone/hours/rating) -> Store Photo (temporary
+ * placeholder, image_picker) -> Assurance Strip (reused
+ * ka-craft-strip) -> Appointment CTA (reused ka-appointment) ->
+ * Footer.
+ *
+ * MANUAL STEP REQUIRED: the /pages/visit-the-atelier Page needs
+ * its Theme template set to "visit-the-atelier" from Shopify
+ * Admin (Online Store -> Pages -> [this page] -> Theme template
+ * dropdown) once this file is deployed — same manual step
+ * Client Diaries and About Us needed. This cannot be done from
+ * the theme code/git alone. ALSO CHECK: it is not yet confirmed
+ * from this side whether a Shopify Page with the handle
+ * "visit-the-atelier" exists yet at all — if not, it needs to be
+ * created first (Online Store -> Pages -> Add page), which also
+ * requires Admin access this build does not have.
+ * ------------------------------------------------------------
+ */
+{
+  "sections": {
+    "ka-nav": {
+      "type": "ka-nav",
+      "settings": {
+        "utility_1": "Complimentary Worldwide Delivery",
+        "utility_2": "Hand-Embroidered to Order",
+        "utility_3": "Private & Virtual Appointments",
+        "logo_text": "Karishma Ashita",
+        "logo_subline": "Bridal Couture · Mumbai",
+        "label_bestsellers": "Signature",
+        "link_bestsellers": "/collections/bestsellers",
+        "label_collections": "Collections",
+        "link_collections": "/collections",
+        "label_diaries": "Client Diaries",
+        "link_diaries": "/pages/client-diaries",
+        "link_about": "/pages/about-us",
+        "link_visit": "/pages/visit-the-atelier",
+        "link_appointment": "/pages/appointments"
+      }
+    },
+    "ka-visit-arrival": {
+      "type": "ka-visit-arrival",
+      "settings": {
+        "eyebrow": "Santacruz West, Mumbai",
+        "title_line1": "The Atelier",
+        "title_line2": "Mumbai",
+        "subtitle": "A real address, a fitting mirror, and the quiet particular to a house where every piece is made once, for one person. Walk in, or write ahead — either way, we're glad to have you.",
+        "cta_label": "Get Directions",
+        "google_maps_url": "https://maps.app.goo.gl/tU41xSkVonr4Qe8v9"
+      }
+    },
+    "ka-visit-find-us": {
+      "type": "ka-visit-find-us",
+      "settings": {
+        "eyebrow": "Where to Find Us",
+        "title": "Come Find Us.",
+        "address": "Ganga Building, 2A, Talmaki Road\nPotohar Nagar, Santacruz West\nMumbai, Maharashtra 400054",
+        "body": "The K&A atelier is a real, working studio on Talmaki Road — not a hidden address. We welcome walk-ins, though a booked appointment lets us prepare your consultation, your measurements and our full attention in advance. However you arrive, you'll be looked after the same way.",
+        "cta_directions_label": "Get Directions",
+        "google_maps_url": "https://maps.app.goo.gl/tU41xSkVonr4Qe8v9",
+        "cta_whatsapp_label": "WhatsApp the Concierge",
+        "whatsapp_message": "Hi, I'd like to book an appointment to visit the K&A atelier",
+        "facts_eyebrow": "A Visit, in Brief",
+        "phone_label": "Phone",
+        "hours_label": "Hours",
+        "hours_value": "Opens 11:00 AM",
+        "hours_note": "Full weekly hours & closing time to be confirmed — message us before visiting outside typical daytime hours.",
+        "rating_label": "Rated on Google",
+        "rating_score": "4.7",
+        "rating_sub": "Designer Clothing Store",
+        "rating_link_label": "View on Google Maps",
+        "walkins_label": "Walk-Ins",
+        "walkins_value": "Welcome anytime — no appointment required."
+      }
+    },
+    "ka-visit-photo": {
+      "type": "ka-visit-photo",
+      "settings": {
+        "caption_name": "The Atelier",
+        "caption_sub": "Santacruz West, Mumbai"
+      }
+    },
+    "ka-visit-assurance": {
+      "type": "ka-craft-strip",
+      "blocks": {
+        "walkins": {
+          "type": "item",
+          "settings": {
+            "label": "Walk-Ins Welcome",
+            "sublabel": "Drop by — we'd love to meet you"
+          }
+        },
+        "appointments": {
+          "type": "item",
+          "settings": {
+            "label": "Appointments Preferred",
+            "sublabel": "So we can prepare for your visit"
+          }
+        },
+        "concierge": {
+          "type": "item",
+          "settings": {
+            "label": "Concierge Guided",
+            "sublabel": "From first message to final fitting"
+          }
+        }
+      },
+      "block_order": [
+        "walkins",
+        "appointments",
+        "concierge"
+      ],
+      "settings": {}
+    },
+    "ka-visit-cta": {
+      "type": "ka-appointment",
+      "settings": {
+        "eyebrow": "The Atelier",
+        "title": "Now You Know\nWhere to Find Us.",
+        "body": "Walk in, or write ahead — either way, we're glad to have you. Message us and we'll make sure you're expected.",
+        "cta_instore_label": "Book In-Store Appointment",
+        "cta_instore_url": "/pages/appointments",
+        "cta_virtual_label": "Book Virtual Styling Session",
+        "cta_virtual_url": "/pages/appointments",
+        "fallback_image_filename": "appointment-bg.jpg"
+      }
+    },
+    "ka-footer": {
+      "type": "ka-footer",
+      "settings": {
+        "brand_name": "Karishma Ashita",
+        "logo_subline": "Bridal Couture · Mumbai",
+        "tagline": "Bridal couture, handcrafted\nin Mumbai.",
+        "instagram_url": "https://www.instagram.com/karishmaashita",
+        "youtube_url": "https://www.youtube.com/@KarishmaAshita",
+        "pinterest_url": "https://www.pinterest.com/karishmaashita/",
+        "email": "info@karishmaashita.com",
+        "address": "Mumbai, India\nComplimentary worldwide shipping via DHL Express",
+        "news_title": "The Inner Circle",
+        "news_body": "Collection previews, styling notes and private trunk show invitations — delivered quietly to your inbox.",
+        "news_placeholder": "Your email address",
+        "news_submit": "Join",
+        "news_success": "Welcome in. You are one of us now."
+      }
+    }
+  },
+  "order": [
+    "ka-nav",
+    "ka-visit-arrival",
+    "ka-visit-find-us",
+    "ka-visit-photo",
+    "ka-visit-assurance",
+    "ka-visit-cta",
+    "ka-footer"
+  ]
+}

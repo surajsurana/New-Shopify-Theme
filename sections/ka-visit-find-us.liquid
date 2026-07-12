@@ -1,0 +1,194 @@
+{{ 'ka-visit-find-us.css' | asset_url | stylesheet_tag }}
+
+{%- comment -%}
+  K&A Visit Us — Find Us (address & practicalities). Docs/store-
+  location-build-spec.md Section 3 ("Section 2 — Find Us") + Section
+  2A (v2.1 redundancy fix). Built from Prototypes/store-location-v1.html
+  §SECTION 2, v2.1 (approved by Suraj).
+
+  Left panel: the real, full postal address set prominently in display
+  italic type — the single most important piece of content on this
+  page (spec Section 2, "core creative reversal"). Two real actions:
+  Get Directions (new .btn-outline-dark, promoted to ka-base.css) and
+  WhatsApp the Concierge — the section's ONE actionable contact method
+  (v2.1 fix, see spec Section 2A).
+
+  Right panel ("A Visit, in Brief"): quiet reference facts, none of
+  them a second bank of buttons. Per v2.1 (spec Section 2A / L4), the
+  Phone row is plain, non-linked text sourced from the sitewide
+  settings.whatsapp_display setting — NOT a second hardcoded number,
+  and NOT a tel:/wa.me link (that would recreate the exact duplication
+  Suraj asked to remove). Hours ships with an honest, non-invented
+  caveat (no closing time guessed — spec Section 6). Rated on Google
+  and Walk-Ins are real, sourced facts (spec Section 6).
+
+  google_maps_url is set independently per instance of this URL on the
+  page (Arrival CTA, this panel's Get Directions, and this panel's View
+  on Google Maps link each carry their own setting) rather than a
+  cross-section shared value, since Shopify sections cannot read each
+  other's settings — all three default to the same real listing.
+{%- endcomment -%}
+
+<section class="ka-visit-find-us" aria-label="Visiting information">
+  <div class="ka-visit-find-us__inner">
+    <div class="ka-visit-find-us__panel reveal">
+      <p class="eyebrow eyebrow--muted ka-visit-find-us__eyebrow">{{ section.settings.eyebrow }}</p>
+      <h2 class="ka-visit-find-us__title">{{ section.settings.title }}</h2>
+      <p class="ka-visit-find-us__address">{{ section.settings.address | newline_to_br }}</p>
+      <p class="ka-visit-find-us__body">{{ section.settings.body }}</p>
+      <div class="ka-visit-find-us__actions">
+        <a
+          href="{{ section.settings.google_maps_url | default: 'https://maps.app.goo.gl/tU41xSkVonr4Qe8v9' }}"
+          class="btn-outline-dark"
+          target="_blank"
+          rel="noopener"
+        >
+          {{ section.settings.cta_directions_label }}
+        </a>
+        <a
+          href="https://wa.me/{{ settings.whatsapp_number }}"
+          class="ka-visit-find-us__whatsapp"
+          data-ka-appt-link
+          data-ka-appt-text="{{ section.settings.whatsapp_message }}"
+        >
+          {{ section.settings.cta_whatsapp_label }}
+        </a>
+      </div>
+    </div>
+
+    <div class="ka-visit-find-us__facts reveal reveal-delay-1">
+      <p class="eyebrow eyebrow--muted ka-visit-find-us__facts-eyebrow">{{ section.settings.facts_eyebrow }}</p>
+
+      {%- comment -%}
+        v2.1: this row previously duplicated the left panel's "WhatsApp
+        the Concierge" CTA with its own Call + WhatsApp link pair — the
+        same action offered twice within one glance. This fact sheet's
+        own framing ("A Visit, in Brief") is reference info, not a
+        second bank of buttons, so the phone number is plain,
+        non-linked text — kept (rather than dropped) because someone
+        scanning quick facts may still want the number itself to note
+        or dial manually, distinct from the panel's actionable WhatsApp
+        CTA above. See build spec Section 2A.
+      {%- endcomment -%}
+      <div class="ka-visit-find-us__row">
+        <span class="ka-visit-find-us__label">{{ section.settings.phone_label }}</span>
+        <span class="ka-visit-find-us__value ka-visit-find-us__value--confirmed">{{ settings.whatsapp_display }}</span>
+      </div>
+
+      <div class="ka-visit-find-us__row">
+        <span class="ka-visit-find-us__label">{{ section.settings.hours_label }}</span>
+        <span class="ka-visit-find-us__value ka-visit-find-us__value--confirmed">
+          {{ section.settings.hours_value }}
+          {%- if section.settings.hours_note != blank -%}
+            <span class="ka-visit-find-us__note">{{ section.settings.hours_note }}</span>
+          {%- endif -%}
+        </span>
+      </div>
+
+      <div class="ka-visit-find-us__row">
+        <span class="ka-visit-find-us__label">{{ section.settings.rating_label }}</span>
+        <span class="ka-visit-find-us__value ka-visit-find-us__value--confirmed">
+          <span class="ka-visit-find-us__rating">
+            <span class="ka-visit-find-us__rating-score">{{ section.settings.rating_score }}</span>
+            <span class="ka-visit-find-us__rating-star" aria-hidden="true">&#9733;</span>
+          </span> &middot; {{ section.settings.rating_sub }}<br>
+          <a
+            href="{{ section.settings.google_maps_url | default: 'https://maps.app.goo.gl/tU41xSkVonr4Qe8v9' }}"
+            class="ka-visit-find-us__link"
+            target="_blank"
+            rel="noopener"
+            style="margin-top: 8px; display: inline-block;"
+          >
+            {{ section.settings.rating_link_label }}
+          </a>
+        </span>
+      </div>
+
+      {%- comment -%}
+        v2.1: shortened from "Welcome — appointments preferred, so we
+        may prepare for you" — that phrasing was a near-verbatim echo
+        of the Assurance Strip's own copy two sections below. This row
+        now states the bare fact only, in the same terse register as
+        Phone/Hours/Rating above it. See build spec Section 2A.
+      {%- endcomment -%}
+      <div class="ka-visit-find-us__row">
+        <span class="ka-visit-find-us__label">{{ section.settings.walkins_label }}</span>
+        <span class="ka-visit-find-us__value ka-visit-find-us__value--confirmed">{{ section.settings.walkins_value }}</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Visit — Find Us",
+  "tag": "section",
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "Where to Find Us" },
+    { "type": "text", "id": "title", "label": "Title", "default": "Come Find Us." },
+    {
+      "type": "textarea",
+      "id": "address",
+      "label": "Address",
+      "default": "Ganga Building, 2A, Talmaki Road\nPotohar Nagar, Santacruz West\nMumbai, Maharashtra 400054",
+      "info": "Sourced directly from K&A's own Google Business listing (build spec Section 6). Each line becomes its own line on the page."
+    },
+    {
+      "type": "textarea",
+      "id": "body",
+      "label": "Body copy",
+      "default": "The K&A atelier is a real, working studio on Talmaki Road — not a hidden address. We welcome walk-ins, though a booked appointment lets us prepare your consultation, your measurements and our full attention in advance. However you arrive, you'll be looked after the same way."
+    },
+    {
+      "type": "header",
+      "content": "Actions"
+    },
+    { "type": "text", "id": "cta_directions_label", "label": "Get Directions label", "default": "Get Directions" },
+    {
+      "type": "url",
+      "id": "google_maps_url",
+      "label": "Google Maps link",
+      "info": "Defaults to K&A's real Google Business listing (maps.app.goo.gl/tU41xSkVonr4Qe8v9). Used for both Get Directions and View on Google Maps."
+    },
+    { "type": "text", "id": "cta_whatsapp_label", "label": "WhatsApp CTA label", "default": "WhatsApp the Concierge" },
+    {
+      "type": "text",
+      "id": "whatsapp_message",
+      "label": "WhatsApp pre-filled message",
+      "default": "Hi, I'd like to book an appointment to visit the K&A atelier"
+    },
+    {
+      "type": "paragraph",
+      "content": "This is the section's one actionable contact method (v2.1 fix — build spec Section 2A). It always opens WhatsApp using the sitewide WhatsApp number (Theme Settings → Concierge/WhatsApp)."
+    },
+    {
+      "type": "header",
+      "content": "A Visit, in Brief — fact sheet"
+    },
+    {
+      "type": "paragraph",
+      "content": "Reference facts only, deliberately not a second row of buttons (v2.1 fix). Phone always reads the sitewide WhatsApp number and cannot be edited here — update it once in Theme Settings → Concierge/WhatsApp instead."
+    },
+    { "type": "text", "id": "facts_eyebrow", "label": "Fact sheet eyebrow", "default": "A Visit, in Brief" },
+    { "type": "text", "id": "phone_label", "label": "Phone — label", "default": "Phone" },
+    { "type": "text", "id": "hours_label", "label": "Hours — label", "default": "Hours" },
+    { "type": "text", "id": "hours_value", "label": "Hours — confirmed value", "default": "Opens 11:00 AM" },
+    {
+      "type": "textarea",
+      "id": "hours_note",
+      "label": "Hours — honest caveat note",
+      "default": "Full weekly hours & closing time to be confirmed — message us before visiting outside typical daytime hours.",
+      "info": "Leave blank once full weekly hours are confirmed and hours_value is updated to the complete schedule."
+    },
+    { "type": "text", "id": "rating_label", "label": "Rating — label", "default": "Rated on Google" },
+    { "type": "text", "id": "rating_score", "label": "Rating — score", "default": "4.7" },
+    { "type": "text", "id": "rating_sub", "label": "Rating — category", "default": "Designer Clothing Store" },
+    { "type": "text", "id": "rating_link_label", "label": "Rating — link label", "default": "View on Google Maps" },
+    { "type": "text", "id": "walkins_label", "label": "Walk-Ins — label", "default": "Walk-Ins" },
+    { "type": "text", "id": "walkins_value", "label": "Walk-Ins — value", "default": "Welcome anytime — no appointment required." }
+  ],
+  "presets": [
+    { "name": "Visit — Find Us" }
+  ]
+}
+{% endschema %}

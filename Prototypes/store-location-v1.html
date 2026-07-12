@@ -1,0 +1,1134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Visit Us — K&amp;A by Karishma &amp; Ashita | Mumbai Bridal Couture Atelier</title>
+  <meta name="description" content="The K&amp;A atelier is in Santacruz West, Mumbai — a real, findable studio for bridal, bridesmaid and festive commissions. Walk-ins welcome; appointments recommended so we can prepare for you." />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Jost:wght@200;300;400;500&display=swap" rel="stylesheet" />
+
+  <style>
+    /* ═══════════════════════════════════════════════════════════════
+       DESIGN TOKENS — inherited verbatim from the site's approved
+       system (Cormorant Garamond + Jost), confirmed live in
+       assets/ka-base.css / layout/theme.liquid and matched by every
+       current prototype (homepage, Client Diaries, About Us,
+       Search/404/Footer). No new colour, font, spacing or motion
+       tokens are introduced by this page — see build spec Section 4.
+
+       ── v2 REVISION (11 July 2026) ──────────────────────────────
+       v1 of this page deliberately withheld the atelier's address,
+       framing "shared once your appointment is confirmed" as the
+       house's own privacy policy. Suraj corrected this directly:
+       the address is already publicly known, walk-ins happen and
+       cannot be turned away, and the page must read as a real,
+       findable store — not a hidden one. This revision publishes
+       the real, verified address/phone/hours/rating, adds a new
+       Store Photo section (temporary placeholder image — see build
+       spec), and reframes copy throughout from "by invitation only"
+       to "walk-ins welcome, appointments preferred." See build spec
+       v2.0 changelog for the full account of what changed and why.
+
+       ── v2.1 FIX (12 July 2026) ──────────────────────────────────
+       Suraj caught a redundancy in v2.0: the Find Us section offered
+       the same "message us on WhatsApp" action twice within one
+       glance — the prominent "WhatsApp the Concierge" CTA in the
+       left panel, immediately followed by a duplicate "Call" +
+       "WhatsApp" link pair in the right panel's fact sheet. Fixed by
+       keeping exactly ONE actionable contact method (the left panel's
+       "WhatsApp the Concierge" CTA, paired naturally with "Get
+       Directions" as the section's two real actions) and converting
+       the right panel's Call/WhatsApp row to a plain, non-linked
+       "Phone" fact — consistent with the "A Visit, in Brief" fact
+       sheet's own framing as quiet reference info, not a second bank
+       of buttons. Full-page redundancy pass also lightly reworded the
+       Walk-Ins fact row so it no longer echoes the Assurance Strip's
+       phrasing almost verbatim two sections later — see inline
+       comments below and build spec v2.1 changelog.
+    ═══════════════════════════════════════════════════════════════ */
+    :root {
+      --c-paper:      #F8F4EF;
+      --c-paper-deep: #F0EAE1;
+      --c-smoke:      #EDE7DD;
+
+      --c-charcoal:   #1A1714;
+      --c-charcoal-2: #2C2825;
+      --c-ink:        #3D3730;
+      --c-ink-mid:    #6B6259;
+      --c-ink-muted:  #9A9088;
+
+      --c-rosegold:   #C4A882;
+      --c-rosegold-2: #A8896A;
+      --c-rosegold-pale: #DDD0BC;
+
+      --f-display:  'Cormorant Garamond', Georgia, 'Times New Roman', serif;
+      --f-sans:     'Jost', 'Helvetica Neue', Arial, sans-serif;
+
+      --t-hero:      clamp(3.6rem, 8vw, 8rem);
+      --t-display:   clamp(2.6rem, 5.5vw, 5.2rem);
+      --t-h2:        clamp(2rem, 3.5vw, 3.2rem);
+      --t-h3:        clamp(1.4rem, 2.2vw, 2rem);
+      --t-eyebrow:   0.66rem;
+      --t-body-l:    1.1rem;
+      --t-body:      1rem;
+      --t-caption:   0.76rem;
+
+      --s-xs:   8px;
+      --s-sm:   16px;
+      --s-md:   32px;
+      --s-lg:   64px;
+      --s-xl:   96px;
+      --s-2xl:  140px;
+      --s-3xl:  200px;
+
+      --max-wide:   1680px;
+      --max-text:   720px;
+      --gutter:     clamp(20px, 5vw, 80px);
+
+      --ease-luxury:  cubic-bezier(0.16, 1, 0.3, 1);
+      --ease-soft:    cubic-bezier(0.22, 0.61, 0.36, 1);
+      --dur-slow:     1s;
+      --dur-med:      0.65s;
+      --dur-fast:     0.35s;
+
+      --line:         rgba(26,23,20,0.10);
+      --line-strong:  rgba(26,23,20,0.18);
+      --line-light:   rgba(196,168,130,0.25);
+      --line-on-dark: rgba(196,168,130,0.20);
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; font-size: 16px; }
+
+    body {
+      background: var(--c-paper);
+      color: var(--c-ink);
+      font-family: var(--f-sans);
+      font-weight: 300;
+      line-height: 1.75;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      overflow-x: hidden;
+    }
+
+    img { display: block; width: 100%; height: 100%; object-fit: cover; }
+    a { text-decoration: none; color: inherit; }
+    button { border: none; background: none; cursor: pointer; font-family: inherit; }
+
+    .eyebrow {
+      font-family: var(--f-sans);
+      font-size: var(--t-eyebrow);
+      font-weight: 400;
+      letter-spacing: 0.24em;
+      text-transform: uppercase;
+      color: var(--c-rosegold-2);
+    }
+    .eyebrow--muted { color: var(--c-ink-muted); }
+    .eyebrow--on-dark { color: var(--c-rosegold); }
+
+    .reveal {
+      opacity: 0;
+      transform: translateY(28px);
+      transition: opacity var(--dur-slow) var(--ease-luxury),
+                  transform var(--dur-slow) var(--ease-luxury);
+    }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
+    .reveal-delay-1 { transition-delay: 0.1s; }
+    .reveal-delay-2 { transition-delay: 0.22s; }
+    .reveal-delay-3 { transition-delay: 0.38s; }
+    .reveal-delay-4 { transition-delay: 0.52s; }
+
+    .reveal-img { overflow: hidden; }
+    .reveal-img img { transform: scale(1.04); transition: transform 1.4s var(--ease-luxury); }
+    .reveal-img.visible img { transform: scale(1); }
+
+    /* ═══════════════════════════════════════════════════════════════
+       NAVIGATION — verbatim shared component. "Visit" is added to
+       the mobile drawer only (with .is-current), matching the
+       existing pattern where the minimal top-bar nav stays limited
+       to Bestsellers / Collections / Client Diaries and the fuller
+       sitemap lives in the mobile drawer + footer (see About Us).
+    ═══════════════════════════════════════════════════════════════ */
+    .nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      padding: 24px var(--gutter);
+      display: flex; align-items: center; justify-content: space-between;
+      transition: background var(--dur-med) var(--ease-soft),
+                  padding var(--dur-med) var(--ease-soft),
+                  backdrop-filter var(--dur-med) var(--ease-soft);
+    }
+    .nav.scrolled {
+      background: rgba(248,244,239,0.96);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      padding: 16px var(--gutter);
+      border-bottom: 1px solid var(--line);
+    }
+    .nav__links { display: flex; gap: 36px; list-style: none; }
+    .nav__links a {
+      font-family: var(--f-sans);
+      font-size: 0.68rem;
+      font-weight: 400;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--c-charcoal);
+      transition: color var(--dur-fast);
+      position: relative;
+    }
+    .nav__links a::after {
+      content: '';
+      position: absolute; left: 0; bottom: -3px;
+      width: 0; height: 1px;
+      background: var(--c-rosegold);
+      transition: width var(--dur-med) var(--ease-luxury);
+    }
+    .nav__links a:hover::after { width: 100%; }
+    .nav__logo {
+      font-family: var(--f-display);
+      font-size: clamp(1rem, 2vw, 1.25rem);
+      font-weight: 400;
+      letter-spacing: 0.16em;
+      color: var(--c-charcoal);
+      text-transform: uppercase;
+    }
+    .nav__actions { display: flex; align-items: center; gap: 24px; }
+    .nav__whatsapp {
+      font-family: var(--f-sans);
+      font-size: 0.66rem;
+      font-weight: 400;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--c-charcoal);
+      border: 1px solid var(--line-strong);
+      padding: 8px 18px;
+      transition: background var(--dur-fast), color var(--dur-fast), border-color var(--dur-fast);
+    }
+    .nav__whatsapp:hover { background: var(--c-charcoal); color: white; }
+    .nav__toggle { display: none; flex-direction: column; gap: 5px; padding: 4px; }
+    .nav__toggle span { display: block; width: 24px; height: 1px; background: var(--c-charcoal); }
+
+    /* This page opens on a dark section, so the un-scrolled nav needs
+       light text/lines over it — mirrors the homepage/About Us hero
+       treatment exactly (nav sits light until .scrolled takes over). */
+    .nav:not(.scrolled) .nav__links a,
+    .nav:not(.scrolled) .nav__logo { color: white; }
+    .nav:not(.scrolled) .nav__whatsapp { color: white; border-color: rgba(255,255,255,0.4); }
+    .nav:not(.scrolled) .nav__whatsapp:hover { background: white; color: var(--c-charcoal); }
+    .nav:not(.scrolled) .nav__toggle span { background: white; }
+
+    /* ═══════════════════════════════════════════════════════════════
+       SECTION 1 — ARRIVAL (hero)
+       Kept deliberately NOT built on a photograph, even in v2 — this
+       part of the original reasoning still holds. No real atelier
+       interior photography exists yet (see Section 3, Store Photo,
+       for the temporary placeholder used further down the page,
+       clearly not presented as documentary evidence of this specific
+       room). The hero stays an engraved-invitation register — dark
+       ground, a bordered card, quiet typography, a faint woven
+       texture standing in for fabric/craft — but the copy itself is
+       rewritten for v2: no longer "by private appointment only,"
+       now naming the real neighbourhood (Santacruz West) up front,
+       since the whole point of this revision is that the location is
+       public, not withheld.
+    ═══════════════════════════════════════════════════════════════ */
+    .arrival {
+      position: relative;
+      min-height: 92svh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--c-charcoal);
+      overflow: hidden;
+      padding: var(--s-2xl) var(--gutter);
+    }
+    /* Faint woven/embroidery-suggestive texture — pure CSS, not a
+       photograph of any real space. Evokes craft/fabric abstractly. */
+    .arrival::before {
+      content: '';
+      position: absolute; inset: 0;
+      background-image:
+        repeating-linear-gradient(45deg, rgba(196,168,130,0.05) 0px, rgba(196,168,130,0.05) 1px, transparent 1px, transparent 26px),
+        repeating-linear-gradient(-45deg, rgba(196,168,130,0.04) 0px, rgba(196,168,130,0.04) 1px, transparent 1px, transparent 26px);
+      opacity: 0.6;
+    }
+    .arrival::after {
+      content: '';
+      position: absolute; inset: 0;
+      background: radial-gradient(ellipse at center, rgba(26,23,20,0) 0%, rgba(26,23,20,0.55) 78%);
+    }
+
+    .arrival__card {
+      position: relative;
+      z-index: 1;
+      max-width: 620px;
+      text-align: center;
+      padding: var(--s-xl) clamp(28px, 6vw, 76px);
+      border: 1px solid var(--line-on-dark);
+    }
+    .arrival__mark {
+      width: 7px; height: 7px;
+      border: 1px solid var(--c-rosegold);
+      transform: rotate(45deg);
+      margin: 0 auto 32px;
+      opacity: 0;
+      animation: fadeIn 1s var(--ease-luxury) 0.4s forwards;
+    }
+    .arrival__eyebrow {
+      margin-bottom: 24px;
+      opacity: 0;
+      animation: fadeUp 1s var(--ease-luxury) 0.6s forwards;
+    }
+    .arrival__title {
+      font-family: var(--f-display);
+      font-size: clamp(3rem, 6.5vw, 5.6rem);
+      font-weight: 400;
+      font-style: italic;
+      line-height: 0.98;
+      color: white;
+      letter-spacing: -0.01em;
+      margin-bottom: 4px;
+      opacity: 0;
+      animation: fadeUp 1.2s var(--ease-luxury) 0.9s forwards;
+    }
+    .arrival__title strong {
+      font-style: normal;
+      font-weight: 400;
+      display: block;
+      font-size: 0.42em;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.55);
+      margin-top: 14px;
+    }
+    .arrival__sub {
+      margin: 32px auto 0;
+      max-width: 440px;
+      font-family: var(--f-sans);
+      font-size: 0.86rem;
+      font-weight: 300;
+      letter-spacing: 0.03em;
+      line-height: 1.95;
+      color: rgba(255,255,255,0.62);
+      opacity: 0;
+      animation: fadeUp 1s var(--ease-luxury) 1.2s forwards;
+    }
+    .arrival__cta {
+      margin-top: 44px;
+      opacity: 0;
+      animation: fadeUp 1s var(--ease-luxury) 1.5s forwards;
+    }
+
+    .btn-ghost {
+      display: inline-block;
+      font-family: var(--f-sans);
+      font-size: 0.68rem;
+      font-weight: 400;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: white;
+      border: 1px solid rgba(255,255,255,0.55);
+      padding: 14px 36px;
+      transition: background var(--dur-fast), color var(--dur-fast), border-color var(--dur-fast);
+    }
+    .btn-ghost:hover { background: white; color: var(--c-charcoal); border-color: white; }
+
+    .btn-text {
+      font-family: var(--f-sans);
+      font-size: 0.68rem;
+      font-weight: 400;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--c-ink-mid);
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      transition: color var(--dur-fast);
+    }
+    .btn-text::after {
+      content: '';
+      display: block; width: 32px; height: 1px;
+      background: var(--c-rosegold-2);
+      transition: width var(--dur-med) var(--ease-luxury);
+    }
+    .btn-text:hover { color: var(--c-charcoal); }
+    .btn-text:hover::after { width: 52px; }
+
+    @keyframes fadeUp { from { opacity: 0; transform: translateY(24px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+    /* ═══════════════════════════════════════════════════════════════
+       SECTION 2 — FIND US (address & practicalities)
+       v2 rewrite. Left: the real, full postal address set in large
+       display type at the top of the panel (the single most
+       important piece of content on this page now), followed by
+       welcoming-not-gatekeeping copy and two real actions (Get
+       Directions / WhatsApp). Right: a quiet fact sheet — phone,
+       hours, Google rating, walk-in policy — all real, sourced from
+       K&A's own Google Business listing (see build spec Section 6).
+       The one item still genuinely unconfirmed (full weekly hours/
+       closing time) is marked with the same honest --tbc convention
+       used elsewhere on the site, not guessed at.
+
+       v2.1: the fact sheet's phone row is plain, non-linked text —
+       the left panel's "WhatsApp the Concierge" CTA is this section's
+       one actionable contact method; the fact sheet stays reference-
+       only, matching its "in Brief" framing (see inline HTML comment
+       at .facts__row for the full reasoning).
+    ═══════════════════════════════════════════════════════════════ */
+    .invitation { background: var(--c-paper); }
+    .invitation__inner {
+      max-width: var(--max-wide);
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 1.05fr 0.95fr;
+      gap: var(--s-2xl);
+      padding: var(--s-2xl) var(--gutter);
+    }
+
+    .invitation__panel {
+      background: var(--c-paper-deep);
+      padding: var(--s-xl) clamp(32px, 4vw, 64px);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+    .invitation__eyebrow { margin-bottom: 20px; }
+    .invitation__title {
+      font-family: var(--f-display);
+      font-size: var(--t-display);
+      font-weight: 400;
+      font-style: italic;
+      color: var(--c-charcoal);
+      line-height: 1.08;
+      margin-bottom: 26px;
+      max-width: 460px;
+    }
+    .invitation__body {
+      font-size: var(--t-body-l);
+      font-weight: 300;
+      line-height: 1.9;
+      color: var(--c-ink-mid);
+      max-width: 460px;
+      margin-bottom: 24px;
+    }
+    .invitation__tbc {
+      font-family: var(--f-sans);
+      font-style: italic;
+      font-size: 0.78rem;
+      font-weight: 300;
+      letter-spacing: 0.02em;
+      color: var(--c-ink-muted);
+      border-left: 2px solid var(--line-strong);
+      padding-left: 16px;
+      max-width: 440px;
+      margin-bottom: 30px;
+    }
+
+    /* Address block — new in v2. The real, full postal address, set
+       prominently in display italic at the top of the left panel —
+       deliberately the most visually weighted element in this
+       section, since the entire point of this revision is that the
+       address is public and easy to find, not gated. */
+    .invitation__address {
+      font-family: var(--f-display);
+      font-style: italic;
+      font-weight: 400;
+      font-size: clamp(1.25rem, 2.1vw, 1.6rem);
+      line-height: 1.55;
+      color: var(--c-charcoal);
+      margin-bottom: 26px;
+      padding-bottom: 26px;
+      border-bottom: 1px solid var(--line-strong);
+      max-width: 460px;
+    }
+    .invitation__actions {
+      display: flex;
+      align-items: center;
+      gap: 28px;
+      flex-wrap: wrap;
+      margin-top: 32px;
+    }
+    .btn-outline-dark {
+      font-family: var(--f-sans);
+      font-size: 0.66rem;
+      font-weight: 400;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--c-charcoal);
+      border: 1px solid var(--line-strong);
+      padding: 14px 32px;
+      transition: background var(--dur-fast), color var(--dur-fast), border-color var(--dur-fast);
+    }
+    .btn-outline-dark:hover { background: var(--c-charcoal); color: white; border-color: var(--c-charcoal); }
+
+    .facts { display: flex; flex-direction: column; justify-content: center; }
+    .facts__eyebrow { margin-bottom: 32px; }
+    .facts__row {
+      padding: 22px 0;
+      border-bottom: 1px solid var(--line);
+      display: grid;
+      grid-template-columns: 160px 1fr;
+      gap: 24px;
+      align-items: baseline;
+    }
+    .facts__row:first-of-type { padding-top: 0; }
+    .facts__label {
+      font-family: var(--f-sans);
+      font-size: 0.63rem;
+      font-weight: 500;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--c-ink-muted);
+    }
+    .facts__value {
+      font-family: var(--f-display);
+      font-size: 1.15rem;
+      font-weight: 400;
+      color: var(--c-ink);
+      line-height: 1.5;
+    }
+    .facts__value--confirmed { font-style: italic; color: var(--c-charcoal); }
+    .facts__value--tbc {
+      font-family: var(--f-sans);
+      font-size: 0.82rem;
+      font-style: italic;
+      font-weight: 300;
+      color: var(--c-ink-muted);
+    }
+    /* Small inline note appended after a confirmed fact when part of
+       it is still open (e.g. "Opens 11am" confirmed, closing time
+       not yet) — visually distinct from the full .facts__value--tbc
+       row style used when a fact is entirely unconfirmed. */
+    .facts__note {
+      display: block;
+      margin-top: 6px;
+      font-family: var(--f-sans);
+      font-size: 0.72rem;
+      font-style: italic;
+      font-weight: 300;
+      color: var(--c-ink-muted);
+    }
+    .facts__link {
+      display: inline-block;
+      margin-right: 18px;
+      font-family: var(--f-sans);
+      font-size: 0.66rem;
+      font-weight: 400;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--c-rosegold-2);
+      border-bottom: 1px solid var(--line-light);
+      transition: color var(--dur-fast), border-color var(--dur-fast);
+    }
+    .facts__link:hover { color: var(--c-charcoal); border-color: var(--c-charcoal); }
+    .facts__rating {
+      display: inline-flex;
+      align-items: baseline;
+      gap: 6px;
+    }
+    .facts__rating-score { font-style: italic; }
+    .facts__rating-star { color: var(--c-rosegold); font-style: normal; font-size: 0.85em; }
+
+    /* ═══════════════════════════════════════════════════════════════
+       SECTION 3 — STORE PHOTO  (NEW in v2)
+       A single full-bleed image with a bottom-left name/sub caption
+       — the same two-tier caption pattern already established on
+       About Us's Founders section (.founders__image-caption), reused
+       here rather than inventing a new convention. IMPORTANT: the
+       image currently wired in is a temporary, generic stock photo
+       (a tastefully lit bridal-boutique mood shot, sourced from
+       Unsplash, not a photo of K&A's own premises) — Suraj explicitly
+       authorised this as a stand-in until a real photo of the atelier
+       is uploaded via the theme editor's image_picker. See build spec
+       Section 5/6 for full sourcing detail and the platform note on
+       wiring this as a real image_picker setting. No "placeholder" or
+       "coming soon" language appears on-page — that would read as
+       unfinished to a site visitor — the caption reads as ordinary,
+       tasteful copy ("The Atelier"), and the placeholder status is
+       tracked in code comments and the build spec instead.
+    ═══════════════════════════════════════════════════════════════ */
+    .storephoto { position: relative; min-height: 620px; overflow: hidden; }
+    .storephoto__bg { position: absolute; inset: 0; }
+    .storephoto img { object-position: center 42%; }
+    .storephoto__overlay {
+      position: absolute; inset: 0;
+      background: linear-gradient(to top, rgba(15,12,10,0.60) 0%, rgba(15,12,10,0.06) 34%, transparent 55%);
+    }
+    .storephoto__caption { position: absolute; bottom: var(--s-lg); left: var(--gutter); }
+    .storephoto__name {
+      font-family: var(--f-display); font-style: italic; font-weight: 400;
+      font-size: clamp(1.4rem, 3vw, 2rem); color: white; display: block; margin-bottom: 8px;
+    }
+    .storephoto__sub {
+      font-family: var(--f-sans); font-size: 0.64rem; font-weight: 400;
+      letter-spacing: 0.18em; text-transform: uppercase; color: rgba(255,255,255,0.68);
+    }
+
+    /* ═══════════════════════════════════════════════════════════════
+       SECTION 4 — ASSURANCE STRIP
+       Verbatim reuse of the homepage/About Us Craft Strip component
+       (.craft-strip) — same class, same visual treatment, new copy.
+       Three items instead of four; the flex-wrap layout already
+       supports either count.
+    ═══════════════════════════════════════════════════════════════ */
+    .craft-strip {
+      background: var(--c-charcoal);
+      padding: var(--s-xl) var(--gutter);
+      border-top: 1px solid var(--line-on-dark);
+      border-bottom: 1px solid var(--line-on-dark);
+    }
+    .craft-strip__inner {
+      display: flex; align-items: center; justify-content: center;
+      gap: clamp(24px, 5vw, 80px); flex-wrap: wrap;
+      max-width: var(--max-wide); margin: 0 auto;
+    }
+    .craft-strip__item { text-align: center; }
+    .craft-strip__label {
+      font-family: var(--f-display);
+      font-size: clamp(1rem, 2.2vw, 1.6rem);
+      font-weight: 400; font-style: italic; color: white;
+      display: block; margin-bottom: 6px;
+    }
+    .craft-strip__sub {
+      font-family: var(--f-sans);
+      font-size: 0.62rem; font-weight: 300;
+      letter-spacing: 0.18em; text-transform: uppercase;
+      color: rgba(255,255,255,0.35);
+    }
+    .craft-strip__dot { width: 3px; height: 3px; border-radius: 50%; background: var(--c-rosegold); opacity: 0.4; }
+
+    /* ═══════════════════════════════════════════════════════════════
+       SECTION 5 — APPOINTMENT CTA
+       Verbatim reuse of the existing sitewide component
+       (sections/ka-appointment.liquid already built). Same class,
+       same image default, same WhatsApp routing pattern, copy
+       adjusted only slightly for continuity with this page.
+    ═══════════════════════════════════════════════════════════════ */
+    .appointment { position: relative; min-height: 70vh; display: flex; align-items: center; overflow: hidden; }
+    .appointment__bg { position: absolute; inset: 0; }
+    .appointment__bg img { object-position: center 30%; filter: sepia(0.10) saturate(0.85) brightness(0.75); }
+    .appointment__overlay { position: absolute; inset: 0; background: rgba(26,23,20,0.62); }
+    .appointment__content { position: relative; z-index: 1; padding: var(--s-2xl) var(--gutter); max-width: 680px; margin: 0 auto; text-align: center; }
+    .appointment__eyebrow { margin-bottom: 24px; }
+    .appointment__title {
+      font-family: var(--f-display); font-size: var(--t-display); font-weight: 400;
+      font-style: italic; color: white; line-height: 1.05; margin-bottom: 24px;
+    }
+    .appointment__body {
+      font-family: var(--f-sans); font-size: 0.88rem; font-weight: 300;
+      line-height: 1.9; color: rgba(255,255,255,0.7); margin-bottom: 48px; letter-spacing: 0.02em;
+    }
+    .appointment__options { display: flex; align-items: center; justify-content: center; gap: 20px; flex-wrap: wrap; }
+    .btn-outline-white {
+      font-family: var(--f-sans); font-size: 0.66rem; font-weight: 400;
+      letter-spacing: 0.2em; text-transform: uppercase; color: white;
+      border: 1px solid rgba(255,255,255,0.45); padding: 14px 36px;
+      transition: background var(--dur-fast), border-color var(--dur-fast), color var(--dur-fast);
+    }
+    .btn-outline-white:hover { background: white; color: var(--c-charcoal); border-color: white; }
+    .appointment__divider { font-family: var(--f-sans); font-size: 0.63rem; letter-spacing: 0.1em; color: rgba(255,255,255,0.3); }
+
+    /* ═══════════════════════════════════════════════════════════════
+       FOOTER — verbatim shared component. "Visit the Atelier" link
+       added to the Maison/"The House" column, .is-current here.
+    ═══════════════════════════════════════════════════════════════ */
+    .footer { background: var(--c-charcoal); padding: var(--s-2xl) var(--gutter) var(--s-lg); border-top: 1px solid var(--line-on-dark); }
+    .footer__top {
+      display: grid; grid-template-columns: 1.4fr 1fr 1fr 1fr; gap: var(--s-lg);
+      padding-bottom: var(--s-xl); border-bottom: 1px solid rgba(255,255,255,0.07); margin-bottom: var(--s-lg);
+    }
+    .footer__logo {
+      font-family: var(--f-display); font-size: 1.5rem; font-weight: 400;
+      letter-spacing: 0.12em; color: rgba(255,255,255,0.82); text-transform: uppercase;
+      margin-bottom: 16px; display: block;
+    }
+    .footer__tagline {
+      font-family: var(--f-display); font-style: italic; font-size: 0.92rem;
+      color: rgba(255,255,255,0.32); line-height: 1.65; margin-bottom: 28px; max-width: 260px;
+    }
+    .footer__social { display: flex; gap: 16px; }
+    .footer__social a {
+      font-family: var(--f-sans); font-size: 0.6rem; font-weight: 400;
+      letter-spacing: 0.18em; text-transform: uppercase; color: rgba(255,255,255,0.35);
+      transition: color var(--dur-fast);
+    }
+    .footer__social a:hover { color: var(--c-rosegold); }
+    .footer__col-title {
+      font-family: var(--f-sans); font-size: 0.6rem; font-weight: 500;
+      letter-spacing: 0.24em; text-transform: uppercase; color: rgba(255,255,255,0.35); margin-bottom: 20px;
+    }
+    .footer__links { list-style: none; display: flex; flex-direction: column; gap: 12px; }
+    .footer__links a {
+      font-family: var(--f-sans); font-size: 0.78rem; font-weight: 300;
+      color: rgba(255,255,255,0.5); transition: color var(--dur-fast); letter-spacing: 0.04em;
+    }
+    .footer__links a:hover { color: white; }
+    .footer__links a.is-current { color: var(--c-rosegold); }
+    .footer__contact-item {
+      font-family: var(--f-sans); font-size: 0.78rem; font-weight: 300;
+      color: rgba(255,255,255,0.42); line-height: 1.8; letter-spacing: 0.04em;
+    }
+    .footer__contact-item a { color: rgba(255,255,255,0.42); transition: color var(--dur-fast); }
+    .footer__contact-item a:hover { color: var(--c-rosegold); }
+    .footer__bottom { display: flex; align-items: center; justify-content: space-between; gap: 24px; flex-wrap: wrap; }
+    .footer__copy { font-family: var(--f-sans); font-size: 0.63rem; font-weight: 300; color: rgba(255,255,255,0.18); letter-spacing: 0.1em; }
+    .footer__legal { display: flex; gap: 24px; list-style: none; }
+    .footer__legal a {
+      font-family: var(--f-sans); font-size: 0.63rem; font-weight: 300;
+      color: rgba(255,255,255,0.18); letter-spacing: 0.1em; transition: color var(--dur-fast);
+    }
+    .footer__legal a:hover { color: rgba(255,255,255,0.5); }
+
+    /* ═══════════════════════════════════════════════════════════════
+       MOBILE STYLES
+    ═══════════════════════════════════════════════════════════════ */
+    @media (max-width: 900px) {
+      .nav__links { display: none; }
+      .nav__toggle { display: flex; }
+      .nav__whatsapp { display: none; }
+
+      .arrival__card { padding: var(--s-lg) 28px; }
+
+      .invitation__inner { grid-template-columns: 1fr; gap: var(--s-lg); padding: var(--s-xl) var(--gutter); }
+      .invitation__panel { padding: var(--s-lg) 28px; }
+      .facts__row { grid-template-columns: 1fr; gap: 6px; }
+
+      .footer__top { grid-template-columns: 1fr 1fr; gap: var(--s-md); }
+      .footer__brand { grid-column: 1 / -1; }
+    }
+
+    @media (max-width: 600px) {
+      :root { --s-2xl: 80px; --s-xl: 60px; }
+      .arrival { min-height: 88svh; }
+      .storephoto { min-height: 420px; }
+      .invitation__actions { flex-direction: column; align-items: flex-start; gap: 20px; }
+      .appointment__options { flex-direction: column; align-items: stretch; }
+      .btn-outline-white { text-align: center; }
+      .footer__top { grid-template-columns: 1fr; }
+      .craft-strip__inner { flex-direction: column; gap: 32px; }
+      .craft-strip__dot { display: none; }
+    }
+
+    /* ── Mobile nav drawer — verbatim shared component ── */
+    .mobile-nav {
+      position: fixed; inset: 0; z-index: 200; background: var(--c-charcoal);
+      display: flex; flex-direction: column; padding: 80px var(--gutter) var(--s-lg);
+      transform: translateX(100%); transition: transform 0.5s var(--ease-luxury);
+    }
+    .mobile-nav.open { transform: translateX(0); }
+    .mobile-nav__close {
+      position: absolute; top: 24px; right: var(--gutter);
+      font-family: var(--f-sans); font-size: 0.63rem; font-weight: 400;
+      letter-spacing: 0.22em; text-transform: uppercase; color: rgba(255,255,255,0.45); padding: 8px;
+    }
+    .mobile-nav__links { list-style: none; margin-bottom: var(--s-lg); }
+    .mobile-nav__links li { border-bottom: 1px solid rgba(255,255,255,0.07); }
+    .mobile-nav__links a {
+      display: block; font-family: var(--f-display); font-size: clamp(1.6rem, 6vw, 2.6rem);
+      font-weight: 400; font-style: italic; color: white; padding: 18px 0;
+      letter-spacing: 0.02em; transition: color var(--dur-fast);
+    }
+    .mobile-nav__links a:hover, .mobile-nav__links a.is-current { color: var(--c-rosegold); }
+    .mobile-nav__footer { margin-top: auto; }
+    .mobile-nav__footer p {
+      font-family: var(--f-sans); font-size: 0.7rem; font-weight: 300;
+      color: rgba(255,255,255,0.3); letter-spacing: 0.1em; margin-bottom: 8px;
+    }
+    .mobile-nav__footer a {
+      display: block; font-family: var(--f-sans); font-size: 0.82rem;
+      font-weight: 300; color: var(--c-rosegold); letter-spacing: 0.06em;
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- ═══════════════════════════════════════════════════
+       NAVIGATION
+  ═══════════════════════════════════════════════════ -->
+  <nav class="nav" id="nav">
+    <ul class="nav__links">
+      <li><a href="/collections/bestsellers">Bestsellers</a></li>
+      <li><a href="/collections">Collections</a></li>
+      <li><a href="/pages/client-diaries">Client Diaries</a></li>
+    </ul>
+    <a href="/" class="nav__logo">K&amp;A</a>
+    <div class="nav__actions">
+      <a href="https://wa.me/919967543087" class="nav__whatsapp" target="_blank">Concierge</a>
+      <button class="nav__toggle" id="navToggle" aria-label="Open menu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </nav>
+
+  <nav class="mobile-nav" id="mobileNav" aria-hidden="true">
+    <button class="mobile-nav__close" id="navClose">Close</button>
+    <ul class="mobile-nav__links">
+      <li><a href="/collections/bestsellers">Bestsellers</a></li>
+      <li><a href="/collections">Collections</a></li>
+      <li><a href="/pages/client-diaries">Client Diaries</a></li>
+      <li><a href="/pages/about-us">About</a></li>
+      <li><a href="/pages/visit-the-atelier" class="is-current">Visit Us</a></li>
+      <li><a href="/pages/appointments" data-ka-appt-link data-ka-appt-text="Hi, I'd like to book an appointment">Book an Appointment</a></li>
+    </ul>
+    <div class="mobile-nav__footer">
+      <p>Concierge</p>
+      <a href="https://wa.me/919967543087">+91 99675 43087</a>
+    </div>
+  </nav>
+
+
+  <!-- ═══════════════════════════════════════════════════
+       SECTION 1 — ARRIVAL (hero)
+       No photography used here — see CSS comment above and
+       build spec Section 5. The card keeps its engraved-
+       invitation register, but the copy now names the real
+       neighbourhood and leads with "Get Directions," since a
+       visitor no longer needs to ask permission to know where
+       we are.
+  ═══════════════════════════════════════════════════ -->
+  <section class="arrival" aria-label="Visit the K&A Atelier">
+    <div class="arrival__card">
+      <div class="arrival__mark"></div>
+      <p class="eyebrow eyebrow--on-dark arrival__eyebrow">Santacruz West, Mumbai</p>
+      <h1 class="arrival__title">
+        The Atelier
+        <strong>Mumbai</strong>
+      </h1>
+      <p class="arrival__sub">
+        A real address, a fitting mirror, and the quiet particular to a
+        house where every piece is made once, for one person. Walk in,
+        or write ahead — either way, we're glad to have you.
+      </p>
+      <div class="arrival__cta">
+        <a
+          href="https://maps.app.goo.gl/tU41xSkVonr4Qe8v9"
+          class="btn-ghost"
+          target="_blank"
+          rel="noopener"
+        >
+          Get Directions
+        </a>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ═══════════════════════════════════════════════════
+       SECTION 2 — FIND US (address & practicalities)
+       Real, verified information throughout (see build spec
+       Section 6 for sourcing). The address is the visual anchor
+       of the left panel — set large, in display type, above the
+       welcoming copy. The only item still marked pending is the
+       full weekly hours/closing time, honestly flagged rather
+       than guessed.
+  ═══════════════════════════════════════════════════ -->
+  <section class="invitation" aria-label="Visiting information">
+    <div class="invitation__inner">
+      <div class="invitation__panel reveal">
+        <p class="eyebrow eyebrow--muted invitation__eyebrow">Where to Find Us</p>
+        <h2 class="invitation__title">Come Find Us.</h2>
+        <p class="invitation__address">
+          Ganga Building, 2A, Talmaki Road<br>
+          Potohar Nagar, Santacruz West<br>
+          Mumbai, Maharashtra 400054
+        </p>
+        <p class="invitation__body">
+          The K&amp;A atelier is a real, working studio on Talmaki Road —
+          not a hidden address. We welcome walk-ins, though a booked
+          appointment lets us prepare your consultation, your
+          measurements and our full attention in advance. However you
+          arrive, you'll be looked after the same way.
+        </p>
+        <div class="invitation__actions">
+          <a
+            href="https://maps.app.goo.gl/tU41xSkVonr4Qe8v9"
+            class="btn-outline-dark"
+            target="_blank"
+            rel="noopener"
+          >
+            Get Directions
+          </a>
+          <a
+            href="https://wa.me/919967543087"
+            class="btn-text"
+            data-ka-appt-link
+            data-ka-appt-text="Hi, I'd like to book an appointment to visit the K&A atelier"
+          >
+            WhatsApp the Concierge
+          </a>
+        </div>
+      </div>
+
+      <div class="facts reveal reveal-delay-1">
+        <p class="eyebrow eyebrow--muted facts__eyebrow">A Visit, in Brief</p>
+
+        <!-- v2.1: this row previously duplicated the left panel's
+             "WhatsApp the Concierge" CTA with its own Call + WhatsApp
+             link pair — the same action, offered twice within one
+             glance. This fact sheet's own framing ("A Visit, in
+             Brief") is reference info, not a second bank of buttons,
+             so the phone number is now plain, non-linked text — kept
+             (rather than dropped) because someone scanning quick
+             facts may still want the number itself to note or dial
+             manually, distinct from the panel's actionable WhatsApp
+             CTA above. -->
+        <div class="facts__row">
+          <span class="facts__label">Phone</span>
+          <span class="facts__value facts__value--confirmed">+91 99675 43087</span>
+        </div>
+        <div class="facts__row">
+          <span class="facts__label">Hours</span>
+          <span class="facts__value facts__value--confirmed">
+            Opens 11:00 AM
+            <span class="facts__note">Full weekly hours &amp; closing time to be confirmed — message us before visiting outside typical daytime hours.</span>
+          </span>
+        </div>
+        <div class="facts__row">
+          <span class="facts__label">Rated on Google</span>
+          <span class="facts__value facts__value--confirmed">
+            <span class="facts__rating"><span class="facts__rating-score">4.7</span><span class="facts__rating-star">★</span></span> · Designer Clothing Store<br>
+            <a href="https://maps.app.goo.gl/tU41xSkVonr4Qe8v9" class="facts__link" target="_blank" rel="noopener" style="margin-top: 8px; display: inline-block;">View on Google Maps</a>
+          </span>
+        </div>
+        <!-- v2.1: shortened from "Welcome — appointments preferred,
+             so we may prepare for you" — that phrasing was a near-
+             verbatim echo of the Assurance Strip two sections below
+             ("Walk-Ins Welcome... / Appointments Preferred, so we can
+             prepare for your visit"). This row now states the bare
+             fact only, in the same terse register as Call/Hours/
+             Rating above it; the fuller warm framing and rationale
+             stays where it belongs, in the Assurance Strip. -->
+        <div class="facts__row">
+          <span class="facts__label">Walk-Ins</span>
+          <span class="facts__value facts__value--confirmed">Welcome anytime — no appointment required.</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ═══════════════════════════════════════════════════
+       SECTION 3 — STORE PHOTO  (NEW in v2)
+       Image: visit-store-placeholder.jpg — a temporary, generic
+       stock photo (bridal gowns on mannequins in a warmly lit
+       boutique window, sourced from Unsplash — NOT a photo of
+       K&A's own premises). Suraj explicitly authorised this as a
+       stand-in "right now can take any image from google and
+       later i can change and add from the theme." Must be wired
+       as a real image_picker setting so it can be swapped without
+       a code change the moment real atelier photography exists —
+       see build spec Section 6.
+  ═══════════════════════════════════════════════════ -->
+  <section class="storephoto" aria-label="Inside the atelier">
+    <div class="storephoto__bg reveal-img">
+      <img src="images/visit-store-placeholder.jpg" alt="A warmly lit boutique interior, representative of the K&A atelier's atmosphere" />
+    </div>
+    <div class="storephoto__overlay"></div>
+    <div class="storephoto__caption">
+      <span class="storephoto__name">The Atelier</span>
+      <span class="storephoto__sub">Santacruz West, Mumbai</span>
+    </div>
+  </section>
+
+
+  <!-- ═══════════════════════════════════════════════════
+       SECTION 4 — ASSURANCE STRIP
+  ═══════════════════════════════════════════════════ -->
+  <section class="craft-strip" aria-label="What to expect from a visit">
+    <div class="craft-strip__inner">
+      <div class="craft-strip__item reveal">
+        <span class="craft-strip__label">Walk-Ins Welcome</span>
+        <span class="craft-strip__sub">Drop by — we'd love to meet you</span>
+      </div>
+      <div class="craft-strip__dot reveal"></div>
+      <div class="craft-strip__item reveal reveal-delay-1">
+        <span class="craft-strip__label">Appointments Preferred</span>
+        <span class="craft-strip__sub">So we can prepare for your visit</span>
+      </div>
+      <div class="craft-strip__dot reveal reveal-delay-1"></div>
+      <div class="craft-strip__item reveal reveal-delay-2">
+        <span class="craft-strip__label">Concierge Guided</span>
+        <span class="craft-strip__sub">From first message to final fitting</span>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ═══════════════════════════════════════════════════
+       SECTION 5 — APPOINTMENT CTA
+       Verbatim reuse of sections/ka-appointment.liquid. Same
+       default background image already live sitewide
+       (appointment-bg.jpg) — not a new claim introduced by this
+       page. Copy lightly adjusted for continuity only.
+  ═══════════════════════════════════════════════════ -->
+  <section class="appointment" aria-label="Book an appointment">
+    <div class="appointment__bg reveal-img">
+      <img src="images/appointment-bg.jpg" alt="K&A atelier — styling appointment" />
+    </div>
+    <div class="appointment__overlay"></div>
+    <div class="appointment__content">
+      <p class="eyebrow eyebrow--on-dark appointment__eyebrow reveal">The Atelier</p>
+      <h2 class="appointment__title reveal reveal-delay-1">Now You Know<br>Where to Find Us.</h2>
+      <p class="appointment__body reveal reveal-delay-2">
+        Walk in, or write ahead — either way, we're glad to have you.
+        Message us and we'll make sure you're expected.
+      </p>
+      <div class="appointment__options reveal reveal-delay-3">
+        <a
+          href="/pages/appointments"
+          class="btn-outline-white"
+          data-ka-appt-link
+          data-ka-appt-text="Hi, I'd like to book an in-store appointment"
+        >
+          Book In-Store Appointment
+        </a>
+        <span class="appointment__divider">or</span>
+        <a
+          href="/pages/appointments"
+          class="btn-outline-white"
+          data-ka-appt-link
+          data-ka-appt-text="Hi, I'd like to book a virtual styling session"
+        >
+          Book Virtual Styling Session
+        </a>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ═══════════════════════════════════════════════════
+       FOOTER
+  ═══════════════════════════════════════════════════ -->
+  <footer class="footer" aria-label="Site footer">
+    <div class="footer__top">
+      <div class="footer__brand">
+        <span class="footer__logo">K&amp;A by Karishma &amp; Ashita</span>
+        <p class="footer__tagline">Bridal couture, handcrafted<br>in Mumbai.</p>
+        <div class="footer__social">
+          <a href="https://instagram.com/karishmaashita" target="_blank">Instagram</a>
+          <a href="https://wa.me/919967543087" target="_blank">Concierge</a>
+          <a href="#" target="_blank">Pinterest</a>
+        </div>
+      </div>
+
+      <div>
+        <p class="footer__col-title">Collections</p>
+        <ul class="footer__links">
+          <li><a href="#">Bridal</a></li>
+          <li><a href="#">Lehengas</a></li>
+          <li><a href="#">Indo-Western</a></li>
+          <li><a href="#">Festive Wear</a></li>
+          <li><a href="#">Bestsellers</a></li>
+        </ul>
+      </div>
+
+      <div>
+        <p class="footer__col-title">The House</p>
+        <ul class="footer__links">
+          <li><a href="/pages/about-us">About Karishma &amp; Ashita</a></li>
+          <li><a href="/pages/client-diaries">Client Diaries</a></li>
+          <li><a href="/pages/visit-the-atelier" class="is-current">Visit Us</a></li>
+          <li><a href="/pages/appointments">Book an Appointment</a></li>
+          <li><a href="https://wa.me/919967543087" target="_blank">Concierge</a></li>
+        </ul>
+      </div>
+
+      <div>
+        <p class="footer__col-title">Contact</p>
+        <div style="display: flex; flex-direction: column; gap: 12px;">
+          <p class="footer__contact-item">
+            <a href="https://wa.me/919967543087">+91 99675 43087</a>
+          </p>
+          <p class="footer__contact-item">
+            <a href="mailto:hello@karishmaashita.com">hello@karishmaashita.com</a>
+          </p>
+          <p class="footer__contact-item">
+            <a href="https://maps.app.goo.gl/tU41xSkVonr4Qe8v9" target="_blank" rel="noopener">
+              Ganga Building, 2A, Talmaki Road<br>
+              Santacruz West, Mumbai 400054
+            </a>
+          </p>
+          <p class="footer__contact-item">
+            Free worldwide shipping
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <div class="footer__bottom">
+      <p class="footer__copy">&copy; 2026 K&amp;A by Karishma &amp; Ashita. All rights reserved.</p>
+      <ul class="footer__legal">
+        <li><a href="#">Privacy Policy</a></li>
+        <li><a href="#">Terms of Service</a></li>
+        <li><a href="#">Shipping &amp; Returns</a></li>
+      </ul>
+    </div>
+  </footer>
+
+
+  <!-- ═══════════════════════════════════════════════════
+       JAVASCRIPT
+  ═══════════════════════════════════════════════════ -->
+  <script>
+    (function () {
+      'use strict';
+
+      const nav = document.getElementById('nav');
+      window.addEventListener('scroll', function () {
+        if (window.scrollY > 60) { nav.classList.add('scrolled'); }
+        else { nav.classList.remove('scrolled'); }
+      }, { passive: true });
+
+      const revealEls = document.querySelectorAll('.reveal, .reveal-img');
+      const observer = new IntersectionObserver(function (entries) {
+        entries.forEach(function (entry) {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('visible');
+            observer.unobserve(entry.target);
+          }
+        });
+      }, { threshold: 0.10, rootMargin: '0px 0px -40px 0px' });
+      revealEls.forEach(function (el) { observer.observe(el); });
+
+      const navToggle = document.getElementById('navToggle');
+      const navClose  = document.getElementById('navClose');
+      const mobileNav = document.getElementById('mobileNav');
+
+      function openNav () {
+        mobileNav.classList.add('open');
+        mobileNav.setAttribute('aria-hidden', 'false');
+        document.body.style.overflow = 'hidden';
+      }
+      function closeNav () {
+        mobileNav.classList.remove('open');
+        mobileNav.setAttribute('aria-hidden', 'true');
+        document.body.style.overflow = '';
+      }
+      if (navToggle) navToggle.addEventListener('click', openNav);
+      if (navClose)  navClose.addEventListener('click', closeNav);
+      document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape') closeNav();
+      });
+
+      /* Interim WhatsApp routing — same sitewide pattern used by
+         ka-appointment.liquid and ka-footer.liquid. Any element with
+         data-ka-appt-link opens WhatsApp with a pre-filled enquiry
+         instead of following its href, until a real booking flow
+         exists. Remove data-ka-appt-link once a real destination is live. */
+      document.addEventListener('click', function (e) {
+        const el = e.target.closest('[data-ka-appt-link]');
+        if (!el) return;
+        e.preventDefault();
+        const text = encodeURIComponent(el.getAttribute('data-ka-appt-text') || "Hi, I'd like to know more");
+        window.open('https://wa.me/919967543087?text=' + text, '_blank');
+      });
+
+    })();
+  </script>
+
+</body>
+</html>

@@ -7,6 +7,13 @@
 {%- endcomment -%}
 {%- assign is_about_us = false -%}
 {%- if request.page_type == 'page' and page.handle == 'about-us' -%}{%- assign is_about_us = true -%}{%- endif -%}
+{%- comment -%}
+  is_visit — same pattern as is_about_us (Docs/store-location-build-
+  spec.md Section 3, Section 0), drives .is-current on the footer's
+  "Visit Us" link.
+{%- endcomment -%}
+{%- assign is_visit = false -%}
+{%- if request.page_type == 'page' and page.handle == 'visit-the-atelier' -%}{%- assign is_visit = true -%}{%- endif -%}
 
 <footer class="ka-footer" aria-label="Site footer">
   <div class="ka-footer__top">
@@ -63,6 +70,7 @@
         {% if linklists['footer-the-house'].links.size == 0 %}
           <li><a href="/pages/about-us"{% if is_about_us %} class="is-current"{% endif %}>About Karishma &amp; Ashita</a></li>
           <li><a href="/pages/client-diaries">Client Diaries</a></li>
+          <li><a href="/pages/visit-the-atelier"{% if is_visit %} class="is-current"{% endif %}>Visit Us</a></li>
           {%- comment -%}
             "Book an Appointment" — TEMPORARY interim WhatsApp routing,
             same sitewide pattern (Docs/cta-architecture-revision.md

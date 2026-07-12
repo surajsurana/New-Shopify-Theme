@@ -1,0 +1,101 @@
+/* ================================================================
+   KA-VISIT-ARRIVAL
+   Engraved-invitation dark hero — bordered card, no photography.
+   Docs/store-location-build-spec.md Section 3/4.
+================================================================ */
+.ka-visit-arrival {
+  position: relative;
+  min-height: 92vh;
+  min-height: 92svh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--c-charcoal);
+  overflow: hidden;
+  padding: var(--s-2xl) var(--gutter);
+}
+
+/* Faint woven/embroidery-suggestive texture — pure CSS, not a
+   photograph of any real space. Evokes craft/fabric abstractly. */
+.ka-visit-arrival::before {
+  content: '';
+  position: absolute; inset: 0;
+  background-image:
+    repeating-linear-gradient(45deg, rgba(154,123,79,0.06) 0px, rgba(154,123,79,0.06) 1px, transparent 1px, transparent 26px),
+    repeating-linear-gradient(-45deg, rgba(154,123,79,0.05) 0px, rgba(154,123,79,0.05) 1px, transparent 1px, transparent 26px);
+  opacity: 0.6;
+}
+.ka-visit-arrival::after {
+  content: '';
+  position: absolute; inset: 0;
+  background: radial-gradient(ellipse at center, rgba(15,12,10,0) 0%, rgba(15,12,10,0.55) 78%);
+}
+
+.ka-visit-arrival__card {
+  position: relative;
+  z-index: 1;
+  max-width: 620px;
+  text-align: center;
+  padding: var(--s-xl) clamp(28px, 6vw, 76px);
+  border: 1px solid var(--line-on-dark);
+}
+.ka-visit-arrival__mark {
+  width: 7px; height: 7px;
+  border: 1px solid var(--c-rosegold);
+  transform: rotate(45deg);
+  margin: 0 auto 32px;
+  opacity: 0;
+  animation: fadeIn 1s var(--ease-luxury) 0.4s forwards;
+}
+.ka-visit-arrival__eyebrow {
+  margin-bottom: 24px;
+  opacity: 0;
+  animation: fadeUp 1s var(--ease-luxury) 0.6s forwards;
+}
+.ka-visit-arrival__title {
+  font-family: var(--f-display);
+  font-size: clamp(3rem, 6.5vw, 5.6rem);
+  font-weight: 400;
+  font-style: italic;
+  line-height: 0.98;
+  color: white;
+  letter-spacing: -0.01em;
+  margin-bottom: 4px;
+  opacity: 0;
+  animation: fadeUp 1.2s var(--ease-luxury) 0.9s forwards;
+}
+.ka-visit-arrival__title strong {
+  font-style: normal;
+  font-weight: 400;
+  display: block;
+  font-size: 0.42em;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.55);
+  margin-top: 14px;
+}
+.ka-visit-arrival__sub {
+  margin: 32px auto 0;
+  max-width: 440px;
+  font-family: var(--f-sans);
+  font-size: 0.86rem;
+  font-weight: 300;
+  letter-spacing: 0.03em;
+  line-height: 1.95;
+  color: rgba(255,255,255,0.62);
+  opacity: 0;
+  animation: fadeUp 1s var(--ease-luxury) 1.2s forwards;
+}
+.ka-visit-arrival__cta {
+  margin-top: 44px;
+  opacity: 0;
+  animation: fadeUp 1s var(--ease-luxury) 1.5s forwards;
+}
+
+@media (max-width: 900px) {
+  .ka-visit-arrival__card { padding: var(--s-lg) 28px; }
+}
+
+@media (max-width: 600px) {
+  .ka-visit-arrival { min-height: 88svh; }
+}

@@ -1,0 +1,84 @@
+{{ 'ka-visit-arrival.css' | asset_url | stylesheet_tag }}
+{{ 'ka-animations.css' | asset_url | stylesheet_tag }}
+
+{%- comment -%}
+  K&A Visit Us — Arrival (hero). Docs/store-location-build-spec.md
+  Section 3 ("Section 1 — Arrival"), built from Prototypes/store-
+  location-v1.html §SECTION 1, v2.1 (approved by Suraj).
+
+  Deliberately built with NO photography — same judgment call as the
+  approved prototype: no real atelier interior photography exists yet
+  (see ka-visit-photo.liquid for the separate, explicitly-temporary
+  placeholder used further down the page). Reusing garment photography
+  here to imply "this is our space" would be a trust risk the spec
+  explicitly avoids (Section 2). Kept as an engraved-invitation moment
+  — dark ground, a bordered card, a CSS-only woven texture — instead.
+
+  Entry motion: pure CSS keyframes with staggered delays (fadeIn/fadeUp,
+  shared in ka-animations.css), not the sitewide .reveal/IntersectionObserver
+  mechanism — this section is fully in-viewport on load, so a scroll-
+  triggered reveal would never fire. Same reasoning already documented
+  in ka-about-hero.liquid / ka-diary-coming-soon.liquid.
+
+  Nav note: unlike the flat HTML prototype (which floats a transparent
+  nav over this dark hero and crystallises it on scroll), this page's
+  real ka-nav.liquid instance renders permanently "settled" (opaque)
+  here, same as every other non-homepage template including About Us
+  — About Us also opens on a dark hero and gets the same settled nav.
+  This is an already-established sitewide convention (see ka-nav.liquid
+  is_home comment), not a fidelity gap specific to this page.
+{%- endcomment -%}
+
+<section class="ka-visit-arrival" aria-label="Visit the K&amp;A Atelier">
+  <div class="ka-visit-arrival__card">
+    <div class="ka-visit-arrival__mark"></div>
+    <p class="eyebrow eyebrow--on-dark ka-visit-arrival__eyebrow">{{ section.settings.eyebrow }}</p>
+    <h1 class="ka-visit-arrival__title">
+      {{ section.settings.title_line1 }}
+      <strong>{{ section.settings.title_line2 }}</strong>
+    </h1>
+    <p class="ka-visit-arrival__sub">{{ section.settings.subtitle }}</p>
+    <div class="ka-visit-arrival__cta">
+      <a
+        href="{{ section.settings.google_maps_url | default: 'https://maps.app.goo.gl/tU41xSkVonr4Qe8v9' }}"
+        class="btn-ghost"
+        target="_blank"
+        rel="noopener"
+      >
+        {{ section.settings.cta_label }}
+      </a>
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Visit — Arrival",
+  "tag": "section",
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "Santacruz West, Mumbai" },
+    { "type": "text", "id": "title_line1", "label": "Title line 1 (italic)", "default": "The Atelier" },
+    { "type": "text", "id": "title_line2", "label": "Title line 2 (roman, small)", "default": "Mumbai" },
+    {
+      "type": "textarea",
+      "id": "subtitle",
+      "label": "Subtitle",
+      "default": "A real address, a fitting mirror, and the quiet particular to a house where every piece is made once, for one person. Walk in, or write ahead — either way, we're glad to have you."
+    },
+    {
+      "type": "header",
+      "content": "CTA"
+    },
+    { "type": "text", "id": "cta_label", "label": "CTA label", "default": "Get Directions" },
+    {
+      "type": "url",
+      "id": "google_maps_url",
+      "label": "Google Maps link",
+      "info": "Defaults to K&A's real Google Business listing (maps.app.goo.gl/tU41xSkVonr4Qe8v9)."
+    }
+  ],
+  "presets": [
+    { "name": "Visit — Arrival" }
+  ]
+}
+{% endschema %}
