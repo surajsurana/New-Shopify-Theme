@@ -14,13 +14,23 @@
        Content comes from ka-nav section settings (search_chip_*, search_tile_*)
        so Suraj can edit labels/images/URLs from the theme editor.
     2. Results (#ka-search-results)   — query >= 2 chars, matches found. The
-       inner grid (#ka-search-results-content) is replaced wholesale by an HTML
-       fragment fetched from Shopify's native Predictive Search Section
-       Rendering endpoint (sections/ka-predictive-search.liquid), which renders
-       the real .ka-p-card component verbatim — no hand-built JS card template.
-    3. No-results (#ka-search-noresults) — query >= 2 chars, zero matches.
-       Concierge WhatsApp fallback + Browse All Collections, same pattern as
-       ka-404.liquid / ka-collection-grid.liquid's empty state.
+       inner grid (#ka-search-results-content) is filled by assets/ka-search.js
+       from Shopify's /search/suggest.json response. This was originally meant
+       to come from Shopify's Section Rendering API (sections/ka-predictive-
+       search.liquid rendering the real .ka-p-card component verbatim) via
+       section_id — as of 2026-07-12 that is confirmed NOT honored on this
+       shop (verified directly against production, see ka-search.js's file
+       header for the full trace), so ka-search.js now builds equivalent
+       .ka-p-card markup client-side from the endpoint's raw JSON instead.
+       sections/ka-predictive-search.liquid is left in place, unused but
+       harmless, in case that ever starts working.
+    3. No-results (#ka-search-noresults) — query >= 2 chars, zero matches in
+       Shopify's own predictive-search JSON. As of 2026-07-12 this is no
+       longer a hard dead end (see comment on the markup below): it shows the
+       same real popular-search chips as the empty state plus a link into the
+       full /search page (a separate, more forgiving Shopify search engine —
+       confirmed some terms it finds are missed by the predictive endpoint),
+       alongside the existing concierge WhatsApp fallback.
 
   The visible input is inside a real <form action="/search" method="get"> with
   a hidden type=product field, so Enter / "View All Results" work with zero JS
@@ -100,22 +110,43 @@
 
     <!-- Results state -->
     <div id="ka-search-results" style="display:none;">
-      <div id="ka-search-results-content"><!-- filled by assets/ka-search.js via Section Rendering fetch --></div>
+      <div id="ka-search-results-content"><!-- filled by assets/ka-search.js, built client-side from /search/suggest.json (see that file's header, 2026-07-12) --></div>
       <div class="ka-search-results__more">
         <a href="/search?q=&amp;type=product" class="btn-dark" id="ka-search-view-all">View All Results</a>
       </div>
     </div>
 
     <!-- No-results state -->
+    {%- comment -%}
+      2026-07-12 fix: Shopify's predictive-search endpoint (fired on
+      every keystroke, /search/suggest.json) legitimately misses some
+      real matches that the full /search page's own engine finds —
+      confirmed directly against production (see assets/ka-search.js's
+      file header for the exact verification). Per Suraj's explicit
+      fallback instruction, this state no longer reads as a dead end:
+      it shows the same real, theme-editor-editable popular-search
+      chips as the empty state (not a generic "browse everything" —
+      actual curated suggestions) plus a direct link into the full
+      /search page, which is the more forgiving of the two engines.
+      The "Ask Our Styling Concierge" path stays too, since a genuine
+      zero-match search is exactly when a human concierge helps most.
+    {%- endcomment -%}
     <div id="ka-search-noresults" class="ka-search-noresults" style="display:none;">
-      <p class="ka-search-noresults__title" id="ka-search-noresults-title">We couldn't find that piece</p>
-      <p class="ka-search-noresults__body">Our styling concierge knows every piece in the atelier — send us a message and we'll help you find exactly what you're picturing.</p>
+      <p class="ka-search-noresults__title" id="ka-search-noresults-title">No exact matches for that search</p>
+      <p class="ka-search-noresults__body">Try one of these, or view the full search — it looks a little wider than this quick preview.</p>
+      <div class="ka-search-empty__chips ka-search-noresults__chips">
+        {%- if section.settings.search_chip_1_label != blank -%}<a href="{{ section.settings.search_chip_1_url | default: '/collections' }}" class="ka-chip" data-ka-search-chip data-query="{{ section.settings.search_chip_1_label }}">{{ section.settings.search_chip_1_label }}</a>{%- endif -%}
+        {%- if section.settings.search_chip_2_label != blank -%}<a href="{{ section.settings.search_chip_2_url | default: '/collections' }}" class="ka-chip" data-ka-search-chip data-query="{{ section.settings.search_chip_2_label }}">{{ section.settings.search_chip_2_label }}</a>{%- endif -%}
+        {%- if section.settings.search_chip_3_label != blank -%}<a href="{{ section.settings.search_chip_3_url | default: '/collections' }}" class="ka-chip" data-ka-search-chip data-query="{{ section.settings.search_chip_3_label }}">{{ section.settings.search_chip_3_label }}</a>{%- endif -%}
+        {%- if section.settings.search_chip_4_label != blank -%}<a href="{{ section.settings.search_chip_4_url | default: '/collections' }}" class="ka-chip" data-ka-search-chip data-query="{{ section.settings.search_chip_4_label }}">{{ section.settings.search_chip_4_label }}</a>{%- endif -%}
+        {%- if section.settings.search_chip_5_label != blank -%}<a href="{{ section.settings.search_chip_5_url | default: '/collections' }}" class="ka-chip" data-ka-search-chip data-query="{{ section.settings.search_chip_5_label }}">{{ section.settings.search_chip_5_label }}</a>{%- endif -%}
+      </div>
       <div class="ka-search-noresults__actions">
+        <a href="/search?q=&amp;type=product" class="btn-dark" id="ka-search-noresults-viewall">View Full Search Results &rarr;</a>
         <a
           href="https://wa.me/{{ settings.whatsapp_number }}?text={{ 'Hi, I could not find what I was looking for on your website. Could you help?' | url_param_escape }}"
           target="_blank" rel="noopener" class="btn-outline-rose"
         >Ask Our Styling Concierge</a>
-        <a href="/collections" class="btn-dark">Browse All Collections</a>
       </div>
     </div>
   </div>

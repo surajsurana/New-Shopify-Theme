@@ -103,7 +103,12 @@
 
 .ka-search-noresults { text-align: center; max-width: 480px; margin: 0 auto; padding: var(--s-lg) 0; }
 .ka-search-noresults__title { font-family: var(--f-display); font-style: italic; font-size: clamp(1.5rem, 3vw, 2.1rem); color: var(--c-charcoal); margin-bottom: 14px; }
-.ka-search-noresults__body { font-family: var(--f-sans); font-size: 0.88rem; color: var(--c-ink-mid); line-height: 1.85; margin-bottom: 30px; }
+.ka-search-noresults__body { font-family: var(--f-sans); font-size: 0.88rem; color: var(--c-ink-mid); line-height: 1.85; margin-bottom: 24px; }
+/* 2026-07-12 fix: real suggestion chips inside the no-results state
+   (same .ka-chip component as the empty state) — same layout, just
+   its own bottom margin so it sits between the body copy and the
+   actions row rather than the empty state's larger tile-grid gap. */
+.ka-search-noresults__chips { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin-bottom: 30px; }
 .ka-search-noresults__actions { display: flex; gap: 20px; justify-content: center; flex-wrap: wrap; align-items: center; }
 
 @media (max-width: 900px) {

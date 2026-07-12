@@ -1,6 +1,20 @@
 {%- comment -%}
   K&A Predictive Search — Section Rendering API endpoint ONLY.
 
+  ** 2026-07-12: confirmed NOT currently reached on this shop. **
+  /search/suggest.json?section_id=ka-predictive-search was verified
+  directly against production to return raw JSON, never this section's
+  rendered HTML, regardless of section_id's value (tested with this
+  section's real id, a bogus id, and no section_id at all — always
+  identical raw JSON). assets/ka-search.js was rewired the same day to
+  build the equivalent .ka-p-card markup client-side from that raw
+  JSON instead (see that file's header for the full verification
+  trace) and no longer depends on this section rendering. This file is
+  left in place, unused but harmless, as a no-op forward-compatible
+  target in case Shopify's behavior on this shop ever changes — if it
+  does, ka-search.js's parseSuggestResponse() already handles the
+  rendered-HTML shape too, so nothing else would need to change.
+
   This section is never placed in any template's "order" array and has
   no presets, so it can never be added from the theme editor's section
   picker (same convention Dawn uses for its own predictive-search.liquid).
