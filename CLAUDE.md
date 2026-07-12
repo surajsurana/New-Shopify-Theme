@@ -1,4 +1,13 @@
 # Karishma & Ashita -- New Theme (from scratch)
+### Project instructions & architecture -- auto-loaded by Claude Code at the start of every session (do not rename this file: "CLAUDE.md" is a reserved filename the tool looks for automatically; renaming it stops that auto-load)
+
+## Shopify theme IDs (corrected 2026-07-11, verified directly via Admin API -- trust this over any earlier note)
+- **Live (PUBLISHED):** `gid://shopify/OnlineStoreTheme/188751446306`, name "Live" -- connected to git branch `main`. DO NOT push here directly.
+- **Staging (real, GitHub-connected):** `gid://shopify/OnlineStoreTheme/189036036386`, name "New-Shopify-Theme/staging" -- connected to git branch `staging`. Auto-created by Shopify's GitHub connector the first time `staging` was pushed (same mechanism that created "Live" for `main`) -- this is NOT a manual "connect an existing theme" step, it happens automatically on first push of a new branch. ALL feature work pushes to `staging` branch, lands here.
+- **`gid://shopify/OnlineStoreTheme/189017096482`, name "Staging" -- IGNORE, do not use.** This is a separate, orphaned theme that was never connected to GitHub at all. An entire night's work (2026-07-10/11) was nearly lost to confusion because this ID was mistakenly recorded as "the" staging theme and checked/pushed toward instead of the real one above. Before trusting any theme-ID note (including this one), verify live: `themes(first: 10) { nodes { id name role updatedAt } }` via the Shopify Admin GraphQL API, and cross-check `updatedAt` actually moves after a fresh push.
+- Preview staging: `https://admin.shopify.com/store/karishmaandashita/themes/189036036386/editor` (or the storefront `?preview_theme_id=189036036386` link).
+
+**Rule: never push to Live directly. Always target `staging` branch -> staging theme first. Work only goes to `main`/Live after Suraj has reviewed it on staging and explicitly approves -- then Claude Code merges `staging` -> `main` and pushes (Suraj does not need to manually publish from Shopify Admin -> Themes each time; a git push to `main` deploys straight to the already-published Live theme since `main` is the branch connected to it). Never merge/push to `main` without that explicit per-instance approval, even if a previous push was approved -- approval is not standing.**
 
 ## Why this project exists
 karishmaashita.com previously ran on Shopify's Dawn theme. A redesigned prototype was built and implementation kept breaking against Dawn's section schema, color-scheme system, and CSS/JS architecture (see the old project at Github/shopify-theme-github for the full history -- a long string of "fix" commits chasing Dawn conflicts). Decision: stop fighting Dawn. Build a brand-new theme from scratch with no inherited theme, no inherited constraints -- including color, typography, and spacing, which are being reconsidered from zero, not just layout.
@@ -7,9 +16,15 @@ karishmaashita.com previously ran on Shopify's Dawn theme. A redesigned prototyp
 Home page -> Collection page -> Product page -> Cart page. One page at a time: audit -> redesign -> prototype -> review/approve -> build spec -> implement -> QA verify -> next page. Other pages (About, Appointment, Contact, Footer) follow after these four are solid.
 
 ## Agents
-- `.claude/agents/creative-director.md` -- K&A Creative Director. Designs unrestricted, prototypes in plain HTML/CSS/JS, hands off a platform-agnostic build spec.
-- `.claude/agents/technical-director.md` -- Builds the actual Shopify theme (Liquid/JSON templates, sections, assets) from the approved spec. Does a feasibility skim against real Shopify-platform limits (not Dawn) before full build.
-- `.claude/agents/qa-reviewer.md` -- Independently verifies the live build against the approved prototype. Never trusts another agent's self-report.
+- `.claude/agents/creative-director.md` -- Creative Director. Designs unrestricted, prototypes in plain HTML/CSS/JS, hands off a platform-agnostic build spec.
+- `.claude/agents/technical-director.md` -- Builds the actual Shopify theme (Liquid/JSON templates, sections, assets) from the approved spec. Does a feasibility skim against real Shopify-platform limits (not Dawn) before full build. Has read-only Shopify Admin API access (added 2026-07-12) to verify its own builds actually deployed -- no write access, fixes still go through git.
+- `.claude/agents/qa-reviewer.md` -- Independently verifies the live build against the approved prototype. Never trusts another agent's self-report. Has read-only Shopify Admin API access (added 2026-07-12) so it can confirm actual deployment state itself, not just repo state.
+
+## Standing rule: QA gate is mandatory, not optional (added 2026-07-12)
+Before reporting ANY build as "done"/"ready"/"live" to Suraj, QA Reviewer must independently verify it first -- both prototype-fidelity AND actual-deployment-state (file presence and content on the real staging theme, not just "git push succeeded"). No exceptions for changes that seem small -- 2026-07-11/12's real bugs (a CSS Grid track blowout, a wrong typeface, a duplicate CTA, two files silently failing to sync from GitHub to Shopify) were all in changes that looked minor going in. Skipping the QA gate because something seems low-risk is exactly how those reached Suraj instead of getting caught first.
+
+## Standing rule: isolate concurrent agents (added 2026-07-12)
+When running more than one agent in parallel that will touch git (any Technical Director or Creative Director task that commits), use worktree isolation for at least all but one of them. On 2026-07-11 two agents ran in parallel against the same shared working directory with no isolation, and one agent's git commit briefly landed on the wrong branch mid-task (caught and recovered, but avoidable). Running them fully sequentially instead of in parallel is also an acceptable fix when the tasks are small enough that the time cost doesn't matter.
 
 ## Reference (history only, not constraints)
 `Reference/legacy-dawn-prototypes/` contains the old homepage prototype, the old design-system file, and the old product-page prototype from the Dawn attempt. Useful for what emotionally worked before; not binding on color, type, layout, or anything else this time around.
