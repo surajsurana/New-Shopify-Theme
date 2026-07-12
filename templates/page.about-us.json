@@ -1,0 +1,197 @@
+/*
+ * ------------------------------------------------------------
+ * K&A About Us page template — Docs/about-us-build-spec.md
+ * Built from Prototypes/about-us-v1.html (approved by Suraj).
+ * Sections: Nav -> About Hero -> Founders/Origin -> Vision
+ * (reused ka-manifesto) -> Craft & Process -> Atelier & Trust
+ * Strip (reused ka-craft-strip) -> Stockist Footprint ->
+ * Closing CTA (reused ka-appointment) -> Footer.
+ *
+ * MANUAL STEP REQUIRED: the live /pages/about-us Page needs its
+ * Theme template set to "about-us" from Shopify Admin (Online
+ * Store -> Pages -> About Us -> Theme template dropdown) once
+ * this file is deployed — same manual step Client Diaries
+ * needed. This cannot be done from the theme code/git alone.
+ * ------------------------------------------------------------
+ */
+{
+  "sections": {
+    "ka-nav": {
+      "type": "ka-nav",
+      "settings": {
+        "utility_1": "Complimentary Worldwide Delivery",
+        "utility_2": "Hand-Embroidered to Order",
+        "utility_3": "Private & Virtual Appointments",
+        "logo_text": "Karishma Ashita",
+        "logo_subline": "Bridal Couture · Mumbai",
+        "label_bestsellers": "Signature",
+        "link_bestsellers": "/collections/bestsellers",
+        "label_collections": "Collections",
+        "link_collections": "/collections",
+        "label_diaries": "Client Diaries",
+        "link_diaries": "/pages/client-diaries",
+        "link_about": "/pages/about-us",
+        "link_appointment": "/pages/appointments"
+      }
+    },
+    "ka-about-hero": {
+      "type": "ka-about-hero",
+      "settings": {
+        "eyebrow": "The House, Mumbai — Est. 2016",
+        "title_line1": "Karishma",
+        "title_line2": "& Ashita",
+        "subtitle": "A friendship that became an atelier — built on the belief that every bride deserves a garment made with intention, not assumption.",
+        "cta_primary_label": "Explore the Collections",
+        "cta_primary_url": "/collections",
+        "cta_secondary_label": "Book a Styling Appointment",
+        "cta_secondary_url": "/pages/appointments"
+      }
+    },
+    "ka-about-founders": {
+      "type": "ka-about-founders",
+      "settings": {
+        "eyebrow": "Since the Beginning",
+        "title_line1": "Best Friends,",
+        "title_line2": "Bound by Craft.",
+        "body": "K&A began the way most quiet houses do — between two people who saw the same picture before either said it aloud. Karishma and Ashita built this atelier on a simple conviction: that a bride's clothing should be made with intention, considered stitch by stitch, rather than assembled off a rack. What started as an instinct between friends is now a Mumbai atelier, where every lehenga, every corset, every draped silhouette begins as a private conversation — long before it becomes a garment.",
+        "caption_name": "Karishma & Ashita",
+        "caption_sub": "Founders, K&A"
+      }
+    },
+    "ka-about-vision": {
+      "type": "ka-manifesto",
+      "settings": {
+        "quote": "“To design bridal wear that carries opulence and grace — a beauty considered enough that it does not date, in silhouettes a woman remembers long after the wedding ends.”",
+        "attribution": "The Vision — K&A by Karishma & Ashita"
+      }
+    },
+    "ka-about-craft": {
+      "type": "ka-about-craft",
+      "settings": {
+        "eyebrow": "The Craft",
+        "title_line1": "Nothing Here",
+        "title_line2": "Is Machine-Made.",
+        "body": "Zardozi worked thread by thread. Sequins placed one at a time. Boning shaped and stitched until a corset holds a bride the way she wants to be held for twelve hours, not twelve minutes. Every K&A piece moves through the same hands, from first sketch to final fitting — because a garment this considered cannot be rushed, and should never be duplicated.",
+        "credit": "The same hands have, on occasion, dressed private clients across film and fashion — among them actress Palak Tiwari, styled in one of our hand-cut corset drape sarees.",
+        "caption_1_name": "Structured Corsetry",
+        "caption_1_sub": "Boned and fitted, entirely by hand",
+        "caption_2_name": "Hand-Placed Embellishment",
+        "caption_2_sub": "Zardozi, threadwork, sequins"
+      }
+    },
+    "ka-about-trust-strip": {
+      "type": "ka-craft-strip",
+      "blocks": {
+        "atelier": {
+          "type": "item",
+          "settings": {
+            "label": "Mumbai Atelier",
+            "sublabel": "Private consultations, always by appointment"
+          }
+        },
+        "made-to-order": {
+          "type": "item",
+          "settings": {
+            "label": "Made to Order",
+            "sublabel": "Every piece begins with you"
+          }
+        },
+        "worldwide": {
+          "type": "item",
+          "settings": {
+            "label": "Worldwide Delivery",
+            "sublabel": "Complimentary, wherever you are"
+          }
+        },
+        "concierge": {
+          "type": "item",
+          "settings": {
+            "label": "Concierge",
+            "sublabel": "A conversation, not a call centre"
+          }
+        }
+      },
+      "block_order": [
+        "atelier",
+        "made-to-order",
+        "worldwide",
+        "concierge"
+      ],
+      "settings": {}
+    },
+    "ka-about-stockists": {
+      "type": "ka-about-stockists",
+      "blocks": {
+        "pernias": { "type": "stockist", "settings": { "column": "online", "name": "Pernia's Pop-Up Shop" } },
+        "aza": { "type": "stockist", "settings": { "column": "online", "name": "Aza" } },
+        "nikaza": { "type": "stockist", "settings": { "column": "online", "name": "Nikaza" } },
+        "agashe": { "type": "stockist", "settings": { "column": "online", "name": "Agashe" } },
+        "anantam": { "type": "stockist", "settings": { "column": "store", "name": "Anantam", "location": "Delhi" } },
+        "almari": { "type": "stockist", "settings": { "column": "store", "name": "Almari", "location": "Hyderabad" } },
+        "silk-threads": { "type": "stockist", "settings": { "column": "store", "name": "Silk & Threads", "location": "Vancouver" } },
+        "nezo": { "type": "stockist", "settings": { "column": "store", "name": "Nezo", "location": "Bandra Mumbai" } }
+      },
+      "block_order": [
+        "pernias",
+        "aza",
+        "nikaza",
+        "agashe",
+        "anantam",
+        "almari",
+        "silk-threads",
+        "nezo"
+      ],
+      "settings": {
+        "eyebrow": "Beyond the Atelier",
+        "title": "A House That Travels.",
+        "body": "K&A already lives beyond Mumbai — carried today by a small, considered circle of stores and platforms we're proud to stand alongside, in India and abroad. This footprint is never finished; we're always in conversation with new cities, new stores, new borders.",
+        "online_title": "Online",
+        "online_more": "And more, always expanding",
+        "store_title": "In Store",
+        "store_more": "And more, always expanding"
+      }
+    },
+    "ka-about-cta": {
+      "type": "ka-appointment",
+      "settings": {
+        "eyebrow": "Begin Here",
+        "title": "Every K&A Story\nStarts the Same Way.",
+        "body": "One conversation — in our Mumbai atelier, or virtually, wherever you are — is where every K&A garment begins. Tell us about your day. We'll take it from there.",
+        "cta_instore_label": "Book In-Store Appointment",
+        "cta_instore_url": "/pages/appointments",
+        "cta_virtual_label": "Book Virtual Styling Session",
+        "cta_virtual_url": "/pages/appointments",
+        "fallback_image_filename": "about-closing-cta.jpg"
+      }
+    },
+    "ka-footer": {
+      "type": "ka-footer",
+      "settings": {
+        "brand_name": "Karishma Ashita",
+        "logo_subline": "Bridal Couture · Mumbai",
+        "tagline": "Bridal couture, handcrafted\nin Mumbai.",
+        "instagram_url": "https://www.instagram.com/karishmaashita",
+        "youtube_url": "https://www.youtube.com/@KarishmaAshita",
+        "pinterest_url": "https://www.pinterest.com/karishmaashita/",
+        "email": "info@karishmaashita.com",
+        "address": "Mumbai, India\nComplimentary worldwide shipping via DHL Express",
+        "news_title": "The Inner Circle",
+        "news_body": "Collection previews, styling notes and private trunk show invitations — delivered quietly to your inbox.",
+        "news_placeholder": "Your email address",
+        "news_submit": "Join",
+        "news_success": "Welcome in. You are one of us now."
+      }
+    }
+  },
+  "order": [
+    "ka-nav",
+    "ka-about-hero",
+    "ka-about-founders",
+    "ka-about-vision",
+    "ka-about-craft",
+    "ka-about-trust-strip",
+    "ka-about-stockists",
+    "ka-about-cta",
+    "ka-footer"
+  ]
+}

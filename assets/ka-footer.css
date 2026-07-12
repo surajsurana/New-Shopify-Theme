@@ -60,6 +60,8 @@
   transition: color var(--dur-fast); letter-spacing: 0.04em;
 }
 .ka-footer__links a:hover { color: var(--c-rosegold-pale); }
+/* Current-page state (Docs/about-us-build-spec.md Section 6 H3) — matches the existing hover colour */
+.ka-footer__links a.is-current { color: var(--c-rosegold-pale); }
 
 .ka-footer__contact-items { display: flex; flex-direction: column; gap: 12px; }
 .ka-footer__contact-item {

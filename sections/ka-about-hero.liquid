@@ -1,0 +1,121 @@
+{{ 'ka-about-hero.css' | asset_url | stylesheet_tag }}
+{{ 'ka-animations.css' | asset_url | stylesheet_tag }}
+
+{%- comment -%}
+  K&A About Hero — Docs/about-us-build-spec.md Section 2 / Section 6 (H1).
+
+  Deliberately a NEW section, not a reuse of sections/ka-hero.liquid,
+  because the build spec documents two page-specific tuning values that
+  make this hero genuinely different from the homepage's: height is
+  92svh (not 100svh — Section 3's "Height decision", so the Founders
+  section below reads as an immediate continuation) and the overlay
+  gradient is heavier (0.30/0.08/0.68 vs homepage's 0.22/0.05/0.62 — the
+  shorter crop needs marginally more contrast for the white H1 to stay
+  legible). Per Section 4 of the spec, these are one-off component
+  values, not new root tokens — hence a dedicated CSS file
+  (ka-about-hero.css) with its own class prefix, same convention already
+  used by ka-diary-coming-soon.liquid rather than a shared/parametrised
+  ka-hero.liquid.
+
+  Image filter: about-hero.jpg uses sepia(0.10) saturate(0.90)
+  brightness(0.96) — numerically identical to the existing
+  .img-filter-hero class (assets/ka-base.css), so that class is reused
+  directly rather than adding a duplicate.
+
+  Entry motion: no parallax on this page (spec Section 3, "Motion").
+  Achieved for free, with zero new JS, simply by NOT using the
+  .ka-hero__bg / .ka-hero class names that assets/ka-theme.js's
+  querySelector-based parallax block specifically targets. The
+  scale(1.05)->scale(1) load-in zoom reuses the theme's general
+  .reveal-img / IntersectionObserver mechanism (fires immediately since
+  the hero is fully in-viewport on load) — the exact same documented
+  reuse decision already made in sections/ka-diary-coming-soon.liquid,
+  rather than hardcoding a second one-off #ka-hero-bg id into the
+  shared global JS.
+{%- endcomment -%}
+
+<section class="ka-about-hero" aria-label="About K&amp;A">
+  <div class="ka-about-hero__bg reveal-img">
+    {%- if section.settings.image != blank -%}
+      <img
+        src="{{ section.settings.image | image_url: width: 1800 }}"
+        alt="{{ section.settings.image.alt | escape | default: 'K&A bridal lehengas, editorial group portrait' }}"
+        loading="eager"
+        fetchpriority="high"
+        width="1800"
+        height="2400"
+        class="img-filter-hero"
+      />
+    {%- else -%}
+      <img
+        src="{{ 'about-hero.jpg' | asset_url }}"
+        alt="K&A bridal lehengas, editorial group portrait"
+        loading="eager"
+        fetchpriority="high"
+        width="1800"
+        height="2400"
+        class="img-filter-hero"
+      />
+    {%- endif -%}
+  </div>
+  <div class="ka-about-hero__overlay"></div>
+
+  <div class="ka-about-hero__content">
+    <p class="ka-about-hero__eyebrow">{{ section.settings.eyebrow }}</p>
+    <h1 class="ka-about-hero__title">
+      {{ section.settings.title_line1 }}
+      <strong>{{ section.settings.title_line2 }}</strong>
+    </h1>
+    <p class="ka-about-hero__sub">{{ section.settings.subtitle }}</p>
+    <div class="ka-about-hero__ctas">
+      <a href="{{ section.settings.cta_primary_url }}" class="btn-ghost">{{ section.settings.cta_primary_label }}</a>
+      {%- comment -%}
+        Secondary CTA — TEMPORARY interim WhatsApp routing, same sitewide
+        pattern as ka-hero.liquid's own secondary CTA (Docs/cta-
+        architecture-revision.md Round 2, R2-4). Intercepted by the
+        delegated click handler in ka-nav.liquid.
+      {%- endcomment -%}
+      <a href="{{ section.settings.cta_secondary_url | default: '/pages/appointments' }}" class="btn-text" data-ka-appt-link data-ka-appt-text="Hi, I'd like to book a styling appointment">{{ section.settings.cta_secondary_label }}</a>
+    </div>
+  </div>
+
+  <div class="ka-about-hero__scroll" aria-hidden="true">
+    <span>Scroll</span>
+    <div class="ka-about-hero__scroll-line"></div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "About Hero",
+  "tag": "section",
+  "settings": [
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "Hero image",
+      "info": "Falls back to about-hero.jpg if none is chosen."
+    },
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "The House, Mumbai — Est. 2016" },
+    { "type": "text", "id": "title_line1", "label": "Title line 1 (italic)", "default": "Karishma" },
+    { "type": "text", "id": "title_line2", "label": "Title line 2 (roman, small)", "default": "& Ashita" },
+    {
+      "type": "textarea",
+      "id": "subtitle",
+      "label": "Subtitle",
+      "default": "A friendship that became an atelier — built on the belief that every bride deserves a garment made with intention, not assumption."
+    },
+    {
+      "type": "header",
+      "content": "CTAs"
+    },
+    { "type": "text", "id": "cta_primary_label",   "label": "Primary CTA label",   "default": "Explore the Collections" },
+    { "type": "url",  "id": "cta_primary_url",     "label": "Primary CTA URL",     "info": "Defaults to /collections." },
+    { "type": "text", "id": "cta_secondary_label", "label": "Secondary CTA label", "default": "Book a Styling Appointment" },
+    { "type": "url",  "id": "cta_secondary_url",   "label": "Secondary CTA URL",   "info": "Defaults to /pages/appointments. JS currently always reroutes to WhatsApp until a real booking flow exists." }
+  ],
+  "presets": [
+    { "name": "About Hero" }
+  ]
+}
+{% endschema %}

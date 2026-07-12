@@ -1,0 +1,125 @@
+/* ================================================================
+   KA-ABOUT-HERO
+   Adapted from ka-hero.css with two deliberate, documented per-page
+   values (Docs/about-us-build-spec.md Section 4): a shorter 92svh
+   height and a heavier overlay gradient. See ka-about-hero.liquid for
+   the full reasoning on why this is a dedicated section, not a reuse.
+================================================================ */
+.ka-about-hero {
+  position: relative;
+  height: 92vh;
+  height: 92svh;
+  min-height: 560px;
+  overflow: hidden;
+}
+.ka-about-hero__bg { position: absolute; inset: 0; }
+.ka-about-hero__bg img { object-position: center 18%; }
+
+.ka-about-hero__overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to bottom,
+    rgba(15,12,10,0.30) 0%,
+    rgba(15,12,10,0.08) 38%,
+    rgba(15,12,10,0.68) 100%
+  );
+}
+.ka-about-hero__content {
+  position: absolute;
+  bottom: var(--s-2xl);
+  left: var(--gutter);
+  right: var(--gutter);
+  max-width: 900px;
+}
+.ka-about-hero__eyebrow {
+  font-family: var(--f-sans);
+  font-size: 0.63rem;
+  font-weight: 400;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.65);
+  margin-bottom: 20px;
+  opacity: 0;
+  animation: fadeUp 1s var(--ease-luxury) 0.6s forwards;
+}
+.ka-about-hero__title {
+  font-family: var(--f-display);
+  font-size: var(--t-hero);
+  font-weight: 400;
+  font-style: italic;
+  line-height: 0.96; /* per spec Section 4 — matches the Cormorant Garamond value already proven safe at this size/weight/style elsewhere on the site */
+  color: white;
+  letter-spacing: -0.01em;
+  opacity: 0;
+  animation: fadeUp 1.2s var(--ease-luxury) 0.9s forwards;
+}
+.ka-about-hero__title strong {
+  font-style: normal;
+  font-weight: 400;
+  display: block;
+  font-size: 0.6em;
+  letter-spacing: 0.1em;
+}
+.ka-about-hero__sub {
+  margin-top: 32px;
+  font-family: var(--f-sans);
+  font-size: 0.78rem;
+  font-weight: 300;
+  letter-spacing: 0.1em;
+  color: rgba(255,255,255,0.7);
+  max-width: 460px;
+  line-height: 1.9;
+  opacity: 0;
+  animation: fadeUp 1s var(--ease-luxury) 1.3s forwards;
+}
+.ka-about-hero__ctas {
+  margin-top: 44px;
+  display: flex;
+  align-items: center;
+  gap: 32px;
+  flex-wrap: wrap;
+  opacity: 0;
+  animation: fadeUp 1s var(--ease-luxury) 1.6s forwards;
+}
+.ka-about-hero__scroll {
+  position: absolute;
+  bottom: 36px;
+  right: var(--gutter);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  opacity: 0;
+  animation: fadeIn 1s var(--ease-luxury) 2.2s forwards;
+}
+.ka-about-hero__scroll span {
+  font-family: var(--f-sans);
+  font-size: 0.55rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.45);
+  writing-mode: vertical-rl;
+}
+.ka-about-hero__scroll-line {
+  width: 1px;
+  height: 48px;
+  background: rgba(255,255,255,0.2);
+  position: relative;
+  overflow: hidden;
+}
+.ka-about-hero__scroll-line::after {
+  content: '';
+  position: absolute;
+  top: -100%;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(255,255,255,0.65);
+  animation: scrollDrop 1.8s ease-in-out infinite;
+}
+/* @keyframes scrollDrop / fadeUp / fadeIn are shared, defined once in ka-animations.css (loaded by ka-about-hero.liquid) */
+
+@media (max-width: 600px) {
+  .ka-about-hero { height: 88svh; }
+}

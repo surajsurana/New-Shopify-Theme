@@ -1,0 +1,1368 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>About — K&amp;A by Karishma &amp; Ashita | Bridal Couture, Mumbai</title>
+  <meta name="description" content="The story of K&amp;A — a Mumbai atelier built by Karishma and Ashita, handcrafting bridal couture with intention, one bride at a time." />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Jost:wght@200;300;400;500&display=swap" rel="stylesheet" />
+
+  <style>
+    /* ═══════════════════════════════════════════════════════════════
+       DESIGN TOKENS — inherited from the site's actual approved type
+       system (Cormorant Garamond + Jost, confirmed live in
+       assets/ka-base.css, layout/theme.liquid, and every other current
+       prototype: client-diaries-v1.html, client-diaries-coming-soon-v1.html,
+       search-404-footer-v1.html). NOTE: Docs/homepage-build-spec.md and
+       Prototypes/homepage-v2.html still reference the retired Bodoni Moda
+       token from an earlier iteration — that is stale documentation, not
+       the standard to follow; Cormorant Garamond is correct.
+       No new colour, spacing or motion tokens introduced on this page
+       except two documented image-filter values (see build spec,
+       Section 4) and the three new component classes .founders /
+       .craft-story / .stockists (the last added post-approval once
+       Suraj supplied founding-year, stockist and press-credit content
+       — see build spec Section 5 changelog). v1.2 adds
+       .founders__image-overlay/-caption/-name/-sub, a small captioning
+       treatment added once the Founders photo became a real,
+       identifiable photograph of Karishma and Ashita rather than a
+       symbolic stand-in — see build spec Section 3/4/5 v1.2 changelog.
+    ═══════════════════════════════════════════════════════════════ */
+    :root {
+      --c-paper:      #F8F4EF;
+      --c-paper-deep: #F0EAE1;
+      --c-smoke:      #EDE7DD;
+
+      --c-charcoal:   #1A1714;
+      --c-charcoal-2: #2C2825;
+      --c-ink:        #3D3730;
+      --c-ink-mid:    #6B6259;
+      --c-ink-muted:  #9A9088;
+
+      --c-rosegold:   #C4A882;
+      --c-rosegold-2: #A8896A;
+      --c-rosegold-pale: #DDD0BC;
+
+      --f-display:  'Cormorant Garamond', Georgia, 'Times New Roman', serif;
+      --f-sans:     'Jost', 'Helvetica Neue', Arial, sans-serif;
+
+      --t-hero:      clamp(3.6rem, 8vw, 8rem);
+      --t-display:   clamp(2.6rem, 5.5vw, 5.2rem);
+      --t-h2:        clamp(2rem, 3.5vw, 3.2rem);
+      --t-h3:        clamp(1.4rem, 2.2vw, 2rem);
+      --t-eyebrow:   0.66rem;
+      --t-body-l:    1.1rem;
+      --t-body:      1rem;
+      --t-caption:   0.76rem;
+
+      --s-xs:   8px;
+      --s-sm:   16px;
+      --s-md:   32px;
+      --s-lg:   64px;
+      --s-xl:   96px;
+      --s-2xl:  140px;
+      --s-3xl:  200px;
+
+      --max-wide:   1680px;
+      --max-text:   720px;
+      --gutter:     clamp(20px, 5vw, 80px);
+
+      --ease-luxury:  cubic-bezier(0.16, 1, 0.3, 1);
+      --ease-soft:    cubic-bezier(0.22, 0.61, 0.36, 1);
+      --dur-slow:     1s;
+      --dur-med:      0.65s;
+      --dur-fast:     0.35s;
+
+      --line:         rgba(26,23,20,0.10);
+      --line-strong:  rgba(26,23,20,0.18);
+      --line-light:   rgba(196,168,130,0.25);
+      --line-on-dark: rgba(196,168,130,0.20);
+    }
+
+    /* ═══════════════════════════════════════════════════════════════
+       RESET & BASE — verbatim from homepage
+    ═══════════════════════════════════════════════════════════════ */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; font-size: 16px; }
+
+    body {
+      background: var(--c-paper);
+      color: var(--c-ink);
+      font-family: var(--f-sans);
+      font-weight: 300;
+      line-height: 1.75;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      overflow-x: hidden;
+    }
+
+    img {
+      display: block;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    a { text-decoration: none; color: inherit; }
+    button { border: none; background: none; cursor: pointer; font-family: inherit; }
+
+    .eyebrow {
+      font-family: var(--f-sans);
+      font-size: var(--t-eyebrow);
+      font-weight: 400;
+      letter-spacing: 0.24em;
+      text-transform: uppercase;
+      color: var(--c-rosegold-2);
+    }
+    .eyebrow--light { color: var(--c-rosegold); }
+    .eyebrow--muted { color: var(--c-ink-muted); }
+    .eyebrow--on-dark { color: var(--c-rosegold); }
+
+    .reveal {
+      opacity: 0;
+      transform: translateY(28px);
+      transition: opacity var(--dur-slow) var(--ease-luxury),
+                  transform var(--dur-slow) var(--ease-luxury);
+    }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
+    .reveal-delay-1 { transition-delay: 0.1s; }
+    .reveal-delay-2 { transition-delay: 0.22s; }
+    .reveal-delay-3 { transition-delay: 0.38s; }
+    .reveal-delay-4 { transition-delay: 0.52s; }
+
+    .reveal-img { overflow: hidden; }
+    .reveal-img img {
+      transform: scale(1.04);
+      transition: transform 1.4s var(--ease-luxury);
+    }
+    .reveal-img.visible img { transform: scale(1); }
+
+    /* ═══════════════════════════════════════════════════════════════
+       NAVIGATION — verbatim from homepage
+    ═══════════════════════════════════════════════════════════════ */
+    .nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      padding: 24px var(--gutter);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      transition: background var(--dur-med) var(--ease-soft),
+                  padding var(--dur-med) var(--ease-soft),
+                  backdrop-filter var(--dur-med) var(--ease-soft);
+    }
+
+    .nav.scrolled {
+      background: rgba(248,244,239,0.96);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      padding: 16px var(--gutter);
+      border-bottom: 1px solid var(--line);
+    }
+
+    .nav__links { display: flex; gap: 36px; list-style: none; }
+
+    .nav__links a {
+      font-family: var(--f-sans);
+      font-size: 0.68rem;
+      font-weight: 400;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: white;
+      transition: color var(--dur-fast);
+      position: relative;
+    }
+    .nav__links a::after {
+      content: '';
+      position: absolute;
+      left: 0; bottom: -3px;
+      width: 0; height: 1px;
+      background: var(--c-rosegold);
+      transition: width var(--dur-med) var(--ease-luxury);
+    }
+    .nav__links a:hover::after { width: 100%; }
+    .nav.scrolled .nav__links a { color: var(--c-charcoal); }
+
+    .nav__logo {
+      font-family: var(--f-display);
+      font-size: clamp(1rem, 2vw, 1.25rem);
+      font-weight: 400;
+      letter-spacing: 0.16em;
+      color: white;
+      text-transform: uppercase;
+      transition: color var(--dur-med);
+    }
+    .nav.scrolled .nav__logo { color: var(--c-charcoal); }
+
+    .nav__actions { display: flex; align-items: center; gap: 24px; }
+
+    .nav__whatsapp {
+      font-family: var(--f-sans);
+      font-size: 0.66rem;
+      font-weight: 400;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: white;
+      border: 1px solid rgba(255,255,255,0.4);
+      padding: 8px 18px;
+      transition: background var(--dur-fast), color var(--dur-fast), border-color var(--dur-fast);
+    }
+    .nav__whatsapp:hover { background: white; color: var(--c-charcoal); }
+    .nav.scrolled .nav__whatsapp { color: var(--c-charcoal); border-color: var(--line-strong); }
+    .nav.scrolled .nav__whatsapp:hover { background: var(--c-charcoal); color: white; }
+
+    .nav__toggle { display: none; flex-direction: column; gap: 5px; padding: 4px; }
+    .nav__toggle span { display: block; width: 24px; height: 1px; background: white; transition: background var(--dur-med); }
+    .nav.scrolled .nav__toggle span { background: var(--c-charcoal); }
+
+    /* ═══════════════════════════════════════════════════════════════
+       SECTION 1 — ABOUT HERO
+       DARK — same opening register as the homepage: the page opens
+       in near-silence, one full-bleed image, minimal type. Here the
+       H1 is the house name itself, treated the way Dior's "About"
+       opens on "Christian Dior" — the name as headline, not a slogan.
+    ═══════════════════════════════════════════════════════════════ */
+    .hero {
+      position: relative;
+      height: 92svh;
+      min-height: 560px;
+      overflow: hidden;
+    }
+
+    .hero__bg { position: absolute; inset: 0; transform: scale(1.05); transition: transform 2.2s var(--ease-luxury); }
+    .hero__bg.loaded { transform: scale(1); }
+    .hero__bg img { object-position: center 18%; }
+
+    .hero__overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to bottom, rgba(15,12,10,0.30) 0%, rgba(15,12,10,0.08) 38%, rgba(15,12,10,0.68) 100%);
+    }
+
+    .hero__content {
+      position: absolute;
+      bottom: var(--s-2xl);
+      left: var(--gutter);
+      right: var(--gutter);
+      max-width: 900px;
+    }
+
+    .hero__eyebrow {
+      font-family: var(--f-sans);
+      font-size: 0.63rem;
+      font-weight: 400;
+      letter-spacing: 0.28em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.65);
+      margin-bottom: 20px;
+      opacity: 0;
+      animation: fadeUp 1s var(--ease-luxury) 0.6s forwards;
+    }
+
+    .hero__title {
+      font-family: var(--f-display);
+      font-size: var(--t-hero);
+      font-weight: 400;
+      font-style: italic;
+      line-height: 0.96; /* matches diary-hero__title's proven Cormorant Garamond value at this font-size/weight/style — Cormorant's more open italic letterforms need slightly more room than Bodoni Moda did at 0.94 */
+      color: white;
+      letter-spacing: -0.01em;
+      opacity: 0;
+      animation: fadeUp 1.2s var(--ease-luxury) 0.9s forwards;
+    }
+    .hero__title strong {
+      font-style: normal;
+      font-weight: 400;
+      display: block;
+      font-size: 0.6em;
+      letter-spacing: 0.1em;
+    }
+
+    .hero__sub {
+      margin-top: 32px;
+      font-family: var(--f-sans);
+      font-size: 0.78rem;
+      font-weight: 300;
+      letter-spacing: 0.1em;
+      color: rgba(255,255,255,0.7);
+      max-width: 460px;
+      line-height: 1.9;
+      opacity: 0;
+      animation: fadeUp 1s var(--ease-luxury) 1.3s forwards;
+    }
+
+    .hero__ctas {
+      margin-top: 44px;
+      display: flex;
+      align-items: center;
+      gap: 32px;
+      flex-wrap: wrap;
+      opacity: 0;
+      animation: fadeUp 1s var(--ease-luxury) 1.6s forwards;
+    }
+
+    .btn-ghost {
+      font-family: var(--f-sans);
+      font-size: 0.68rem;
+      font-weight: 400;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: white;
+      border: 1px solid rgba(255,255,255,0.55);
+      padding: 14px 36px;
+      transition: background var(--dur-fast), color var(--dur-fast), border-color var(--dur-fast);
+    }
+    .btn-ghost:hover { background: white; color: var(--c-charcoal); border-color: white; }
+
+    .btn-text {
+      font-family: var(--f-sans);
+      font-size: 0.68rem;
+      font-weight: 400;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.75);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      transition: color var(--dur-fast);
+    }
+    .btn-text::after {
+      content: '';
+      display: block;
+      width: 32px;
+      height: 1px;
+      background: rgba(255,255,255,0.5);
+      transition: width var(--dur-med) var(--ease-luxury), background var(--dur-fast);
+    }
+    .btn-text:hover { color: white; }
+    .btn-text:hover::after { width: 52px; background: white; }
+
+    .hero__scroll {
+      position: absolute;
+      bottom: 36px;
+      right: var(--gutter);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+      opacity: 0;
+      animation: fadeIn 1s var(--ease-luxury) 2.2s forwards;
+    }
+    .hero__scroll span {
+      font-family: var(--f-sans);
+      font-size: 0.55rem;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.45);
+      writing-mode: vertical-rl;
+    }
+    .hero__scroll-line { width: 1px; height: 48px; background: rgba(255,255,255,0.2); position: relative; overflow: hidden; }
+    .hero__scroll-line::after {
+      content: '';
+      position: absolute;
+      top: -100%; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(255,255,255,0.65);
+      animation: scrollDrop 1.8s ease-in-out infinite;
+    }
+
+    @keyframes fadeUp { from { opacity: 0; transform: translateY(24px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    @keyframes scrollDrop { 0% { top: -100%; } 100% { top: 100%; } }
+
+    /* ═══════════════════════════════════════════════════════════════
+       SECTION 2 — FOUNDERS / ORIGIN
+       LIGHT split panel. Adapted from the homepage Collection Story
+       component: same grid-template-columns:1fr 1fr / paper-deep text
+       panel / btn-dark link, but the secondary two-image strip beneath
+       the text is DELIBERATELY OMITTED (see build spec — only one
+       founders-adjacent image exists; a manufactured second image
+       would dilute rather than add). No name caption sits over the
+       photograph — see build spec Section 4 for why.
+    ═══════════════════════════════════════════════════════════════ */
+    .founders {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      min-height: 82vh;
+      overflow: hidden;
+    }
+
+    .founders__image { position: relative; overflow: hidden; min-height: 560px; }
+    .founders__image img { object-position: center 14%; }
+
+    /* Caption overlay — added once a real founders photograph replaced the
+       symbolic placeholder (see build spec Section 5 changelog, v1.2).
+       A real, identifiable photo of Karishma and Ashita earns a caption;
+       the previous symbolic model photography deliberately did not. */
+    .founders__image-overlay {
+      position: absolute; inset: 0;
+      background: linear-gradient(to top, rgba(15,12,10,0.58) 0%, rgba(15,12,10,0.08) 30%, transparent 48%);
+      pointer-events: none;
+    }
+    .founders__image-caption { position: absolute; bottom: 32px; left: 32px; }
+    .founders__image-name {
+      font-family: var(--f-display); font-style: italic; font-weight: 400;
+      font-size: 1.3rem; color: white; display: block; margin-bottom: 5px;
+    }
+    .founders__image-sub {
+      font-family: var(--f-sans); font-size: 0.6rem; font-weight: 400;
+      letter-spacing: 0.18em; text-transform: uppercase; color: rgba(255,255,255,0.7);
+    }
+
+    .founders__text {
+      background: var(--c-paper-deep);
+      padding: var(--s-2xl) clamp(32px, 5vw, 80px);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .founders__eyebrow { margin-bottom: 20px; }
+
+    .founders__title {
+      font-family: var(--f-display);
+      font-size: var(--t-display);
+      font-weight: 400;
+      font-style: italic;
+      color: var(--c-charcoal);
+      line-height: 1.05;
+      margin-bottom: 28px;
+      max-width: 480px;
+    }
+
+    .founders__body {
+      font-size: var(--t-body-l);
+      font-weight: 300;
+      line-height: 1.9;
+      color: var(--c-ink-mid);
+      max-width: 480px;
+    }
+
+    /* ═══════════════════════════════════════════════════════════════
+       SECTION 3 — VISION (reuses the homepage Manifesto component
+       verbatim — same class, same behaviour, new copy).
+    ═══════════════════════════════════════════════════════════════ */
+    .manifesto {
+      padding: var(--s-2xl) var(--gutter);
+      text-align: center;
+      max-width: 1100px;
+      margin: 0 auto;
+      position: relative;
+    }
+    .manifesto::before, .manifesto::after {
+      content: '';
+      display: block;
+      width: 40px;
+      height: 1px;
+      background: var(--c-rosegold-pale);
+      margin: 0 auto;
+    }
+    .manifesto::before { margin-bottom: 56px; }
+    .manifesto::after { margin-top: 56px; }
+
+    .manifesto__line {
+      font-family: var(--f-display);
+      font-size: clamp(1.6rem, 3.2vw, 3rem);
+      font-weight: 400;
+      font-style: italic;
+      line-height: 1.4; /* matches Client Diaries' .diary-intro__line — the same pull-quote pattern in production Cormorant Garamond, at a slightly larger max size here */
+      letter-spacing: 0.01em;
+      color: var(--c-charcoal);
+    }
+
+    .manifesto__attribution {
+      margin-top: 28px;
+      font-family: var(--f-sans);
+      font-size: 0.66rem;
+      font-weight: 400;
+      letter-spacing: 0.24em;
+      text-transform: uppercase;
+      color: var(--c-ink-muted);
+    }
+
+    /* ═══════════════════════════════════════════════════════════════
+       SECTION 4 — CRAFT & PROCESS
+       NEW — dark ground. Header text on charcoal (identical register
+       to the homepage Collections Directory header), then a tall
+       two-image diptych with the exact hover-reveal caption pattern
+       used by the homepage Lookbook (overlay + caption slide-up),
+       renamed to this section's own class names per the project's
+       scoped-CSS convention.
+    ═══════════════════════════════════════════════════════════════ */
+    .craft-story {
+      background: var(--c-charcoal);
+      padding: var(--s-2xl) 0;
+      position: relative;
+      overflow: hidden;
+    }
+    .craft-story::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 1px;
+      background: var(--line-on-dark);
+    }
+
+    .craft-story__header {
+      max-width: 640px;
+      margin: 0 auto;
+      padding: 0 var(--gutter) var(--s-xl);
+      text-align: center;
+    }
+    .craft-story__eyebrow { margin-bottom: 20px; }
+
+    .craft-story__title {
+      font-family: var(--f-display);
+      font-size: var(--t-h2);
+      font-weight: 400;
+      font-style: italic;
+      color: white;
+      line-height: 1.1;
+      margin-bottom: 24px;
+    }
+
+    .craft-story__body {
+      font-family: var(--f-sans);
+      font-size: 0.88rem;
+      font-weight: 300;
+      line-height: 1.95;
+      letter-spacing: 0.02em;
+      color: rgba(255,255,255,0.62);
+    }
+
+    .craft-story__credit {
+      margin-top: 22px;
+      font-family: var(--f-sans);
+      font-size: 0.78rem;
+      font-weight: 300;
+      font-style: italic;
+      line-height: 1.8;
+      letter-spacing: 0.02em;
+      color: rgba(255,255,255,0.42);
+    }
+
+    .craft-story__grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 3px;
+      padding: 0 var(--gutter);
+    }
+
+    .craft-story__item {
+      position: relative;
+      overflow: hidden;
+      min-height: 560px;
+    }
+    .craft-story__item img { transition: transform 1.2s var(--ease-luxury); }
+    .craft-story__item:hover img { transform: scale(1.03); }
+
+    .craft-story__overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to top, rgba(15,12,10,0.72) 0%, transparent 52%);
+      opacity: 0;
+      transition: opacity var(--dur-med);
+    }
+    .craft-story__item:hover .craft-story__overlay { opacity: 1; }
+
+    .craft-story__caption {
+      position: absolute;
+      bottom: 28px;
+      left: 28px;
+      right: 28px;
+      opacity: 0;
+      transform: translateY(8px);
+      transition: opacity var(--dur-med), transform var(--dur-med) var(--ease-luxury);
+    }
+    .craft-story__item:hover .craft-story__caption { opacity: 1; transform: translateY(0); }
+
+    .craft-story__caption-name {
+      font-family: var(--f-display);
+      font-size: 1.15rem;
+      font-weight: 400;
+      font-style: italic;
+      color: white;
+      display: block;
+      margin-bottom: 4px;
+    }
+    .craft-story__caption-sub {
+      font-family: var(--f-sans);
+      font-size: 0.63rem;
+      font-weight: 300;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.68);
+    }
+
+    /* ═══════════════════════════════════════════════════════════════
+       SECTION 5 — ATELIER & TRUST STRIP
+       Reuses the homepage Craft Strip component verbatim — same
+       class, same visual treatment, new copy specific to this page.
+    ═══════════════════════════════════════════════════════════════ */
+    .craft-strip {
+      background: var(--c-charcoal);
+      padding: var(--s-xl) var(--gutter);
+      border-top: 1px solid var(--line-on-dark);
+      border-bottom: 1px solid var(--line-on-dark);
+    }
+    .craft-strip__inner {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: clamp(24px, 5vw, 80px);
+      flex-wrap: wrap;
+      max-width: var(--max-wide);
+      margin: 0 auto;
+    }
+    .craft-strip__item { text-align: center; }
+    .craft-strip__label {
+      font-family: var(--f-display);
+      font-size: clamp(1rem, 2.2vw, 1.6rem);
+      font-weight: 400;
+      font-style: italic;
+      color: white;
+      display: block;
+      margin-bottom: 6px;
+    }
+    .craft-strip__sub {
+      font-family: var(--f-sans);
+      font-size: 0.62rem;
+      font-weight: 300;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.35);
+    }
+    .craft-strip__dot { width: 3px; height: 3px; border-radius: 50%; background: var(--c-rosegold); opacity: 0.4; }
+
+    /* ═══════════════════════════════════════════════════════════════
+       SECTION 6 — STOCKIST FOOTPRINT
+       NEW — dark ground, continuing the same dark rhythm as Craft &
+       Process and the Atelier & Trust Strip either side of it (now
+       four consecutive dark sections into the footer, an even closer
+       echo of the homepage's own six-consecutive-dark precedent — see
+       build spec Section 3). Deliberately text-only: no photography
+       exists of these stockists' own spaces, and manufacturing imagery
+       here would overstate a footprint that is real but secondary to
+       the made-to-order/concierge model that remains this house's
+       primary story. Framed explicitly as ongoing/expanding — no
+       "complete list" language — because it genuinely isn't finished.
+    ═══════════════════════════════════════════════════════════════ */
+    .stockists {
+      background: var(--c-charcoal);
+      padding: var(--s-2xl) var(--gutter);
+      position: relative;
+      overflow: hidden;
+    }
+    .stockists::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 1px;
+      background: var(--line-on-dark);
+    }
+
+    .stockists__header {
+      max-width: 640px;
+      margin: 0 auto;
+      padding-bottom: var(--s-xl);
+      text-align: center;
+    }
+    .stockists__eyebrow { margin-bottom: 20px; }
+
+    .stockists__title {
+      font-family: var(--f-display);
+      font-size: var(--t-h2);
+      font-weight: 400;
+      font-style: italic;
+      color: white;
+      line-height: 1.1;
+      margin-bottom: 24px;
+    }
+
+    .stockists__body {
+      font-family: var(--f-sans);
+      font-size: 0.88rem;
+      font-weight: 300;
+      line-height: 1.95;
+      letter-spacing: 0.02em;
+      color: rgba(255,255,255,0.62);
+    }
+
+    .stockists__grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: var(--s-lg);
+      max-width: 780px;
+      margin: 0 auto;
+      padding-top: var(--s-lg);
+      border-top: 1px solid var(--line-on-dark);
+    }
+
+    .stockists__col { text-align: center; }
+
+    .stockists__col-title {
+      font-family: var(--f-sans);
+      font-size: 0.62rem;
+      font-weight: 500;
+      letter-spacing: 0.24em;
+      text-transform: uppercase;
+      color: var(--c-rosegold);
+      margin-bottom: 20px;
+    }
+
+    .stockists__list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+    .stockists__list li {
+      font-family: var(--f-display);
+      font-size: 1.05rem;
+      font-weight: 400;
+      font-style: italic;
+      color: rgba(255,255,255,0.82);
+      line-height: 1.5;
+    }
+
+    .stockists__more {
+      font-family: var(--f-sans);
+      font-size: 0.62rem;
+      font-weight: 300;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.3);
+    }
+
+    /* ═══════════════════════════════════════════════════════════════
+       SECTION 7 — CLOSING CTA (reuses homepage Appointment component
+       verbatim — same class, new image, new copy).
+    ═══════════════════════════════════════════════════════════════ */
+    .appointment { position: relative; min-height: 70vh; display: flex; align-items: center; overflow: hidden; }
+    .appointment__bg { position: absolute; inset: 0; }
+    .appointment__bg img { object-position: center 30%; }
+    .appointment__overlay { position: absolute; inset: 0; background: rgba(26,23,20,0.60); }
+    .appointment__content { position: relative; z-index: 1; padding: var(--s-2xl) var(--gutter); max-width: 680px; margin: 0 auto; text-align: center; }
+    .appointment__eyebrow { margin-bottom: 24px; }
+    .appointment__title {
+      font-family: var(--f-display);
+      font-size: var(--t-display);
+      font-weight: 400;
+      font-style: italic;
+      color: white;
+      line-height: 1.05;
+      margin-bottom: 24px;
+    }
+    .appointment__body {
+      font-family: var(--f-sans);
+      font-size: 0.88rem;
+      font-weight: 300;
+      line-height: 1.9;
+      color: rgba(255,255,255,0.7);
+      margin-bottom: 48px;
+      letter-spacing: 0.02em;
+    }
+    .appointment__options { display: flex; align-items: center; justify-content: center; gap: 20px; flex-wrap: wrap; }
+    .btn-outline-white {
+      font-family: var(--f-sans);
+      font-size: 0.66rem;
+      font-weight: 400;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: white;
+      border: 1px solid rgba(255,255,255,0.45);
+      padding: 14px 36px;
+      transition: background var(--dur-fast), border-color var(--dur-fast), color var(--dur-fast);
+    }
+    .btn-outline-white:hover { background: white; color: var(--c-charcoal); border-color: white; }
+    .appointment__divider { font-family: var(--f-sans); font-size: 0.63rem; letter-spacing: 0.1em; color: rgba(255,255,255,0.3); }
+
+    /* ═══════════════════════════════════════════════════════════════
+       FOOTER — verbatim from homepage
+    ═══════════════════════════════════════════════════════════════ */
+    .footer { background: var(--c-charcoal); padding: var(--s-2xl) var(--gutter) var(--s-lg); border-top: 1px solid var(--line-on-dark); }
+    .footer__top {
+      display: grid;
+      grid-template-columns: 1.4fr 1fr 1fr 1fr;
+      gap: var(--s-lg);
+      padding-bottom: var(--s-xl);
+      border-bottom: 1px solid rgba(255,255,255,0.07);
+      margin-bottom: var(--s-lg);
+    }
+    .footer__logo {
+      font-family: var(--f-display);
+      font-size: 1.5rem;
+      font-weight: 400;
+      letter-spacing: 0.12em;
+      color: rgba(255,255,255,0.82);
+      text-transform: uppercase;
+      margin-bottom: 16px;
+      display: block;
+    }
+    .footer__tagline {
+      font-family: var(--f-display);
+      font-style: italic;
+      font-size: 0.92rem;
+      color: rgba(255,255,255,0.32);
+      line-height: 1.65;
+      margin-bottom: 28px;
+      max-width: 260px;
+    }
+    .footer__social { display: flex; gap: 16px; }
+    .footer__social a {
+      font-family: var(--f-sans);
+      font-size: 0.6rem;
+      font-weight: 400;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.35);
+      transition: color var(--dur-fast);
+    }
+    .footer__social a:hover { color: var(--c-rosegold); }
+    .footer__col-title {
+      font-family: var(--f-sans);
+      font-size: 0.6rem;
+      font-weight: 500;
+      letter-spacing: 0.24em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.35);
+      margin-bottom: 20px;
+    }
+    .footer__links { list-style: none; display: flex; flex-direction: column; gap: 12px; }
+    .footer__links a {
+      font-family: var(--f-sans);
+      font-size: 0.78rem;
+      font-weight: 300;
+      color: rgba(255,255,255,0.5);
+      transition: color var(--dur-fast);
+      letter-spacing: 0.04em;
+    }
+    .footer__links a:hover { color: white; }
+    .footer__links a.is-current { color: var(--c-rosegold); }
+    .footer__contact-item {
+      font-family: var(--f-sans);
+      font-size: 0.78rem;
+      font-weight: 300;
+      color: rgba(255,255,255,0.42);
+      line-height: 1.8;
+      letter-spacing: 0.04em;
+    }
+    .footer__contact-item a { color: rgba(255,255,255,0.42); transition: color var(--dur-fast); }
+    .footer__contact-item a:hover { color: var(--c-rosegold); }
+    .footer__bottom { display: flex; align-items: center; justify-content: space-between; gap: 24px; flex-wrap: wrap; }
+    .footer__copy { font-family: var(--f-sans); font-size: 0.63rem; font-weight: 300; color: rgba(255,255,255,0.18); letter-spacing: 0.1em; }
+    .footer__legal { display: flex; gap: 24px; list-style: none; }
+    .footer__legal a {
+      font-family: var(--f-sans);
+      font-size: 0.63rem;
+      font-weight: 300;
+      color: rgba(255,255,255,0.18);
+      letter-spacing: 0.1em;
+      transition: color var(--dur-fast);
+    }
+    .footer__legal a:hover { color: rgba(255,255,255,0.5); }
+
+    /* ═══════════════════════════════════════════════════════════════
+       MOBILE STYLES
+    ═══════════════════════════════════════════════════════════════ */
+    @media (max-width: 900px) {
+      .nav__links { display: none; }
+      .nav__toggle { display: flex; }
+      .nav__whatsapp { display: none; }
+
+      .founders { grid-template-columns: 1fr; min-height: auto; }
+      .founders__image { min-height: 440px; }
+      .founders__text { padding: 56px var(--gutter); }
+      .founders__title, .founders__body { max-width: none; }
+
+      .manifesto__line { font-size: clamp(1.3rem, 5vw, 2.2rem); }
+
+      .craft-story__grid { grid-template-columns: 1fr; }
+      .craft-story__item { min-height: 420px; }
+
+      .stockists__grid { grid-template-columns: 1fr; gap: var(--s-lg); }
+
+      .footer__top { grid-template-columns: 1fr 1fr; gap: var(--s-md); }
+      .footer__brand { grid-column: 1 / -1; }
+    }
+
+    @media (max-width: 600px) {
+      :root { --s-2xl: 80px; --s-xl: 60px; }
+
+      .hero { height: 88svh; }
+      .appointment__options { flex-direction: column; align-items: stretch; }
+      .btn-outline-white { text-align: center; }
+      .footer__top { grid-template-columns: 1fr; }
+      .craft-strip__inner { flex-direction: column; gap: 32px; }
+      .craft-strip__dot { display: none; }
+    }
+
+    /* ── Mobile nav drawer — verbatim from homepage ── */
+    .mobile-nav {
+      position: fixed;
+      inset: 0;
+      z-index: 200;
+      background: var(--c-charcoal);
+      display: flex;
+      flex-direction: column;
+      padding: 80px var(--gutter) var(--s-lg);
+      transform: translateX(100%);
+      transition: transform 0.5s var(--ease-luxury);
+    }
+    .mobile-nav.open { transform: translateX(0); }
+    .mobile-nav__close {
+      position: absolute;
+      top: 24px;
+      right: var(--gutter);
+      font-family: var(--f-sans);
+      font-size: 0.63rem;
+      font-weight: 400;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.45);
+      padding: 8px;
+    }
+    .mobile-nav__links { list-style: none; margin-bottom: var(--s-lg); }
+    .mobile-nav__links li { border-bottom: 1px solid rgba(255,255,255,0.07); }
+    .mobile-nav__links a {
+      display: block;
+      font-family: var(--f-display);
+      font-size: clamp(1.6rem, 6vw, 2.6rem);
+      font-weight: 400;
+      font-style: italic;
+      color: white;
+      padding: 18px 0;
+      letter-spacing: 0.02em;
+      transition: color var(--dur-fast);
+    }
+    .mobile-nav__links a:hover, .mobile-nav__links a.is-current { color: var(--c-rosegold); }
+    .mobile-nav__footer { margin-top: auto; }
+    .mobile-nav__footer p {
+      font-family: var(--f-sans);
+      font-size: 0.7rem;
+      font-weight: 300;
+      color: rgba(255,255,255,0.3);
+      letter-spacing: 0.1em;
+      margin-bottom: 8px;
+    }
+    .mobile-nav__footer a {
+      display: block;
+      font-family: var(--f-sans);
+      font-size: 0.82rem;
+      font-weight: 300;
+      color: var(--c-rosegold);
+      letter-spacing: 0.06em;
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- ═══════════════════════════════════════════════════
+       NAVIGATION — identical to homepage global nav
+  ═══════════════════════════════════════════════════ -->
+  <nav class="nav" id="nav">
+    <ul class="nav__links">
+      <li><a href="/collections/bestsellers">Bestsellers</a></li>
+      <li><a href="/collections">Collections</a></li>
+      <li><a href="/pages/client-diaries">Client Diaries</a></li>
+    </ul>
+
+    <a href="/" class="nav__logo">K&amp;A</a>
+
+    <div class="nav__actions">
+      <a href="https://wa.me/919967543087" class="nav__whatsapp" target="_blank">Concierge</a>
+      <button class="nav__toggle" id="navToggle" aria-label="Open menu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- Mobile Nav -->
+  <nav class="mobile-nav" id="mobileNav" aria-hidden="true">
+    <button class="mobile-nav__close" id="navClose">Close</button>
+    <ul class="mobile-nav__links">
+      <li><a href="/collections/bestsellers">Bestsellers</a></li>
+      <li><a href="/collections">Collections</a></li>
+      <li><a href="/pages/client-diaries">Client Diaries</a></li>
+      <li><a href="/pages/about-us" class="is-current">About</a></li>
+      <li><a href="/pages/appointments">Book an Appointment</a></li>
+    </ul>
+    <div class="mobile-nav__footer">
+      <p>Concierge</p>
+      <a href="https://wa.me/919967543087">+91 99675 43087</a>
+    </div>
+  </nav>
+
+
+  <!-- ═══════════════════════════════════════════════════
+       SECTION 1 — HERO
+       Image: about-hero.jpg — three brides in an editorial
+       group portrait, gold and sage lehengas. Used here not
+       as a literal illustration of the copy but as an opening
+       mood statement: the world of K&A, before we narrow to
+       the two people who built it.
+  ═══════════════════════════════════════════════════ -->
+  <section class="hero" aria-label="About K&A">
+    <div class="hero__bg" id="heroBg">
+      <img src="images/about-hero.jpg" alt="K&A bridal lehengas, editorial group portrait" style="filter: sepia(0.10) saturate(0.90) brightness(0.96);" />
+    </div>
+    <div class="hero__overlay"></div>
+
+    <div class="hero__content">
+      <p class="hero__eyebrow">The House, Mumbai — Est. 2016</p>
+      <h1 class="hero__title">
+        Karishma
+        <strong>&amp; Ashita</strong>
+      </h1>
+      <p class="hero__sub">
+        A friendship that became an atelier — built on the belief that every
+        bride deserves a garment made with intention, not assumption.
+      </p>
+      <div class="hero__ctas">
+        <a href="/collections" class="btn-ghost">Explore the Collections</a>
+        <a href="/pages/appointments" class="btn-text">Book a Styling Appointment</a>
+      </div>
+    </div>
+
+    <div class="hero__scroll">
+      <span>Scroll</span>
+      <div class="hero__scroll-line"></div>
+    </div>
+  </section>
+
+
+  <!-- ═══════════════════════════════════════════════════
+       SECTION 2 — FOUNDERS / ORIGIN
+       Image: about-founders-real.jpg — Karishma and Ashita
+       themselves, photographed together in hand-embellished
+       K&A lehengas. Real founder photography (sourced by Suraj
+       to D:\Content Library\Founders, 11 July 2026), replacing
+       the earlier symbolic model placeholder. A third-party
+       "Dream Diaries" photographer watermark was cropped from
+       the top of the original frame before use — see build
+       spec Section 4/5 for exact crop bounds. Because this is
+       now genuinely them, it earns a caption, which the
+       earlier symbolic photo deliberately did not.
+  ═══════════════════════════════════════════════════ -->
+  <section class="founders" aria-label="Our story">
+    <div class="founders__image reveal-img">
+      <img src="images/about-founders-real.jpg" alt="Karishma and Ashita, founders of K&A, together in hand-embellished couture lehengas" style="filter: sepia(0.10) saturate(0.90) brightness(0.97);" />
+      <div class="founders__image-overlay"></div>
+      <div class="founders__image-caption">
+        <span class="founders__image-name">Karishma &amp; Ashita</span>
+        <span class="founders__image-sub">Founders, K&amp;A</span>
+      </div>
+    </div>
+    <div class="founders__text">
+      <p class="eyebrow eyebrow--muted founders__eyebrow reveal">Since the Beginning</p>
+      <h2 class="founders__title reveal reveal-delay-1">Best Friends,<br>Bound by Craft.</h2>
+      <p class="founders__body reveal reveal-delay-2">
+        K&amp;A began the way most quiet houses do — between two people who saw
+        the same picture before either said it aloud. Karishma and Ashita built
+        this atelier on a simple conviction: that a bride's clothing should be
+        made with intention, considered stitch by stitch, rather than assembled
+        off a rack. What started as an instinct between friends is now a Mumbai
+        atelier, where every lehenga, every corset, every draped silhouette
+        begins as a private conversation — long before it becomes a garment.
+      </p>
+    </div>
+  </section>
+
+
+  <!-- ═══════════════════════════════════════════════════
+       SECTION 3 — VISION
+  ═══════════════════════════════════════════════════ -->
+  <section class="manifesto" aria-label="Our vision">
+    <p class="manifesto__line reveal">
+      "To design bridal wear that carries opulence and grace — a beauty
+      considered enough that it does not date, in silhouettes a woman
+      remembers long after the wedding ends."
+    </p>
+    <p class="manifesto__attribution reveal reveal-delay-2">
+      The Vision — K&amp;A by Karishma &amp; Ashita
+    </p>
+  </section>
+
+
+  <!-- ═══════════════════════════════════════════════════
+       SECTION 4 — CRAFT & PROCESS
+       Images: about-craft-detail-1.jpg (structured corsetry,
+       cobalt silk) and about-craft-detail-2.jpg (hand-placed
+       pearl and sequin embellishment, ivory).
+  ═══════════════════════════════════════════════════ -->
+  <section class="craft-story" aria-label="The craft">
+    <div class="craft-story__header">
+      <p class="eyebrow eyebrow--on-dark craft-story__eyebrow reveal">The Craft</p>
+      <h2 class="craft-story__title reveal reveal-delay-1">Nothing Here<br>Is Machine-Made.</h2>
+      <p class="craft-story__body reveal reveal-delay-2">
+        Zardozi worked thread by thread. Sequins placed one at a time. Boning
+        shaped and stitched until a corset holds a bride the way she wants to
+        be held for twelve hours, not twelve minutes. Every K&amp;A piece moves
+        through the same hands, from first sketch to final fitting — because a
+        garment this considered cannot be rushed, and should never be duplicated.
+      </p>
+      <p class="craft-story__credit reveal reveal-delay-3">
+        The same hands have, on occasion, dressed private clients across film
+        and fashion — among them actress Palak Tiwari, styled in one of our
+        hand-cut corset drape sarees.
+      </p>
+    </div>
+
+    <div class="craft-story__grid">
+      <div class="craft-story__item reveal-img">
+        <img src="images/about-craft-detail-1.jpg" alt="Hand-boned structured corsetry in cobalt silk" style="filter: sepia(0.05) saturate(0.96) brightness(0.93);" />
+        <div class="craft-story__overlay"></div>
+        <div class="craft-story__caption">
+          <span class="craft-story__caption-name">Structured Corsetry</span>
+          <span class="craft-story__caption-sub">Boned and fitted, entirely by hand</span>
+        </div>
+      </div>
+      <div class="craft-story__item reveal-img">
+        <img src="images/about-craft-detail-2.jpg" alt="Hand-placed pearl and sequin embellishment on ivory bodice" style="filter: sepia(0.10) saturate(0.90) brightness(0.95);" />
+        <div class="craft-story__overlay"></div>
+        <div class="craft-story__caption">
+          <span class="craft-story__caption-name">Hand-Placed Embellishment</span>
+          <span class="craft-story__caption-sub">Zardozi, threadwork, sequins</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ═══════════════════════════════════════════════════
+       SECTION 5 — ATELIER & TRUST STRIP
+  ═══════════════════════════════════════════════════ -->
+  <section class="craft-strip" aria-label="What every K&A piece includes">
+    <div class="craft-strip__inner">
+      <div class="craft-strip__item reveal">
+        <span class="craft-strip__label">Mumbai Atelier</span>
+        <span class="craft-strip__sub">Private consultations, always by appointment</span>
+      </div>
+      <div class="craft-strip__dot reveal"></div>
+      <div class="craft-strip__item reveal reveal-delay-1">
+        <span class="craft-strip__label">Made to Order</span>
+        <span class="craft-strip__sub">Every piece begins with you</span>
+      </div>
+      <div class="craft-strip__dot reveal reveal-delay-1"></div>
+      <div class="craft-strip__item reveal reveal-delay-2">
+        <span class="craft-strip__label">Worldwide Delivery</span>
+        <span class="craft-strip__sub">Complimentary, wherever you are</span>
+      </div>
+      <div class="craft-strip__dot reveal reveal-delay-2"></div>
+      <div class="craft-strip__item reveal reveal-delay-3">
+        <span class="craft-strip__label">Concierge</span>
+        <span class="craft-strip__sub">A conversation, not a call centre</span>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ═══════════════════════════════════════════════════
+       SECTION 6 — STOCKIST FOOTPRINT
+       No imagery — text only, matching the dark register of
+       Craft & Process and the Atelier & Trust Strip on either
+       side of it. Explicitly framed as ongoing/expanding, not
+       a finished list — the footprint genuinely keeps growing.
+  ═══════════════════════════════════════════════════ -->
+  <section class="stockists" aria-label="Where to find K&A">
+    <div class="stockists__header">
+      <p class="eyebrow eyebrow--on-dark stockists__eyebrow reveal">Beyond the Atelier</p>
+      <h2 class="stockists__title reveal reveal-delay-1">A House That Travels.</h2>
+      <p class="stockists__body reveal reveal-delay-2">
+        K&amp;A already lives beyond Mumbai — carried today by a small,
+        considered circle of stores and platforms we're proud to stand
+        alongside, in India and abroad. This footprint is never finished;
+        we're always in conversation with new cities, new stores, new borders.
+      </p>
+    </div>
+
+    <div class="stockists__grid">
+      <div class="stockists__col reveal reveal-delay-3">
+        <p class="stockists__col-title">Online</p>
+        <ul class="stockists__list">
+          <li>Pernia's Pop-Up Shop</li>
+          <li>Aza</li>
+          <li>Nikaza</li>
+          <li>Agashe</li>
+        </ul>
+        <p class="stockists__more">And more, always expanding</p>
+      </div>
+      <div class="stockists__col reveal reveal-delay-4">
+        <p class="stockists__col-title">In Store</p>
+        <ul class="stockists__list">
+          <li>Anantam, Delhi</li>
+          <li>Almari, Hyderabad</li>
+          <li>Silk &amp; Threads, Vancouver</li>
+          <li>Nezo, Bandra Mumbai</li>
+        </ul>
+        <p class="stockists__more">And more, always expanding</p>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ═══════════════════════════════════════════════════
+       SECTION 7 — CLOSING CTA
+       Image: about-closing-cta.jpg — corset lacing detail,
+       intimate, warm-lit. Chosen deliberately over a generic
+       "atelier interior" shot: it evokes the fitting itself,
+       the most literal expression of "made for you."
+  ═══════════════════════════════════════════════════ -->
+  <section class="appointment" aria-label="Book an appointment">
+    <div class="appointment__bg reveal-img">
+      <img src="images/about-closing-cta.jpg" alt="Hand-laced corset detail, K&A atelier" style="filter: sepia(0.10) saturate(0.85) brightness(0.88);" />
+    </div>
+    <div class="appointment__overlay"></div>
+    <div class="appointment__content">
+      <p class="eyebrow eyebrow--on-dark appointment__eyebrow reveal">Begin Here</p>
+      <h2 class="appointment__title reveal reveal-delay-1">Every K&amp;A Story<br>Starts the Same Way.</h2>
+      <p class="appointment__body reveal reveal-delay-2">
+        One conversation — in our Mumbai atelier, or virtually, wherever you
+        are — is where every K&amp;A garment begins. Tell us about your day.
+        We'll take it from there.
+      </p>
+      <div class="appointment__options reveal reveal-delay-3">
+        <a href="/pages/book-appointment" class="btn-outline-white">Book In-Store Appointment</a>
+        <span class="appointment__divider">or</span>
+        <a href="/pages/book-virtual-appointment" class="btn-outline-white">Book Virtual Styling Session</a>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ═══════════════════════════════════════════════════
+       FOOTER — identical to homepage global footer
+  ═══════════════════════════════════════════════════ -->
+  <footer class="footer" aria-label="Site footer">
+    <div class="footer__top">
+      <div class="footer__brand">
+        <span class="footer__logo">K&amp;A by Karishma &amp; Ashita</span>
+        <p class="footer__tagline">Bridal couture, handcrafted<br>in Mumbai.</p>
+        <div class="footer__social">
+          <a href="https://instagram.com/karishmaashita" target="_blank">Instagram</a>
+          <a href="https://wa.me/919967543087" target="_blank">Concierge</a>
+          <a href="#" target="_blank">Pinterest</a>
+        </div>
+      </div>
+
+      <div>
+        <p class="footer__col-title">Collections</p>
+        <ul class="footer__links">
+          <li><a href="#">Bridal</a></li>
+          <li><a href="#">Lehengas</a></li>
+          <li><a href="#">Indo-Western</a></li>
+          <li><a href="#">Festive Wear</a></li>
+          <li><a href="#">Bestsellers</a></li>
+        </ul>
+      </div>
+
+      <div>
+        <p class="footer__col-title">The House</p>
+        <ul class="footer__links">
+          <li><a href="/pages/about-us" class="is-current">About Karishma &amp; Ashita</a></li>
+          <li><a href="/pages/client-diaries">Client Diaries</a></li>
+          <li><a href="/pages/appointments">Book an Appointment</a></li>
+          <li><a href="https://wa.me/919967543087" target="_blank">Concierge</a></li>
+          <li><a href="#">Press</a></li>
+        </ul>
+      </div>
+
+      <div>
+        <p class="footer__col-title">Contact</p>
+        <div style="display: flex; flex-direction: column; gap: 12px;">
+          <p class="footer__contact-item">
+            <a href="https://wa.me/919967543087">+91 99675 43087</a>
+          </p>
+          <p class="footer__contact-item">
+            <a href="mailto:hello@karishmaashita.com">hello@karishmaashita.com</a>
+          </p>
+          <p class="footer__contact-item">
+            Mumbai, India<br>
+            Free worldwide shipping
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <div class="footer__bottom">
+      <p class="footer__copy">
+        &copy; 2026 K&amp;A by Karishma &amp; Ashita. All rights reserved.
+      </p>
+      <ul class="footer__legal">
+        <li><a href="#">Privacy Policy</a></li>
+        <li><a href="#">Terms of Service</a></li>
+        <li><a href="#">Shipping &amp; Returns</a></li>
+      </ul>
+    </div>
+  </footer>
+
+
+  <!-- ═══════════════════════════════════════════════════
+       JAVASCRIPT — identical logic to homepage (no parallax
+       on this page; the hero is shorter and static per the
+       Founders section following immediately below it).
+  ═══════════════════════════════════════════════════ -->
+  <script>
+    (function () {
+      'use strict';
+
+      const nav = document.getElementById('nav');
+      window.addEventListener('scroll', function () {
+        if (window.scrollY > 60) {
+          nav.classList.add('scrolled');
+        } else {
+          nav.classList.remove('scrolled');
+        }
+      }, { passive: true });
+
+      const heroBg = document.getElementById('heroBg');
+      if (heroBg) {
+        requestAnimationFrame(function () {
+          requestAnimationFrame(function () {
+            heroBg.classList.add('loaded');
+          });
+        });
+      }
+
+      const revealEls = document.querySelectorAll('.reveal, .reveal-img');
+      const observer = new IntersectionObserver(function (entries) {
+        entries.forEach(function (entry) {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('visible');
+            observer.unobserve(entry.target);
+          }
+        });
+      }, { threshold: 0.10, rootMargin: '0px 0px -40px 0px' });
+      revealEls.forEach(function (el) { observer.observe(el); });
+
+      const navToggle = document.getElementById('navToggle');
+      const navClose  = document.getElementById('navClose');
+      const mobileNav = document.getElementById('mobileNav');
+
+      function openNav () {
+        mobileNav.classList.add('open');
+        mobileNav.setAttribute('aria-hidden', 'false');
+        document.body.style.overflow = 'hidden';
+      }
+      function closeNav () {
+        mobileNav.classList.remove('open');
+        mobileNav.setAttribute('aria-hidden', 'true');
+        document.body.style.overflow = '';
+      }
+      if (navToggle) navToggle.addEventListener('click', openNav);
+      if (navClose)  navClose.addEventListener('click', closeNav);
+      document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape') closeNav();
+      });
+
+    })();
+  </script>
+
+</body>
+</html>

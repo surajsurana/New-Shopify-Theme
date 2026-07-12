@@ -1,5 +1,13 @@
 {{ 'ka-footer.css' | asset_url | stylesheet_tag }}
 
+{%- comment -%}
+  is_about_us — same small reusable check as ka-nav.liquid (Docs/about-
+  us-build-spec.md Section 6 H3), drives .is-current on the footer's
+  "About Karishma & Ashita" link.
+{%- endcomment -%}
+{%- assign is_about_us = false -%}
+{%- if request.page_type == 'page' and page.handle == 'about-us' -%}{%- assign is_about_us = true -%}{%- endif -%}
+
 <footer class="ka-footer" aria-label="Site footer">
   <div class="ka-footer__top">
     <!-- Column 1: Brand -->
@@ -50,10 +58,10 @@
       <p class="ka-footer__col-title">Maison</p>
       <ul class="ka-footer__links">
         {% for link in linklists['footer-the-house'].links %}
-          <li><a href="{{ link.url }}">{{ link.title }}</a></li>
+          <li><a href="{{ link.url }}"{% if is_about_us and link.url contains 'about-us' %} class="is-current"{% endif %}>{{ link.title }}</a></li>
         {% endfor %}
         {% if linklists['footer-the-house'].links.size == 0 %}
-          <li><a href="/pages/about-us">About Karishma &amp; Ashita</a></li>
+          <li><a href="/pages/about-us"{% if is_about_us %} class="is-current"{% endif %}>About Karishma &amp; Ashita</a></li>
           <li><a href="/pages/client-diaries">Client Diaries</a></li>
           {%- comment -%}
             "Book an Appointment" — TEMPORARY interim WhatsApp routing,

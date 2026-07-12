@@ -1,5 +1,16 @@
 {{ 'ka-nav.css' | asset_url | stylesheet_tag }}
 {%- comment -%}
+  is_about_us — Docs/about-us-build-spec.md Section 6 (H3). Drives the
+  new .is-current state on the mobile drawer's About link (and the
+  matching link in ka-footer.liquid). Written as a small reusable check
+  (not a one-off hardcoded string comparison inline) so it can be
+  extended the same way for Collection/Product/Cart's own nav links
+  later, per the spec's own flagged follow-up — not done here since
+  that is out of this page's scope.
+{%- endcomment -%}
+{%- assign is_about_us = false -%}
+{%- if request.page_type == 'page' and page.handle == 'about-us' -%}{%- assign is_about_us = true -%}{%- endif -%}
+{%- comment -%}
   ka-collection-grid.css lives here (not just in sections/ka-collection-grid.liquid)
   because .ka-p-card is now a genuinely sitewide component, not a Collection-page-only
   one: the search overlay (below) and templates/search.json both reuse it verbatim,
@@ -137,7 +148,7 @@
     <li><a href="{{ section.settings.link_bestsellers }}">{{ section.settings.label_bestsellers }}</a></li>
     <li><a href="{{ section.settings.link_collections }}">{{ section.settings.label_collections }}</a></li>
     <li><a href="{{ section.settings.link_diaries }}">{{ section.settings.label_diaries }}</a></li>
-    <li><a href="{{ section.settings.link_about }}">About</a></li>
+    <li><a href="{{ section.settings.link_about }}"{% if is_about_us %} class="is-current"{% endif %}>About</a></li>
     <li><a href="#" data-ka-appt-link>Book an Appointment</a></li>
   </ul>
   {%- comment -%}

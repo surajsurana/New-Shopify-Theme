@@ -1,0 +1,68 @@
+/* ================================================================
+   KA-ABOUT-FOUNDERS
+   Adapted from ka-collection-story.css (same 1fr/1fr grid, same
+   --c-paper-deep panel, same type scale) minus the secondary two-image
+   strip — see ka-about-founders.liquid header comment.
+================================================================ */
+.ka-about-founders {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  min-height: 82vh;
+  overflow: hidden;
+}
+
+.ka-about-founders__image { position: relative; overflow: hidden; min-height: 560px; }
+.ka-about-founders__image img { object-position: center 14%; }
+
+/* Caption overlay — only added because the photo is now real,
+   identifiable people (Karishma & Ashita themselves). See build spec
+   Section 3/4/5 v1.2 changelog. */
+.ka-about-founders__image-overlay {
+  position: absolute; inset: 0;
+  background: linear-gradient(to top, rgba(15,12,10,0.58) 0%, rgba(15,12,10,0.08) 30%, transparent 48%);
+  pointer-events: none;
+}
+.ka-about-founders__image-caption { position: absolute; bottom: 32px; left: 32px; }
+.ka-about-founders__image-name {
+  font-family: var(--f-display); font-style: italic; font-weight: 400;
+  font-size: 1.3rem; color: white; display: block; margin-bottom: 5px;
+}
+.ka-about-founders__image-sub {
+  font-family: var(--f-sans); font-size: 0.6rem; font-weight: 400;
+  letter-spacing: 0.18em; text-transform: uppercase; color: rgba(255,255,255,0.7);
+}
+
+.ka-about-founders__text {
+  background: var(--c-paper-deep);
+  padding: var(--s-2xl) clamp(32px, 5vw, 80px);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+.ka-about-founders__eyebrow { margin-bottom: 20px; }
+
+.ka-about-founders__title {
+  font-family: var(--f-display);
+  font-size: var(--t-display);
+  font-weight: 400;
+  font-style: italic;
+  color: var(--c-charcoal);
+  line-height: 1.05;
+  margin-bottom: 28px;
+  max-width: 480px;
+}
+
+.ka-about-founders__body {
+  font-size: var(--t-body-l);
+  font-weight: 300;
+  line-height: 1.9;
+  color: var(--c-ink-mid);
+  max-width: 480px;
+}
+
+@media (max-width: 900px) {
+  .ka-about-founders { grid-template-columns: 1fr; min-height: auto; }
+  .ka-about-founders__image { min-height: 440px; }
+  .ka-about-founders__text { padding: 56px var(--gutter); }
+  .ka-about-founders__title, .ka-about-founders__body { max-width: none; }
+}

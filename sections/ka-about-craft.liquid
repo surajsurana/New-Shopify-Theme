@@ -1,0 +1,130 @@
+{{ 'ka-about-craft.css' | asset_url | stylesheet_tag }}
+
+{%- comment -%}
+  K&A About — Craft & Process. Docs/about-us-build-spec.md Section 5 /
+  Section 6 (H1, H4). New section — dark-ground header block followed
+  by a two-image diptych using the exact hover-reveal caption pattern
+  already proven in sections/ka-client-diaries.liquid's Lookbook grid
+  (dark gradient overlay fades in, caption slides up 8px->0), renamed
+  under this section's own scoped class names per the project's
+  section-scoped CSS convention. Functionally identical, not a new
+  interaction.
+
+  Filter note (spec Section 4/6 H4): about-craft-detail-1.jpg
+  deliberately uses a lighter sepia (0.05/0.96/0.93) than the more
+  typical 0.10/0.90/0.95 range, to preserve the saturated cobalt blue
+  that is a deliberate part of that photograph's own art direction —
+  a documented, one-off exception, not a new general-purpose token.
+  Both new filter classes (.img-filter-about-craft,
+  .img-filter-about-craft-cobalt) live in assets/ka-base.css alongside
+  every other .img-filter-* class, per the theme's existing centralised
+  pattern for this specific slice of styling.
+{%- endcomment -%}
+
+<section class="ka-about-craft" aria-label="The craft">
+  <div class="ka-about-craft__header">
+    <p class="eyebrow eyebrow--on-dark ka-about-craft__eyebrow reveal">{{ section.settings.eyebrow }}</p>
+    <h2 class="ka-about-craft__title reveal reveal-delay-1">{{ section.settings.title_line1 }}<br>{{ section.settings.title_line2 }}</h2>
+    <p class="ka-about-craft__body reveal reveal-delay-2">{{ section.settings.body }}</p>
+    {%- if section.settings.credit != blank -%}
+      <p class="ka-about-craft__credit reveal reveal-delay-3">{{ section.settings.credit }}</p>
+    {%- endif -%}
+  </div>
+
+  <div class="ka-about-craft__grid">
+    <div class="ka-about-craft__item reveal-img">
+      {%- if section.settings.image_1 != blank -%}
+        <img
+          src="{{ section.settings.image_1 | image_url: width: 1200 }}"
+          alt="{{ section.settings.image_1.alt | escape | default: 'Hand-boned structured corsetry in cobalt silk' }}"
+          loading="lazy"
+          width="1200"
+          height="1600"
+          class="img-filter-about-craft-cobalt"
+        />
+      {%- else -%}
+        <img
+          src="{{ 'about-craft-detail-1.jpg' | asset_url }}"
+          alt="Hand-boned structured corsetry in cobalt silk"
+          loading="lazy"
+          width="873"
+          height="1164"
+          class="img-filter-about-craft-cobalt"
+        />
+      {%- endif -%}
+      <div class="ka-about-craft__overlay"></div>
+      <div class="ka-about-craft__caption">
+        <span class="ka-about-craft__caption-name">{{ section.settings.caption_1_name }}</span>
+        <span class="ka-about-craft__caption-sub">{{ section.settings.caption_1_sub }}</span>
+      </div>
+    </div>
+    <div class="ka-about-craft__item reveal-img">
+      {%- if section.settings.image_2 != blank -%}
+        <img
+          src="{{ section.settings.image_2 | image_url: width: 1200 }}"
+          alt="{{ section.settings.image_2.alt | escape | default: 'Hand-placed pearl and sequin embellishment on ivory bodice' }}"
+          loading="lazy"
+          width="1200"
+          height="900"
+          class="img-filter-about-craft"
+        />
+      {%- else -%}
+        <img
+          src="{{ 'about-craft-detail-2.jpg' | asset_url }}"
+          alt="Hand-placed pearl and sequin embellishment on ivory bodice"
+          loading="lazy"
+          width="1000"
+          height="750"
+          class="img-filter-about-craft"
+        />
+      {%- endif -%}
+      <div class="ka-about-craft__overlay"></div>
+      <div class="ka-about-craft__caption">
+        <span class="ka-about-craft__caption-name">{{ section.settings.caption_2_name }}</span>
+        <span class="ka-about-craft__caption-sub">{{ section.settings.caption_2_sub }}</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "About Craft & Process",
+  "tag": "section",
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "The Craft" },
+    { "type": "text", "id": "title_line1", "label": "Title line 1", "default": "Nothing Here" },
+    { "type": "text", "id": "title_line2", "label": "Title line 2", "default": "Is Machine-Made." },
+    {
+      "type": "textarea",
+      "id": "body",
+      "label": "Body copy",
+      "default": "Zardozi worked thread by thread. Sequins placed one at a time. Boning shaped and stitched until a corset holds a bride the way she wants to be held for twelve hours, not twelve minutes. Every K&A piece moves through the same hands, from first sketch to final fitting — because a garment this considered cannot be rushed, and should never be duplicated."
+    },
+    {
+      "type": "textarea",
+      "id": "credit",
+      "label": "Styling credit line (optional — leave blank to hide)",
+      "default": "The same hands have, on occasion, dressed private clients across film and fashion — among them actress Palak Tiwari, styled in one of our hand-cut corset drape sarees.",
+      "info": "Only include a name here if it can be backed by a real, checkable source (per CLAUDE.md) — e.g. a live product or press mention. See build spec Section 5 for the verification standard used."
+    },
+    {
+      "type": "header",
+      "content": "Diptych — image 1 (cobalt corsetry)"
+    },
+    { "type": "image_picker", "id": "image_1", "label": "Image 1", "info": "Falls back to about-craft-detail-1.jpg if none is chosen." },
+    { "type": "text", "id": "caption_1_name", "label": "Image 1 — caption name", "default": "Structured Corsetry" },
+    { "type": "text", "id": "caption_1_sub",  "label": "Image 1 — caption sub-label", "default": "Boned and fitted, entirely by hand" },
+    {
+      "type": "header",
+      "content": "Diptych — image 2 (embellishment)"
+    },
+    { "type": "image_picker", "id": "image_2", "label": "Image 2", "info": "Falls back to about-craft-detail-2.jpg if none is chosen." },
+    { "type": "text", "id": "caption_2_name", "label": "Image 2 — caption name", "default": "Hand-Placed Embellishment" },
+    { "type": "text", "id": "caption_2_sub",  "label": "Image 2 — caption sub-label", "default": "Zardozi, threadwork, sequins" }
+  ],
+  "presets": [
+    { "name": "About Craft & Process" }
+  ]
+}
+{% endschema %}

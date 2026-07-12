@@ -1,0 +1,88 @@
+{{ 'ka-about-founders.css' | asset_url | stylesheet_tag }}
+
+{%- comment -%}
+  K&A About — Founders / Origin. Docs/about-us-build-spec.md Section 3 /
+  Section 6 (H1). New section — adapted variant of sections/ka-collection-
+  story.liquid (same 1fr/1fr grid, same --c-paper-deep text panel, same
+  type scale) but WITHOUT that component's secondary two-image strip
+  (only one founders photograph exists — see spec Section 3). Kept as a
+  sibling component rather than a modifier on ka-collection-story
+  because the two now genuinely differ in HTML structure, per spec
+  Section 4's own reasoning.
+
+  v1.2: the founders photo is real, identifiable photography of
+  Karishma and Ashita (about-founders-real.jpg), so — unlike the
+  earlier symbolic placeholder — it carries a discreet name caption
+  (.ka-about-founders__image-caption).
+
+  Image filter: about-founders-real.jpg uses sepia(0.10) saturate(0.90)
+  brightness(0.97) — numerically identical to the existing
+  .img-filter-product class (assets/ka-base.css), reused directly.
+{%- endcomment -%}
+
+<section class="ka-about-founders" aria-label="Our story">
+  <div class="ka-about-founders__image reveal-img">
+    {%- if section.settings.image != blank -%}
+      <img
+        src="{{ section.settings.image | image_url: width: 1400 }}"
+        alt="{{ section.settings.image.alt | escape | default: 'Karishma and Ashita, founders of K&A, together in hand-embellished couture lehengas' }}"
+        loading="lazy"
+        width="1400"
+        height="1854"
+        class="img-filter-product"
+      />
+    {%- else -%}
+      <img
+        src="{{ 'about-founders-real.jpg' | asset_url }}"
+        alt="Karishma and Ashita, founders of K&A, together in hand-embellished couture lehengas"
+        loading="lazy"
+        width="1066"
+        height="1410"
+        class="img-filter-product"
+      />
+    {%- endif -%}
+    <div class="ka-about-founders__image-overlay"></div>
+    <div class="ka-about-founders__image-caption">
+      <span class="ka-about-founders__image-name">{{ section.settings.caption_name }}</span>
+      <span class="ka-about-founders__image-sub">{{ section.settings.caption_sub }}</span>
+    </div>
+  </div>
+  <div class="ka-about-founders__text">
+    <p class="eyebrow eyebrow--muted ka-about-founders__eyebrow reveal">{{ section.settings.eyebrow }}</p>
+    <h2 class="ka-about-founders__title reveal reveal-delay-1">{{ section.settings.title_line1 }}<br>{{ section.settings.title_line2 }}</h2>
+    <p class="ka-about-founders__body reveal reveal-delay-2">{{ section.settings.body }}</p>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "About Founders",
+  "tag": "section",
+  "settings": [
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "Founders photograph",
+      "info": "Falls back to about-founders-real.jpg if none is chosen."
+    },
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "Since the Beginning" },
+    { "type": "text", "id": "title_line1", "label": "Title line 1", "default": "Best Friends," },
+    { "type": "text", "id": "title_line2", "label": "Title line 2", "default": "Bound by Craft." },
+    {
+      "type": "textarea",
+      "id": "body",
+      "label": "Body copy",
+      "default": "K&A began the way most quiet houses do — between two people who saw the same picture before either said it aloud. Karishma and Ashita built this atelier on a simple conviction: that a bride's clothing should be made with intention, considered stitch by stitch, rather than assembled off a rack. What started as an instinct between friends is now a Mumbai atelier, where every lehenga, every corset, every draped silhouette begins as a private conversation — long before it becomes a garment."
+    },
+    {
+      "type": "header",
+      "content": "Image caption"
+    },
+    { "type": "text", "id": "caption_name", "label": "Caption — name", "default": "Karishma & Ashita" },
+    { "type": "text", "id": "caption_sub",  "label": "Caption — sub-label", "default": "Founders, K&A" }
+  ],
+  "presets": [
+    { "name": "About Founders" }
+  ]
+}
+{% endschema %}

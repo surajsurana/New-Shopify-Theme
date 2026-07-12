@@ -28,8 +28,18 @@
         class="img-filter-appointment"
       />
     {% else %}
+      {%- comment -%}
+        fallback_image_filename — generalised (Docs/about-us-build-spec.md
+        Section 6 H2) so this shared section can be reused on more than one
+        page with a different no-image fallback (e.g. about-closing-cta.jpg
+        on the About page vs. appointment-bg.jpg on the homepage) without
+        an image_picker selection, since neither page currently has admin
+        access to upload the real photo into Shopify Files. Once a real
+        Files-library image is selected via section.settings.image, this
+        fallback is never used.
+      {%- endcomment -%}
       <img
-        src="{{ 'appointment-bg.jpg' | asset_url }}"
+        src="{{ section.settings.fallback_image_filename | default: 'appointment-bg.jpg' | asset_url }}"
         alt="K&A atelier — styling appointment"
         loading="lazy"
         width="1600"
@@ -41,7 +51,7 @@
   <div class="ka-appointment__overlay"></div>
   <div class="ka-appointment__content">
     <p class="eyebrow eyebrow--on-dark ka-appointment__eyebrow reveal">{{ section.settings.eyebrow }}</p>
-    <h2 class="ka-appointment__title reveal reveal-delay-1">{{ section.settings.title }}</h2>
+    <h2 class="ka-appointment__title reveal reveal-delay-1">{{ section.settings.title | newline_to_br }}</h2>
     <p class="ka-appointment__body reveal reveal-delay-2">{{ section.settings.body }}</p>
     <div class="ka-appointment__options reveal reveal-delay-3">
       <a
@@ -71,6 +81,13 @@
   "tag": "section",
   "settings": [
     { "type": "image_picker", "id": "image",    "label": "Background image" },
+    {
+      "type": "text",
+      "id": "fallback_image_filename",
+      "label": "Fallback image (theme asset filename)",
+      "default": "appointment-bg.jpg",
+      "info": "Used only when no Background image is selected above. Advanced — must exactly match a filename already in the theme's Assets folder (e.g. about-closing-cta.jpg). Leave as default unless reusing this section on a page that needs a different placeholder."
+    },
     { "type": "text",         "id": "eyebrow",  "label": "Eyebrow",   "default": "The Atelier" },
     { "type": "text",         "id": "title",    "label": "Title",     "default": "Begin with a\nConversation." },
     { "type": "textarea",     "id": "body",     "label": "Body text", "default": "Every K&A bride begins with a private styling session — in our Mumbai atelier or virtually, wherever in the world you are. We listen before we design." },

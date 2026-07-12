@@ -246,6 +246,8 @@
   transition: color var(--dur-fast);
 }
 .ka-mobile-nav__links a:hover { color: var(--c-rosegold); }
+/* Current-page state (Docs/about-us-build-spec.md Section 6 H3) — matches the existing hover colour */
+.ka-mobile-nav__links a.is-current { color: var(--c-rosegold); }
 
 /* ── My Bag row — Round 2 addition (R2-7), mobile-drawer equivalent of
      the desktop bag icon. Sits between the nav links and the

@@ -1,0 +1,112 @@
+{{ 'ka-about-stockists.css' | asset_url | stylesheet_tag }}
+
+{%- comment -%}
+  K&A About — Stockist Footprint. Docs/about-us-build-spec.md Section 7 /
+  Section 6 (H1). New section, dark ground, text-only (deliberately no
+  imagery — see spec Section 7 Structure). The two stockist lists
+  (Online / In Store) are repeatable blocks, not hardcoded text, so
+  Suraj can add/remove/reorder stockists himself from the theme editor
+  as the "always expanding" footprint grows, without a code change —
+  exactly what spec Section 6 (H1) asks for.
+
+  Each block picks its own column via a select field rather than using
+  two separate block types, so Suraj only has to learn one block type
+  and can freely rebalance which column a given stockist sits in.
+{%- endcomment -%}
+
+<section class="ka-about-stockists" aria-label="Where to find K&amp;A">
+  <div class="ka-about-stockists__header">
+    <p class="eyebrow eyebrow--on-dark ka-about-stockists__eyebrow reveal">{{ section.settings.eyebrow }}</p>
+    <h2 class="ka-about-stockists__title reveal reveal-delay-1">{{ section.settings.title }}</h2>
+    <p class="ka-about-stockists__body reveal reveal-delay-2">{{ section.settings.body }}</p>
+  </div>
+
+  <div class="ka-about-stockists__grid">
+    <div class="ka-about-stockists__col reveal reveal-delay-3">
+      <p class="ka-about-stockists__col-title">{{ section.settings.online_title }}</p>
+      <ul class="ka-about-stockists__list">
+        {%- for block in section.blocks -%}
+          {%- if block.type == 'stockist' and block.settings.column == 'online' -%}
+            <li {{ block.shopify_attributes }}>{{ block.settings.name }}{% if block.settings.location != blank %}, {{ block.settings.location }}{% endif %}</li>
+          {%- endif -%}
+        {%- endfor -%}
+      </ul>
+      {%- if section.settings.online_more != blank -%}
+        <p class="ka-about-stockists__more">{{ section.settings.online_more }}</p>
+      {%- endif -%}
+    </div>
+    <div class="ka-about-stockists__col reveal reveal-delay-4">
+      <p class="ka-about-stockists__col-title">{{ section.settings.store_title }}</p>
+      <ul class="ka-about-stockists__list">
+        {%- for block in section.blocks -%}
+          {%- if block.type == 'stockist' and block.settings.column == 'store' -%}
+            <li {{ block.shopify_attributes }}>{{ block.settings.name }}{% if block.settings.location != blank %}, {{ block.settings.location }}{% endif %}</li>
+          {%- endif -%}
+        {%- endfor -%}
+      </ul>
+      {%- if section.settings.store_more != blank -%}
+        <p class="ka-about-stockists__more">{{ section.settings.store_more }}</p>
+      {%- endif -%}
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "About Stockist Footprint",
+  "tag": "section",
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "Beyond the Atelier" },
+    { "type": "text", "id": "title",   "label": "Title",   "default": "A House That Travels." },
+    {
+      "type": "textarea",
+      "id": "body",
+      "label": "Body copy",
+      "default": "K&A already lives beyond Mumbai — carried today by a small, considered circle of stores and platforms we're proud to stand alongside, in India and abroad. This footprint is never finished; we're always in conversation with new cities, new stores, new borders."
+    },
+    {
+      "type": "header",
+      "content": "Columns"
+    },
+    { "type": "text", "id": "online_title", "label": "Column 1 title", "default": "Online" },
+    { "type": "text", "id": "online_more",  "label": "Column 1 closing line", "default": "And more, always expanding" },
+    { "type": "text", "id": "store_title",  "label": "Column 2 title", "default": "In Store" },
+    { "type": "text", "id": "store_more",   "label": "Column 2 closing line", "default": "And more, always expanding" }
+  ],
+  "blocks": [
+    {
+      "type": "stockist",
+      "name": "Stockist",
+      "settings": [
+        {
+          "type": "select",
+          "id": "column",
+          "label": "Column",
+          "options": [
+            { "value": "online", "label": "Online" },
+            { "value": "store",  "label": "In Store" }
+          ],
+          "default": "online"
+        },
+        { "type": "text", "id": "name",     "label": "Store / platform name", "default": "Stockist name" },
+        { "type": "text", "id": "location", "label": "Location (optional)", "info": "e.g. \"Delhi\" — leave blank for online-only platforms with no single location." }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "About Stockist Footprint",
+      "blocks": [
+        { "type": "stockist", "settings": { "column": "online", "name": "Pernia's Pop-Up Shop" } },
+        { "type": "stockist", "settings": { "column": "online", "name": "Aza" } },
+        { "type": "stockist", "settings": { "column": "online", "name": "Nikaza" } },
+        { "type": "stockist", "settings": { "column": "online", "name": "Agashe" } },
+        { "type": "stockist", "settings": { "column": "store", "name": "Anantam", "location": "Delhi" } },
+        { "type": "stockist", "settings": { "column": "store", "name": "Almari", "location": "Hyderabad" } },
+        { "type": "stockist", "settings": { "column": "store", "name": "Silk & Threads", "location": "Vancouver" } },
+        { "type": "stockist", "settings": { "column": "store", "name": "Nezo", "location": "Bandra Mumbai" } }
+      ]
+    }
+  ]
+}
+{% endschema %}

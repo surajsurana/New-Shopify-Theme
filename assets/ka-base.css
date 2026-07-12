@@ -104,6 +104,12 @@ button { border: none; background: none; cursor: pointer; font-family: inherit; 
 /* Product-page filters (shared values with collection page, per product-build-spec.md S1) */
 .img-filter        { filter: sepia(0.10) saturate(0.90) brightness(0.94); }
 .img-filter-dark   { filter: sepia(0.10) saturate(0.85) brightness(0.88); }
+/* About page — Craft & Process diptych (Docs/about-us-build-spec.md Section 4/6 H4).
+   .img-filter-about-craft-cobalt is a documented, one-off exception (lighter sepia)
+   specifically to preserve the saturated cobalt blue in about-craft-detail-1.jpg —
+   not a general-purpose token, do not reuse elsewhere without the same rationale. */
+.img-filter-about-craft        { filter: sepia(0.10) saturate(0.90) brightness(0.95); }
+.img-filter-about-craft-cobalt { filter: sepia(0.05) saturate(0.96) brightness(0.93); }
 
 .btn-ghost {
   font-family: var(--f-sans); font-size: 0.68rem; font-weight: 400;
