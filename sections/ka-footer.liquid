@@ -158,7 +158,7 @@
     applies, there's just no second logistics line to carry it anymore.
   {%- endcomment -%}
   <div class="ka-footer__bottom">
-    <p class="ka-footer__copy">&copy; {{ 'now' | date: '%Y' }} {{ section.settings.brand_name }}. All rights reserved.</p>
+    <p class="ka-footer__copy">&copy; {{ 'now' | date: '%Y' }} {{ section.settings.brand_name }}, a brand of {{ section.settings.legal_entity_name }}. All rights reserved.</p>
     <ul class="ka-footer__legal">
       <li><a href="{{ section.settings.privacy_url | default: '/policies/privacy-policy' }}">Privacy Policy</a></li>
       <li><a href="{{ section.settings.terms_url | default: '/policies/terms-of-service' }}">Terms of Service</a></li>
@@ -205,6 +205,7 @@
       "type": "header",
       "content": "Legal links"
     },
+    { "type": "text", "id": "legal_entity_name", "label": "Legal entity name", "default": "Peekay International Ltd.", "info": "Appended to the bottom-bar copyright line: \"© {year} [Brand name], a brand of [Legal entity name]. All rights reserved.\"" },
     { "type": "url", "id": "privacy_url",  "label": "Privacy Policy URL",       "info": "Defaults to Shopify's /policies/privacy-policy" },
     { "type": "url", "id": "terms_url",    "label": "Terms of Service URL",      "info": "Defaults to /policies/terms-of-service" },
     { "type": "url", "id": "shipping_url", "label": "Shipping & Returns URL",    "info": "Defaults to /policies/shipping-policy" }
