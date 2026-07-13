@@ -54,21 +54,23 @@
 .ka-cart-items__list .ka-item:first-child { padding-top: 0; }
 .ka-item.ka-item--removing { opacity: 0; }
 .ka-item__img { overflow: hidden; aspect-ratio: 3/4; background: linear-gradient(135deg, #E9E1D2, #B99B6E); }
-.ka-item__body { display: flex; flex-direction: column; }
+.ka-item__body { display: flex; flex-direction: column; min-width: 0; }
 .ka-item__top { display: flex; justify-content: space-between; gap: 18px; }
 .ka-item__ct { font-family: var(--f-sans); font-size: 0.6rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--c-rosegold-2); margin-bottom: 8px; }
 .ka-item__name { font-family: var(--f-display); font-size: 1.5rem; font-weight: 400; line-height: 1.2; color: var(--c-ink); }
 .ka-item__price { font-family: var(--f-display); font-size: 1.25rem; font-weight: 400; color: var(--c-ink); white-space: nowrap; }
 
-.ka-item__meta { display: flex; flex-direction: column; gap: 8px; margin: 16px 0 0; }
-.ka-item__meta-row { display: flex; align-items: center; gap: 10px; font-family: var(--f-sans); font-size: 0.78rem; color: var(--c-ink-mid); }
-.ka-item__meta-row .lbl { color: var(--c-ink-muted); text-transform: uppercase; letter-spacing: 0.1em; font-size: 0.64rem; min-width: 96px; }
+.ka-item__meta { display: flex; flex-direction: column; gap: 8px; margin: 16px 0 0; min-width: 0; }
+.ka-item__meta-row { display: flex; align-items: center; flex-wrap: wrap; row-gap: 6px; gap: 10px; font-family: var(--f-sans); font-size: 0.78rem; color: var(--c-ink-mid); min-width: 0; }
+.ka-item__meta-row .lbl { color: var(--c-ink-muted); text-transform: uppercase; letter-spacing: 0.1em; font-size: 0.64rem; min-width: 96px; flex-shrink: 0; }
 .ka-bespoke-pill {
   display: inline-flex; align-items: center; gap: 6px;
   font-family: var(--f-sans); font-size: 0.66rem; letter-spacing: 0.1em; text-transform: uppercase;
   color: var(--c-rosegold-2); border: 1px solid var(--line-light); padding: 5px 12px; background: var(--c-smoke);
+  min-width: 0; max-width: 100%; box-sizing: border-box;
+  white-space: normal; overflow-wrap: break-word; word-break: break-word;
 }
-.ka-bespoke-pill .dt { width: 5px; height: 5px; border-radius: 50%; background: var(--c-rosegold); }
+.ka-bespoke-pill .dt { width: 5px; height: 5px; border-radius: 50%; background: var(--c-rosegold); flex-shrink: 0; }
 
 .ka-item__made {
   margin-top: 14px; display: flex; align-items: center; gap: 9px;
@@ -124,6 +126,18 @@
   .ka-item__name { font-size: 1.25rem; }
   .ka-item__top { flex-direction: column; gap: 6px; }
   .ka-item__price { font-size: 1.05rem; }
+  /* Bug fix (13 July 2026): on narrow widths, the fixed 96px .lbl column
+     left too little room for .ka-bespoke-pill's un-breakable longest word
+     ("MEASUREMENTS"). With .ka-item__body previously missing min-width: 0,
+     that unshrinkable content forced the whole 1fr grid track wider than
+     the viewport (the grid-track-blowout pattern), hard-clipping the pill's
+     text at the screen edge and visually colliding with the Remove button
+     below. min-width:0 (added above, applies at all widths) stops the
+     blowout; these two rules additionally let label + pill drop to their
+     own line and shrink the label column so the pill gets real room to
+     wrap its own text within its own box, rather than overflowing. */
+  .ka-item__meta-row .lbl { min-width: 60px; }
+  .ka-item__actions { flex-wrap: wrap; row-gap: 10px; }
   .ka-empty { grid-template-columns: 1fr; gap: 36px; padding: var(--s-md) 20px var(--s-xl); }
   .ka-empty__img { order: -1; aspect-ratio: 16/10; }
   .ka-empty__text h1 { font-size: 2.4rem; }
