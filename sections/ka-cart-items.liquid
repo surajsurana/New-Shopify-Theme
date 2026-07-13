@@ -71,6 +71,22 @@
   below is untouched and still the page's only concierge prompt when the
   cart has no items. The sitewide floating concierge button (rendered
   globally from theme.liquid) is unrelated to this and also untouched.
+
+  FORCED RE-SYNC (13 July 2026): this exact file (and only this file, out
+  of the 7 changed in the 11 July merge commit) was confirmed via the
+  Shopify Admin API to have silently failed to sync from GitHub to BOTH
+  the Live theme (188751446306) and the staging theme (189036036386) —
+  both were still serving the pre-merge two-section version, which opened
+  .ka-cart-wrap and relied on the now-deleted ka-cart-summary.liquid /
+  its templates/cart.json entry to render the Order Summary panel and the
+  "Continue to Checkout" button and close the div. Since that second
+  section no longer exists, the deployed page was missing the Order
+  Summary panel and its checkout button entirely on cart.item_count > 0
+  (desktop and any viewport >900px — the separate, correctly-synced mobile
+  sticky bar's Checkout button was unaffected). This comment-only touch
+  forces GitHub to re-push the file; see the identical precedent in
+  8f169f4 ("Re-touch ka-nav.liquid and ka-predictive-search.liquid to
+  force GitHub-Shopify re-sync") for the same failure mode/remedy.
 {%- endcomment -%}
 
 {%- liquid
