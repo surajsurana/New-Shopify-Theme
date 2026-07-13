@@ -193,17 +193,31 @@
      active currency isn't INR; an Indian visitor never sees it. */
   function updateBridge(code, rates, animate) {
     var bridge = document.getElementById('ka-currency-bridge');
-    if (!bridge) return;
+    var taxEl = document.getElementById('ka-summary-tax');
+
+    /* Task 86 clarity addendum, Part B: the tax-disclaimer line beneath
+       the bridge gets one clause prepended when a non-INR currency is
+       active; INR default (the line's server-rendered text) is untouched. */
+    function setTaxLine(nonInr) {
+      if (!taxEl) return;
+      taxEl.textContent = nonInr
+        ? 'Charged in Indian Rupees (₹) at checkout. Taxes included; nothing further is added.'
+        : 'Taxes included. Nothing further is added at checkout.';
+    }
 
     if (code === 'INR') {
-      bridge.classList.remove('show');
+      if (bridge) bridge.classList.remove('show');
+      setTaxLine(false);
       return;
     }
+
+    if (!bridge) { setTaxLine(false); return; }
 
     var cents = parseFloat(bridge.getAttribute('data-price'));
     var rate = rates && rates[code];
     if (isNaN(cents) || !rate) {
       bridge.classList.remove('show');
+      setTaxLine(false);
       return;
     }
 
@@ -219,9 +233,13 @@
 
     function render() {
       if (amtEl) amtEl.textContent = convertedLabel;
-      if (rateEl) rateEl.textContent = displayRate;
+      /* Task 86 clarity addendum, Part A: label the rate with the ISO
+         code (not the currency symbol — `$` is ambiguous between USD
+         and CAD) so "× 95" reads as "× ₹95/USD". */
+      if (rateEl) rateEl.textContent = '₹' + displayRate + '/' + code;
       if (inrEl) inrEl.textContent = inrLabel;
       bridge.classList.add('show');
+      setTaxLine(true);
     }
 
     if (animate) {
