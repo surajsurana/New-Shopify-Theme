@@ -72,21 +72,34 @@
   cart has no items. The sitewide floating concierge button (rendered
   globally from theme.liquid) is unrelated to this and also untouched.
 
-  FORCED RE-SYNC (13 July 2026): this exact file (and only this file, out
-  of the 7 changed in the 11 July merge commit) was confirmed via the
-  Shopify Admin API to have silently failed to sync from GitHub to BOTH
-  the Live theme (188751446306) and the staging theme (189036036386) —
-  both were still serving the pre-merge two-section version, which opened
-  .ka-cart-wrap and relied on the now-deleted ka-cart-summary.liquid /
-  its templates/cart.json entry to render the Order Summary panel and the
-  "Continue to Checkout" button and close the div. Since that second
-  section no longer exists, the deployed page was missing the Order
-  Summary panel and its checkout button entirely on cart.item_count > 0
-  (desktop and any viewport >900px — the separate, correctly-synced mobile
-  sticky bar's Checkout button was unaffected). This comment-only touch
-  forces GitHub to re-push the file; see the identical precedent in
-  8f169f4 ("Re-touch ka-nav.liquid and ka-predictive-search.liquid to
-  force GitHub-Shopify re-sync") for the same failure mode/remedy.
+  FORCED RE-SYNC (13 July 2026) — SUPERSEDED, see below: this exact file
+  (and only this file, out of the 7 changed in the 11 July merge commit)
+  was confirmed via the Shopify Admin API to have silently failed to sync
+  from GitHub to BOTH the Live theme (188751446306) and the staging theme
+  (189036036386) — both were still serving the pre-merge two-section
+  version, which opened .ka-cart-wrap and relied on the now-deleted
+  ka-cart-summary.liquid / its templates/cart.json entry to render the
+  Order Summary panel and the "Continue to Checkout" button and close the
+  div. Since that second section no longer exists, the deployed page was
+  missing the Order Summary panel and its checkout button entirely on
+  cart.item_count > 0 (desktop and any viewport >900px — the separate,
+  correctly-synced mobile sticky bar's Checkout button was unaffected). A
+  comment-only touch (commit fced4de) was tried first, on the same theory
+  as 8f169f4 ("Re-touch ka-nav.liquid and ka-predictive-search.liquid to
+  force GitHub-Shopify re-sync") — it did NOT fix it; re-checked via the
+  Shopify Admin API after that push and the file was still stale.
+
+  ACTUAL ROOT CAUSE (13 July 2026, found after fced4de failed): this
+  file's {% schema %} "name" was "Cart Items & Order Summary" — 26
+  characters, one over Shopify's 25-character limit on section schema
+  "name" (same limit, same failure mode, as sections/ka-predictive-
+  search.liquid's name hitting 31 chars, fixed in eaa251f). The "presets"
+  entry had the identical 26-character string. Shopify's GitHub sync
+  rejects the whole file on this validation failure without a loud error,
+  which is why repeated plain re-pushes (fced4de included) never landed —
+  the file's content itself was invalid, not a sync flake. Fixed by
+  shortening both occurrences to "Cart Items & Summary" (20 characters,
+  verified by direct count, not eyeballed — see commit message).
 {%- endcomment -%}
 
 {%- liquid
@@ -301,7 +314,7 @@
 
 {% schema %}
 {
-  "name": "Cart Items & Order Summary",
+  "name": "Cart Items & Summary",
   "tag": "div",
   "class": "ka-cart-items-section",
   "settings": [
@@ -309,7 +322,7 @@
     { "type": "image_picker", "id": "empty_image", "label": "Empty-state hero image", "info": "Falls back to bloom-soiree-main.jpg (existing approved imagery) if left blank." }
   ],
   "presets": [
-    { "name": "Cart Items & Order Summary" }
+    { "name": "Cart Items & Summary" }
   ]
 }
 {% endschema %}
