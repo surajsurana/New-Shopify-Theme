@@ -1,0 +1,44 @@
+{% comment %}
+  Custom robots.txt override.
+
+  Preserves Shopify's default crawl rules (robots.default_groups) and appends
+  additional Disallow rules to the "User-agent: *" group to exclude non-brand
+  utility URLs from crawling/indexing.
+
+  Spec: SEO & Discoverability / Docs/specs/2026-07-21-robots-txt-noindex-utility-pages.md
+  Approved by Suraj 2026-07-21.
+
+  Added Disallow rules and why (see spec for full reasoning):
+    /pages/vertex             - Vertex wishlist app utility page, not brand content
+    /pages/vertex-share       - Vertex wishlist share view
+    /pages/pushdaddy-faq-1    - PushDaddy WhatsApp/notifications app FAQ page
+    /collections/frontpage    - Shopify's internal "Home page" collection, used only
+                                 to power homepage sections via Liquid; doesn't need
+                                 to be a public indexable URL
+    /collections/test         - smart collection "Test" whose rule matches the entire
+                                 catalog; defense-in-depth backstop (separate Admin
+                                 action to unpublish it is tracked outside this file)
+
+  Do not remove or alter the default_groups loop below without confirming the
+  replacement still emits Shopify's required default rules (admin paths, checkout,
+  cart, sitemap references, etc.) -- this file fully replaces the platform default
+  robots.txt when present, so an incomplete loop can break crawling wholesale.
+{% endcomment %}
+{%- for group in robots.default_groups -%}
+  {{- group.user_agent -}}
+  {%- for rule in group.rules -%}
+    {{ rule }}
+  {%- endfor -%}
+
+  {%- if group.user_agent.value == '*' -%}
+    {{ 'Disallow: /pages/vertex' }}
+    {{ 'Disallow: /pages/vertex-share' }}
+    {{ 'Disallow: /pages/pushdaddy-faq-1' }}
+    {{ 'Disallow: /collections/frontpage' }}
+    {{ 'Disallow: /collections/test' }}
+  {%- endif -%}
+
+  {%- if group.sitemap != blank -%}
+    {{ group.sitemap }}
+  {%- endif -%}
+{%- endfor -%}
