@@ -14,6 +14,17 @@
 {%- endcomment -%}
 {%- assign is_visit = false -%}
 {%- if request.page_type == 'page' and page.handle == 'visit-the-atelier' -%}{%- assign is_visit = true -%}{%- endif -%}
+{%- comment -%}
+  is_journal — same pattern as is_about_us/is_visit above (Docs/
+  journal-build-spec.md §3 A7 / §7 Flag J9). Drives .is-current on
+  the footer's "Journal" link. J9: footer-only per Suraj's explicit
+  choice — the primary/top nav (sections/ka-nav.liquid) is
+  deliberately NOT touched by this build; do not add a 4th desktop
+  nav link here without a separate, explicit sign-off round, per the
+  same standing convention that flagged this nav-adjacent change.
+{%- endcomment -%}
+{%- assign is_journal = false -%}
+{%- if request.page_type == 'blog' or request.page_type == 'article' -%}{%- assign is_journal = true -%}{%- endif -%}
 
 <footer class="ka-footer" aria-label="Site footer">
   <div class="ka-footer__top">
@@ -65,11 +76,27 @@
       <p class="ka-footer__col-title">Maison</p>
       <ul class="ka-footer__links">
         {% for link in linklists['footer-the-house'].links %}
-          <li><a href="{{ link.url }}"{% if is_about_us and link.url contains 'about-us' %} class="is-current"{% endif %}>{{ link.title }}</a></li>
+          <li><a href="{{ link.url }}"{% if is_about_us and link.url contains 'about-us' %} class="is-current"{% elsif is_journal and link.url contains 'blogs' %} class="is-current"{% endif %}>{{ link.title }}</a></li>
         {% endfor %}
         {% if linklists['footer-the-house'].links.size == 0 %}
           <li><a href="/pages/about-us"{% if is_about_us %} class="is-current"{% endif %}>About Karishma &amp; Ashita</a></li>
           <li><a href="/pages/client-diaries">Client Diaries</a></li>
+          {%- comment -%}
+            Journal link (Docs/journal-build-spec.md §3 A7, §7 Flag J9)
+            — added to the fallback list only. If a real
+            "footer-the-house" menu is already configured in Shopify
+            Admin (Online Store -> Navigation), this fallback never
+            renders — the Journal link must also be added there
+            manually (a content/Admin step, not a code change).
+          {%- endcomment -%}
+          {%- comment -%}
+            Hardcoded /blogs/news (not a routes.* helper — Shopify has
+            no generic "the blog" route since a store can have more
+            than one blog resource) per J8: the blog handle stays
+            "news", locked, so the 3 already-indexed 2024 article URLs
+            keep resolving with zero redirect work.
+          {%- endcomment -%}
+          <li><a href="/blogs/news"{% if is_journal %} class="is-current"{% endif %}>Journal</a></li>
           <li><a href="/pages/visit-the-atelier"{% if is_visit %} class="is-current"{% endif %}>Visit Us</a></li>
           {%- comment -%}
             "Book an Appointment" — TEMPORARY interim WhatsApp routing,

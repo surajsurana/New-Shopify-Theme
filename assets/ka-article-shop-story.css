@@ -1,0 +1,12 @@
+/* ================================================================
+   KA-ARTICLE-SHOP-STORY
+   Docs/journal-build-spec.md §3 B7. Wrapper/grid layout only — the
+   cards themselves reuse .ka-p-card verbatim from
+   assets/ka-collection-grid.css, already loaded sitewide via
+   sections/ka-nav.liquid, so no card styling is duplicated here.
+================================================================ */
+.shop-wrap { max-width: var(--max-wide); margin: 0 auto; padding: var(--s-lg) var(--gutter) var(--s-2xl); border-top: 1px solid var(--line); }
+.shop-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: clamp(2px, 0.3vw, 32px); }
+
+@media (max-width: 900px) { .shop-grid { grid-template-columns: repeat(2, 1fr); } .shop-grid > :nth-child(3) { display: none; } }
+@media (max-width: 600px) { .shop-grid { grid-template-columns: 1fr; gap: var(--s-md); } .shop-grid > :nth-child(3) { display: block; } }

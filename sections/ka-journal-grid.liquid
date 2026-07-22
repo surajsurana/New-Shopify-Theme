@@ -1,0 +1,118 @@
+{{ 'ka-journal-card.css' | asset_url | stylesheet_tag }}
+
+{%- comment -%}
+  K&A Journal Grid — Docs/journal-build-spec.md §3 A5, §7 Flags J6/J7.
+
+  Real, dynamic Shopify blog.articles — NOT the 7 invented placeholder
+  cards shown in Prototypes/journal-index-v1.html. Those cards are
+  explicitly flagged in the build spec (§5 Content Requirements) as
+  "entirely invented, in K&A's house voice, for layout demonstration
+  only" and "must not be treated as a content-production task list
+  without Karishma & Ashita's explicit sign-off." Hardcoding them here
+  as if they were live articles would mean shipping fake dead-end
+  content (no real article resource, no real URL) on the production
+  site — a content-integrity problem, not just a fidelity shortcut.
+  This is a deliberate, flagged deviation from a literal reproduction
+  of the prototype; see this build's handoff notes.
+
+  Instead: this grid loops the REAL blog (whatever currently exists —
+  today that's the 1 new live article plus the 3 already-published
+  2024 articles that start rendering correctly the moment this
+  template exists, per the spec's own audit in §0/§1). The category
+  taxonomy (J2), featured-story exclusion (J3), read-time computation
+  (J4), empty-category state (J6) and native pagination (J7) are all
+  fully built and will hold at real scale the moment more articles are
+  written and tagged — proving the system works without fabricating
+  content to demonstrate it.
+
+  Featured-article exclusion: mirrors the exact selection logic in
+  sections/ka-journal-featured.liquid (tag "featured", else most
+  recent) so whichever article renders there is never duplicated here.
+{%- endcomment -%}
+
+{%- comment -%}
+  featured_article lookup mirrors sections/ka-journal-featured.liquid's
+  identical logic exactly (kept outside this section's own {% paginate
+  %} block below — see that file's header comment for why a second,
+  unrelated paginate block is deliberately avoided on this same page).
+{%- endcomment -%}
+{%- liquid
+  assign featured_article = blog.articles | where: 'tags', 'featured' | first
+  if featured_article == blank
+    assign featured_article = blog.articles.first
+  endif
+
+  assign per_page = section.settings.articles_per_page | default: 9
+
+  # nothing_beyond_featured — true when the blog has zero articles, or
+  # its only article is the one already shown by the Featured Story
+  # section above (so this grid would otherwise render a lone empty
+  # state with no card to actually filter/paginate against).
+  assign nothing_beyond_featured = false
+  if blog.articles_count == 0
+    assign nothing_beyond_featured = true
+  elsif blog.articles_count == 1 and featured_article != blank
+    assign nothing_beyond_featured = true
+  endif
+-%}
+
+{%- if nothing_beyond_featured -%}
+  {%- comment -%}
+    Nothing left to show below the Featured Story (either the blog is
+    genuinely empty, or the one article that exists is already shown
+    as the Featured Story above) — a quiet "more stories are on their
+    way" state, same visual language as .ka-collection-empty (J6),
+    rather than an empty grid or a broken pagination control.
+  {%- endcomment -%}
+  <div class="j-grid-wrap">
+    <div class="j-empty is-visible">
+      <h3 class="j-empty__title">More stories are on their way.</h3>
+      <p class="j-empty__body">We publish quietly, and only when a story is ready. Check back soon, or explore the Journal's Featured Story above.</p>
+    </div>
+  </div>
+{%- else -%}
+  {% paginate blog.articles by per_page %}
+    <div class="j-grid-wrap">
+      <div class="j-grid" id="journalGrid">
+        {%- for article in blog.articles -%}
+          {%- unless article.id == featured_article.id -%}
+            {%- render 'ka-journal-card', article: article, show_dek: true, extra_class: 'reveal-img' -%}
+          {%- endunless -%}
+        {%- endfor -%}
+      </div>
+
+      <div class="j-empty" id="journalEmpty">
+        <h3 class="j-empty__title">More stories are on their way.</h3>
+        <p class="j-empty__body">We publish quietly, and only when a story is ready. Check back soon, or explore the Journal's other notes above.</p>
+      </div>
+
+      {%- if paginate.next -%}
+        <div class="j-load-more">
+          <a href="{{ paginate.next.url }}" class="btn-outline-rose">View More Stories</a>
+          <span class="j-load-more__count">Showing {{ paginate.current_offset | plus: blog.articles.size }} of {{ paginate.items }} stories</span>
+        </div>
+      {%- endif -%}
+    </div>
+  {% endpaginate %}
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "Journal Grid",
+  "tag": "div",
+  "settings": [
+    {
+      "type": "range",
+      "id": "articles_per_page",
+      "label": "Articles per page",
+      "min": 3,
+      "max": 24,
+      "step": 3,
+      "default": 9
+    }
+  ],
+  "presets": [
+    { "name": "Journal Grid" }
+  ]
+}
+{% endschema %}

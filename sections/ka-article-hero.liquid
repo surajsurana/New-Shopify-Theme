@@ -1,0 +1,131 @@
+{{ 'ka-article-hero.css' | asset_url | stylesheet_tag }}
+{{ 'ka-animations.css' | asset_url | stylesheet_tag }}
+
+{%- comment -%}
+  K&A Article Hero — Docs/journal-build-spec.md §3 B2/B3. Full-bleed
+  cinematic open (84svh) matching the house's sitewide hero language.
+  Also renders the B2 return link ("Back to the Journal") and the
+  optional B4 .article-progress scroll-progress line — both are
+  driven by this section's own inline scroll listener since they're
+  tightly coupled to this hero's scroll-crystallisation timing.
+
+  Read time (J4) and category (J2) use the identical computation
+  used by snippets/ka-journal-card.liquid and ka-journal-featured.liquid.
+{%- endcomment -%}
+
+{%- liquid
+  assign cat_label = 'Journal'
+  if article.tags contains 'Craft & Atelier'
+    assign cat_label = 'Craft & Atelier'
+  elsif article.tags contains 'Style Notes'
+    assign cat_label = 'Style Notes'
+  elsif article.tags contains 'Occasion Edit'
+    assign cat_label = 'Occasion Edit'
+  elsif article.tags contains 'The House'
+    assign cat_label = 'The House'
+  endif
+
+  assign word_count = article.content | strip_html | split: ' ' | size
+  assign read_time = word_count | divided_by: 200.0 | ceil
+  if read_time < 1
+    assign read_time = 1
+  endif
+
+  assign dek_line = section.settings.dek_override
+  if dek_line == blank
+    assign dek_line = article.metafields.custom.dek_line
+  endif
+-%}
+
+<div class="article-progress" id="articleProgress" aria-hidden="true"></div>
+
+<a href="{{ blog.url }}" class="article-return" id="articleReturn">&larr; Back to the Journal</a>
+
+<header class="a-hero" id="articleHero" aria-label="{{ article.title | escape }}">
+  <div class="a-hero__bg reveal-img" id="articleHeroBg">
+    {%- if section.settings.hero_image != blank -%}
+      <img
+        src="{{ section.settings.hero_image | image_url: width: 1800 }}"
+        alt="{{ section.settings.hero_image.alt | escape | default: article.title | escape }}"
+        loading="eager"
+        fetchpriority="high"
+        width="1800"
+        height="1200"
+        class="img-filter-editorial"
+      />
+    {%- elsif article.image -%}
+      <img
+        src="{{ article.image | image_url: width: 1800 }}"
+        alt="{{ article.image.alt | escape | default: article.title | escape }}"
+        loading="eager"
+        fetchpriority="high"
+        width="1800"
+        height="1200"
+        class="img-filter-editorial"
+      />
+    {%- else -%}
+      <img
+        src="{{ 'product-ivory-column-corset.jpg' | asset_url }}"
+        alt="{{ article.title | escape }}"
+        loading="eager"
+        fetchpriority="high"
+        width="1800"
+        height="1200"
+        class="img-filter-editorial"
+      />
+    {%- endif -%}
+  </div>
+  <div class="a-hero__overlay"></div>
+  <div class="a-hero__content">
+    <p class="eyebrow eyebrow--on-dark a-hero__eyebrow">{{ cat_label }} <span>&middot;</span> {{ read_time }} Minute Read</p>
+    <h1 class="a-hero__title">{{ article.title }}</h1>
+    {%- if dek_line != blank -%}<p class="a-hero__dek">{{ dek_line }}</p>{%- endif -%}
+    <p class="a-hero__byline">Words &mdash; {{ section.settings.byline | default: 'The K&A Atelier' }} <span>&middot;</span> {{ article.published_at | date: '%-d %B %Y' }}</p>
+  </div>
+  <div class="a-hero__scroll" aria-hidden="true"><span>Scroll</span><div class="a-hero__scroll-line"></div></div>
+</header>
+
+<script>
+  (function () {
+    var heroBg = document.getElementById('articleHeroBg');
+    if (heroBg) {
+      requestAnimationFrame(function () { requestAnimationFrame(function () { heroBg.classList.add('loaded'); }); });
+    }
+    var nav = document.getElementById('ka-nav');
+    var returnLink = document.getElementById('articleReturn');
+    var progress = document.getElementById('articleProgress');
+    window.addEventListener('scroll', function () {
+      var scrolled = window.scrollY > 60;
+      if (returnLink) returnLink.classList.toggle('is-dark', scrolled);
+      if (progress) {
+        var docH = document.documentElement.scrollHeight - window.innerHeight;
+        progress.style.width = docH > 0 ? Math.min(100, (window.scrollY / docH) * 100) + '%' : '0%';
+      }
+    }, { passive: true });
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "Article Hero",
+  "tag": "header",
+  "settings": [
+    {
+      "type": "image_picker",
+      "id": "hero_image",
+      "label": "Hero image override",
+      "info": "Falls back to the article's own featured image, then to a generic placeholder if neither is set."
+    },
+    { "type": "text", "id": "byline", "label": "Byline name", "default": "The K&A Atelier" },
+    {
+      "type": "text",
+      "id": "dek_override",
+      "label": "Dek line override (italic line under the H1)",
+      "info": "Optional. If left blank, reads from the article's custom.dek_line metafield if set."
+    }
+  ],
+  "presets": [
+    { "name": "Article Hero" }
+  ]
+}
+{% endschema %}

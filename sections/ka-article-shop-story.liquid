@@ -1,0 +1,92 @@
+{{ 'ka-article-shop-story.css' | asset_url | stylesheet_tag }}
+
+{%- comment -%}
+  K&A Article "Shop the Story" — Docs/journal-build-spec.md §3 B7,
+  §7 Flag J5. Cards reuse .ka-p-card verbatim from assets/
+  ka-collection-grid.css (already loaded sitewide via sections/
+  ka-nav.liquid) — instant pattern recognition with the homepage
+  Bestsellers / Collection grid cards.
+
+  Product source (J5), in order:
+    1. article.metafields.custom.shop_the_story — a product
+       list-reference metafield, up to 4 products, editable per
+       article in Shopify Admin without a code change (same pattern
+       already recommended for Client Diaries' per-spread tie-ins).
+       NOT populated yet on the live article (no Admin write access
+       from this build) — must be created (Settings -> Custom data
+       -> Articles -> type: List of products) and set manually.
+    2. Falls back to this section's own "Fallback collection" setting
+       (defaults to the bestsellers collection), so the section never
+       renders empty even before the metafield is set up.
+{%- endcomment -%}
+
+{%- liquid
+  assign shop_products = article.metafields.custom.shop_the_story.value
+  if shop_products == blank
+    assign fallback_collection = section.settings.fallback_collection | default: collections['bestsellers']
+    assign shop_products = fallback_collection.products
+  endif
+  assign limit = section.settings.products_limit | default: 3
+-%}
+
+{%- if shop_products != blank -%}
+  <section class="shop-wrap" aria-label="Shop the story">
+    <div class="section-header reveal">
+      <div>
+        <p class="eyebrow eyebrow--muted">{{ section.settings.eyebrow }}</p>
+        <h2 class="section-header__title">{{ section.settings.title }}</h2>
+      </div>
+      <a href="{{ section.settings.view_all_url | default: '/collections/bestsellers' }}" class="section-header__link">{{ section.settings.view_all_label }}</a>
+    </div>
+    <div class="shop-grid">
+      {%- for product in shop_products limit: limit -%}
+        <div class="ka-p-card reveal-img">
+          <a href="{{ product.url }}" class="ka-p-card__image" aria-label="View {{ product.title | escape }}">
+            {%- if product.featured_image -%}
+              <img
+                src="{{ product.featured_image | image_url: width: 800 }}"
+                alt="{{ product.featured_image.alt | escape | default: product.title | escape }}"
+                loading="lazy"
+                width="800"
+                height="1067"
+                class="img-filter-product"
+              />
+            {%- else -%}
+              <div style="background: var(--c-smoke); width:100%; height:100%;"></div>
+            {%- endif -%}
+          </a>
+          <div class="ka-p-card__info">
+            <h3 class="ka-p-card__name"><a href="{{ product.url }}">{{ product.title }}</a></h3>
+            {%- if product.metafields.custom.fabric_description != blank -%}
+              <p class="ka-p-card__fabric">{{ product.metafields.custom.fabric_description }}</p>
+            {%- endif -%}
+            <p class="ka-p-card__price"><span data-price="{{ product.price }}">{{ product.price | money_without_trailing_zeros | replace: 'Rs.', '₹' }}</span></p>
+          </div>
+        </div>
+      {%- endfor -%}
+    </div>
+  </section>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "Article Shop the Story",
+  "tag": "section",
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "As Worn in This Story" },
+    { "type": "text", "id": "title",   "label": "Title", "default": "Shop the Story" },
+    { "type": "text", "id": "view_all_label", "label": "View all link label", "default": "View all Signature Pieces" },
+    { "type": "url",  "id": "view_all_url",   "label": "View all link URL", "info": "Defaults to /collections/bestsellers." },
+    {
+      "type": "collection",
+      "id": "fallback_collection",
+      "label": "Fallback collection",
+      "info": "Used only when the article has no custom.shop_the_story product-list metafield set. Defaults to the 'bestsellers' collection."
+    },
+    { "type": "range", "id": "products_limit", "label": "Max products shown", "min": 2, "max": 4, "step": 1, "default": 3 }
+  ],
+  "presets": [
+    { "name": "Article Shop the Story" }
+  ]
+}
+{% endschema %}

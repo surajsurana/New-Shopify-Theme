@@ -1,0 +1,99 @@
+/*
+ * ------------------------------------------------------------
+ * K&A Journal (blog) index template — Docs/journal-build-spec.md
+ * Built from Prototypes/journal-index-v1.html (approved by Suraj).
+ * Sections: Nav -> Masthead -> Featured Story -> Filter Bar ->
+ * Grid -> Appointment CTA (reused ka-appointment) -> Footer.
+ *
+ * Applies to /blogs/news (and any other blog resource, since this
+ * theme has only one blog today) — handle stays "news" per Flag J8,
+ * do not rename. This single template fixes the 3 already-published
+ * 2024 articles' 404s the moment it deploys, with zero content or
+ * URL changes needed on those articles.
+ * ------------------------------------------------------------
+ */
+{
+  "sections": {
+    "ka-nav": {
+      "type": "ka-nav",
+      "settings": {
+        "utility_1": "Complimentary Worldwide Delivery",
+        "utility_2": "Hand-Embroidered to Order",
+        "utility_3": "Private & Virtual Appointments",
+        "logo_text": "Karishma Ashita",
+        "logo_subline": "Bridal Couture · Mumbai",
+        "label_bestsellers": "Signature",
+        "link_bestsellers": "/collections/bestsellers",
+        "label_collections": "Collections",
+        "link_collections": "/collections",
+        "label_diaries": "Client Diaries",
+        "link_diaries": "/pages/client-diaries",
+        "link_about": "/pages/about-us",
+        "link_appointment": "/pages/appointments"
+      }
+    },
+    "ka-journal-masthead": {
+      "type": "ka-journal-masthead",
+      "settings": {
+        "eyebrow": "K&A —",
+        "title_lead": "The",
+        "title_main": "Journal",
+        "subtitle": "Craft notes from the atelier, style edits for the modern bride, and quiet dispatches on the occasions that call for K&A — bridal, festive, and everything in between."
+      }
+    },
+    "ka-journal-featured": {
+      "type": "ka-journal-featured",
+      "settings": {}
+    },
+    "ka-journal-filter": {
+      "type": "ka-journal-filter",
+      "settings": {}
+    },
+    "ka-journal-grid": {
+      "type": "ka-journal-grid",
+      "settings": {
+        "articles_per_page": 9
+      }
+    },
+    "ka-journal-cta": {
+      "type": "ka-appointment",
+      "settings": {
+        "eyebrow": "Continue the Conversation",
+        "title": "Every Story Ends\nWith a Fitting.",
+        "body": "However you found us — through a story, a search, or a friend's recommendation — the next step is the same: a conversation, in person or virtual, about the piece that's yours.",
+        "cta_instore_label": "Book a Styling Appointment",
+        "cta_instore_url": "/pages/appointments",
+        "cta_virtual_label": "Explore the Collections",
+        "cta_virtual_url": "/collections",
+        "fallback_image_filename": "appointment-bg.jpg"
+      }
+    },
+    "ka-footer": {
+      "type": "ka-footer",
+      "settings": {
+        "brand_name": "Karishma Ashita",
+        "logo_subline": "Bridal Couture · Mumbai",
+        "tagline": "Bridal couture, handcrafted\nin Mumbai.",
+        "instagram_url": "https://www.instagram.com/karishmaashita",
+        "youtube_url": "https://www.youtube.com/@KarishmaAshita",
+        "pinterest_url": "https://www.pinterest.com/karishmaashita/",
+        "email": "info@karishmaashita.com",
+        "address": "Mumbai, India\nComplimentary worldwide shipping via DHL Express",
+        "news_title": "The Inner Circle",
+        "news_body": "Collection previews, styling notes and private trunk show invitations — delivered quietly to your inbox.",
+        "news_placeholder": "Your email address",
+        "news_submit": "Join",
+        "news_success": "Welcome in. You are one of us now."
+      }
+    }
+  },
+  "order": [
+    "ka-nav",
+    "ka-journal-masthead",
+    "ka-journal-featured",
+    "ka-journal-filter",
+    "ka-journal-grid",
+    "ka-journal-cta",
+    "ka-footer"
+  ]
+}

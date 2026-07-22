@@ -1,0 +1,97 @@
+/* ================================================================
+   KA-JOURNAL-CARD
+   Docs/journal-build-spec.md §3 A5/B8, §4 (.ka-j-card token set).
+   Deliberate sibling of .ka-p-card (assets/ka-collection-grid.css)
+   — same hover-scale image language, same padding rhythm — with
+   editorial fields (category tag overlay, italic title, one-line
+   dek, date · read-time meta) in place of fabric/price. Shared
+   component: reused verbatim by the Journal grid (sections/
+   ka-journal-grid.liquid) AND the Article page's "More From the
+   Journal" strip (sections/ka-article-related.liquid) via
+   snippets/ka-journal-card.liquid, so the visual language stays
+   identical wherever a Journal card appears. This file also carries
+   the grid layout + empty-state rules used only by the Index.
+================================================================ */
+.ka-j-card { position: relative; }
+.ka-j-card__image {
+  position: relative;
+  display: block;
+  aspect-ratio: 4/3;
+  overflow: hidden;
+  background: var(--c-smoke);
+}
+.ka-j-card__image img { transition: transform 1.2s var(--ease-luxury); }
+.ka-j-card:hover .ka-j-card__image img { transform: scale(1.045); }
+.ka-j-card__cat {
+  position: absolute;
+  top: 16px; left: 16px;
+  z-index: 1;
+  font-family: var(--f-sans);
+  font-size: 0.58rem;
+  font-weight: 400;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: white;
+  background: rgba(26,23,20,0.72);
+  padding: 7px 13px;
+}
+.ka-j-card__info { padding: 20px 2px 0; }
+.ka-j-card__title {
+  font-family: var(--f-display);
+  font-size: clamp(1.15rem, 1.8vw, 1.4rem);
+  font-weight: 400;
+  font-style: italic;
+  color: var(--c-charcoal);
+  line-height: 1.25;
+  margin-bottom: 10px;
+}
+.ka-j-card__dek {
+  font-family: var(--f-sans);
+  font-size: 0.8rem;
+  font-weight: 300;
+  color: var(--c-ink-mid);
+  line-height: 1.7;
+  margin-bottom: 14px;
+}
+.ka-j-card__meta {
+  font-family: var(--f-sans);
+  font-size: 0.64rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--c-ink-muted);
+}
+.ka-j-card__meta span { margin: 0 6px; opacity: 0.5; }
+.ka-j-card.is-hidden { display: none; }
+
+/* Index grid layout (sections/ka-journal-grid.liquid) */
+.j-grid-wrap { max-width: var(--max-wide); margin: 0 auto; padding: var(--s-lg) var(--gutter) var(--s-md); }
+.j-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: clamp(24px, 3vw, 48px) clamp(24px, 3vw, 40px);
+}
+
+/* Empty-category filter state (J6) — same visual pattern as
+   .ka-collection-empty (assets/ka-collection-grid.css), scoped under
+   its own class per this project's per-section CSS convention. */
+.j-empty { text-align: center; padding: var(--s-2xl) var(--s-md); max-width: 520px; margin: 0 auto; display: none; }
+.j-empty.is-visible { display: block; }
+.j-empty__title { font-family: var(--f-display); font-style: italic; font-size: clamp(1.6rem, 3vw, 2.2rem); color: var(--c-charcoal); margin-bottom: 16px; }
+.j-empty__body { font-family: var(--f-sans); font-size: 0.85rem; color: var(--c-ink-muted); line-height: 1.75; }
+
+.j-load-more { text-align: center; padding: 0 var(--gutter) var(--s-2xl); }
+.j-load-more__count {
+  display: block;
+  margin-top: 16px;
+  font-family: var(--f-sans);
+  font-size: 0.66rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--c-ink-muted);
+}
+
+@media (max-width: 900px) { .j-grid { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 600px) {
+  .j-grid { grid-template-columns: 1fr; gap: var(--s-lg); }
+  .j-grid-wrap { padding: var(--s-md) 20px var(--s-sm); }
+}

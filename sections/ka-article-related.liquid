@@ -1,0 +1,87 @@
+{{ 'ka-journal-card.css' | asset_url | stylesheet_tag }}
+{{ 'ka-article-related.css' | asset_url | stylesheet_tag }}
+
+{%- comment -%}
+  K&A "More From the Journal" — Docs/journal-build-spec.md §3 B8.
+  Reuses .ka-j-card verbatim (via snippets/ka-journal-card.liquid) —
+  same component as the Journal Index grid.
+
+  Related-article selection: same-category first (matches the
+  current article's own category tag), then fills any remaining
+  slots with the most recent other articles — the standard "related
+  content" convention named in the spec. Current article is always
+  excluded from its own related strip. Wrapped in {% paginate ... by
+  50 %} so the search pool isn't silently capped by Shopify's smaller
+  default `blog.articles` size outside a paginate block — 50 is far
+  beyond any realistic near-term article count (spec §8).
+{%- endcomment -%}
+
+{%- liquid
+  assign limit = section.settings.articles_limit | default: 3
+  assign current_cat = ''
+  if article.tags contains 'Craft & Atelier'
+    assign current_cat = 'Craft & Atelier'
+  elsif article.tags contains 'Style Notes'
+    assign current_cat = 'Style Notes'
+  elsif article.tags contains 'Occasion Edit'
+    assign current_cat = 'Occasion Edit'
+  elsif article.tags contains 'The House'
+    assign current_cat = 'The House'
+  endif
+-%}
+
+<section class="more-wrap" aria-label="More from the Journal">
+  <div class="section-header reveal">
+    <div>
+      <p class="eyebrow eyebrow--muted">{{ section.settings.eyebrow }}</p>
+      <h2 class="section-header__title">{{ section.settings.title }}</h2>
+    </div>
+    <a href="{{ blog.url }}" class="section-header__link">{{ section.settings.view_all_label }}</a>
+  </div>
+  <div class="more-grid">
+    {% paginate blog.articles by 50 %}
+      {%- liquid
+        assign shown = 0
+        assign shown_ids = ''
+      -%}
+      {%- comment -%} Pass 1: same category as the current article {%- endcomment -%}
+      {%- for a in blog.articles -%}
+        {%- assign already_shown = false -%}
+        {%- assign a_marker = a.id | append: ',' -%}
+        {%- if shown_ids contains a_marker -%}{%- assign already_shown = true -%}{%- endif -%}
+        {%- if shown < limit and a.id != article.id and already_shown == false and current_cat != '' and a.tags contains current_cat -%}
+          {%- render 'ka-journal-card', article: a, show_dek: false, extra_class: 'reveal-img' -%}
+          {%- assign shown = shown | plus: 1 -%}
+          {%- assign shown_ids = shown_ids | append: a_marker -%}
+        {%- endif -%}
+      {%- endfor -%}
+      {%- comment -%} Pass 2: fill remaining slots with the most recent other articles {%- endcomment -%}
+      {%- for a in blog.articles -%}
+        {%- assign already_shown = false -%}
+        {%- assign a_marker = a.id | append: ',' -%}
+        {%- if shown_ids contains a_marker -%}{%- assign already_shown = true -%}{%- endif -%}
+        {%- if shown < limit and a.id != article.id and already_shown == false -%}
+          {%- render 'ka-journal-card', article: a, show_dek: false, extra_class: 'reveal-img' -%}
+          {%- assign shown = shown | plus: 1 -%}
+          {%- assign shown_ids = shown_ids | append: a_marker -%}
+        {%- endif -%}
+      {%- endfor -%}
+    {% endpaginate %}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "More From the Journal",
+  "tag": "section",
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "Continue Reading" },
+    { "type": "text", "id": "title",   "label": "Title", "default": "More From the Journal" },
+    { "type": "text", "id": "view_all_label", "label": "View all link label", "default": "View the Journal" },
+    { "type": "range", "id": "articles_limit", "label": "Max articles shown", "min": 2, "max": 4, "step": 1, "default": 3 }
+  ],
+  "presets": [
+    { "name": "More From the Journal" }
+  ]
+}
+{% endschema %}

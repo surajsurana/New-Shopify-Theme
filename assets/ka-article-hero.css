@@ -1,0 +1,105 @@
+/* ================================================================
+   KA-ARTICLE-HERO
+   Docs/journal-build-spec.md §3 B2/B3. 84svh full-bleed cinematic
+   open, bottom-left content — matches the house's sitewide hero
+   language (contrast with the Journal Index's centred, shorter
+   masthead, a deliberate difference documented in ka-journal-
+   masthead.css). Also carries the B2 return-link ("Back to the
+   Journal") and the optional B4 .article-progress scroll line —
+   both are tightly coupled to this section's own scroll listener,
+   so they live in the same file/section rather than being split out.
+================================================================ */
+.a-hero { position: relative; height: 84vh; height: 84svh; min-height: 560px; overflow: hidden; }
+.a-hero__bg { position: absolute; inset: 0; }
+.a-hero__bg img { object-position: center 30%; }
+.a-hero__overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to bottom, rgba(15,12,10,0.34) 0%, rgba(15,12,10,0.12) 40%, rgba(15,12,10,0.66) 100%);
+}
+.a-hero__content { position: absolute; bottom: var(--s-2xl); left: var(--gutter); right: var(--gutter); max-width: 880px; }
+.a-hero__eyebrow { color: rgba(255,255,255,0.72); margin-bottom: 20px; opacity: 0; animation: fadeUp 1s var(--ease-luxury) 0.5s forwards; }
+.a-hero__eyebrow span { margin: 0 8px; opacity: 0.5; }
+.a-hero__title {
+  font-family: var(--f-display);
+  font-size: clamp(2.4rem, 5.4vw, 4.6rem);
+  font-weight: 400;
+  font-style: italic;
+  color: white;
+  line-height: 1.06;
+  letter-spacing: -0.01em;
+  opacity: 0;
+  animation: fadeUp 1.2s var(--ease-luxury) 0.8s forwards;
+}
+.a-hero__dek {
+  margin-top: 20px;
+  font-family: var(--f-display);
+  font-size: clamp(1.1rem, 2vw, 1.5rem);
+  font-style: italic;
+  font-weight: 300;
+  color: rgba(255,255,255,0.72);
+  opacity: 0;
+  animation: fadeUp 1s var(--ease-luxury) 1.15s forwards;
+}
+.a-hero__byline {
+  margin-top: 32px;
+  font-family: var(--f-sans);
+  font-size: 0.7rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.5);
+  opacity: 0;
+  animation: fadeUp 1s var(--ease-luxury) 1.4s forwards;
+}
+.a-hero__byline span { margin: 0 8px; opacity: 0.6; }
+.a-hero__scroll {
+  position: absolute;
+  bottom: 32px; right: var(--gutter);
+  display: flex; flex-direction: column; align-items: center; gap: 10px;
+  opacity: 0;
+  animation: fadeIn 1s var(--ease-luxury) 2s forwards;
+}
+.a-hero__scroll span { font-family: var(--f-sans); font-size: 0.55rem; letter-spacing: 0.22em; text-transform: uppercase; color: rgba(255,255,255,0.45); writing-mode: vertical-rl; }
+.a-hero__scroll-line { width: 1px; height: 44px; background: rgba(255,255,255,0.2); position: relative; overflow: hidden; }
+.a-hero__scroll-line::after { content: ''; position: absolute; top: -100%; left: 0; width: 100%; height: 100%; background: rgba(255,255,255,0.65); animation: scrollDrop 1.8s ease-in-out infinite; }
+
+/* B2 — quiet return link, replaces a conventional e-commerce
+   breadcrumb (see build spec §3 rationale — a reading page asks a
+   different wayfinding question than a shopping page). Sits above
+   the utility bar + nav stack (top:92px clears both), switches from
+   light to dark text in sync with the nav's own .scrolled state. */
+.article-return {
+  position: fixed;
+  top: 92px; left: var(--gutter);
+  z-index: 90;
+  font-family: var(--f-sans);
+  font-size: 0.64rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.7);
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  opacity: 0;
+  animation: fadeIn 1s var(--ease-luxury) 1.6s forwards;
+  transition: color var(--dur-fast);
+}
+.article-return.is-dark { color: var(--c-ink-mid); }
+.article-return:hover { color: var(--c-rosegold-2); }
+
+/* Optional reading-progress line (§4, Quick Wins) — restrained: no
+   percentage number, no chrome. Purely a thin top-of-viewport line. */
+.article-progress {
+  position: fixed;
+  top: 0; left: 0;
+  height: 2px;
+  background: var(--c-rosegold);
+  z-index: 150;
+  width: 0%;
+  transition: width 0.1s linear;
+}
+
+@media (max-width: 600px) {
+  .a-hero { height: 78svh; }
+  .article-return { top: 76px; }
+}

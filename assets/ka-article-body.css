@@ -1,0 +1,100 @@
+/* ================================================================
+   KA-ARTICLE-BODY
+   Docs/journal-build-spec.md §3 B4/B5/B6, §4. Extends the existing
+   generic-page body-copy pattern (assets/ka-page-generic.css — same
+   720px max-width, same Jost 300 / 1.85 line-height, same italic
+   Cormorant H2 treatment) with additive rules only. No new colour or
+   font tokens (spec §4/§6).
+
+   Lede (B4): the spec calls for a larger opening paragraph, "the way
+   a print feature's first paragraph is set larger than its body."
+   Implemented with :first-of-type — zero editorial config needed;
+   whatever paragraph a content editor writes first in Shopify's
+   article rich-text editor is automatically the lede. This also
+   means no `.a-body__lede` class needs to be hand-added in Admin.
+
+   Pull-quote (B5): implemented as `.a-body blockquote` so a content
+   editor can add it directly from Shopify's rich-text editor's
+   native Quote block — no metafield, no custom markup required.
+   Visually a verbatim adaptation of .ka-manifesto (identical
+   hairline-rule ::before/::after pattern, identical type scale).
+   `cite` (if present) renders as the attribution line.
+
+   Breakout image (B6): rendered by sections/ka-article-body.liquid
+   from an Article metafield (custom.breakout_image / _caption), not
+   from rich text — see that file's header comment for why (a plain
+   rich-text image cannot escape the 720px column; this genuinely
+   needs a distinct, positioned component). `.a-breakout` is that
+   component's CSS.
+================================================================ */
+.a-body-wrap { max-width: var(--max-text); margin: 0 auto; padding: var(--s-2xl) var(--gutter) var(--s-lg); }
+.a-body { font-family: var(--f-sans); font-size: var(--t-body-l); font-weight: 300; line-height: 1.9; color: var(--c-ink); }
+.a-body > * + * { margin-top: var(--s-md); }
+.a-body > p:first-of-type { font-size: 1.28rem; line-height: 1.75; color: var(--c-ink); }
+.a-body h2 {
+  font-family: var(--f-display);
+  font-weight: 400;
+  font-style: italic;
+  font-size: var(--t-h3);
+  color: var(--c-charcoal);
+  line-height: 1.2;
+  margin-top: var(--s-lg);
+}
+.a-body h3 { font-family: var(--f-display); font-weight: 400; font-style: italic; font-size: 1.2rem; color: var(--c-charcoal); line-height: 1.25; margin-top: var(--s-md); }
+.a-body p { margin: 0; }
+.a-body p + p { margin-top: var(--s-sm); }
+.a-body ul, .a-body ol { padding-left: 1.4em; }
+.a-body li + li { margin-top: 0.5em; }
+.a-body a { color: var(--c-rosegold-2); text-decoration: underline; text-decoration-color: var(--line-light); text-underline-offset: 3px; transition: color var(--dur-fast); }
+.a-body a:hover { color: var(--c-rosegold); }
+.a-body img { width: 100%; height: auto; display: block; margin: var(--s-sm) 0; }
+
+/* Pull-quote — verbatim adaptation of .ka-manifesto */
+.a-body blockquote {
+  padding: var(--s-xl) var(--gutter);
+  text-align: center;
+  max-width: 900px;
+  margin: var(--s-md) auto;
+  position: relative;
+  border: none;
+  font-style: normal;
+  color: inherit;
+}
+.a-body blockquote::before,
+.a-body blockquote::after { content: ''; display: block; width: 40px; height: 1px; background: var(--c-rosegold-pale); margin: 0 auto; }
+.a-body blockquote::before { margin-bottom: 40px; }
+.a-body blockquote::after { margin-top: 40px; }
+.a-body blockquote p {
+  font-family: var(--f-display);
+  font-size: clamp(1.4rem, 2.6vw, 2.2rem);
+  font-weight: 400;
+  font-style: italic;
+  color: var(--c-charcoal);
+  line-height: 1.35;
+}
+.a-body blockquote cite {
+  display: block;
+  margin-top: 22px;
+  font-family: var(--f-sans);
+  font-style: normal;
+  font-size: 0.64rem;
+  font-weight: 400;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--c-ink-muted);
+}
+
+/* B6 — breakout image: max-width sits between the 720px text column
+   and the 1680px --max-wide sitewide container (new --max-breakout
+   token, see build spec §4). */
+.a-breakout { max-width: var(--max-breakout); margin: var(--s-lg) auto; padding: 0 var(--gutter); }
+.a-breakout__frame { position: relative; height: 62vh; min-height: 380px; max-height: 640px; overflow: hidden; }
+.a-breakout__caption { margin-top: 14px; font-family: var(--f-sans); font-size: 0.7rem; letter-spacing: 0.06em; color: var(--c-ink-muted); text-align: center; }
+
+@media (max-width: 600px) {
+  .a-body-wrap { padding: var(--s-xl) 20px var(--s-md); }
+  .a-body { font-size: 1rem; }
+  .a-body > p:first-of-type { font-size: 1.12rem; }
+  .a-breakout { padding: 0 16px; }
+  .a-breakout__frame { height: 46vh; min-height: 300px; }
+}

@@ -1,0 +1,124 @@
+{{ 'ka-article-body.css' | asset_url | stylesheet_tag }}
+
+{%- comment -%}
+  K&A Article Body — Docs/journal-build-spec.md §3 B4/B5/B6.
+
+  Body copy (B4) renders article.content directly (Shopify's native
+  rich-text article editor) — no metafield needed for paragraphs or
+  H2 subheads; see assets/ka-article-body.css header comment for how
+  the "lede" larger-first-paragraph treatment and the H2 italic style
+  are achieved with plain CSS selectors against whatever an editor
+  writes in Admin.
+
+  Pull-quote (B5) is also authored directly in the rich-text editor
+  using Shopify's native "Quote" block (renders as <blockquote>) —
+  styled to match .ka-manifesto by assets/ka-article-body.css. No
+  metafield, no custom markup.
+
+  Breakout image (B6) — FEASIBILITY NOTE: a plain rich-text image in
+  article.content cannot visually escape the 720px text column (that
+  is a genuine Liquid/rich-text limitation, not a simplification we
+  chose casually) — see spec §6/§7. Two supported paths, in order:
+    1. If the article body contains the literal marker text
+       "[breakout]" (typed by the content editor at the exact point
+       in the article where the image should interrupt the column,
+       e.g. between two paragraphs), this section splits
+       article.content on that marker and injects the breakout
+       figure at that position — matching the prototype's mid-body
+       placement exactly.
+    2. If no marker is present but a breakout image metafield IS set,
+       the breakout renders once, after the full body (a fully
+       correct but less precisely-positioned fallback).
+    3. If neither is set, no breakout section renders at all — this
+       section will NOT force a reused image (e.g. an About-page
+       photo) onto every future article by default, since that would
+       look repetitive the moment more than one article exists. See
+       spec §5 — real breakout photography/metafield values are a
+       manual content step, not something this build can populate
+       itself (no Shopify Admin write access).
+
+  Metafields used (none exist yet on the live article — must be
+  created in Shopify Admin, Settings -> Custom data -> Articles, and
+  populated per-article; same category of manual step already
+  documented elsewhere in this theme, e.g. templates/page.about-us.json):
+    article.metafields.custom.breakout_image   (type: Single image)
+    article.metafields.custom.breakout_caption (type: Single line text)
+{%- endcomment -%}
+
+{%- liquid
+  assign marker = '[breakout]'
+  assign has_marker = false
+  if article.content contains marker
+    assign has_marker = true
+  endif
+  assign breakout_image = section.settings.breakout_image | default: article.metafields.custom.breakout_image
+  assign breakout_caption = section.settings.breakout_caption
+  if breakout_caption == blank
+    assign breakout_caption = article.metafields.custom.breakout_caption
+  endif
+-%}
+
+{%- if has_marker -%}
+  {%- assign content_parts = article.content | split: marker -%}
+  <article class="a-body-wrap">
+    <div class="a-body">{{ content_parts[0] }}</div>
+  </article>
+
+  {%- if breakout_image != blank -%}
+    <figure class="a-breakout reveal-img">
+      <div class="a-breakout__frame">
+        <img
+          src="{{ breakout_image | image_url: width: 1600 }}"
+          alt="{{ breakout_image.alt | escape | default: article.title | escape }}"
+          loading="lazy"
+          width="1600"
+          height="1000"
+          class="img-filter-editorial"
+        />
+      </div>
+      {%- if breakout_caption != blank -%}<figcaption class="a-breakout__caption">{{ breakout_caption }}</figcaption>{%- endif -%}
+    </figure>
+  {%- endif -%}
+
+  <article class="a-body-wrap" style="padding-top: 0;">
+    <div class="a-body">{{ content_parts[1] }}</div>
+  </article>
+{%- else -%}
+  <article class="a-body-wrap">
+    <div class="a-body">{{ article.content }}</div>
+  </article>
+
+  {%- if breakout_image != blank -%}
+    <figure class="a-breakout reveal-img">
+      <div class="a-breakout__frame">
+        <img
+          src="{{ breakout_image | image_url: width: 1600 }}"
+          alt="{{ breakout_image.alt | escape | default: article.title | escape }}"
+          loading="lazy"
+          width="1600"
+          height="1000"
+          class="img-filter-editorial"
+        />
+      </div>
+      {%- if breakout_caption != blank -%}<figcaption class="a-breakout__caption">{{ breakout_caption }}</figcaption>{%- endif -%}
+    </figure>
+  {%- endif -%}
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "Article Body",
+  "tag": "div",
+  "settings": [
+    {
+      "type": "paragraph",
+      "content": "Body copy, H2 subheads and the pull-quote all come directly from the article's own rich-text content in Shopify Admin (Blog posts editor) — nothing to configure here. To position the breakout image mid-article, type the literal text [breakout] on its own line at the point in the article body where it should appear."
+    },
+    { "type": "image_picker", "id": "breakout_image", "label": "Breakout image override", "info": "Falls back to the article's custom.breakout_image metafield if set. If neither is set, no breakout image renders." },
+    { "type": "text", "id": "breakout_caption", "label": "Breakout caption override", "info": "Falls back to the article's custom.breakout_caption metafield if set." }
+  ],
+  "presets": [
+    { "name": "Article Body" }
+  ]
+}
+{% endschema %}
