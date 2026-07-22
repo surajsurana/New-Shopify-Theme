@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>The Corset Lehenga, Reconsidered — The Journal — K&A by Karishma &amp; Ashita</title>
+<meta name="description" content="Structure as bridal statement — why the corset lehenga was never a trend at K&A. Craft notes from the atelier." />
+
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Jost:wght@200;300;400;500&display=swap" rel="stylesheet" />
+
+<style>
+/* Tokens — verbatim from assets/ka-base.css, identical to journal-index-v1.html */
+:root {
+  --c-paper: #F7F3EC; --c-paper-deep: #EFE8DD; --c-smoke: #E9E1D2;
+  --c-charcoal: #2A2420; --c-charcoal-2: #1D1916; --c-ink: #2A2420; --c-ink-mid: #6E655B; --c-ink-muted: #9C9389;
+  --c-rosegold: #9A7B4F; --c-rosegold-2: #7E6440; --c-rosegold-pale: #B99B6E;
+  --line: rgba(42,36,32,0.12); --line-strong: rgba(42,36,32,0.20); --line-light: rgba(154,123,79,0.28); --line-on-dark: rgba(154,123,79,0.22);
+  --f-display: 'Cormorant Garamond', Georgia, 'Times New Roman', serif;
+  --f-sans: 'Jost', 'Helvetica Neue', Arial, sans-serif;
+  --t-hero: clamp(3.6rem, 8vw, 8rem); --t-display: clamp(2.6rem, 5.5vw, 5.2rem); --t-h2: clamp(2rem, 3.5vw, 3.2rem); --t-h3: clamp(1.4rem, 2.2vw, 2rem);
+  --t-eyebrow: 0.66rem; --t-body-l: 1.1rem; --t-body: 1rem; --t-caption: 0.76rem;
+  --s-xs: 8px; --s-sm: 16px; --s-md: 32px; --s-lg: 64px; --s-xl: 96px; --s-2xl: 140px; --s-3xl: 200px;
+  --max-wide: 1680px; --max-text: 720px; --max-breakout: 1180px; --gutter: clamp(20px, 5vw, 80px);
+  --ease-luxury: cubic-bezier(0.16, 0.84, 0.44, 1); --ease-soft: cubic-bezier(0.22, 0.61, 0.36, 1);
+  --dur-slow: 1s; --dur-med: 0.65s; --dur-fast: 0.35s;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; font-size: 16px; }
+body { background: var(--c-paper); color: var(--c-ink); font-family: var(--f-sans); font-weight: 300; line-height: 1.75; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; overflow-x: hidden; }
+img { display: block; width: 100%; height: 100%; object-fit: cover; }
+a { text-decoration: none; color: inherit; }
+button { border: none; background: none; cursor: pointer; font-family: inherit; }
+
+.eyebrow { font-family: var(--f-sans); font-size: var(--t-eyebrow); font-weight: 400; letter-spacing: 0.24em; text-transform: uppercase; color: var(--c-rosegold-2); }
+.eyebrow--on-dark { color: var(--c-rosegold); }
+.eyebrow--muted { color: var(--c-ink-muted); }
+
+.reveal { opacity: 0; transform: translateY(28px); transition: opacity var(--dur-slow) var(--ease-luxury), transform var(--dur-slow) var(--ease-luxury); }
+.reveal.visible { opacity: 1; transform: translateY(0); }
+.reveal-delay-1 { transition-delay: .1s; } .reveal-delay-2 { transition-delay: .22s; } .reveal-delay-3 { transition-delay: .38s; }
+.reveal-img { overflow: hidden; }
+.reveal-img img { transform: scale(1.04); transition: transform 1.4s var(--ease-luxury); }
+.reveal-img.visible img { transform: scale(1); }
+.img-editorial { filter: sepia(0.10) saturate(0.90) brightness(0.96); }
+.img-editorial-deep { filter: sepia(0.12) saturate(0.88) brightness(0.93); }
+
+@keyframes fadeUp { from { opacity:0; transform:translateY(24px);} to { opacity:1; transform:translateY(0);} }
+@keyframes fadeIn { from { opacity:0; } to { opacity:1; } }
+@keyframes scrollDrop { 0% { top:-100%; } 100% { top:100%; } }
+
+.btn-dark { display: inline-flex; align-items: center; gap: 16px; font-family: var(--f-sans); font-size: 0.68rem; font-weight: 400; letter-spacing: 0.2em; text-transform: uppercase; color: var(--c-charcoal); border-bottom: 1px solid var(--c-rosegold-pale); padding-bottom: 6px; transition: border-color var(--dur-fast), color var(--dur-fast); width: fit-content; }
+.btn-dark::after { content: '\2192'; font-size: 0.9em; transition: transform var(--dur-med) var(--ease-luxury); }
+.btn-dark:hover { color: var(--c-rosegold-2); border-color: var(--c-rosegold-2); }
+.btn-dark:hover::after { transform: translateX(6px); }
+.btn-outline-white { font-family: var(--f-sans); font-size: 0.66rem; font-weight: 400; letter-spacing: 0.2em; text-transform: uppercase; color: white; border: 1px solid rgba(255,255,255,0.45); padding: 14px 36px; transition: background var(--dur-fast), border-color var(--dur-fast), color var(--dur-fast); display: inline-block; }
+.btn-outline-white:hover { background: white; color: var(--c-charcoal); border-color: white; }
+.section-header { display: flex; align-items: flex-end; justify-content: space-between; margin-bottom: var(--s-lg); gap: 24px; }
+.section-header__title { font-family: var(--f-display); font-size: var(--t-h2); font-weight: 400; font-style: italic; color: var(--c-charcoal); line-height: 1.05; }
+.section-header__link { font-family: var(--f-sans); font-size: 0.66rem; font-weight: 400; letter-spacing: 0.18em; text-transform: uppercase; color: var(--c-ink-muted); white-space: nowrap; display: inline-flex; align-items: center; gap: 10px; transition: color var(--dur-fast); }
+.section-header__link::after { content: '\2192'; }
+.section-header__link:hover { color: var(--c-charcoal); }
+
+/* ═══ HEADER — visual reference only, see build spec §7 H1 ═══ */
+.utility-bar { position: fixed; top: 0; left: 0; right: 0; z-index: 101; background: var(--c-charcoal); color: rgba(233,224,210,0.78); text-align: center; font-family: var(--f-sans); font-size: 0.62rem; font-weight: 400; letter-spacing: 0.18em; text-transform: uppercase; padding: 9px 16px; overflow: hidden; }
+.utility-bar span { opacity: 0.55; margin: 0 14px; }
+.utility-bar b { font-weight: 400; opacity: 0.95; }
+.nav { position: fixed; top: 34px; left: 0; right: 0; z-index: 100; padding: 22px var(--gutter); display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; transition: background var(--dur-med) var(--ease-soft), padding var(--dur-med) var(--ease-soft), backdrop-filter var(--dur-med) var(--ease-soft); }
+.nav.scrolled { background: rgba(247,243,236,0.94); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); padding: 14px var(--gutter); border-bottom: 1px solid var(--line); }
+.nav__links { display: flex; gap: 32px; list-style: none; }
+.nav__links a { font-family: var(--f-sans); font-size: 0.66rem; font-weight: 400; letter-spacing: 0.16em; text-transform: uppercase; color: white; transition: color var(--dur-fast); position: relative; }
+.nav__links a::after { content:''; position:absolute; left:0; bottom:-3px; width:0; height:1px; background: var(--c-rosegold); transition: width var(--dur-med) var(--ease-luxury); }
+.nav__links a:hover::after, .nav__links a.is-current::after { width: 100%; }
+.nav.scrolled .nav__links a { color: var(--c-ink-mid); }
+.nav.scrolled .nav__links a:hover, .nav.scrolled .nav__links a.is-current { color: var(--c-charcoal); }
+.nav__logo { grid-column:2; text-align:center; font-family: var(--f-display); font-size: clamp(1.2rem,2.2vw,1.6rem); font-weight:400; letter-spacing:0.1em; color:white; line-height:1; transition: color var(--dur-med); }
+.nav__logo small { display:block; font-family: var(--f-sans); font-size:0.5rem; font-weight:400; letter-spacing:0.32em; text-transform:uppercase; color: var(--c-rosegold-pale); margin-top:6px; }
+.nav.scrolled .nav__logo { color: var(--c-charcoal); }
+.nav.scrolled .nav__logo small { color: var(--c-rosegold-2); }
+.nav__actions { display:flex; align-items:center; justify-content:flex-end; gap:20px; }
+.nav__icon-btn { position:relative; display:inline-flex; align-items:center; justify-content:center; width:30px; height:30px; padding:4px; color:white; transition: color var(--dur-med); }
+.nav.scrolled .nav__icon-btn { color: var(--c-charcoal); }
+.nav__icon-btn svg { width:20px; height:20px; stroke: currentColor; fill:none; }
+.nav__toggle { display:none; flex-direction:column; gap:5px; padding:4px; grid-column:1; align-items:flex-start; }
+.nav__toggle span { display:block; width:24px; height:1px; background:white; transition: background var(--dur-med); }
+.nav.scrolled .nav__toggle span { background: var(--c-charcoal); }
+.mobile-nav { position: fixed; inset: 0; z-index: 200; background: var(--c-charcoal); padding: 80px var(--gutter) var(--s-lg); display: flex; flex-direction: column; transform: translateX(100%); transition: transform 0.5s var(--ease-luxury); }
+.mobile-nav.open { transform: translateX(0); }
+.mobile-nav__close { position:absolute; top:24px; right:var(--gutter); color:rgba(255,255,255,0.45); font-family: var(--f-sans); font-size:0.63rem; letter-spacing:0.22em; text-transform:uppercase; }
+.mobile-nav__links { list-style:none; margin-bottom: var(--s-lg); }
+.mobile-nav__links li { border-bottom: 1px solid rgba(255,255,255,0.07); }
+.mobile-nav__links a { display:block; font-family: var(--f-display); font-style:italic; color:white; font-size: clamp(1.6rem,6vw,2.6rem); letter-spacing:0.02em; padding:16px 0; transition: color var(--dur-fast); }
+.mobile-nav__links a:hover, .mobile-nav__links a.is-current { color: var(--c-rosegold); }
+.mobile-nav__footer { margin-top:auto; }
+.mobile-nav__footer p { font-family: var(--f-sans); font-size:0.7rem; letter-spacing:0.1em; color: rgba(255,255,255,0.3); margin-bottom:8px; }
+.mobile-nav__footer a { font-family: var(--f-sans); font-size:0.82rem; letter-spacing:0.06em; color: var(--c-rosegold); }
+
+/* Quiet return link — sits over the hero top-left, replaces a
+   conventional e-commerce breadcrumb (see build spec §3 rationale) */
+.article-return {
+  position: fixed; top: 92px; left: var(--gutter); z-index: 90;
+  font-family: var(--f-sans); font-size: 0.64rem; letter-spacing: 0.14em; text-transform: uppercase;
+  color: rgba(255,255,255,0.7); display: inline-flex; align-items: center; gap: 8px;
+  opacity: 0; animation: fadeIn 1s var(--ease-luxury) 1.6s forwards;
+  transition: color var(--dur-fast);
+}
+.article-return.is-dark { color: var(--c-ink-mid); }
+.article-return:hover { color: var(--c-rosegold-2); }
+
+/* Thin scroll-progress line — tasteful long-form reading aid, not a
+   percentage/gamified progress bar. See build spec §4 (optional). */
+.article-progress { position: fixed; top: 0; left: 0; height: 2px; background: var(--c-rosegold); z-index: 150; width: 0%; transition: width 0.1s linear; }
+
+/* ═══ ARTICLE HERO ═══ */
+.a-hero { position: relative; height: 84vh; height: 84svh; min-height: 560px; overflow: hidden; }
+.a-hero__bg { position:absolute; inset:0; transform: scale(1.05); transition: transform 2.2s var(--ease-luxury); }
+.a-hero__bg.loaded { transform: scale(1); }
+.a-hero__bg img { object-position: center 30%; }
+.a-hero__overlay { position:absolute; inset:0; background: linear-gradient(to bottom, rgba(15,12,10,0.34) 0%, rgba(15,12,10,0.12) 40%, rgba(15,12,10,0.66) 100%); }
+.a-hero__content { position:absolute; bottom: var(--s-2xl); left: var(--gutter); right: var(--gutter); max-width: 880px; }
+.a-hero__eyebrow { color: rgba(255,255,255,0.72); margin-bottom:20px; opacity:0; animation: fadeUp 1s var(--ease-luxury) 0.5s forwards; }
+.a-hero__title { font-family: var(--f-display); font-size: clamp(2.4rem,5.4vw,4.6rem); font-weight:400; font-style:italic; color:white; line-height:1.06; letter-spacing:-0.01em; opacity:0; animation: fadeUp 1.2s var(--ease-luxury) 0.8s forwards; }
+.a-hero__dek { margin-top:20px; font-family: var(--f-display); font-size: clamp(1.1rem,2vw,1.5rem); font-style:italic; font-weight:300; color: rgba(255,255,255,0.72); opacity:0; animation: fadeUp 1s var(--ease-luxury) 1.15s forwards; }
+.a-hero__byline { margin-top:32px; font-family: var(--f-sans); font-size:0.7rem; letter-spacing:0.1em; text-transform:uppercase; color: rgba(255,255,255,0.5); opacity:0; animation: fadeUp 1s var(--ease-luxury) 1.4s forwards; }
+.a-hero__byline span { margin: 0 8px; opacity:.6; }
+.a-hero__scroll { position:absolute; bottom:32px; right: var(--gutter); display:flex; flex-direction:column; align-items:center; gap:10px; opacity:0; animation: fadeIn 1s var(--ease-luxury) 2s forwards; }
+.a-hero__scroll span { font-family: var(--f-sans); font-size:0.55rem; letter-spacing:0.22em; text-transform:uppercase; color: rgba(255,255,255,0.45); writing-mode: vertical-rl; }
+.a-hero__scroll-line { width:1px; height:44px; background: rgba(255,255,255,0.2); position:relative; overflow:hidden; }
+.a-hero__scroll-line::after { content:''; position:absolute; top:-100%; left:0; width:100%; height:100%; background: rgba(255,255,255,0.65); animation: scrollDrop 1.8s ease-in-out infinite; }
+
+@media (max-width: 600px) { .a-hero { height: 78svh; } .article-return { top: 76px; } }
+
+/* ═══ ARTICLE BODY ═══
+   Extends the existing generic-page body pattern (assets/ka-page-
+   generic.css) with three new, additive elements: a larger lede
+   paragraph, a full-width "breakout" image that escapes the text
+   column, and a reused pull-quote (.a-quote, adapted from .ka-
+   manifesto verbatim). No new type tokens — see build spec §6.
+═══ */
+.a-body-wrap { max-width: var(--max-text); margin: 0 auto; padding: var(--s-2xl) var(--gutter) var(--s-lg); }
+.a-body { font-family: var(--f-sans); font-size: var(--t-body-l); font-weight: 300; line-height: 1.9; color: var(--c-ink); }
+.a-body > * + * { margin-top: var(--s-md); }
+.a-body__lede { font-size: 1.28rem; line-height: 1.75; color: var(--c-ink); }
+.a-body h2 { font-family: var(--f-display); font-weight: 400; font-style: italic; font-size: var(--t-h3); color: var(--c-charcoal); line-height: 1.2; margin-top: var(--s-lg); }
+.a-body p { margin: 0; }
+.a-body p + p { margin-top: var(--s-sm); }
+
+.a-breakout { max-width: var(--max-breakout); margin: var(--s-lg) auto; padding: 0 var(--gutter); }
+.a-breakout__frame { position: relative; height: 62vh; min-height: 380px; max-height: 640px; overflow: hidden; }
+.a-breakout__caption { margin-top: 14px; font-family: var(--f-sans); font-size: 0.7rem; letter-spacing: 0.06em; color: var(--c-ink-muted); text-align: center; }
+
+.a-quote { padding: var(--s-xl) var(--gutter); text-align: center; max-width: 900px; margin: var(--s-md) auto; position: relative; }
+.a-quote::before, .a-quote::after { content:''; display:block; width:40px; height:1px; background: var(--c-rosegold-pale); margin: 0 auto; }
+.a-quote::before { margin-bottom: 40px; }
+.a-quote::after { margin-top: 40px; }
+.a-quote__line { font-family: var(--f-display); font-size: clamp(1.4rem, 2.6vw, 2.2rem); font-weight: 400; font-style: italic; color: var(--c-charcoal); line-height: 1.35; }
+.a-quote__attribution { margin-top: 22px; font-family: var(--f-sans); font-size: 0.64rem; font-weight: 400; letter-spacing: 0.22em; text-transform: uppercase; color: var(--c-ink-muted); }
+
+@media (max-width: 600px) {
+  .a-body-wrap { padding: var(--s-xl) 20px var(--s-md); }
+  .a-body { font-size: 1rem; }
+  .a-body__lede { font-size: 1.12rem; }
+  .a-breakout { padding: 0 16px; }
+  .a-breakout__frame { height: 46vh; min-height: 300px; }
+}
+
+/* ═══ SHOP THE STORY (reuses .ka-p-card verbatim from assets/ka-collection-grid.css) ═══ */
+.shop-wrap { max-width: var(--max-wide); margin: 0 auto; padding: var(--s-lg) var(--gutter) var(--s-2xl); border-top: 1px solid var(--line); }
+.shop-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: clamp(2px, 0.3vw, 32px); }
+.ka-p-card { position: relative; }
+.ka-p-card__image { position: relative; display: block; aspect-ratio: 3/4; overflow: hidden; background: var(--c-smoke); }
+.ka-p-card__image img { transition: transform 1.2s var(--ease-luxury); }
+.ka-p-card:hover .ka-p-card__image img { transform: scale(1.045); }
+.ka-p-card__info { padding: 20px 4px 0; }
+.ka-p-card__name { font-family: var(--f-display); font-size: clamp(1rem, 1.6vw, 1.25rem); font-weight: 400; font-style: italic; color: var(--c-charcoal); line-height: 1.3; margin-bottom: 6px; }
+.ka-p-card__fabric { font-family: var(--f-sans); font-size: 0.74rem; font-weight: 300; color: var(--c-ink-muted); margin-bottom: 10px; line-height: 1.6; }
+.ka-p-card__price { font-family: var(--f-sans); font-size: 0.78rem; font-weight: 400; letter-spacing: 0.04em; color: var(--c-ink); }
+@media (max-width: 900px) { .shop-grid { grid-template-columns: repeat(2, 1fr); } .shop-grid > :last-child { display:none; } }
+@media (max-width: 600px) { .shop-grid { grid-template-columns: 1fr; gap: var(--s-md); } .shop-grid > :last-child { display:block; } }
+
+/* ═══ MORE FROM THE JOURNAL (reuses .ka-j-card verbatim from journal-index-v1.html) ═══ */
+.more-wrap { max-width: var(--max-wide); margin: 0 auto; padding: var(--s-lg) var(--gutter) var(--s-2xl); }
+.more-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: clamp(24px, 3vw, 40px); }
+.ka-j-card__image { position:relative; display:block; aspect-ratio: 4/3; overflow:hidden; background: var(--c-smoke); }
+.ka-j-card__image img { transition: transform 1.2s var(--ease-luxury); }
+.ka-j-card:hover .ka-j-card__image img { transform: scale(1.045); }
+.ka-j-card__cat { position:absolute; top:14px; left:14px; z-index:1; font-family: var(--f-sans); font-size:0.56rem; font-weight:400; letter-spacing:0.16em; text-transform:uppercase; color:white; background: rgba(26,23,20,0.72); padding:6px 12px; }
+.ka-j-card__info { padding: 18px 2px 0; }
+.ka-j-card__title { font-family: var(--f-display); font-size: 1.1rem; font-weight:400; font-style:italic; color: var(--c-charcoal); line-height:1.25; margin-bottom:8px; }
+.ka-j-card__meta { font-family: var(--f-sans); font-size:0.62rem; letter-spacing:0.08em; text-transform:uppercase; color: var(--c-ink-muted); }
+@media (max-width: 900px) { .more-grid { grid-template-columns: repeat(2, 1fr); } .more-grid > :last-child { display: none; } }
+@media (max-width: 600px) { .more-grid { grid-template-columns: 1fr; gap: var(--s-lg); } .more-grid > :last-child { display: block; } }
+
+/* ═══ APPOINTMENT CTA (verbatim reuse) ═══ */
+.appointment { position: relative; min-height: 62vh; display: flex; align-items: center; overflow: hidden; }
+.appointment__bg { position: absolute; inset: 0; }
+.appointment__bg img { object-position: center 30%; }
+.appointment__overlay { position: absolute; inset: 0; background: rgba(26,23,20,0.60); }
+.appointment__content { position: relative; z-index: 1; padding: var(--s-2xl) var(--gutter); max-width: 680px; margin: 0 auto; text-align: center; }
+.appointment__eyebrow { margin-bottom: 24px; }
+.appointment__title { font-family: var(--f-display); font-size: var(--t-display); font-weight: 400; font-style: italic; color: white; line-height: 1.05; margin-bottom: 24px; }
+.appointment__body { font-family: var(--f-sans); font-size: 0.88rem; font-weight: 300; line-height: 1.9; color: rgba(255,255,255,0.7); margin-bottom: 48px; letter-spacing: 0.02em; }
+.appointment__options { display: flex; align-items: center; justify-content: center; gap: 20px; flex-wrap: wrap; }
+.appointment__divider { font-family: var(--f-sans); font-size: 0.63rem; letter-spacing: 0.1em; color: rgba(255,255,255,0.3); }
+@media (max-width: 600px) { .appointment__options { flex-direction: column; align-items: stretch; } }
+
+/* ═══ FOOTER (condensed reference — see build spec) ═══ */
+.footer { background: var(--c-charcoal); padding: var(--s-2xl) var(--gutter) var(--s-lg); }
+.footer__top { display:grid; grid-template-columns: 1.4fr 1fr 1fr 1fr; gap: var(--s-lg); padding-bottom: var(--s-xl); border-bottom: 1px solid rgba(255,255,255,0.07); margin-bottom: var(--s-lg); }
+.footer__logo { font-family: var(--f-display); font-size:1.5rem; font-weight:400; letter-spacing:0.12em; color: rgba(255,255,255,0.82); text-transform:uppercase; margin-bottom:16px; display:block; }
+.footer__tagline { font-family: var(--f-display); font-style:italic; font-size:0.92rem; color: rgba(255,255,255,0.32); line-height:1.65; max-width:260px; }
+.footer__col-title { font-family: var(--f-sans); font-size:0.6rem; font-weight:500; letter-spacing:0.24em; text-transform:uppercase; color: rgba(255,255,255,0.35); margin-bottom:20px; }
+.footer__links { list-style:none; display:flex; flex-direction:column; gap:12px; }
+.footer__links a { font-family: var(--f-sans); font-size:0.78rem; font-weight:300; color: rgba(255,255,255,0.5); transition: color var(--dur-fast); }
+.footer__links a:hover { color:white; }
+.footer__bottom { display:flex; align-items:center; justify-content:space-between; gap:24px; flex-wrap:wrap; }
+.footer__copy { font-family: var(--f-sans); font-size:0.63rem; font-weight:300; color: rgba(255,255,255,0.18); letter-spacing:0.1em; }
+@media (max-width: 900px) { .footer__top { grid-template-columns: 1fr 1fr; } }
+</style>
+</head>
+<body>
+
+<div class="article-progress" id="progress"></div>
+
+<!-- ═══ HEADER ═══ -->
+<div class="utility-bar">
+  <span><b>Complimentary Worldwide Delivery</b></span>
+  <span><b>Hand-Embroidered to Order</b></span>
+  <span><b>Private &amp; Virtual Appointments</b></span>
+</div>
+
+<nav class="nav" id="nav">
+  <button class="nav__toggle" id="navToggle" aria-label="Open menu"><span></span><span></span><span></span></button>
+  <ul class="nav__links">
+    <li><a href="#">Bestsellers</a></li>
+    <li><a href="#">Collections</a></li>
+    <li><a href="#">Client Diaries</a></li>
+    <li><a href="journal-index-v1.html" class="is-current">Journal</a></li>
+  </ul>
+  <a href="#" class="nav__logo">Karishma Ashita<small>Bridal Couture · Mumbai</small></a>
+  <div class="nav__actions">
+    <button class="nav__icon-btn" aria-label="Search"><svg viewBox="0 0 24 24" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M20 20l-4.8-4.8"/></svg></button>
+    <a href="#" class="nav__icon-btn" aria-label="View your bag"><svg viewBox="0 0 24 24" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8h12l-1 12H7L6 8z"/><path d="M9 8V6a3 3 0 0 1 6 0v2"/></svg></a>
+  </div>
+</nav>
+
+<nav class="mobile-nav" id="mobileNav">
+  <button class="mobile-nav__close" id="navClose">Close</button>
+  <ul class="mobile-nav__links">
+    <li><a href="#">Bestsellers</a></li>
+    <li><a href="#">Collections</a></li>
+    <li><a href="#">Client Diaries</a></li>
+    <li><a href="journal-index-v1.html" class="is-current">Journal</a></li>
+    <li><a href="#">About</a></li>
+    <li><a href="#">Visit Us</a></li>
+    <li><a href="#">Book an Appointment</a></li>
+  </ul>
+  <div class="mobile-nav__footer">
+    <p>Concierge</p>
+    <a href="#">+91 99675 43087</a>
+  </div>
+</nav>
+
+<a href="journal-index-v1.html" class="article-return">&larr; Back to the Journal</a>
+
+<!-- ═══ ARTICLE HERO ═══ -->
+<header class="a-hero">
+  <div class="a-hero__bg" id="heroBg"><img src="images/product-ivory-column-corset.jpg" alt="Structured ivory corset lehenga bodice, K&A atelier" class="img-editorial" /></div>
+  <div class="a-hero__overlay"></div>
+  <div class="a-hero__content">
+    <p class="eyebrow eyebrow--on-dark a-hero__eyebrow">Style Notes <span style="opacity:.5">·</span> 5 Minute Read</p>
+    <h1 class="a-hero__title">The Corset Lehenga, Reconsidered</h1>
+    <p class="a-hero__dek">Structure as Bridal Statement.</p>
+    <p class="a-hero__byline">Words — The K&amp;A Atelier <span>·</span> 22 July 2026</p>
+  </div>
+  <div class="a-hero__scroll"><span>Scroll</span><div class="a-hero__scroll-line"></div></div>
+</header>
+
+<!-- ═══ ARTICLE BODY ═══ -->
+<article class="a-body-wrap">
+  <div class="a-body">
+    <p class="a-body__lede reveal">There was a time the corset lehenga read as departure — a Western silhouette borrowed and dressed up for an Indian wedding. That time has passed. At K&amp;A, the corset lehenga is not a departure from bridal tradition; it is tradition, engineered.</p>
+
+    <h2 class="reveal">A Silhouette With a Spine</h2>
+    <p class="reveal">Every K&amp;A corset begins the same way every couture garment should — with a pattern, not a sketch. Boning is placed by hand, seam by seam, until the bodice holds its own shape independent of the body inside it. This is the quiet promise of structure: a bride who has been laced into a garment built to hold her, through a mehendi that runs long, a ceremony that runs longer, and a reception she has no intention of sitting out.</p>
+    <p class="reveal">The drape — silk organza, chiffon, or a fluid Chanderi — does the work tradition asks of it: movement, softness, the sway of a lehenga in motion. But it is the corset beneath that lets a bride stand differently. Structure is not a stylistic choice here. It is the reason the silhouette works at all.</p>
+  </div>
+
+  <div class="a-quote reveal">
+    <p class="a-quote__line">"A corset is not armour against softness. It is what allows softness to hold its shape."</p>
+    <p class="a-quote__attribution">Karishma &amp; Ashita</p>
+  </div>
+
+  <div class="a-body">
+    <h2 class="reveal">Where Embroidery Meets Engineering</h2>
+    <p class="reveal">Structure and embellishment are usually discussed as separate crafts — one a matter of engineering, the other of ornament. In a K&amp;A atelier, they are the same conversation. Every sequin, every thread of zardozi, is placed after the boning is set, worked directly onto a form that already knows its final shape. The embroidery does not sit on top of the structure. It answers to it.</p>
+  </div>
+</article>
+
+<figure class="a-breakout reveal-img">
+  <div class="a-breakout__frame"><img src="images/about-craft-detail-2.jpg" alt="Hand-placed pearl and sequin embellishment on ivory silk bodice" class="img-editorial" /></div>
+  <figcaption class="a-breakout__caption">Hand-placed embellishment, worked directly onto the finished form — K&amp;A Atelier.</figcaption>
+</figure>
+
+<article class="a-body-wrap" style="padding-top: 0;">
+  <div class="a-body">
+    <p class="reveal">This is why a K&amp;A corset lehenga photographs the same way it feels to wear — considered from every angle, because it was built from every angle.</p>
+
+    <h2 class="reveal">Wearing Structure With Ease</h2>
+    <p class="reveal">The corset lehenga's quiet trick is that it reads as effortless precisely because so much has been engineered into it. A bride does not adjust a K&amp;A corset through the evening. She does not think about it at all — which is, in the end, the entire point of structure: not to be admired for its architecture, but to disappear into confidence.</p>
+    <p class="reveal">For the bride considering a corset lehenga for her own wedding, our suggestion is simple: begin with the fitting, not the fabric. Everything else — the embroidery, the colourway, the drape — is chosen far more easily once the structure beneath it already feels like hers.</p>
+  </div>
+</article>
+
+<!-- ═══ SHOP THE STORY ═══ -->
+<section class="shop-wrap">
+  <div class="section-header reveal">
+    <div><p class="eyebrow eyebrow--muted">As Worn in This Story</p><h2 class="section-header__title">Shop the Story</h2></div>
+    <a href="#" class="section-header__link">View all Signature Pieces</a>
+  </div>
+  <div class="shop-grid">
+    <div class="ka-p-card reveal-img">
+      <a href="#" class="ka-p-card__image"><img src="images/product-ivory-column-corset.jpg" alt="Ivory Column Corset with Organza Drape" class="img-editorial" /></a>
+      <div class="ka-p-card__info"><h3 class="ka-p-card__name">Ivory Column Corset / with Organza Drape</h3><p class="ka-p-card__fabric">Raw silk &amp; tulle</p><p class="ka-p-card__price">&#8377; 56,000</p></div>
+    </div>
+    <div class="ka-p-card reveal-img">
+      <a href="#" class="ka-p-card__image"><img src="images/product-snow-veil-corset.jpg" alt="Snow Veil Corset with Drape Skirt and Stole" class="img-editorial" /></a>
+      <div class="ka-p-card__info"><h3 class="ka-p-card__name">Snow Veil Corset / with Drape Skirt &amp; Stole</h3><p class="ka-p-card__fabric">Silk organza — Ivory</p><p class="ka-p-card__price">&#8377; 43,000</p></div>
+    </div>
+    <div class="ka-p-card reveal-img">
+      <a href="#" class="ka-p-card__image"><img src="images/product-bloom-lehenga.jpg" alt="Bloom Lehenga, Rose Blush" class="img-editorial" /></a>
+      <div class="ka-p-card__info"><h3 class="ka-p-card__name">Bloom Lehenga / Rose Blush</h3><p class="ka-p-card__fabric">Georgette with hand embroidery</p><p class="ka-p-card__price">&#8377; 68,000</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ MORE FROM THE JOURNAL ═══ -->
+<section class="more-wrap">
+  <div class="section-header reveal">
+    <div><p class="eyebrow eyebrow--muted">Continue Reading</p><h2 class="section-header__title">More From the Journal</h2></div>
+    <a href="journal-index-v1.html" class="section-header__link">View the Journal</a>
+  </div>
+  <div class="more-grid">
+    <article class="ka-j-card reveal-img">
+      <a href="#" class="ka-j-card__image"><span class="ka-j-card__cat">Style Notes</span><img src="images/collection-indo-western.jpg" alt="Indo-western reception silhouette" class="img-editorial" /></a>
+      <div class="ka-j-card__info"><h3 class="ka-j-card__title">The Case for a Second Outfit: Reception, Reimagined</h3><p class="ka-j-card__meta">3 Dec 2025 <span>·</span> 5 Min Read</p></div>
+    </article>
+    <article class="ka-j-card reveal-img">
+      <a href="#" class="ka-j-card__image"><span class="ka-j-card__cat">Craft &amp; Atelier</span><img src="images/instagram-4.jpg" alt="Corset boning under construction" class="img-editorial" /></a>
+      <div class="ka-j-card__info"><h3 class="ka-j-card__title">Boning, By Hand: What "Structured" Really Means</h3><p class="ka-j-card__meta">2 May 2026 <span>·</span> 4 Min Read</p></div>
+    </article>
+    <article class="ka-j-card reveal-img">
+      <a href="#" class="ka-j-card__image"><span class="ka-j-card__cat">The House</span><img src="images/bloom-soiree-main.jpg" alt="The Bloom Soirée collection" class="img-editorial" /></a>
+      <div class="ka-j-card__info"><h3 class="ka-j-card__title">A Letter From the Atelier: On the Bloom Soirée</h3><p class="ka-j-card__meta">28 Feb 2026 <span>·</span> 6 Min Read</p></div>
+    </article>
+  </div>
+</section>
+
+<!-- ═══ APPOINTMENT CTA ═══ -->
+<section class="appointment">
+  <div class="appointment__bg reveal-img"><img src="images/appointment-bg.jpg" alt="K&A atelier fitting" class="img-editorial-deep" /></div>
+  <div class="appointment__overlay"></div>
+  <div class="appointment__content">
+    <p class="eyebrow eyebrow--on-dark appointment__eyebrow reveal">Continue the Conversation</p>
+    <h2 class="appointment__title reveal reveal-delay-1">Every Story Ends<br />With a Fitting.</h2>
+    <p class="appointment__body reveal reveal-delay-2">However you found us — through a story, a search, or a friend's recommendation — the next step is the same: a conversation, in person or virtual, about the piece that's yours.</p>
+    <div class="appointment__options reveal reveal-delay-3">
+      <a href="#" class="btn-outline-white">Book a Styling Appointment</a>
+      <span class="appointment__divider">or</span>
+      <a href="#" class="btn-outline-white">Explore the Collections</a>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ FOOTER (condensed reference — see build spec) ═══ -->
+<footer class="footer">
+  <div class="footer__top">
+    <div>
+      <span class="footer__logo">Karishma Ashita</span>
+      <p class="footer__tagline">Bridal couture, handcrafted<br />in Mumbai.</p>
+    </div>
+    <div>
+      <p class="footer__col-title">Collections</p>
+      <ul class="footer__links"><li><a href="#">The Festive Edit</a></li><li><a href="#">The Bloom Soirée</a></li><li><a href="#">Signature</a></li></ul>
+    </div>
+    <div>
+      <p class="footer__col-title">Maison</p>
+      <ul class="footer__links"><li><a href="#">About Karishma &amp; Ashita</a></li><li><a href="#">Client Diaries</a></li><li><a href="journal-index-v1.html" class="is-current">Journal</a></li><li><a href="#">Visit Us</a></li></ul>
+    </div>
+    <div>
+      <p class="footer__col-title">Contact</p>
+      <ul class="footer__links"><li><a href="#">+91 99675 43087</a></li><li><a href="#">info@karishmaashita.com</a></li></ul>
+    </div>
+  </div>
+  <div class="footer__bottom">
+    <p class="footer__copy">&copy; 2026 Karishma Ashita, a brand of Peekay International Ltd. All rights reserved.</p>
+  </div>
+</footer>
+
+<script>
+window.addEventListener('load', () => { requestAnimationFrame(() => requestAnimationFrame(() => { document.getElementById('heroBg').classList.add('loaded'); })); });
+
+const nav = document.getElementById('nav');
+const returnLink = document.querySelector('.article-return');
+const progress = document.getElementById('progress');
+window.addEventListener('scroll', () => {
+  const scrolled = window.scrollY > 60;
+  nav.classList.toggle('scrolled', scrolled);
+  returnLink.classList.toggle('is-dark', scrolled);
+  const docH = document.documentElement.scrollHeight - window.innerHeight;
+  progress.style.width = docH > 0 ? Math.min(100, (window.scrollY / docH) * 100) + '%' : '0%';
+}, { passive: true });
+
+const toggle = document.getElementById('navToggle'), close = document.getElementById('navClose'), mobileNav = document.getElementById('mobileNav');
+toggle.addEventListener('click', () => mobileNav.classList.add('open'));
+close.addEventListener('click', () => mobileNav.classList.remove('open'));
+
+const io = new IntersectionObserver((entries) => { entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); io.unobserve(e.target); } }); }, { threshold: 0.15, rootMargin: '0px 0px -60px 0px' });
+document.querySelectorAll('.reveal, .reveal-img').forEach(el => io.observe(el));
+</script>
+</body>
+</html>

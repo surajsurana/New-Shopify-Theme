@@ -1,0 +1,78 @@
+{%- comment -%}
+  ka-journal-card.liquid — shared .ka-j-card renderer (Docs/journal-
+  build-spec.md §3 A5/B8, §4). Reused verbatim by sections/
+  ka-journal-grid.liquid (Index grid) and sections/ka-article-
+  related.liquid ("More From the Journal") so a visitor's eye
+  recognises "this is a card in this site's system" wherever it
+  appears. Styling lives in assets/ka-journal-card.css.
+
+  Params (all required except show_dek/extra_class):
+    article    — a Shopify article object
+    show_dek   — true/false, whether to render the one-line dek
+                 (Index grid shows it, "More From the Journal" omits
+                 it per the approved prototype's denser 3-up strip)
+    extra_class — optional string appended to the outer <article>
+                 class (used for .reveal-img / reveal-delay hooks)
+
+  Category tag (J2/J3): read from the article's own tags against the
+  4-category taxonomy fixed in the spec (§2). Falls back to a
+  generic "Journal" label for an article tagged with none of the
+  four, so the card component never renders with a missing/blank
+  category chip. data-cat carries the handleized category so
+  sections/ka-journal-filter.liquid's client-side chip toggle can
+  target it, matching the handleized value used in that same
+  category's native /tagged/ URL (see ka-journal-filter.liquid).
+
+  Read time (J4): article.content | strip_html word count / 200wpm,
+  rounded up, minimum 1 — no app, no metafield.
+{%- endcomment -%}
+
+{%- liquid
+  assign cat_label = 'Journal'
+  if article.tags contains 'Craft & Atelier'
+    assign cat_label = 'Craft & Atelier'
+  elsif article.tags contains 'Style Notes'
+    assign cat_label = 'Style Notes'
+  elsif article.tags contains 'Occasion Edit'
+    assign cat_label = 'Occasion Edit'
+  elsif article.tags contains 'The House'
+    assign cat_label = 'The House'
+  endif
+  assign cat_handle = cat_label | handle
+
+  assign word_count = article.content | strip_html | split: ' ' | size
+  assign read_time = word_count | divided_by: 200.0 | ceil
+  if read_time < 1
+    assign read_time = 1
+  endif
+
+  assign dek = article.excerpt | strip_html
+  if dek == blank
+    assign dek = article.content | strip_html | truncate: 120
+  endif
+-%}
+
+<article class="ka-j-card{% if extra_class %} {{ extra_class }}{% endif %}" data-cat="{{ cat_handle }}">
+  <a href="{{ article.url }}" class="ka-j-card__image">
+    <span class="ka-j-card__cat">{{ cat_label }}</span>
+    {%- if article.image -%}
+      <img
+        src="{{ article.image | image_url: width: 800 }}"
+        alt="{{ article.image.alt | escape | default: article.title | escape }}"
+        loading="lazy"
+        width="800"
+        height="600"
+        class="img-filter-editorial"
+      />
+    {%- else -%}
+      <div style="background: var(--c-smoke); width:100%; height:100%;"></div>
+    {%- endif -%}
+  </a>
+  <div class="ka-j-card__info">
+    <h3 class="ka-j-card__title"><a href="{{ article.url }}">{{ article.title }}</a></h3>
+    {%- if show_dek -%}
+      <p class="ka-j-card__dek">{{ dek }}</p>
+    {%- endif -%}
+    <p class="ka-j-card__meta">{{ article.published_at | date: '%-d %b %Y' }} <span>&middot;</span> {{ read_time }} Min Read</p>
+  </div>
+</article>

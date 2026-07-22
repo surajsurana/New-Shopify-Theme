@@ -1,0 +1,120 @@
+{{ 'ka-journal-featured.css' | asset_url | stylesheet_tag }}
+
+{%- comment -%}
+  K&A Journal Featured Story — Docs/journal-build-spec.md §3 A3, §7
+  Flag J3. Presents the one live article as a magazine cover feature,
+  pinned above the filterable grid — not the first item in a grid.
+
+  Featured-article selection (J3): a merchant applies the tag
+  "featured" to exactly one live article at a time (Shopify Admin ->
+  Blog posts -> [article] -> Tags). Liquid picks the first article
+  carrying that tag; if none is tagged, falls back to the most
+  recent article (blog.articles.first) so this section never renders
+  empty. Gives editorial control with zero new metafield.
+
+  This section is intentionally decoupled from sections/
+  ka-journal-grid.liquid — the grid independently excludes whichever
+  article this section renders (matched by ID) so the same article
+  is never shown twice on the page.
+{%- endcomment -%}
+
+{%- comment -%}
+  NOTE (forward-looking, not an issue at today's article count): this
+  reads `blog.articles` directly, outside a {% paginate %} block.
+  Deliberately NOT wrapped in one to lift Shopify's default array
+  size, because sections/ka-journal-grid.liquid on this same template
+  already has its own {% paginate %} block for the grid's real "Load
+  More" pagination, and Shopify's paginate tag shares the same `?page=`
+  URL parameter across every paginate block referencing the same
+  object on one page — a second, unrelated paginate block here would
+  risk the two silently interfering with each other's page state. If
+  the Journal ever grows past Shopify's default unpaginated article
+  count, revisit this lookup (e.g. via a dedicated Section Rendering
+  API call) rather than adding a second paginate block to this page.
+{%- endcomment -%}
+{%- liquid
+  assign featured_article = blog.articles | where: 'tags', 'featured' | first
+  if featured_article == blank
+    assign featured_article = blog.articles.first
+  endif
+-%}
+
+{%- if featured_article != blank -%}
+  {%- liquid
+    assign cat_label = 'Journal'
+    if featured_article.tags contains 'Craft & Atelier'
+      assign cat_label = 'Craft & Atelier'
+    elsif featured_article.tags contains 'Style Notes'
+      assign cat_label = 'Style Notes'
+    elsif featured_article.tags contains 'Occasion Edit'
+      assign cat_label = 'Occasion Edit'
+    elsif featured_article.tags contains 'The House'
+      assign cat_label = 'The House'
+    endif
+
+    assign word_count = featured_article.content | strip_html | split: ' ' | size
+    assign read_time = word_count | divided_by: 200.0 | ceil
+    if read_time < 1
+      assign read_time = 1
+    endif
+
+    assign excerpt = featured_article.excerpt | strip_html
+    if excerpt == blank
+      assign excerpt = featured_article.content | strip_html | truncate: 220
+    endif
+
+    assign dek_line = section.settings.dek_line_override
+    if dek_line == blank
+      assign dek_line = featured_article.metafields.custom.dek_line
+    endif
+  -%}
+  <section class="j-featured" aria-label="Featured story" data-featured-article-id="{{ featured_article.id }}">
+    <a href="{{ featured_article.url }}" class="j-featured__image reveal-img">
+      <span class="j-featured__tag">Featured</span>
+      {%- if featured_article.image -%}
+        <img
+          src="{{ featured_article.image | image_url: width: 1200 }}"
+          alt="{{ featured_article.image.alt | escape | default: featured_article.title | escape }}"
+          loading="lazy"
+          width="1200"
+          height="1400"
+          class="img-filter-editorial"
+        />
+      {%- else -%}
+        <img src="{{ 'product-ivory-column-corset.jpg' | asset_url }}" alt="{{ featured_article.title | escape }}" loading="lazy" width="1200" height="1400" class="img-filter-editorial" />
+      {%- endif -%}
+    </a>
+    <div class="j-featured__text">
+      <p class="eyebrow eyebrow--muted j-featured__eyebrow reveal">{{ cat_label }}</p>
+      <h2 class="j-featured__title reveal reveal-delay-1">
+        {{ featured_article.title }}
+        {%- if dek_line != blank -%}<span class="j-featured__dek-line">{{ dek_line }}</span>{%- endif -%}
+      </h2>
+      <p class="j-featured__excerpt reveal reveal-delay-2">{{ excerpt }}</p>
+      <p class="j-featured__meta reveal reveal-delay-3">{{ featured_article.published_at | date: '%-d %B %Y' }} <span>&middot;</span> {{ read_time }} Minute Read</p>
+      <a href="{{ featured_article.url }}" class="btn-dark j-featured__cta reveal reveal-delay-3">Read the Story</a>
+    </div>
+  </section>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "Journal Featured Story",
+  "tag": "section",
+  "settings": [
+    {
+      "type": "paragraph",
+      "content": "Featured article is chosen automatically: whichever live article is tagged \"featured\" in Shopify Admin (Blog posts -> tags), falling back to the most recent article if none is tagged. No setting here selects it directly."
+    },
+    {
+      "type": "text",
+      "id": "dek_line_override",
+      "label": "Dek line override (small caps sub-line under the title)",
+      "info": "Optional. If left blank, reads from the article's custom.dek_line metafield if set; if neither exists, no sub-line renders."
+    }
+  ],
+  "presets": [
+    { "name": "Journal Featured Story" }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,73 @@
+{{ 'ka-journal-masthead.css' | asset_url | stylesheet_tag }}
+{{ 'ka-animations.css' | asset_url | stylesheet_tag }}
+
+{%- comment -%}
+  K&A Journal Masthead — Docs/journal-build-spec.md §3 A2.
+  Deliberately NOT a reuse of sections/ka-hero.liquid: shorter
+  (80svh vs 100svh) and CENTRED, not bottom-left — reads as a
+  magazine title/contents page, not a repeat of the brand-statement
+  hero used on Home/About/Client Diaries. See ka-journal-masthead.css
+  header comment for the full reasoning, including why no parallax/
+  #ka-hero-bg JS hook is used here (same documented pattern already
+  used by sections/ka-about-hero.liquid).
+{%- endcomment -%}
+
+<header class="j-mast" aria-label="The Journal">
+  <div class="j-mast__bg reveal-img">
+    {%- if section.settings.image != blank -%}
+      <img
+        src="{{ section.settings.image | image_url: width: 1800 }}"
+        alt="{{ section.settings.image.alt | escape | default: 'K&A bridal editorial' }}"
+        loading="eager"
+        fetchpriority="high"
+        width="1800"
+        height="1200"
+        class="img-filter-editorial"
+      />
+    {%- else -%}
+      <img
+        src="{{ 'bloom-soiree-main.jpg' | asset_url }}"
+        alt="K&A bridal editorial — rose and organza detail"
+        loading="eager"
+        fetchpriority="high"
+        width="1800"
+        height="1200"
+        class="img-filter-editorial"
+      />
+    {%- endif -%}
+  </div>
+  <div class="j-mast__overlay"></div>
+  <div class="j-mast__content">
+    <p class="eyebrow eyebrow--on-dark j-mast__eyebrow">{{ section.settings.eyebrow }}</p>
+    <h1 class="j-mast__title"><span class="lead">{{ section.settings.title_lead }}</span><span class="main">{{ section.settings.title_main }}</span></h1>
+    <p class="j-mast__sub">{{ section.settings.subtitle }}</p>
+  </div>
+  <div class="j-mast__scroll" aria-hidden="true"><span>Scroll</span><div class="j-mast__scroll-line"></div></div>
+</header>
+
+{% schema %}
+{
+  "name": "Journal Masthead",
+  "tag": "header",
+  "settings": [
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "Masthead image",
+      "info": "Falls back to bloom-soiree-main.jpg if none is chosen."
+    },
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "K&A —" },
+    { "type": "text", "id": "title_lead", "label": "Title — small lead-in word", "default": "The" },
+    { "type": "text", "id": "title_main", "label": "Title — large word", "default": "Journal" },
+    {
+      "type": "textarea",
+      "id": "subtitle",
+      "label": "Subtitle",
+      "default": "Craft notes from the atelier, style edits for the modern bride, and quiet dispatches on the occasions that call for K&A — bridal, festive, and everything in between."
+    }
+  ],
+  "presets": [
+    { "name": "Journal Masthead" }
+  ]
+}
+{% endschema %}

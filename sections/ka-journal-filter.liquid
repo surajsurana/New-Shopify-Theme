@@ -1,0 +1,68 @@
+{{ 'ka-journal-filter.css' | asset_url | stylesheet_tag }}
+{{ 'ka-collection-refine-bar.css' | asset_url | stylesheet_tag }}
+
+{%- comment -%}
+  K&A Journal Filter Bar — Docs/journal-build-spec.md §3 A4, §7 Flag
+  J2. Reuses .ka-chip verbatim from assets/ka-collection-refine-bar.css
+  (loaded above) — same visual states (rest/hover/.is-active), only
+  new filter values.
+
+  J2 hybrid implementation: each chip's href is a REAL, indexable
+  Shopify native tag-archive URL (/blogs/{handle}/tagged/{tag-handle})
+  so category browsing works with zero JS and is crawlable — while
+  the default on-page interaction (JS present) is the calm, instant
+  client-side show/hide already used for the Collection page's own
+  chip pattern (no crossfade — same calm-under-repeated-clicking
+  reasoning). data-filter values are handleized to match the
+  data-cat attribute rendered by snippets/ka-journal-card.liquid, so
+  both the URL and the client-side match use the exact same handle.
+{%- endcomment -%}
+
+<div class="j-filter" data-ka-journal-filter>
+  <span class="j-filter__label">Browse</span>
+  <div class="j-filter__chips" id="journalFilterChips">
+    <a href="{{ blog.url }}" class="ka-chip is-active" data-filter="all">All Stories</a>
+    <a href="{{ blog.url }}/tagged/{{ 'Craft & Atelier' | handle }}" class="ka-chip" data-filter="craft-atelier">Craft &amp; Atelier</a>
+    <a href="{{ blog.url }}/tagged/{{ 'Style Notes' | handle }}" class="ka-chip" data-filter="style-notes">Style Notes</a>
+    <a href="{{ blog.url }}/tagged/{{ 'Occasion Edit' | handle }}" class="ka-chip" data-filter="occasion-edit">Occasion Edit</a>
+    <a href="{{ blog.url }}/tagged/{{ 'The House' | handle }}" class="ka-chip" data-filter="the-house">The House</a>
+  </div>
+</div>
+
+<script>
+  (function () {
+    var chips = document.querySelectorAll('#journalFilterChips .ka-chip');
+    var grid = document.getElementById('journalGrid');
+    if (!chips.length || !grid) return;
+    var cards = grid.querySelectorAll('.ka-j-card');
+    var emptyState = document.getElementById('journalEmpty');
+
+    chips.forEach(function (chip) {
+      chip.addEventListener('click', function (e) {
+        /* Progressive enhancement only: intercept the click and filter
+           in place instead of navigating to the real /tagged/ URL.
+           No-JS visitors (or if this script errors) still get the real,
+           working native Shopify tag-archive page via the href. */
+        e.preventDefault();
+        chips.forEach(function (c) { c.classList.remove('is-active'); });
+        chip.classList.add('is-active');
+        var filter = chip.getAttribute('data-filter');
+        var visibleCount = 0;
+        cards.forEach(function (card) {
+          var show = filter === 'all' || card.getAttribute('data-cat') === filter;
+          card.classList.toggle('is-hidden', !show);
+          if (show) visibleCount++;
+        });
+        if (emptyState) emptyState.classList.toggle('is-visible', visibleCount === 0);
+      });
+    });
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "Journal Filter Bar",
+  "tag": "div",
+  "settings": []
+}
+{% endschema %}

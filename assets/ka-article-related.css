@@ -1,0 +1,15 @@
+/* ================================================================
+   KA-ARTICLE-RELATED ("More From the Journal")
+   Docs/journal-build-spec.md §3 B8. Wrapper/grid layout only — cards
+   reuse .ka-j-card verbatim from assets/ka-journal-card.css (loaded
+   by this section) via snippets/ka-journal-card.liquid.
+================================================================ */
+.more-wrap { max-width: var(--max-wide); margin: 0 auto; padding: var(--s-lg) var(--gutter) var(--s-2xl); }
+.more-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: clamp(24px, 3vw, 40px); }
+.more-grid .ka-j-card__info { padding: 18px 2px 0; }
+.more-grid .ka-j-card__title { font-size: 1.1rem; margin-bottom: 8px; }
+.more-grid .ka-j-card__cat { top: 14px; left: 14px; font-size: 0.56rem; padding: 6px 12px; }
+.more-grid .ka-j-card__meta { font-size: 0.62rem; }
+
+@media (max-width: 900px) { .more-grid { grid-template-columns: repeat(2, 1fr); } .more-grid > :nth-child(3) { display: none; } }
+@media (max-width: 600px) { .more-grid { grid-template-columns: 1fr; gap: var(--s-lg); } .more-grid > :nth-child(3) { display: block; } }

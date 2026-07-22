@@ -1,0 +1,105 @@
+/*
+ * ------------------------------------------------------------
+ * K&A Journal article template — Docs/journal-build-spec.md
+ * Built from Prototypes/journal-article-v1.html (approved by Suraj).
+ * Sections: Nav -> Article Hero (+ return link/progress line) ->
+ * Article Body (lede/H2/pull-quote/breakout) -> Shop the Story ->
+ * More From the Journal -> Appointment CTA (reused ka-appointment)
+ * -> Footer.
+ *
+ * Applies to every article in every blog on this theme (Shopify
+ * default — there is only one blog, handle "news", per Flag J8),
+ * including /blogs/news/corset-lehenga-reconsidered and the 3
+ * already-published 2024 articles, which start resolving correctly
+ * the moment this template deploys.
+ * ------------------------------------------------------------
+ */
+{
+  "sections": {
+    "ka-nav": {
+      "type": "ka-nav",
+      "settings": {
+        "utility_1": "Complimentary Worldwide Delivery",
+        "utility_2": "Hand-Embroidered to Order",
+        "utility_3": "Private & Virtual Appointments",
+        "logo_text": "Karishma Ashita",
+        "logo_subline": "Bridal Couture · Mumbai",
+        "label_bestsellers": "Signature",
+        "link_bestsellers": "/collections/bestsellers",
+        "label_collections": "Collections",
+        "link_collections": "/collections",
+        "label_diaries": "Client Diaries",
+        "link_diaries": "/pages/client-diaries",
+        "link_about": "/pages/about-us",
+        "link_appointment": "/pages/appointments"
+      }
+    },
+    "ka-article-hero": {
+      "type": "ka-article-hero",
+      "settings": {
+        "byline": "The K&A Atelier"
+      }
+    },
+    "ka-article-body": {
+      "type": "ka-article-body",
+      "settings": {}
+    },
+    "ka-article-shop-story": {
+      "type": "ka-article-shop-story",
+      "settings": {
+        "eyebrow": "As Worn in This Story",
+        "title": "Shop the Story",
+        "view_all_label": "View all Signature Pieces",
+        "view_all_url": "/collections/bestsellers"
+      }
+    },
+    "ka-article-related": {
+      "type": "ka-article-related",
+      "settings": {
+        "eyebrow": "Continue Reading",
+        "title": "More From the Journal",
+        "view_all_label": "View the Journal"
+      }
+    },
+    "ka-article-cta": {
+      "type": "ka-appointment",
+      "settings": {
+        "eyebrow": "Continue the Conversation",
+        "title": "Every Story Ends\nWith a Fitting.",
+        "body": "However you found us — through a story, a search, or a friend's recommendation — the next step is the same: a conversation, in person or virtual, about the piece that's yours.",
+        "cta_instore_label": "Book a Styling Appointment",
+        "cta_instore_url": "/pages/appointments",
+        "cta_virtual_label": "Explore the Collections",
+        "cta_virtual_url": "/collections",
+        "fallback_image_filename": "appointment-bg.jpg"
+      }
+    },
+    "ka-footer": {
+      "type": "ka-footer",
+      "settings": {
+        "brand_name": "Karishma Ashita",
+        "logo_subline": "Bridal Couture · Mumbai",
+        "tagline": "Bridal couture, handcrafted\nin Mumbai.",
+        "instagram_url": "https://www.instagram.com/karishmaashita",
+        "youtube_url": "https://www.youtube.com/@KarishmaAshita",
+        "pinterest_url": "https://www.pinterest.com/karishmaashita/",
+        "email": "info@karishmaashita.com",
+        "address": "Mumbai, India\nComplimentary worldwide shipping via DHL Express",
+        "news_title": "The Inner Circle",
+        "news_body": "Collection previews, styling notes and private trunk show invitations — delivered quietly to your inbox.",
+        "news_placeholder": "Your email address",
+        "news_submit": "Join",
+        "news_success": "Welcome in. You are one of us now."
+      }
+    }
+  },
+  "order": [
+    "ka-nav",
+    "ka-article-hero",
+    "ka-article-body",
+    "ka-article-shop-story",
+    "ka-article-related",
+    "ka-article-cta",
+    "ka-footer"
+  ]
+}

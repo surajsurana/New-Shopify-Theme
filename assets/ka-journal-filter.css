@@ -1,0 +1,35 @@
+/* ================================================================
+   KA-JOURNAL-FILTER
+   Docs/journal-build-spec.md §3 A4. Sticky bar (top:84px — same
+   offset reasoning as the Collection page's refine bar: sits
+   directly under the fixed utility-bar+nav stack). Chips reuse
+   .ka-chip verbatim from assets/ka-collection-refine-bar.css (loaded
+   by this section alongside this file) — zero new chip visual
+   states, only new filter values.
+================================================================ */
+.j-filter {
+  position: sticky;
+  top: 84px;
+  z-index: 40;
+  background: var(--c-paper);
+  max-width: var(--max-wide);
+  margin: 0 auto;
+  padding: var(--s-md) var(--gutter);
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  flex-wrap: wrap;
+  border-bottom: 1px solid var(--line);
+}
+.j-filter__label {
+  font-family: var(--f-sans);
+  font-size: 0.62rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--c-ink-muted);
+}
+.j-filter__chips { display: flex; gap: 10px; flex-wrap: wrap; }
+
+@media (max-width: 600px) {
+  .j-filter { top: 78px; padding: var(--s-sm) 16px; }
+}

@@ -42,6 +42,13 @@
   --s-3xl: 200px;
   --max-wide: 1680px;
   --max-text: 720px;
+  /* --max-breakout — added for The Journal article template (Docs/
+     journal-build-spec.md §4): a width between --max-text and
+     --max-wide for the article's single full-width "breakout" image
+     (assets/ka-article-body.css .a-breakout). Promoted to a :root
+     token, not a one-off value, since any future long-form Journal
+     article needs the identical breakout treatment repeatedly. */
+  --max-breakout: 1180px;
   --gutter:   clamp(20px, 5vw, 80px);
   --ease-luxury: cubic-bezier(0.16, 0.84, 0.44, 1);
   --ease-soft:   cubic-bezier(0.22, 0.61, 0.36, 1);

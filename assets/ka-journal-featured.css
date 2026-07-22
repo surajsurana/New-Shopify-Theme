@@ -1,0 +1,82 @@
+/* ================================================================
+   KA-JOURNAL-FEATURED
+   Docs/journal-build-spec.md §3 A3, §4 (.j-featured token set).
+   Adapted variant of the homepage's Collection Story component
+   (sections/ka-collection-story.liquid — same 1.05fr/0.95fr grid
+   ratio, same --c-paper-deep panel, same type scale) with editorial
+   fields (excerpt, meta row) in place of collection-story fields.
+   "Adapt, don't fork the base component" — same discipline already
+   used for .founders (About Us).
+================================================================ */
+.j-featured {
+  display: grid;
+  grid-template-columns: 1.05fr 0.95fr;
+  min-height: 78vh;
+  overflow: hidden;
+}
+.j-featured__image { position: relative; overflow: hidden; min-height: 460px; display: block; }
+.j-featured__image img { object-position: center 22%; }
+.j-featured__tag {
+  position: absolute;
+  top: 28px; left: 28px;
+  z-index: 1;
+  font-family: var(--f-sans);
+  font-size: 0.6rem;
+  font-weight: 400;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: white;
+  background: rgba(26,23,20,0.72);
+  padding: 8px 16px;
+}
+.j-featured__text {
+  background: var(--c-paper-deep);
+  padding: var(--s-2xl) clamp(32px, 5vw, 80px);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+.j-featured__eyebrow { margin-bottom: 20px; }
+.j-featured__title {
+  font-family: var(--f-display);
+  font-size: clamp(2rem, 3.6vw, 3rem);
+  font-weight: 400;
+  font-style: italic;
+  color: var(--c-charcoal);
+  line-height: 1.08;
+  max-width: 520px;
+}
+.j-featured__dek-line {
+  display: block;
+  margin-top: 10px;
+  font-size: 0.62em;
+  font-style: normal;
+  letter-spacing: 0.08em;
+  color: var(--c-rosegold-2);
+  text-transform: uppercase;
+}
+.j-featured__excerpt {
+  margin-top: 26px;
+  max-width: 480px;
+  font-family: var(--f-sans);
+  font-size: var(--t-body-l);
+  font-weight: 300;
+  line-height: 1.85;
+  color: var(--c-ink-mid);
+}
+.j-featured__meta {
+  margin-top: 22px;
+  font-family: var(--f-sans);
+  font-size: 0.68rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--c-ink-muted);
+}
+.j-featured__meta span { margin: 0 8px; opacity: 0.5; }
+.j-featured__cta { margin-top: 34px; }
+
+@media (max-width: 900px) {
+  .j-featured { grid-template-columns: 1fr; min-height: auto; }
+  .j-featured__image { min-height: 60vh; }
+  .j-featured__text { padding: var(--s-xl) 20px; }
+}
