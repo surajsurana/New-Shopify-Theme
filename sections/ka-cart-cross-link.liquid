@@ -37,7 +37,7 @@
     assign supporting = 'A few pieces our clients and their families have returned to this season.'
     assign source_collection = section.settings.empty_collection
     if source_collection == blank
-      assign source_collection = collections['bestsellers']
+      assign source_collection = collections['signature-top-sellers']
     endif
   endif
 
@@ -90,7 +90,7 @@
       "type": "collection",
       "id": "empty_collection",
       "label": "Empty-cart source collection",
-      "info": "Optional override. If left blank, falls back to the 'bestsellers' collection handle."
+      "info": "Optional override. If left blank, falls back to the 'signature-top-sellers' collection handle."
     },
     { "type": "range", "id": "products_limit", "label": "Max products", "min": 2, "max": 8, "step": 1, "default": 4 }
   ],
