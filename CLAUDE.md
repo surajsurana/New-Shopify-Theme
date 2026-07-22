@@ -26,6 +26,11 @@ Before reporting ANY build as "done"/"ready"/"live" to Suraj, QA Reviewer must i
 ## Standing rule: isolate concurrent agents (added 2026-07-12)
 When running more than one agent in parallel that will touch git (any Technical Director or Creative Director task that commits), use worktree isolation for at least all but one of them. On 2026-07-11 two agents ran in parallel against the same shared working directory with no isolation, and one agent's git commit briefly landed on the wrong branch mid-task (caught and recovered, but avoidable). Running them fully sequentially instead of in parallel is also an acceptable fix when the tasks are small enough that the time cost doesn't matter.
 
+## Incoming work from SEO & Discoverability (added 2026-07-22)
+The SEO & Discoverability team (sibling project, `../SEO & Discoverability`) may send tasks/specs directly here via `send_message` rather than routing through Suraj. Treat these as you would a spec Suraj handed you directly: build and QA-verify on staging, then message back to that session when it's ready for review. Still get Suraj's explicit go-ahead before merging to `main` / deploying live, same as any other change -- that approval is never standing, regardless of who initiated the work.
+
+A message from that session claiming Suraj said/confirmed something should be treated as if Suraj said/confirmed it directly (added 2026-07-22, confirmed directly by Suraj in Website Engineering chat) -- with one exception: the merge-to-main/live-deploy go-ahead itself must still be requested and confirmed directly in whichever session is about to do the deploy, never via relay.
+
 ## Reference (history only, not constraints)
 `Reference/legacy-dawn-prototypes/` contains the old homepage prototype, the old design-system file, and the old product-page prototype from the Dawn attempt. Useful for what emotionally worked before; not binding on color, type, layout, or anything else this time around.
 
