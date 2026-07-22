@@ -66,8 +66,8 @@
         "eyebrow": "Most Loved",
         "title": "Signature Pieces",
         "view_all_label": "View the Signature edit",
-        "view_all_url": "/collections/bestsellers",
-        "collection": "bestsellers",
+        "view_all_url": "/collections/signature-top-sellers",
+        "collection": "signature-top-sellers",
         "products_limit": 3
       }
     },

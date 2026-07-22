@@ -2,7 +2,7 @@
 
 {%- liquid
   assign limit = section.settings.products_limit | default: 3
-  assign featured_collection = section.settings.collection | default: collections['bestsellers']
+  assign featured_collection = section.settings.collection | default: collections['signature-top-sellers']
 -%}
 
 <section class="ka-bestsellers" aria-label="Bestselling pieces">
@@ -61,7 +61,7 @@
   "settings": [
     { "type": "text", "id": "eyebrow", "label": "Eyebrow",    "default": "Most Loved" },
     { "type": "text", "id": "title",   "label": "Section title", "default": "Signature Pieces" },
-    { "type": "text", "id": "view_all_label", "label": "View all link label", "default": "View all bestsellers" },
+    { "type": "text", "id": "view_all_label", "label": "View all link label", "default": "View all Signature Pieces" },
     { "type": "url",  "id": "view_all_url",   "label": "View all link URL" },
     {
       "type": "header",
@@ -71,7 +71,7 @@
       "type": "collection",
       "id": "collection",
       "label": "Collection",
-      "info": "Leave blank to default to the 'bestsellers' collection. Tag products 'made-to-order' for the badge and set metafield custom.fabric_description for the fabric line."
+      "info": "Leave blank to default to the 'signature-top-sellers' collection. Tag products 'made-to-order' for the badge and set metafield custom.fabric_description for the fabric line."
     },
     {
       "type": "range",
