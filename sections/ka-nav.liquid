@@ -19,6 +19,16 @@
 {%- assign is_visit = false -%}
 {%- if request.page_type == 'page' and page.handle == 'visit-the-atelier' -%}{%- assign is_visit = true -%}{%- endif -%}
 {%- comment -%}
+  is_faq — same pattern as is_about_us/is_visit above (Docs/faq-build-
+  spec.md §7 flag F2/F3). Drives .is-current on the mobile drawer's FAQ
+  link (and the matching link in ka-footer.liquid). Per F2, FAQ is
+  deliberately NOT added to the desktop top-level nav (.ka-nav__links)
+  — mobile drawer + footer only, same conservative placement already
+  used for About/Visit Us.
+{%- endcomment -%}
+{%- assign is_faq = false -%}
+{%- if request.page_type == 'page' and page.handle == 'faq' -%}{%- assign is_faq = true -%}{%- endif -%}
+{%- comment -%}
   ka-collection-grid.css lives here (not just in sections/ka-collection-grid.liquid)
   because .ka-p-card is now a genuinely sitewide component, not a Collection-page-only
   one: the search overlay (below) and templates/search.json both reuse it verbatim,
@@ -158,6 +168,7 @@
     <li><a href="{{ section.settings.link_diaries }}">{{ section.settings.label_diaries }}</a></li>
     <li><a href="{{ section.settings.link_about }}"{% if is_about_us %} class="is-current"{% endif %}>About</a></li>
     <li><a href="{{ section.settings.link_visit | default: '/pages/visit-the-atelier' }}"{% if is_visit %} class="is-current"{% endif %}>Visit Us</a></li>
+    <li><a href="{{ section.settings.link_faq | default: '/pages/faq' }}"{% if is_faq %} class="is-current"{% endif %}>FAQ</a></li>
     <li><a href="#" data-ka-appt-link>Book an Appointment</a></li>
   </ul>
   {%- comment -%}
@@ -297,6 +308,7 @@
     },
     { "type": "url",  "id": "link_about",       "label": "About page URL" },
     { "type": "url",  "id": "link_visit",       "label": "Visit Us page URL", "info": "Defaults to /pages/visit-the-atelier." },
+    { "type": "url",  "id": "link_faq",         "label": "FAQ page URL", "info": "Defaults to /pages/faq." },
     { "type": "url",  "id": "link_appointment",  "label": "Appointment page URL" },
     {
       "type": "header",

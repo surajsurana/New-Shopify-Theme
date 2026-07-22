@@ -1,0 +1,125 @@
+/* ================================================================
+   KA-FAQ-MAIN — Intro/search, sticky topic nav, and Q&A list.
+   Spec: Docs/faq-build-spec.md §3 (S2/S3/S4), §4 (new tokens).
+   Every colour/type/spacing value below is verbatim from the live
+   :root tokens in assets/ka-base.css — no new design tokens
+   introduced by this page.
+
+   .ka-chip (topic chips) is NOT redefined here — it already exists
+   sitewide via assets/ka-search.css, loaded unconditionally on every
+   template by sections/ka-nav.liquid (search overlay chips reuse the
+   same class). Reused verbatim, zero duplication needed.
+
+   Accordion mechanics (.ka-accordion/.ka-acc/.ka-acc__pm/.ka-acc__body/
+   .ka-acc__inner) ARE duplicated here from assets/ka-product-main.css,
+   verbatim, under the same class names — the same "duplicate ~15 lines
+   rather than load an entire unrelated stylesheet" rule already used by
+   assets/ka-search.css for .ka-chip (see that file's own header
+   comment). Only .ka-acc__head is intentionally NOT duplicated — this
+   page uses its own .faq-acc__head typography instead (spec §4).
+================================================================ */
+
+/* ── Intro ── */
+.faq-intro { max-width: 680px; margin: 0 auto; padding: var(--s-xl) var(--gutter) var(--s-lg); text-align: center; }
+.faq-intro__eyebrow { margin-bottom: 22px; }
+.faq-intro__title { font-family: var(--f-display); color: var(--c-charcoal); line-height: 1.05; }
+.faq-intro__title .lead { display: block; font-size: clamp(1.3rem, 2.6vw, 1.8rem); font-style: italic; font-weight: 300; letter-spacing: 0.02em; color: var(--c-ink-mid); margin-bottom: 2px; }
+.faq-intro__title .main { display: block; font-size: clamp(2.6rem, 5.2vw, 4.2rem); font-style: italic; font-weight: 400; }
+.faq-intro__body { margin-top: 24px; font-family: var(--f-sans); font-size: var(--t-body-l); font-weight: 300; line-height: 1.9; color: var(--c-ink-mid); }
+
+/* ── Search field — scaled-down sibling of .ka-search-overlay__input
+   (assets/ka-search.css), page-anchored rather than a full-viewport
+   takeover. New component class set, per spec §4. ── */
+.faq-search { margin-top: var(--s-xl); max-width: 480px; margin-left: auto; margin-right: auto; }
+.faq-search__field { position: relative; border-bottom: 1px solid var(--line-strong); padding-bottom: 14px; display: flex; align-items: center; gap: 12px; transition: border-color var(--dur-fast); }
+.faq-search__field:focus-within { border-color: var(--c-rosegold-2); }
+.faq-search__icon { width: 16px; height: 16px; flex-shrink: 0; color: var(--c-ink-muted); }
+.faq-search__icon svg { width: 100%; height: 100%; stroke: currentColor; fill: none; }
+.faq-search__input {
+  flex: 1; width: 100%; border: none; outline: none; background: none;
+  font-family: var(--f-display); font-style: italic; font-weight: 400;
+  font-size: clamp(1.05rem, 2.4vw, 1.35rem); color: var(--c-charcoal); text-align: left;
+}
+.faq-search__input::placeholder { color: var(--c-ink-muted); opacity: 0.65; }
+.faq-search__clear { font-family: var(--f-sans); font-size: 0.62rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--c-ink-muted); opacity: 0; pointer-events: none; transition: opacity var(--dur-fast), color var(--dur-fast); flex-shrink: 0; }
+.faq-search__clear.is-visible { opacity: 1; pointer-events: auto; }
+.faq-search__clear:hover { color: var(--c-charcoal); }
+
+/* ── Topic nav — sticky jump-navigation, NOT a filter (spec §2). Reuses
+   .ka-chip verbatim (sitewide, see file header note above); only the
+   wrapper/offset is new.
+
+   Sticky offset: 104px — confirmed against the real, live nav CSS
+   (matches assets/ka-product-main.css .ka-media and assets/
+   ka-cart-summary.css .ka-summary, both already-shipped sticky elements
+   on this exact settled-nav page family), not trusted blindly from the
+   prototype (spec §7 flag F4). Independently recomputed from ka-nav.css's
+   real box model at both breakpoints — see build notes in
+   sections/ka-faq-main.liquid. Deliberately NOT reduced to 0 at mobile
+   (the prototype's own mobile value): the same recomputation shows the
+   mobile fixed-header stack (utility bar + settled nav, whose mobile
+   padding/top values differ slightly from desktop but land at almost the
+   same total height) is essentially the same height as desktop's, so a
+   near-zero mobile offset would overlap the fixed header — a real bug in
+   the prototype's own mobile CSS, not reproduced here. ── */
+.faq-topics { position: sticky; top: 104px; z-index: 40; background: var(--c-paper); max-width: var(--max-wide); margin: 0 auto; padding: 18px var(--gutter); display: flex; align-items: center; gap: 22px; flex-wrap: wrap; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+.faq-topics__label { font-family: var(--f-sans); font-size: 0.6rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--c-ink-muted); }
+.faq-topics__chips { display: flex; gap: 10px; flex-wrap: wrap; }
+
+@media (max-width: 600px) {
+  .faq-topics { padding: 14px 16px; }
+}
+
+/* ── FAQ list ── */
+.faq-list { max-width: var(--max-text); margin: 0 auto; padding: var(--s-2xl) var(--gutter) var(--s-lg); }
+.faq-group { padding-top: var(--s-xl); scroll-margin-top: 190px; }
+.faq-group:first-child { padding-top: var(--s-lg); }
+.faq-group__num { display: block; margin-bottom: 14px; }
+.faq-group__title { font-family: var(--f-display); font-size: var(--t-h2); font-weight: 400; font-style: italic; color: var(--c-charcoal); line-height: 1.1; }
+.faq-group__dek { margin-top: 10px; font-family: var(--f-sans); font-size: 0.86rem; font-weight: 300; color: var(--c-ink-muted); line-height: 1.7; max-width: 480px; }
+.faq-group.is-hidden { display: none; }
+
+/* ── Accordion mechanics — verbatim reuse (see file header note) ── */
+.ka-accordion { margin-top: 30px; border-top: 1px solid var(--line); }
+.ka-acc { border-bottom: 1px solid var(--line); }
+.ka-acc.is-hidden { display: none; }
+.ka-acc__pm { font-size: 1.2rem; color: var(--c-rosegold); transition: transform 0.4s var(--ease-luxury); font-family: var(--f-display); flex-shrink: 0; }
+.ka-acc.open .ka-acc__pm { transform: rotate(45deg); }
+.ka-acc__body { max-height: 0; overflow: hidden; transition: max-height 0.55s var(--ease-luxury); }
+.ka-acc__inner { padding: 0 2px 26px; color: var(--c-ink-mid); font-family: var(--f-sans); font-size: 0.92rem; font-weight: 300; line-height: 1.8; max-width: 640px; }
+.ka-acc__inner p + p { margin-top: 14px; }
+.ka-acc__inner ul { list-style: none; margin: 10px 0; }
+.ka-acc__inner li { padding-left: 18px; position: relative; margin-bottom: 6px; }
+.ka-acc__inner li::before { content: "—"; position: absolute; left: 0; color: var(--c-rosegold); }
+
+/* Question typography — new, minor addition (spec §4). Same box model/
+   animation/icon as .ka-acc__head (product-page accordion); a full
+   sentence-length question reads better in a quiet italic serif than
+   the product accordion's compact uppercase tracked sans. */
+.faq-acc__head {
+  width: 100%; background: none; border: none; cursor: pointer; text-align: left;
+  display: flex; justify-content: space-between; align-items: center; gap: 24px;
+  padding: 22px 2px; font-family: var(--f-display); font-size: 1.08rem; font-style: italic;
+  font-weight: 400; letter-spacing: 0.01em; color: var(--c-ink); line-height: 1.4;
+}
+
+/* Inline links within an answer — verbatim reuse of the existing
+   generic-page body-copy link treatment (assets/ka-page-generic.css
+   .ka-page-generic__body a), duplicated rather than loading that whole
+   stylesheet for one rule, same scoping rule as this file's header note.
+   First accordion answer on the site to ever need this (spec §4). */
+.ka-acc__inner a { color: var(--c-rosegold-2); text-decoration: underline; text-decoration-color: var(--line-light); text-underline-offset: 3px; transition: color var(--dur-fast); font-style: normal; }
+.ka-acc__inner a:hover { color: var(--c-rosegold); }
+
+/* ── Empty state — verbatim adaptation of .ka-collection-empty
+   (assets/ka-collection-grid.css), scoped under a new class name per
+   this project's per-section CSS convention (spec §4). ── */
+.ka-faq-empty { text-align: center; padding: var(--s-2xl) var(--s-md); max-width: 520px; margin: 0 auto; display: none; }
+.ka-faq-empty.is-visible { display: block; }
+.ka-faq-empty__title { font-family: var(--f-display); font-style: italic; font-size: clamp(1.7rem, 3.4vw, 2.4rem); color: var(--c-charcoal); margin-bottom: 18px; line-height: 1.2; }
+.ka-faq-empty__body { font-family: var(--f-sans); font-size: 0.88rem; color: var(--c-ink-muted); line-height: 1.8; margin-bottom: 32px; }
+
+@media (max-width: 600px) {
+  .faq-list { padding: var(--s-xl) 20px var(--s-md); }
+  .faq-acc__head { font-size: 1rem; padding: 18px 2px; }
+}

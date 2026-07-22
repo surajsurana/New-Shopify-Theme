@@ -58,7 +58,7 @@
         href="{{ section.settings.cta_instore_url | default: '/pages/appointments' }}"
         class="btn-outline-white"
         data-ka-appt-link
-        data-ka-appt-text="Hi, I'd like to book an in-store appointment"
+        data-ka-appt-text="{{ section.settings.cta_instore_wa_text | default: "Hi, I'd like to book an in-store appointment" }}"
       >
         {{ section.settings.cta_instore_label }}
       </a>
@@ -67,7 +67,7 @@
         href="{{ section.settings.cta_virtual_url | default: '/pages/appointments' }}"
         class="btn-outline-white"
         data-ka-appt-link
-        data-ka-appt-text="Hi, I'd like to book a virtual styling session"
+        data-ka-appt-text="{{ section.settings.cta_virtual_wa_text | default: "Hi, I'd like to book a virtual styling session" }}"
       >
         {{ section.settings.cta_virtual_label }}
       </a>
@@ -102,12 +102,26 @@
       "label": "In-store CTA URL",
       "info": "Defaults to /pages/appointments. Update once booking system is confirmed."
     },
+    {
+      "type": "text",
+      "id": "cta_instore_wa_text",
+      "label": "In-store CTA — WhatsApp pre-fill text",
+      "default": "Hi, I'd like to book an in-store appointment",
+      "info": "Added 2026-07-22 (FAQ build) so this shared component can support non-appointment CTA copy (e.g. FAQ's \"Ask Our Styling Concierge\" leading button) without the WhatsApp message text reading as a mismatched \"book an appointment\" request. Purely additive — every page using this section before this change is unaffected, since the default here matches the value that used to be hardcoded."
+    },
     { "type": "text", "id": "cta_virtual_label", "label": "Virtual CTA label",   "default": "Book Virtual Styling Session" },
     {
       "type": "url",
       "id": "cta_virtual_url",
       "label": "Virtual CTA URL",
       "info": "Defaults to /pages/appointments. Can be a Calendly/Typeform link or WhatsApp pre-fill."
+    },
+    {
+      "type": "text",
+      "id": "cta_virtual_wa_text",
+      "label": "Virtual CTA — WhatsApp pre-fill text",
+      "default": "Hi, I'd like to book a virtual styling session",
+      "info": "Same purpose/reasoning as the in-store field above."
     }
   ],
   "presets": [
