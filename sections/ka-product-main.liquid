@@ -31,6 +31,8 @@
   assign mf_atelier = product.metafields.custom.atelier_process
   # custom.fabric is a single_line_text_field (e.g. "Georgette") — shown as a label in the accordion
   assign mf_fabric = product.metafields.custom.fabric
+  # custom.embroidery is a multi_line_text_field — per-product embroidery description; no generic fallback claim if blank
+  assign mf_embroidery = product.metafields.custom.embroidery
   # custom.size_chart and custom.shipping are page_reference metafields — use .value to get the Page object, then .content for body HTML
   assign mf_sizefit = product.metafields.custom.size_chart.value
   assign mf_delivery = product.metafields.custom.shipping.value
@@ -273,7 +275,7 @@
             {%- if mf_fabric != blank -%}<p class="ka-acc__fabric-label"><strong>Fabric:</strong> {{ mf_fabric }}</p>{%- endif -%}
             <ul>
               <li>Natural-fibre base fabrics — naturally breathable, fluid and soothing to wear</li>
-              <li>Hand embroidery in pearl, crystal and thread by master karigars</li>
+              {%- if mf_embroidery != blank -%}<li>{{ mf_embroidery | newline_to_br }}</li>{%- endif -%}
               <li>Concealed boning and structure for a sculpted, confident silhouette</li>
             </ul>
           </div></div>
@@ -297,7 +299,10 @@
         <div class="ka-acc" data-acc="delivery">
           <button class="ka-acc__head" type="button">Delivery &amp; Care<span class="ka-acc__pm" aria-hidden="true">+</span></button>
           <div class="ka-acc__body"><div class="ka-acc__inner">
-            {%- if mf_delivery != blank -%}{{ mf_delivery.content }}{%- else -%}
+            {%- if mf_delivery != blank -%}
+              <p class="ka-acc__delivery-lead">Crafted to order in {{ lead_time }}.</p>
+              {{ mf_delivery.content }}
+            {%- else -%}
               <ul>
                 <li>Crafted to order in {{ lead_time }}</li>
                 <li>Complimentary worldwide shipping via DHL Express</li>
