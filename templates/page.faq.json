@@ -1,5 +1,10 @@
 /*
  * ------------------------------------------------------------
+ * Resync marker 2026-07-22: this file did not sync to the staging
+ * theme on the first push (confirmed via a direct Admin API files()
+ * query -- zero nodes returned while other files from the same commit
+ * landed correctly). Trivial edit to force a fresh sync attempt.
+ * ------------------------------------------------------------
  * K&A FAQ page template — Docs/faq-build-spec.md
  * Built from Prototypes/faq-v1.html (approved by Suraj).
  * Sections: Nav -> FAQ Breadcrumb -> FAQ (Intro/Search/Topics/List,
