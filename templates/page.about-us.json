@@ -37,7 +37,7 @@
     "ka-about-hero": {
       "type": "ka-about-hero",
       "settings": {
-        "eyebrow": "The House, Mumbai — Est. 2016",
+        "eyebrow": "The House, Santacruz, Mumbai — Est. 2016",
         "title_line1": "Karishma",
         "title_line2": "& Ashita",
         "subtitle": "A friendship that became an atelier — built on the belief that every bride deserves a garment made with intention, not assumption.",
@@ -53,7 +53,7 @@
         "eyebrow": "Since the Beginning",
         "title_line1": "Best Friends,",
         "title_line2": "Bound by Craft.",
-        "body": "K&A began the way most quiet houses do — between two people who saw the same picture before either said it aloud. Karishma and Ashita built this atelier on a simple conviction: that a bride's clothing should be made with intention, considered stitch by stitch, rather than assembled off a rack. What started as an instinct between friends is now a Mumbai atelier, where every lehenga, every corset, every draped silhouette begins as a private conversation — long before it becomes a garment.",
+        "body": "K&A began the way most quiet houses do — between two people who saw the same picture before either said it aloud. Karishma and Ashita built this atelier in 2016 on a simple conviction: that a bride's clothing should be made with intention, considered stitch by stitch, rather than assembled off a rack. What started as an instinct between friends is now a Santacruz, Mumbai atelier, where every lehenga, every corset, every draped silhouette begins as a private conversation — long before it becomes a garment.",
         "caption_name": "Karishma & Ashita",
         "caption_sub": "Founders, K&A"
       }
@@ -85,7 +85,7 @@
         "atelier": {
           "type": "item",
           "settings": {
-            "label": "Mumbai Atelier",
+            "label": "Santacruz, Mumbai Atelier",
             "sublabel": "Private consultations, always by appointment"
           }
         },
@@ -156,7 +156,7 @@
       "settings": {
         "eyebrow": "Begin Here",
         "title": "Every K&A Story\nStarts the Same Way.",
-        "body": "One conversation — in our Mumbai atelier, or virtually, wherever you are — is where every K&A garment begins. Tell us about your day. We'll take it from there.",
+        "body": "One conversation — in our Santacruz, Mumbai atelier, or virtually, wherever you are — is where every K&A garment begins. Tell us about your day. We'll take it from there.",
         "cta_instore_label": "Book In-Store Appointment",
         "cta_instore_url": "/pages/appointments",
         "cta_virtual_label": "Book Virtual Styling Session",
