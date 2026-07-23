@@ -22,6 +22,33 @@
   </div>
 </div>
 
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position": 1,
+      "name": "Home",
+      "item": "{{ shop.url }}/"
+    },
+    {
+      "@type": "ListItem",
+      "position": 2,
+      "name": "Collections",
+      "item": "{{ shop.url }}/#collections"
+    },
+    {
+      "@type": "ListItem",
+      "position": 3,
+      "name": {{ collection.title | json }},
+      "item": "{{ collection.url | prepend: shop.url }}"
+    }
+  ]
+}
+</script>
+
 {% schema %}
 {
   "name": "Collection Breadcrumb",

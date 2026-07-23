@@ -121,6 +121,29 @@
     {{ 'ka-currency.css' | asset_url | stylesheet_tag }}
   {%- endif -%}
 
+  <!-- Sitewide JSON-LD: Organization + WebSite (Docs/specs/2026-07-22-jsonld-structured-data.md) -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    "name": "Karishma & Ashita",
+    "url": "{{ shop.url }}",
+    "sameAs": [
+      "https://www.instagram.com/karishmaashita",
+      "https://www.youtube.com/@KarishmaAshita",
+      "https://www.pinterest.com/karishmaashita/"
+    ]
+  }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "name": "Karishma & Ashita",
+    "url": "{{ shop.url }}"
+  }
+  </script>
+
   {{ content_for_header }}
 </head>
 
