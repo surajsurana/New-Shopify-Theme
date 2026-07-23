@@ -1,0 +1,47 @@
+{%- comment -%}
+  K&A FAQ — single accordion Q&A unit.
+  Spec: Docs/faq-build-spec.md §2/§4 — verbatim reuse of the accordion
+  mechanics from sections/ka-product-main.liquid (.ka-accordion/.ka-acc/
+  .ka-acc__pm/.ka-acc__body/.ka-acc__inner), with only the question
+  typography swapped for .faq-acc__head (assets/ka-faq-main.css).
+
+  Clean 1:1 question/answer mapping (spec §2, §7 flag F6): each call of
+  this snippet is exactly one accordion = one complete question + one
+  complete answer, for SEO's later FAQPage structured-data work. Carries
+  a stable id (from the block's own Shopify block.id) and
+  data-question-id so a future schema-authoring pass has something
+  concrete to hook into without needing markup changes.
+
+  Accepts:
+    block    — the section block (type "question" or "question_timeline")
+    is_first — true for the very first Q&A rendered on the page (across
+               all four categories, in block order), pre-opened on load
+               per spec §2 "First question pre-opened on load".
+{%- endcomment -%}
+
+<div
+  class="ka-acc{% if is_first %} open{% endif %}"
+  id="faq-{{ block.id }}"
+  data-acc
+  data-question-id="{{ block.id }}"
+  {{ block.shopify_attributes }}
+>
+  <button class="faq-acc__head" type="button">
+    {{ block.settings.question }}<span class="ka-acc__pm" aria-hidden="true">+</span>
+  </button>
+  <div class="ka-acc__body">
+    <div class="ka-acc__inner">
+      {%- if block.type == 'question_timeline' -%}
+        {{ block.settings.intro }}
+        <ul>
+          <li>{{ block.settings.lead_drapes }}</li>
+          <li>{{ block.settings.lead_indowestern }}</li>
+          <li>{{ block.settings.lead_lehengas }}</li>
+        </ul>
+        {{ block.settings.outro }}
+      {%- else -%}
+        {{ block.settings.answer }}
+      {%- endif -%}
+    </div>
+  </div>
+</div>

@@ -1,0 +1,737 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Frequently Asked Questions — K&A by Karishma &amp; Ashita</title>
+<meta name="description" content="Answers to what our clients ask most often — the corset construction, sizing and occasion, ordering and policy, shipping and care. For anything more particular to you, our styling concierge is always a message away." />
+
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Jost:wght@200;300;400;500&display=swap" rel="stylesheet" />
+
+<style>
+/* ═══════════════════════════════════════════════════════════════
+   DESIGN TOKENS — verbatim from assets/ka-base.css (live source of
+   truth). No new colour, type, or spacing tokens introduced by this
+   page — see build spec §4. One new component-scoped addition only:
+   .faq-acc__head (question typography) and .faq-search__input
+   (search field typography), both documented there.
+═══════════════════════════════════════════════════════════════ */
+:root {
+  --c-paper:      #F7F3EC;
+  --c-paper-deep: #EFE8DD;
+  --c-smoke:      #E9E1D2;
+  --c-charcoal:   #2A2420;
+  --c-charcoal-2: #1D1916;
+  --c-ink:        #2A2420;
+  --c-ink-mid:    #6E655B;
+  --c-ink-muted:  #9C9389;
+  --c-rosegold:   #9A7B4F;
+  --c-rosegold-2: #7E6440;
+  --c-rosegold-pale: #B99B6E;
+  --line:         rgba(42,36,32,0.12);
+  --line-strong:  rgba(42,36,32,0.20);
+  --line-light:   rgba(154,123,79,0.28);
+  --line-on-dark: rgba(154,123,79,0.22);
+  --f-display:  'Cormorant Garamond', Georgia, 'Times New Roman', serif;
+  --f-sans:     'Jost', 'Helvetica Neue', Arial, sans-serif;
+  --t-hero:      clamp(3.6rem, 8vw, 8rem);
+  --t-display:   clamp(2.6rem, 5.5vw, 5.2rem);
+  --t-h2:        clamp(2rem, 3.5vw, 3.2rem);
+  --t-h3:        clamp(1.4rem, 2.2vw, 2rem);
+  --t-eyebrow:   0.66rem;
+  --t-body-l:    1.1rem;
+  --t-body:      1rem;
+  --t-caption:   0.76rem;
+  --s-xs: 8px; --s-sm: 16px; --s-md: 32px; --s-lg: 64px; --s-xl: 96px; --s-2xl: 140px; --s-3xl: 200px;
+  --max-wide: 1680px; --max-text: 720px; --gutter: clamp(20px, 5vw, 80px);
+  --ease-luxury: cubic-bezier(0.16, 0.84, 0.44, 1);
+  --ease-soft:   cubic-bezier(0.22, 0.61, 0.36, 1);
+  --dur-slow: 1s; --dur-med: 0.65s; --dur-fast: 0.35s;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; font-size: 16px; }
+body {
+  background: var(--c-paper); color: var(--c-ink);
+  font-family: var(--f-sans); font-weight: 300; line-height: 1.75;
+  -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+}
+img { display: block; width: 100%; height: 100%; object-fit: cover; }
+a { text-decoration: none; color: inherit; }
+button { border: none; background: none; cursor: pointer; font-family: inherit; }
+
+.eyebrow {
+  font-family: var(--f-sans); font-size: var(--t-eyebrow); font-weight: 400;
+  letter-spacing: 0.24em; text-transform: uppercase; color: var(--c-rosegold-2);
+}
+.eyebrow--on-dark { color: var(--c-rosegold); }
+.eyebrow--muted { color: var(--c-ink-muted); }
+
+.reveal { opacity: 0; transform: translateY(22px); transition: opacity var(--dur-slow) var(--ease-luxury), transform var(--dur-slow) var(--ease-luxury); }
+.reveal.visible { opacity: 1; transform: translateY(0); }
+.reveal-delay-1 { transition-delay: .1s; } .reveal-delay-2 { transition-delay: .22s; }
+.reveal-delay-3 { transition-delay: .34s; } .reveal-delay-4 { transition-delay: .46s; }
+.reveal-img { overflow: hidden; }
+.reveal-img img { transform: scale(1.04); transition: transform 1.4s var(--ease-luxury); }
+.reveal-img.visible img { transform: scale(1); }
+
+.img-editorial-deep { filter: sepia(0.10) saturate(0.85) brightness(0.88); }
+
+@keyframes fadeUp { from { opacity:0; transform:translateY(24px);} to { opacity:1; transform:translateY(0);} }
+@keyframes fadeIn { from { opacity:0; } to { opacity:1; } }
+
+.btn-dark {
+  display: inline-flex; align-items: center; gap: 16px;
+  font-family: var(--f-sans); font-size: 0.68rem; font-weight: 400;
+  letter-spacing: 0.2em; text-transform: uppercase; color: var(--c-charcoal);
+  border-bottom: 1px solid var(--c-rosegold-pale); padding-bottom: 6px;
+  transition: border-color var(--dur-fast), color var(--dur-fast); width: fit-content;
+}
+.btn-dark::after { content: '\2192'; font-size: 0.9em; transition: transform var(--dur-med) var(--ease-luxury); }
+.btn-dark:hover { color: var(--c-rosegold-2); border-color: var(--c-rosegold-2); }
+.btn-dark:hover::after { transform: translateX(6px); }
+
+.btn-outline-white {
+  font-family: var(--f-sans); font-size: 0.66rem; font-weight: 400;
+  letter-spacing: 0.2em; text-transform: uppercase; color: white;
+  border: 1px solid rgba(255,255,255,0.45); padding: 14px 36px;
+  transition: background var(--dur-fast), border-color var(--dur-fast), color var(--dur-fast);
+  display: inline-block;
+}
+.btn-outline-white:hover { background: white; color: var(--c-charcoal); border-color: white; }
+
+.btn-outline-rose {
+  font-family: var(--f-sans); font-size: 0.66rem; font-weight: 400;
+  letter-spacing: 0.2em; text-transform: uppercase; color: var(--c-rosegold);
+  border: 1px solid rgba(196,168,130,0.4); padding: 14px 36px;
+  transition: background var(--dur-fast), color var(--dur-fast), border-color var(--dur-fast);
+  display: inline-block;
+}
+.btn-outline-rose:hover { background: var(--c-rosegold); color: var(--c-charcoal); border-color: var(--c-rosegold); }
+
+/* ═══════════════════════════════════════════════════════════════
+   GLOBAL HEADER — visual reference only. Real build reuses the
+   actual shared sections/ka-nav.liquid + sections/ka-footer.liquid
+   verbatim — not rebuilt from this markup (see build spec §7 H1).
+
+   FAQ has NO hero image (deliberate — see build spec §2 "Why no
+   hero"), so it belongs to the same nav family as Collection/
+   Product/Cart: the nav renders permanently in its settled/
+   crystallised state (solid paper background, dark text) from the
+   first frame, rather than transparent-over-hero-then-crystallise
+   like Home/About/Client Diaries/Journal. This is achieved on the
+   live site the same way it already is on Collection (see
+   assets/ka-collection-breadcrumb.css's #ka-nav override) — a
+   page-scoped CSS rule forcing the nav's "scrolled" visual state at
+   all times. Reproduced here under #navFaq for the same effect.
+═══════════════════════════════════════════════════════════════ */
+.utility-bar {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 101;
+  background: var(--c-charcoal); color: rgba(233,224,210,0.78);
+  text-align: center; font-family: var(--f-sans); font-size: 0.62rem;
+  font-weight: 400; letter-spacing: 0.18em; text-transform: uppercase;
+  padding: 9px 16px; overflow: hidden;
+}
+.utility-bar span { opacity: 0.55; margin: 0 14px; }
+.utility-bar b { font-weight: 400; opacity: 0.95; }
+
+.nav {
+  position: fixed; top: 34px; left: 0; right: 0; z-index: 100;
+  padding: 16px var(--gutter);
+  display: grid; grid-template-columns: 1fr auto 1fr; align-items: center;
+  background: rgba(247,243,236,0.96); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--line);
+}
+.nav__links { display: flex; gap: 32px; list-style: none; }
+.nav__links a {
+  font-family: var(--f-sans); font-size: 0.66rem; font-weight: 400;
+  letter-spacing: 0.16em; text-transform: uppercase; color: var(--c-ink-mid);
+  transition: color var(--dur-fast); position: relative;
+}
+.nav__links a::after { content:''; position:absolute; left:0; bottom:-3px; width:0; height:1px; background: var(--c-rosegold); transition: width var(--dur-med) var(--ease-luxury); }
+.nav__links a:hover::after { width: 100%; }
+.nav__links a:hover { color: var(--c-charcoal); }
+.nav__logo { grid-column:2; text-align:center; font-family: var(--f-display); font-size: clamp(1.2rem,2.2vw,1.6rem); font-weight:400; letter-spacing:0.1em; color: var(--c-charcoal); line-height:1; }
+.nav__logo small { display:block; font-family: var(--f-sans); font-size:0.5rem; font-weight:400; letter-spacing:0.32em; text-transform:uppercase; color: var(--c-rosegold-2); margin-top:6px; }
+.nav__actions { display:flex; align-items:center; justify-content:flex-end; gap:20px; }
+.nav__icon-btn { position:relative; display:inline-flex; align-items:center; justify-content:center; width:30px; height:30px; padding:4px; color: var(--c-charcoal); }
+.nav__icon-btn svg { width:20px; height:20px; stroke: currentColor; fill:none; }
+.nav__toggle { display:none; flex-direction:column; gap:5px; padding:4px; grid-column:1; align-items:flex-start; }
+.nav__toggle span { display:block; width:24px; height:1px; background: var(--c-charcoal); }
+
+.mobile-nav {
+  position: fixed; inset: 0; z-index: 200; background: var(--c-charcoal);
+  padding: 80px var(--gutter) var(--s-lg); display: flex; flex-direction: column;
+  transform: translateX(100%); transition: transform 0.5s var(--ease-luxury);
+}
+.mobile-nav.open { transform: translateX(0); }
+.mobile-nav__close { position:absolute; top:24px; right:var(--gutter); color:rgba(255,255,255,0.45); font-family: var(--f-sans); font-size:0.63rem; letter-spacing:0.22em; text-transform:uppercase; }
+.mobile-nav__links { list-style:none; margin-bottom: var(--s-lg); }
+.mobile-nav__links li { border-bottom: 1px solid rgba(255,255,255,0.07); }
+.mobile-nav__links a { display:block; font-family: var(--f-display); font-style:italic; color:white; font-size: clamp(1.6rem,6vw,2.6rem); letter-spacing:0.02em; padding:16px 0; transition: color var(--dur-fast); }
+.mobile-nav__links a:hover, .mobile-nav__links a.is-current { color: var(--c-rosegold); }
+.mobile-nav__footer { margin-top:auto; }
+.mobile-nav__footer p { font-family: var(--f-sans); font-size:0.7rem; letter-spacing:0.1em; color: rgba(255,255,255,0.3); margin-bottom:8px; }
+.mobile-nav__footer a { font-family: var(--f-sans); font-size:0.82rem; letter-spacing:0.06em; color: var(--c-rosegold); }
+
+/* ═══════════════════════════════════════════════════════════════
+   SECTION 0 — BREADCRUMB
+   Verbatim reuse of .ka-coll-breadcrumb (assets/ka-collection-
+   breadcrumb.css) — quiet wayfinding strip under the settled nav,
+   same component already used on Collection/Product/Cart.
+═══════════════════════════════════════════════════════════════ */
+.ka-coll-breadcrumb { padding: 110px var(--gutter) 0; max-width: var(--max-wide); margin: 0 auto; }
+.ka-coll-breadcrumb__inner {
+  font-family: var(--f-sans); font-size: 0.66rem; font-weight: 400;
+  letter-spacing: 0.12em; text-transform: uppercase; color: var(--c-ink-muted);
+  display: flex; align-items: center; gap: 10px;
+}
+.ka-coll-breadcrumb__inner a { transition: color var(--dur-fast); }
+.ka-coll-breadcrumb__inner a:hover { color: var(--c-rosegold-2); }
+.ka-coll-breadcrumb__sep { opacity: 0.5; }
+.ka-coll-breadcrumb__current { color: var(--c-ink); }
+
+/* ═══════════════════════════════════════════════════════════════
+   SECTION 1 — INTRO
+   Deliberately NOT a photographic hero (see build spec §2, "Why no
+   hero"). A centred, quiet, typography-led opening — the same
+   register Chanel/Hermès use for client-services pages, reserving
+   full-bleed photography for the site's genuinely emotional pages
+   (Home, About, Client Diaries, Journal) rather than diluting it
+   here. Search field sits inside this block, styled as a scaled-
+   down variant of the existing global search overlay's input
+   (assets/ka-search.css .ka-search-overlay__input) — same
+   underlined italic-serif language, smaller and page-anchored
+   rather than a full-viewport takeover.
+═══════════════════════════════════════════════════════════════ */
+.faq-intro { max-width: 680px; margin: 0 auto; padding: var(--s-xl) var(--gutter) var(--s-lg); text-align: center; }
+.faq-intro__eyebrow { margin-bottom: 22px; }
+.faq-intro__title { font-family: var(--f-display); color: var(--c-charcoal); line-height: 1.05; }
+.faq-intro__title .lead { display:block; font-size: clamp(1.3rem,2.6vw,1.8rem); font-style:italic; font-weight:300; letter-spacing:0.02em; color: var(--c-ink-mid); margin-bottom: 2px; }
+.faq-intro__title .main { display:block; font-size: clamp(2.6rem,5.2vw,4.2rem); font-style:italic; font-weight:400; }
+.faq-intro__body { margin-top: 24px; font-family: var(--f-sans); font-size: var(--t-body-l); font-weight: 300; line-height: 1.9; color: var(--c-ink-mid); }
+
+.faq-search { margin-top: var(--s-xl); max-width: 480px; margin-left:auto; margin-right:auto; }
+.faq-search__field { position: relative; border-bottom: 1px solid var(--line-strong); padding-bottom: 14px; display:flex; align-items:center; gap:12px; transition: border-color var(--dur-fast); }
+.faq-search__field:focus-within { border-color: var(--c-rosegold-2); }
+.faq-search__icon { width:16px; height:16px; flex-shrink:0; color: var(--c-ink-muted); }
+.faq-search__icon svg { width:100%; height:100%; stroke:currentColor; fill:none; }
+.faq-search__input {
+  flex: 1; width: 100%; border: none; outline: none; background: none;
+  font-family: var(--f-display); font-style: italic; font-weight: 400;
+  font-size: clamp(1.05rem, 2.4vw, 1.35rem); color: var(--c-charcoal); text-align: left;
+}
+.faq-search__input::placeholder { color: var(--c-ink-muted); opacity: 0.65; }
+.faq-search__clear { font-size: 0.62rem; letter-spacing:0.14em; text-transform:uppercase; color: var(--c-ink-muted); opacity:0; pointer-events:none; transition: opacity var(--dur-fast), color var(--dur-fast); flex-shrink:0; }
+.faq-search__clear.is-visible { opacity:1; pointer-events:auto; }
+.faq-search__clear:hover { color: var(--c-charcoal); }
+
+/* ═══════════════════════════════════════════════════════════════
+   SECTION 2 — TOPIC NAV (sticky, jump-to-section — NOT a filter)
+   Deliberately different interaction from Journal's chip filter
+   bar (assets/ka-journal-filter.css), even though it reuses the
+   identical .ka-chip visual component. With 11 items across 4
+   categories (a fixed, small, non-growing content set), hiding
+   categories on click removes the chance for a visitor reading
+   about sizing to also notice care instructions two scrolls away —
+   real browsing value that a "hide everything else" filter would
+   remove for no real payoff at this scale (unlike Journal or the
+   Collection grid, both of which manage genuinely large, growing
+   volume). Chips instead smooth-scroll to their section and track
+   scroll position (an "active" chip follows the reading position,
+   IntersectionObserver-driven) — an in-page contents/tab bar, not
+   a filter. Search (Section 1) remains true filtering, since
+   searching is explicitly a narrowing action, not a browsing one.
+
+   Sticky offset: 104px, matching the established value for sticky
+   elements on this page's own family (hero-less, permanently-
+   settled-nav pages — assets/ka-product-main.css .ka-media,
+   assets/ka-cart-summary.css .ka-summary), not Journal's 84px
+   (which belongs to the transparent-then-crystallises hero-page
+   nav family). Technical Director should confirm the exact pixel
+   value against the live, real nav CSS rather than trust this
+   number blindly — see build spec §7 flag.
+═══════════════════════════════════════════════════════════════ */
+.faq-topics { position: sticky; top: 104px; z-index: 40; background: var(--c-paper); max-width: var(--max-wide); margin: 0 auto; padding: 18px var(--gutter); display:flex; align-items:center; gap:22px; flex-wrap:wrap; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+.faq-topics__label { font-family: var(--f-sans); font-size:0.6rem; letter-spacing:0.2em; text-transform:uppercase; color: var(--c-ink-muted); }
+.faq-topics__chips { display:flex; gap:10px; flex-wrap:wrap; }
+.ka-chip {
+  font-family: var(--f-sans); font-size:0.64rem; font-weight:400; letter-spacing:0.1em; text-transform:uppercase;
+  color: var(--c-ink-mid); border:1px solid var(--line-strong); padding:8px 18px; display:inline-block;
+  transition: background var(--dur-fast), color var(--dur-fast), border-color var(--dur-fast); cursor:pointer;
+}
+.ka-chip:hover { border-color: var(--c-rosegold-2); color: var(--c-charcoal); }
+.ka-chip.is-active { background: var(--c-charcoal); color:white; border-color: var(--c-charcoal); }
+
+@media (max-width: 600px) { .faq-topics { top: 0; padding: 14px 16px; } }
+
+/* ═══════════════════════════════════════════════════════════════
+   SECTION 3 — FAQ LIST
+   Grouped by category. Each group: eyebrow-numbered category
+   header (H2, italic Cormorant, one supporting line of copy — the
+   same "even a divider gets a considered line of copy" discipline
+   already used elsewhere in this build) then an accordion list.
+
+   Accordion mechanics (.ka-accordion / .ka-acc / .ka-acc__pm /
+   .ka-acc__body / .ka-acc__inner) are a VERBATIM reuse of the
+   existing product-page component (sections/ka-product-main.liquid,
+   assets/ka-product-main.css) — identical box model, identical
+   max-height open/close animation, identical +/rotate icon. Only
+   the question-button typography is a new, minor, documented
+   addition (.faq-acc__head) — the product accordion's head is
+   compact uppercase tracked sans (correct for short compact labels
+   like "Fabric & Embroidery" in a narrow side panel); a full
+   sentence-length question ("What exactly is a corset lehenga...")
+   reads better set the way a considered Q&A page sets it — quiet
+   italic serif, sentence case, comfortable reading size. Same
+   "adapt the mechanism, not reinvent it" discipline already applied
+   to .founders (About Us) and .j-featured (Journal).
+
+   Each question+answer pair maps 1:1 to a Q/A unit for FAQPage
+   structured data later — SEO's concern, not designed here, but
+   the markup below is clean question/answer pairing throughout
+   (one button = one question, one body = one complete answer, no
+   freeform prose mixing multiple questions in one block) precisely
+   so that mapping is trivial when Technical Director builds it.
+═══════════════════════════════════════════════════════════════ */
+.faq-list { max-width: var(--max-text); margin: 0 auto; padding: var(--s-2xl) var(--gutter) var(--s-lg); }
+.faq-group { padding-top: var(--s-xl); scroll-margin-top: 190px; }
+.faq-group:first-child { padding-top: var(--s-lg); }
+.faq-group__num { display:block; margin-bottom: 14px; }
+.faq-group__title { font-family: var(--f-display); font-size: var(--t-h2); font-weight:400; font-style:italic; color: var(--c-charcoal); line-height:1.1; }
+.faq-group__dek { margin-top:10px; font-family: var(--f-sans); font-size:0.86rem; font-weight:300; color: var(--c-ink-muted); line-height:1.7; max-width: 480px; }
+
+.ka-accordion { margin-top: 30px; border-top: 1px solid var(--line); }
+.ka-acc { border-bottom: 1px solid var(--line); }
+.ka-acc.is-hidden { display:none; }
+.faq-acc__head {
+  width: 100%; background: none; border: none; cursor: pointer; text-align:left;
+  display: flex; justify-content: space-between; align-items: center; gap: 24px;
+  padding: 22px 2px; font-family: var(--f-display); font-size: 1.08rem; font-style: italic;
+  font-weight: 400; letter-spacing: 0.01em; color: var(--c-ink); line-height: 1.4;
+}
+.ka-acc__pm { font-size: 1.2rem; color: var(--c-rosegold); transition: transform 0.4s var(--ease-luxury); font-family: var(--f-display); flex-shrink:0; }
+.ka-acc.open .ka-acc__pm { transform: rotate(45deg); }
+.ka-acc__body { max-height: 0; overflow: hidden; transition: max-height 0.55s var(--ease-luxury); }
+.ka-acc__inner { padding: 0 2px 26px; color: var(--c-ink-mid); font-family: var(--f-sans); font-size: 0.92rem; font-weight:300; line-height: 1.8; max-width: 640px; }
+.ka-acc__inner p + p { margin-top: 14px; }
+/* Inline links within an answer (e.g. "Get in touch to book a consult",
+   Journal cross-references in Q1/Q2) — verbatim reuse of the existing
+   generic-page body-copy link treatment (assets/ka-page-generic.css
+   .ka-page-generic__body a), not a new link style invented for this
+   page. First needed on this page since no prior accordion answer
+   (product page) has ever contained an inline link. */
+.ka-acc__inner a { color: var(--c-rosegold-2); text-decoration: underline; text-decoration-color: var(--line-light); text-underline-offset: 3px; transition: color var(--dur-fast); font-style: normal; }
+.ka-acc__inner a:hover { color: var(--c-rosegold); }
+.ka-acc__inner ul { list-style: none; margin: 10px 0; }
+.ka-acc__inner li { padding-left: 18px; position: relative; margin-bottom: 6px; }
+.ka-acc__inner li::before { content: "—"; position: absolute; left: 0; color: var(--c-rosegold); }
+
+.faq-group.is-hidden { display:none; }
+
+/* Empty state — verbatim adaptation of .ka-collection-empty
+   (assets/ka-collection-grid.css), reused for zero search matches. */
+.ka-faq-empty { text-align:center; padding: var(--s-2xl) var(--s-md); max-width:520px; margin:0 auto; display:none; }
+.ka-faq-empty.is-visible { display:block; }
+.ka-faq-empty__title { font-family: var(--f-display); font-style:italic; font-size: clamp(1.7rem,3.4vw,2.4rem); color: var(--c-charcoal); margin-bottom:18px; line-height:1.2; }
+.ka-faq-empty__body { font-family: var(--f-sans); font-size:0.88rem; color: var(--c-ink-muted); line-height:1.8; margin-bottom: 32px; }
+
+@media (max-width: 600px) {
+  .faq-list { padding: var(--s-xl) 20px var(--s-md); }
+  .faq-acc__head { font-size: 1rem; padding: 18px 2px; }
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   SECTION 4 — APPOINTMENT CTA (verbatim reuse of sitewide
+   component). Copy + CTA order tailored for this page's visitor
+   intent: someone leaving the FAQ still has a specific unanswered
+   question, so "Ask Our Styling Concierge" (WhatsApp) leads, with
+   "Book an Appointment" second — the reverse emphasis of most
+   other pages, deliberately, because this page's job was answering
+   questions and its natural exit is "ask the one thing this page
+   couldn't."
+═══════════════════════════════════════════════════════════════ */
+.appointment { position: relative; min-height: 58vh; display: flex; align-items: center; overflow: hidden; }
+.appointment__bg { position: absolute; inset: 0; }
+.appointment__bg img { object-position: center 30%; }
+.appointment__overlay { position: absolute; inset: 0; background: rgba(26,23,20,0.60); }
+.appointment__content { position: relative; z-index: 1; padding: var(--s-2xl) var(--gutter); max-width: 680px; margin: 0 auto; text-align: center; }
+.appointment__eyebrow { margin-bottom: 24px; }
+.appointment__title { font-family: var(--f-display); font-size: var(--t-display); font-weight: 400; font-style: italic; color: white; line-height: 1.05; margin-bottom: 24px; }
+.appointment__body { font-family: var(--f-sans); font-size: 0.88rem; font-weight: 300; line-height: 1.9; color: rgba(255,255,255,0.7); margin-bottom: 48px; letter-spacing: 0.02em; }
+.appointment__options { display: flex; align-items: center; justify-content: center; gap: 20px; flex-wrap: wrap; }
+.appointment__divider { font-family: var(--f-sans); font-size: 0.63rem; letter-spacing: 0.1em; color: rgba(255,255,255,0.3); }
+@media (max-width: 600px) { .appointment__options { flex-direction: column; align-items: stretch; } }
+
+/* ═══════════════════════════════════════════════════════════════
+   FOOTER — condensed visual reference only. Build reuses the real
+   sections/ka-footer.liquid verbatim.
+═══════════════════════════════════════════════════════════════ */
+.footer { background: var(--c-charcoal); padding: var(--s-2xl) var(--gutter) var(--s-lg); }
+.footer__top { display:grid; grid-template-columns: 1.4fr 1fr 1fr 1fr; gap: var(--s-lg); padding-bottom: var(--s-xl); border-bottom: 1px solid rgba(255,255,255,0.07); margin-bottom: var(--s-lg); }
+.footer__logo { font-family: var(--f-display); font-size:1.5rem; font-weight:400; letter-spacing:0.12em; color: rgba(255,255,255,0.82); text-transform:uppercase; margin-bottom:16px; display:block; }
+.footer__tagline { font-family: var(--f-display); font-style:italic; font-size:0.92rem; color: rgba(255,255,255,0.32); line-height:1.65; max-width:260px; }
+.footer__col-title { font-family: var(--f-sans); font-size:0.6rem; font-weight:500; letter-spacing:0.24em; text-transform:uppercase; color: rgba(255,255,255,0.35); margin-bottom:20px; }
+.footer__links { list-style:none; display:flex; flex-direction:column; gap:12px; }
+.footer__links a { font-family: var(--f-sans); font-size:0.78rem; font-weight:300; color: rgba(255,255,255,0.5); transition: color var(--dur-fast); }
+.footer__links a:hover, .footer__links a.is-current { color:white; }
+.footer__bottom { display:flex; align-items:center; justify-content:space-between; gap:24px; flex-wrap:wrap; }
+.footer__copy { font-family: var(--f-sans); font-size:0.63rem; font-weight:300; color: rgba(255,255,255,0.18); letter-spacing:0.1em; }
+@media (max-width: 900px) { .footer__top { grid-template-columns: 1fr 1fr; } }
+</style>
+</head>
+<body>
+
+<!-- ═══ HEADER (settled-nav variant — see Section-0 comment above) ═══ -->
+<div class="utility-bar">
+  <span><b>Complimentary Worldwide Delivery</b></span>
+  <span><b>Hand-Embroidered to Order</b></span>
+  <span><b>Private &amp; Virtual Appointments</b></span>
+</div>
+
+<nav class="nav" id="navFaq">
+  <button class="nav__toggle" id="navToggle" aria-label="Open menu"><span></span><span></span><span></span></button>
+  <ul class="nav__links">
+    <li><a href="#">Bestsellers</a></li>
+    <li><a href="#">Collections</a></li>
+    <li><a href="#">Client Diaries</a></li>
+  </ul>
+  <a href="#" class="nav__logo">Karishma Ashita<small>Bridal Couture · Mumbai</small></a>
+  <div class="nav__actions">
+    <button class="nav__icon-btn" aria-label="Search"><svg viewBox="0 0 24 24" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M20 20l-4.8-4.8"/></svg></button>
+    <a href="#" class="nav__icon-btn" aria-label="View your bag"><svg viewBox="0 0 24 24" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8h12l-1 12H7L6 8z"/><path d="M9 8V6a3 3 0 0 1 6 0v2"/></svg></a>
+  </div>
+</nav>
+
+<nav class="mobile-nav" id="mobileNav">
+  <button class="mobile-nav__close" id="navClose">Close</button>
+  <ul class="mobile-nav__links">
+    <li><a href="#">Bestsellers</a></li>
+    <li><a href="#">Collections</a></li>
+    <li><a href="#">Client Diaries</a></li>
+    <li><a href="#">About</a></li>
+    <li><a href="#">Visit Us</a></li>
+    <li><a href="#" class="is-current">FAQ</a></li>
+    <li><a href="#">Book an Appointment</a></li>
+  </ul>
+  <div class="mobile-nav__footer">
+    <p>Concierge</p>
+    <a href="#">+91 99675 43087</a>
+  </div>
+</nav>
+
+<!-- ═══ 0 — BREADCRUMB ═══ -->
+<div class="ka-coll-breadcrumb">
+  <div class="ka-coll-breadcrumb__inner">
+    <a href="#">Home</a>
+    <span class="ka-coll-breadcrumb__sep">/</span>
+    <span class="ka-coll-breadcrumb__current">Frequently Asked Questions</span>
+  </div>
+</div>
+
+<!-- ═══ 1 — INTRO ═══ -->
+<section class="faq-intro">
+  <p class="eyebrow faq-intro__eyebrow reveal">Frequently Asked Questions</p>
+  <h1 class="faq-intro__title reveal reveal-delay-1"><span class="lead">Every Question,</span><span class="main">Answered Quietly</span></h1>
+  <p class="faq-intro__body reveal reveal-delay-2">Every Karishma &amp; Ashita piece is made to order, by hand — which naturally invites questions before you begin. We've gathered the ones we're asked most often here, so you can find what you need before a single message is sent. For anything more particular to you, our styling concierge is always a conversation away.</p>
+
+  <div class="faq-search reveal reveal-delay-3">
+    <div class="faq-search__field">
+      <span class="faq-search__icon" aria-hidden="true"><svg viewBox="0 0 24 24" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M20 20l-4.8-4.8"/></svg></span>
+      <input type="text" class="faq-search__input" id="faqSearch" placeholder="Search a question — sizing, pricing, shipping…" aria-label="Search frequently asked questions" />
+      <button type="button" class="faq-search__clear" id="faqSearchClear">Clear</button>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ 2 — TOPIC NAV (jump-to-section, active state tracks scroll) ═══ -->
+<div class="faq-topics" id="faqTopics">
+  <span class="faq-topics__label">Topics</span>
+  <div class="faq-topics__chips" id="topicChips">
+    <button class="ka-chip" data-target="cat-corset">The Corset, Explained</button>
+    <button class="ka-chip" data-target="cat-sizing">Sizing &amp; Occasion</button>
+    <button class="ka-chip" data-target="cat-ordering">Ordering &amp; Policy</button>
+    <button class="ka-chip" data-target="cat-shipping">Shipping &amp; Care</button>
+  </div>
+</div>
+
+<!-- ═══ 3 — FAQ LIST ═══
+     11 Q&A pairs — REAL, CONFIRMED CONTENT from SEO & Discoverability's
+     Content Strategist (2026-07-22-faq-content-draft.md), confirmed
+     directly with Suraj, no placeholders/invented specifics. Grouped
+     into 4 categories (not the Creative Director's original 5-category
+     placeholder scheme — the real content naturally clusters into 4,
+     with no standalone "Appointments" cluster; sizing/occasion appears
+     lighter and the ordering/policy cluster heavier than first assumed.
+     See build spec §2/§5 for the regrouping rationale). Copy is
+     reproduced verbatim from the source document; only HTML formatting
+     (paragraph breaks, the timeline bullet list in Q5, inline links)
+     was added for on-page presentation — no wording was changed. -->
+<div class="faq-list" id="faqList">
+
+  <!-- Group 1 — The Corset, Explained -->
+  <section class="faq-group" id="cat-corset" data-cat="corset">
+    <p class="eyebrow eyebrow--muted faq-group__num">01 — Understanding K&amp;A</p>
+    <h2 class="faq-group__title">The Corset, Explained</h2>
+    <p class="faq-group__dek">What a K&amp;A corset actually is, and how construction — not just cut — is what sets it apart.</p>
+
+    <div class="ka-accordion">
+      <div class="ka-acc open" data-acc>
+        <button class="faq-acc__head" type="button">What is a corset lehenga?<span class="ka-acc__pm" aria-hidden="true">+</span></button>
+        <div class="ka-acc__body"><div class="ka-acc__inner">
+          <p>A corset lehenga pairs a structured, boned bodice with a lehenga skirt — it's a different construction from a traditional lehenga blouse, not just a styling variation of one. A conventional blouse is cut and stitched to follow the body; a corset is built with boning and structured lining to hold its own shape and, in doing so, shape the wearer — defining the waist, supporting the bust and rib cage, and holding its line through a full evening of standing, sitting, and dancing.</p>
+          <p>For a closer look at what separates the two, see K&amp;A's Journal piece, <a href="/blogs/news/corset-lehenga-reconsidered"><em>The Corset Lehenga, Reconsidered: Structure as Bridal Statement</em></a>.</p>
+        </div></div>
+      </div>
+      <div class="ka-acc" data-acc>
+        <button class="faq-acc__head" type="button">What makes a corset "structured" — and how is that different from a corset-style blouse?<span class="ka-acc__pm" aria-hidden="true">+</span></button>
+        <div class="ka-acc__body"><div class="ka-acc__inner">
+          <p>Structure is a construction method, not a look. A genuinely structured corset uses boning (rigid or semi-rigid strips built into internal channels), reinforced lining, and a cut drafted specifically to shape the waist, bust, and rib cage — so the bodice holds its own shape independent of the body inside it. A corset-style blouse can borrow the visual cues (a fitted bodice, a laced front) without any of that internal architecture, which is why it can look structured in a photograph but behave like ordinary fitted fabric the moment you move in it.</p>
+          <p>K&amp;A applies this same construction principle — boning, lining, defined cut — across corset lehengas, corset drape sarees, and corset-anchored Indo-Western sets. Full detail in <a href="/blogs/news/what-makes-a-corset-structured"><em>What Makes a Corset "Structured": Construction, Fit, and the K&amp;A Approach</em></a>.</p>
+        </div></div>
+      </div>
+      <div class="ka-acc" data-acc>
+        <button class="faq-acc__head" type="button">What's the difference between a corset lehenga and a corset drape saree?<span class="ka-acc__pm" aria-hidden="true">+</span></button>
+        <div class="ka-acc__body"><div class="ka-acc__inner">
+          <p>The corset construction itself doesn't change between the two — boning, lining, and cut work the same way in both. What changes is what the corset is paired with: a corset lehenga sets the structured bodice above a fitted-waist, often flared or fishtail skirt with its own separate construction, while a corset drape saree sets it above a pre-draped saree silhouette, where the corset frequently anchors the drape itself rather than relying on pleating and tucking alone. Neither is more structured than the other — it comes down to whether you want a lehenga's fuller, more traditional bridal silhouette or a drape saree's leaner, more contemporary line.</p>
+        </div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Group 2 — Sizing & Occasion -->
+  <section class="faq-group" id="cat-sizing" data-cat="sizing">
+    <p class="eyebrow eyebrow--muted faq-group__num">02 — Fit &amp; Occasion</p>
+    <h2 class="faq-group__title">Sizing &amp; Occasion</h2>
+    <p class="faq-group__dek">Getting the fit right, and finding the piece for your moment — bridal or otherwise.</p>
+
+    <div class="ka-accordion">
+      <div class="ka-acc" data-acc>
+        <button class="faq-acc__head" type="button">How does sizing and fit work?<span class="ka-acc__pm" aria-hidden="true">+</span></button>
+        <div class="ka-acc__body"><div class="ka-acc__inner">
+          <p>K&amp;A works from a standard XS–XL size chart (bust, waist, and hip measurements) as a starting point, and offers personalised consultations and bespoke fitting appointments at the Santacruz, Mumbai studio — or via video consultation for clients who can't visit in person, including international clients. Because a structured corset does real shaping work — rather than just following your measurements the way a soft blouse does — fit matters more here, not less; working through it directly in a consult is a more reliable way to get the bodice right than sizing from measurements alone.</p>
+          <p><a href="/pages/contact">Get in touch to book a consult.</a></p>
+        </div></div>
+      </div>
+      <div class="ka-acc" data-acc>
+        <button class="faq-acc__head" type="button">What occasions do K&amp;A pieces suit?<span class="ka-acc__pm" aria-hidden="true">+</span></button>
+        <div class="ka-acc__body"><div class="ka-acc__inner">
+          <p>K&amp;A's range covers the full arc of a wedding calendar — bridal wear for the wedding day itself, and pieces built for sangeet, mehendi, reception, and cocktail moments, in both fuller bridal silhouettes (lehengas) and leaner, more contemporary ones (drape sarees, Indo-Western sets).</p>
+        </div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Group 3 — Ordering & Policy -->
+  <section class="faq-group" id="cat-ordering" data-cat="ordering">
+    <p class="eyebrow eyebrow--muted faq-group__num">03 — Ordering</p>
+    <h2 class="faq-group__title">Ordering &amp; Policy</h2>
+    <p class="faq-group__dek">What a piece costs, how long it takes, and what's possible to change along the way.</p>
+
+    <div class="ka-accordion">
+      <div class="ka-acc" data-acc>
+        <button class="faq-acc__head" type="button">What is K&amp;A's price range?<span class="ka-acc__pm" aria-hidden="true">+</span></button>
+        <div class="ka-acc__body"><div class="ka-acc__inner">
+          <p>K&amp;A's pieces range from &#8377;30,000 to &#8377;280,000+, depending on the piece, embellishment density, and construction complexity. This is a considered, high-involvement purchase rather than an entry-level one — K&amp;A doesn't run discount or sale pricing.</p>
+        </div></div>
+      </div>
+      <div class="ka-acc" data-acc>
+        <button class="faq-acc__head" type="button">Is a K&amp;A piece made-to-order, and how long does it take?<span class="ka-acc__pm" aria-hidden="true">+</span></button>
+        <div class="ka-acc__body"><div class="ka-acc__inner">
+          <p>Yes — K&amp;A pieces are mostly made-to-order; ready-to-ship inventory is the exception, not the norm. Timelines vary by category:</p>
+          <ul>
+            <li>Drapes and corset drape sarees — 20–25 working days</li>
+            <li>Indo-Western sets — 30–35 working days</li>
+            <li>Lehengas — 40–45 working days</li>
+          </ul>
+          <p>Shipped free worldwide via DHL Express. Worth building that lead time into planning around a wedding date.</p>
+        </div></div>
+      </div>
+      <div class="ka-acc" data-acc>
+        <button class="faq-acc__head" type="button">Can I customize the color, embellishment, or fit of an existing design?<span class="ka-acc__pm" aria-hidden="true">+</span></button>
+        <div class="ka-acc__body"><div class="ka-acc__inner">
+          <p>In some cases, yes — customizing the color, embellishment, or fit of an existing design is possible depending on the specific request and the design team's assessment of what's feasible. It's evaluated case-by-case rather than guaranteed for every piece, so it's best discussed directly in a consultation.</p>
+        </div></div>
+      </div>
+      <div class="ka-acc" data-acc>
+        <button class="faq-acc__head" type="button">What is your return or exchange policy?<span class="ka-acc__pm" aria-hidden="true">+</span></button>
+        <div class="ka-acc__body"><div class="ka-acc__inner">
+          <p>K&amp;A pieces are made-to-measure, so standard returns and exchanges generally aren't offered. This makes getting sizing and fit right upfront — via a consult, in person or by video — especially worthwhile.</p>
+        </div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Group 4 — Shipping & Care -->
+  <section class="faq-group" id="cat-shipping" data-cat="shipping">
+    <p class="eyebrow eyebrow--muted faq-group__num">04 — After Ordering</p>
+    <h2 class="faq-group__title">Shipping &amp; Care</h2>
+    <p class="faq-group__dek">From our studio to your door, and how to keep a piece beautiful for years after.</p>
+
+    <div class="ka-accordion">
+      <div class="ka-acc" data-acc>
+        <button class="faq-acc__head" type="button">Do you ship internationally?<span class="ka-acc__pm" aria-hidden="true">+</span></button>
+        <div class="ka-acc__body"><div class="ka-acc__inner">
+          <p>Yes — K&amp;A ships worldwide, with free shipping via DHL Express. Delivery timelines depend on category (see Ordering &amp; Policy above); build in that lead time when planning around a wedding date, especially for international delivery.</p>
+        </div></div>
+      </div>
+      <div class="ka-acc" data-acc>
+        <button class="faq-acc__head" type="button">How should I care for my K&amp;A piece?<span class="ka-acc__pm" aria-hidden="true">+</span></button>
+        <div class="ka-acc__body"><div class="ka-acc__inner">
+          <p>K&amp;A pieces are dry clean only, given the hand embroidery, embellishment, and structured construction involved.</p>
+        </div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- No-search-results state -->
+  <div class="ka-faq-empty" id="faqEmpty">
+    <h3 class="ka-faq-empty__title">We couldn't find a match for that.</h3>
+    <p class="ka-faq-empty__body">Our styling concierge would love to help directly — send us your question and we'll answer personally, usually within the day.</p>
+    <a href="#" class="btn-outline-rose">Ask Our Styling Concierge</a>
+  </div>
+
+</div>
+
+<!-- ═══ 4 — APPOINTMENT CTA ═══ -->
+<section class="appointment">
+  <div class="appointment__bg reveal-img"><img src="images/appointment-bg.jpg" alt="K&A atelier fitting" class="img-editorial-deep" /></div>
+  <div class="appointment__overlay"></div>
+  <div class="appointment__content">
+    <p class="eyebrow eyebrow--on-dark appointment__eyebrow reveal">Still Have a Question?</p>
+    <h2 class="appointment__title reveal reveal-delay-1">We'd Love to Continue<br />This Conversation.</h2>
+    <p class="appointment__body reveal reveal-delay-2">However specific, however small — our styling concierge and advisors are always glad to help, over WhatsApp or in a private appointment, in the atelier or virtually.</p>
+    <div class="appointment__options reveal reveal-delay-3">
+      <a href="#" class="btn-outline-white">Ask Our Styling Concierge</a>
+      <span class="appointment__divider">or</span>
+      <a href="#" class="btn-outline-white">Book an Appointment</a>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ FOOTER (condensed reference — see build spec) ═══ -->
+<footer class="footer">
+  <div class="footer__top">
+    <div>
+      <span class="footer__logo">Karishma Ashita</span>
+      <p class="footer__tagline">Bridal couture, handcrafted<br />in Mumbai.</p>
+    </div>
+    <div>
+      <p class="footer__col-title">Collections</p>
+      <ul class="footer__links"><li><a href="#">The Festive Edit</a></li><li><a href="#">The Bloom Soirée</a></li><li><a href="#">Signature</a></li></ul>
+    </div>
+    <div>
+      <p class="footer__col-title">Maison</p>
+      <ul class="footer__links"><li><a href="#">About Karishma &amp; Ashita</a></li><li><a href="#">Client Diaries</a></li><li><a href="#">Journal</a></li><li><a href="#">Visit Us</a></li><li><a href="#" class="is-current">FAQ</a></li></ul>
+    </div>
+    <div>
+      <p class="footer__col-title">Contact</p>
+      <ul class="footer__links"><li><a href="#">+91 99675 43087</a></li><li><a href="#">info@karishmaashita.com</a></li></ul>
+    </div>
+  </div>
+  <div class="footer__bottom">
+    <p class="footer__copy">&copy; 2026 Karishma Ashita, a brand of Peekay International Ltd. All rights reserved.</p>
+  </div>
+</footer>
+
+<script>
+// Mobile nav
+const toggle = document.getElementById('navToggle'), close = document.getElementById('navClose'), mobileNav = document.getElementById('mobileNav');
+toggle.addEventListener('click', () => mobileNav.classList.add('open'));
+close.addEventListener('click', () => mobileNav.classList.remove('open'));
+
+// Reveal on scroll
+const io = new IntersectionObserver((entries) => { entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); io.unobserve(e.target); } }); }, { threshold: 0.15, rootMargin: '0px 0px -60px 0px' });
+document.querySelectorAll('.reveal, .reveal-img').forEach(el => io.observe(el));
+
+/* ---------- accordion — verbatim mechanics reused from the
+   product-page accordion (assets/ka-product.js) ---------- */
+function toggleAcc(head) {
+  const acc = head.closest('.ka-acc');
+  const body = acc.querySelector('.ka-acc__body');
+  if (acc.classList.contains('open')) {
+    acc.classList.remove('open');
+    body.style.maxHeight = null;
+  } else {
+    acc.classList.add('open');
+    body.style.maxHeight = body.scrollHeight + 'px';
+  }
+}
+document.querySelectorAll('.faq-acc__head').forEach(h => h.addEventListener('click', () => toggleAcc(h)));
+// Pre-open the first question so the page doesn't read as a wall of
+// closed rows on first load (matches how Chanel/Dior client-service
+// pages typically reveal their first answer by default).
+const firstAcc = document.querySelector('.ka-acc.open .ka-acc__body');
+if (firstAcc) firstAcc.style.maxHeight = firstAcc.scrollHeight + 'px';
+
+/* ---------- topic chips — jump-to-section, NOT filter; active
+   state tracks scroll position via IntersectionObserver ---------- */
+const chips = document.querySelectorAll('#topicChips .ka-chip');
+const groups = document.querySelectorAll('.faq-group');
+
+chips.forEach(chip => {
+  chip.addEventListener('click', () => {
+    clearSearch(); // chips = browse mode; clear any active search first
+    const target = document.getElementById(chip.dataset.target);
+    if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  });
+});
+
+const groupObserver = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      const id = entry.target.id;
+      chips.forEach(c => c.classList.toggle('is-active', c.dataset.target === id));
+    }
+  });
+}, { rootMargin: '-160px 0px -70% 0px', threshold: 0 });
+groups.forEach(g => groupObserver.observe(g));
+
+/* ---------- search — true filter across the full Q&A set ---------- */
+const searchInput = document.getElementById('faqSearch');
+const searchClear = document.getElementById('faqSearchClear');
+const emptyState = document.getElementById('faqEmpty');
+let searchTimer;
+
+function runSearch(query) {
+  const q = query.trim().toLowerCase();
+  searchClear.classList.toggle('is-visible', q.length > 0);
+
+  if (q.length === 0) {
+    document.querySelectorAll('.ka-acc').forEach(a => a.classList.remove('is-hidden'));
+    groups.forEach(g => g.classList.remove('is-hidden'));
+    emptyState.classList.remove('is-visible');
+    return;
+  }
+
+  let totalVisible = 0;
+  groups.forEach(group => {
+    let groupVisible = 0;
+    group.querySelectorAll('.ka-acc').forEach(acc => {
+      const text = acc.textContent.toLowerCase();
+      const match = text.indexOf(q) !== -1;
+      acc.classList.toggle('is-hidden', !match);
+      if (match) { groupVisible++; totalVisible++; }
+    });
+    group.classList.toggle('is-hidden', groupVisible === 0);
+  });
+  emptyState.classList.toggle('is-visible', totalVisible === 0);
+}
+
+searchInput.addEventListener('input', (e) => {
+  clearTimeout(searchTimer);
+  const val = e.target.value;
+  searchTimer = setTimeout(() => runSearch(val), 150);
+});
+searchInput.addEventListener('keydown', (e) => { if (e.key === 'Enter') e.preventDefault(); });
+
+function clearSearch() {
+  searchInput.value = '';
+  runSearch('');
+}
+searchClear.addEventListener('click', clearSearch);
+</script>
+</body>
+</html>

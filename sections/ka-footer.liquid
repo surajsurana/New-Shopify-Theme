@@ -25,6 +25,13 @@
 {%- endcomment -%}
 {%- assign is_journal = false -%}
 {%- if request.page_type == 'blog' or request.page_type == 'article' -%}{%- assign is_journal = true -%}{%- endif -%}
+{%- comment -%}
+  is_faq — same pattern as is_about_us/is_visit/is_journal above
+  (Docs/faq-build-spec.md §7 flag F3). Drives .is-current on the
+  footer's "FAQ" link.
+{%- endcomment -%}
+{%- assign is_faq = false -%}
+{%- if request.page_type == 'page' and page.handle == 'faq' -%}{%- assign is_faq = true -%}{%- endif -%}
 
 <footer class="ka-footer" aria-label="Site footer">
   <div class="ka-footer__top">
@@ -34,12 +41,16 @@
       <p class="ka-footer__tagline">{{ section.settings.tagline | newline_to_br }}</p>
       <div class="ka-footer__social">
         {%- comment -%}
-          Order: Instagram -> YouTube -> Pinterest -> Concierge (browsing
-          platforms first, in descending order of the brand's actual
-          channel activity per CLAUDE.md, then the pivot from "look" to
-          "ask" last). youtube_url follows the exact same blank-check
-          pattern as instagram_url/pinterest_url — Docs/search-404-footer-
-          build-spec.md §3.2 "YouTube link".
+          Content-channel links only: Instagram -> YouTube -> Pinterest, in
+          descending order of the brand's actual channel activity per
+          CLAUDE.md. youtube_url follows the exact same blank-check pattern
+          as instagram_url/pinterest_url — Docs/search-404-footer-build-
+          spec.md §3.2 "YouTube link". Concierge intentionally does NOT
+          appear in this row — it lives only in the Maison column, per
+          Docs/footer-concierge-dedup-addendum.md (this row is a pure
+          "follow us" row, not a service CTA; a "Concierge" WhatsApp link
+          used to duplicate the Maison column's and the sitewide floating
+          concierge button's job — removed 2026-07-23).
         {%- endcomment -%}
         {% if section.settings.instagram_url != blank %}
           <a href="{{ section.settings.instagram_url }}" target="_blank" rel="noopener">Instagram</a>
@@ -50,7 +61,6 @@
         {% if section.settings.pinterest_url != blank %}
           <a href="{{ section.settings.pinterest_url }}" target="_blank" rel="noopener">Pinterest</a>
         {% endif %}
-        <a href="https://wa.me/{{ settings.whatsapp_number }}" target="_blank" rel="noopener">Concierge</a>
       </div>
     </div>
 
@@ -76,7 +86,7 @@
       <p class="ka-footer__col-title">Maison</p>
       <ul class="ka-footer__links">
         {% for link in linklists['footer-the-house'].links %}
-          <li><a href="{{ link.url }}"{% if is_about_us and link.url contains 'about-us' %} class="is-current"{% elsif is_journal and link.url contains 'blogs' %} class="is-current"{% endif %}>{{ link.title }}</a></li>
+          <li><a href="{{ link.url }}"{% if is_about_us and link.url contains 'about-us' %} class="is-current"{% elsif is_journal and link.url contains 'blogs' %} class="is-current"{% elsif is_faq and link.url contains 'faq' %} class="is-current"{% endif %}>{{ link.title }}</a></li>
         {% endfor %}
         {% if linklists['footer-the-house'].links.size == 0 %}
           <li><a href="/pages/about-us"{% if is_about_us %} class="is-current"{% endif %}>About Karishma &amp; Ashita</a></li>
@@ -98,6 +108,12 @@
           {%- endcomment -%}
           <li><a href="/blogs/news"{% if is_journal %} class="is-current"{% endif %}>Journal</a></li>
           <li><a href="/pages/visit-the-atelier"{% if is_visit %} class="is-current"{% endif %}>Visit Us</a></li>
+          {%- comment -%}
+            FAQ link (Docs/faq-build-spec.md §3 S6, §7 Flag F3) — added
+            to the fallback list only, same "Admin menu must also be
+            updated manually if configured" caveat as Journal above.
+          {%- endcomment -%}
+          <li><a href="/pages/faq"{% if is_faq %} class="is-current"{% endif %}>FAQ</a></li>
           {%- comment -%}
             "Book an Appointment" — TEMPORARY interim WhatsApp routing,
             same sitewide pattern (Docs/cta-architecture-revision.md

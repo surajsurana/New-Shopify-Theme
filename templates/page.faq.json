@@ -1,0 +1,217 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+/*
+ * ------------------------------------------------------------
+ * K&A FAQ page template — Docs/faq-build-spec.md
+ * Built from Prototypes/faq-v1.html (approved by Suraj).
+ * Sections: Nav -> FAQ Breadcrumb -> FAQ (Intro/Search/Topics/List,
+ * 11 real Q&A blocks) -> Appointment CTA (reused) -> Footer.
+ *
+ * MANUAL STEP REQUIRED: the live /pages/faq Page needs its Theme
+ * template set to "faq" from Shopify Admin (Online Store -> Pages ->
+ * FAQ -> Theme template dropdown) once this file is deployed — same
+ * manual step About Us / Client Diaries needed. This cannot be done
+ * from the theme code/git alone. If the /pages/faq Page doesn't
+ * exist yet, it also needs to be created first (title "Frequently
+ * Asked Questions", handle "faq").
+ *
+ * Content: all 11 Q&A pairs are real, Suraj-confirmed copy from SEO &
+ * Discoverability's Content Strategist (see Docs/faq-build-spec.md §5)
+ * — reproduced verbatim below, only reformatted into block settings.
+ * ------------------------------------------------------------
+ */
+{
+  "sections": {
+    "ka-nav": {
+      "type": "ka-nav",
+      "settings": {
+        "utility_1": "Complimentary Worldwide Delivery",
+        "utility_2": "Hand-Embroidered to Order",
+        "utility_3": "Private & Virtual Appointments",
+        "logo_text": "Karishma Ashita",
+        "logo_subline": "Bridal Couture · Mumbai",
+        "label_bestsellers": "Signature",
+        "link_bestsellers": "/collections/signature-top-sellers",
+        "label_collections": "Collections",
+        "link_collections": "/collections",
+        "label_diaries": "Client Diaries",
+        "link_diaries": "/pages/client-diaries",
+        "link_about": "/pages/about-us",
+        "link_visit": "/pages/visit-the-atelier",
+        "link_faq": "/pages/faq",
+        "link_appointment": "/pages/appointments"
+      }
+    },
+    "ka-faq-breadcrumb": {
+      "type": "ka-faq-breadcrumb",
+      "settings": {}
+    },
+    "ka-faq-main": {
+      "type": "ka-faq-main",
+      "settings": {
+        "intro_eyebrow": "Frequently Asked Questions",
+        "intro_title_lead": "Every Question,",
+        "intro_title_main": "Answered Quietly",
+        "intro_body": "Every Karishma & Ashita piece is made to order, by hand — which naturally invites questions before you begin. We've gathered the ones we're asked most often here, so you can find what you need before a single message is sent. For anything more particular to you, our styling concierge is always a conversation away.",
+        "search_placeholder": "Search a question — sizing, pricing, shipping…",
+        "search_clear_label": "Clear",
+        "topics_label": "Topics",
+        "cat_corset_num": "01 — Understanding K&A",
+        "cat_corset_title": "The Corset, Explained",
+        "cat_corset_dek": "What a K&A corset actually is, and how construction — not just cut — is what sets it apart.",
+        "cat_sizing_num": "02 — Fit & Occasion",
+        "cat_sizing_title": "Sizing & Occasion",
+        "cat_sizing_dek": "Getting the fit right, and finding the piece for your moment — bridal or otherwise.",
+        "cat_ordering_num": "03 — Ordering",
+        "cat_ordering_title": "Ordering & Policy",
+        "cat_ordering_dek": "What a piece costs, how long it takes, and what's possible to change along the way.",
+        "cat_shipping_num": "04 — After Ordering",
+        "cat_shipping_title": "Shipping & Care",
+        "cat_shipping_dek": "From our studio to your door, and how to keep a piece beautiful for years after.",
+        "empty_title": "We couldn't find a match for that.",
+        "empty_body": "Our styling concierge would love to help directly — send us your question and we'll answer personally, usually within the day.",
+        "empty_cta_label": "Ask Our Styling Concierge"
+      },
+      "blocks": {
+        "q1": {
+          "type": "question",
+          "settings": {
+            "category": "corset",
+            "question": "What is a corset lehenga?",
+            "answer": "<p>A corset lehenga pairs a structured, boned bodice with a lehenga skirt — it's a different construction from a traditional lehenga blouse, not just a styling variation of one. A conventional blouse is cut and stitched to follow the body; a corset is built with boning and structured lining to hold its own shape and, in doing so, shape the wearer — defining the waist, supporting the bust and rib cage, and holding its line through a full evening of standing, sitting, and dancing.</p><p>For a closer look at what separates the two, see K&amp;A's Journal piece, <a href=\"/blogs/news/corset-lehenga-reconsidered\"><em>The Corset Lehenga, Reconsidered: Structure as Bridal Statement</em></a>.</p>"
+          }
+        },
+        "q2": {
+          "type": "question",
+          "settings": {
+            "category": "corset",
+            "question": "What makes a corset \"structured\" — and how is that different from a corset-style blouse?",
+            "answer": "<p>Structure is a construction method, not a look. A genuinely structured corset uses boning (rigid or semi-rigid strips built into internal channels), reinforced lining, and a cut drafted specifically to shape the waist, bust, and rib cage — so the bodice holds its own shape independent of the body inside it. A corset-style blouse can borrow the visual cues (a fitted bodice, a laced front) without any of that internal architecture, which is why it can look structured in a photograph but behave like ordinary fitted fabric the moment you move in it.</p><p>K&amp;A applies this same construction principle — boning, lining, defined cut — across corset lehengas, corset drape sarees, and corset-anchored Indo-Western sets. Full detail in <a href=\"/blogs/news/what-makes-a-corset-structured\"><em>What Makes a Corset \"Structured\": Construction, Fit, and the K&amp;A Approach</em></a>.</p>"
+          }
+        },
+        "q3": {
+          "type": "question",
+          "settings": {
+            "category": "corset",
+            "question": "What's the difference between a corset lehenga and a corset drape saree?",
+            "answer": "<p>The corset construction itself doesn't change between the two — boning, lining, and cut work the same way in both. What changes is what the corset is paired with: a corset lehenga sets the structured bodice above a fitted-waist, often flared or fishtail skirt with its own separate construction, while a corset drape saree sets it above a pre-draped saree silhouette, where the corset frequently anchors the drape itself rather than relying on pleating and tucking alone. Neither is more structured than the other — it comes down to whether you want a lehenga's fuller, more traditional bridal silhouette or a drape saree's leaner, more contemporary line.</p>"
+          }
+        },
+        "q4": {
+          "type": "question",
+          "settings": {
+            "category": "sizing",
+            "question": "How does sizing and fit work?",
+            "answer": "<p>K&amp;A works from a standard XS–XL size chart (bust, waist, and hip measurements) as a starting point, and offers personalised consultations and bespoke fitting appointments at the Santacruz, Mumbai studio — or via video consultation for clients who can't visit in person, including international clients. Because a structured corset does real shaping work — rather than just following your measurements the way a soft blouse does — fit matters more here, not less; working through it directly in a consult is a more reliable way to get the bodice right than sizing from measurements alone.</p><p><a href=\"/pages/contact\">Get in touch to book a consult.</a></p>"
+          }
+        },
+        "q5": {
+          "type": "question",
+          "settings": {
+            "category": "sizing",
+            "question": "What occasions do K&A pieces suit?",
+            "answer": "<p>K&amp;A's range covers the full arc of a wedding calendar — bridal wear for the wedding day itself, and pieces built for sangeet, mehendi, reception, and cocktail moments, in both fuller bridal silhouettes (lehengas) and leaner, more contemporary ones (drape sarees, Indo-Western sets).</p>"
+          }
+        },
+        "q6": {
+          "type": "question",
+          "settings": {
+            "category": "ordering",
+            "question": "What is K&A's price range?",
+            "answer": "<p>K&amp;A's pieces range from ₹30,000 to ₹280,000+, depending on the piece, embellishment density, and construction complexity. This is a considered, high-involvement purchase rather than an entry-level one — K&amp;A doesn't run discount or sale pricing.</p>"
+          }
+        },
+        "q7": {
+          "type": "question_timeline",
+          "settings": {
+            "category": "ordering",
+            "question": "Is a K&A piece made-to-order, and how long does it take?",
+            "intro": "<p>Yes — K&amp;A pieces are mostly made-to-order; ready-to-ship inventory is the exception, not the norm. Timelines vary by category:</p>",
+            "lead_drapes": "Drapes and corset drape sarees — 20–25 working days",
+            "lead_indowestern": "Indo-Western sets — 30–35 working days",
+            "lead_lehengas": "Lehengas — 40–45 working days",
+            "outro": "<p>Shipped free worldwide via DHL Express. Worth building that lead time into planning around a wedding date.</p>"
+          }
+        },
+        "q8": {
+          "type": "question",
+          "settings": {
+            "category": "ordering",
+            "question": "Can I customize the color, embellishment, or fit of an existing design?",
+            "answer": "<p>In some cases, yes — customizing the color, embellishment, or fit of an existing design is possible depending on the specific request and the design team's assessment of what's feasible. It's evaluated case-by-case rather than guaranteed for every piece, so it's best discussed directly in a consultation.</p>"
+          }
+        },
+        "q9": {
+          "type": "question",
+          "settings": {
+            "category": "ordering",
+            "question": "What is your return or exchange policy?",
+            "answer": "<p>K&amp;A pieces are made-to-measure, so standard returns and exchanges generally aren't offered. This makes getting sizing and fit right upfront — via a consult, in person or by video — especially worthwhile.</p>"
+          }
+        },
+        "q10": {
+          "type": "question",
+          "settings": {
+            "category": "shipping",
+            "question": "Do you ship internationally?",
+            "answer": "<p>Yes — K&amp;A ships worldwide, with free shipping via DHL Express. Delivery timelines depend on category (see Ordering &amp; Policy above); build in that lead time when planning around a wedding date, especially for international delivery.</p>"
+          }
+        },
+        "q11": {
+          "type": "question",
+          "settings": {
+            "category": "shipping",
+            "question": "How should I care for my K&A piece?",
+            "answer": "<p>K&amp;A pieces are dry clean only, given the hand embroidery, embellishment, and structured construction involved.</p>"
+          }
+        }
+      },
+      "block_order": ["q1", "q2", "q3", "q4", "q5", "q6", "q7", "q8", "q9", "q10", "q11"]
+    },
+    "ka-faq-cta": {
+      "type": "ka-appointment",
+      "settings": {
+        "eyebrow": "Still Have a Question?",
+        "title": "We'd Love to Continue\nThis Conversation.",
+        "body": "However specific, however small — our styling concierge and advisors are always glad to help, over WhatsApp or in a private appointment, in the atelier or virtually.",
+        "cta_instore_label": "Ask Our Styling Concierge",
+        "cta_instore_wa_text": "Hi, I have a question about a K&A piece.",
+        "cta_virtual_label": "Book an Appointment",
+        "cta_virtual_wa_text": "Hi, I'd like to book an appointment.",
+        "fallback_image_filename": "appointment-bg.jpg"
+      }
+    },
+    "ka-footer": {
+      "type": "ka-footer",
+      "settings": {
+        "brand_name": "Karishma Ashita",
+        "logo_subline": "Bridal Couture · Mumbai",
+        "tagline": "Bridal couture, handcrafted\nin Mumbai.",
+        "instagram_url": "https://www.instagram.com/karishmaashita",
+        "youtube_url": "https://www.youtube.com/@KarishmaAshita",
+        "pinterest_url": "https://www.pinterest.com/karishmaashita/",
+        "email": "info@karishmaashita.com",
+        "address": "Mumbai, India\nComplimentary worldwide shipping via DHL Express",
+        "news_title": "The Inner Circle",
+        "news_body": "Collection previews, styling notes and private trunk show invitations — delivered quietly to your inbox.",
+        "news_placeholder": "Your email address",
+        "news_submit": "Join",
+        "news_success": "Welcome in. You are one of us now."
+      }
+    }
+  },
+  "order": [
+    "ka-nav",
+    "ka-faq-breadcrumb",
+    "ka-faq-main",
+    "ka-faq-cta",
+    "ka-footer"
+  ]
+}

@@ -1,0 +1,44 @@
+{{ 'ka-collection-breadcrumb.css' | asset_url | stylesheet_tag }}
+
+{%- comment -%}
+  K&A FAQ Breadcrumb
+  Spec: Docs/faq-build-spec.md, Section 3 ("S1 — Breadcrumb").
+  Verbatim reuse of .ka-coll-breadcrumb (assets/ka-collection-breadcrumb.css)
+  per the spec's own explicit instruction — same quiet wayfinding strip
+  already used on Collection, with this page's own two-level trail:
+  "Home / Frequently Asked Questions". Loading ka-collection-breadcrumb.css
+  again here is a harmless duplicate <link> on this page only (browsers
+  dedupe), not a new stylesheet — same accepted pattern already documented
+  in ka-nav.liquid for ka-collection-grid.css.
+
+  This file also inherits that stylesheet's #ka-nav override, which is
+  redundant-but-harmless on this page: the settled/crystallised nav state
+  is already applied unconditionally to every non-home template via the
+  is_home check in sections/ka-nav.liquid (`ka-nav--settled` unless
+  request.page_type == 'index'), confirmed by reading that file directly.
+  No separate override is actually required for FAQ to render with a
+  permanently-settled nav — it already does, automatically, being a
+  non-index page template. Kept for consistency with the spec's explicit
+  "verbatim reuse" instruction; it is a no-op layered on top of the
+  correct existing mechanism, not a second competing one.
+{%- endcomment -%}
+
+<div class="ka-coll-breadcrumb">
+  <div class="ka-coll-breadcrumb__inner">
+    <a href="/">Home</a>
+    <span class="ka-coll-breadcrumb__sep">/</span>
+    <span class="ka-coll-breadcrumb__current">Frequently Asked Questions</span>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "FAQ Breadcrumb",
+  "tag": "div",
+  "class": "ka-faq-breadcrumb-section",
+  "settings": [],
+  "presets": [
+    { "name": "FAQ Breadcrumb" }
+  ]
+}
+{% endschema %}
