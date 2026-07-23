@@ -68,13 +68,6 @@
   filter: sepia(0.10) saturate(0.90) brightness(0.94);
 }
 .ka-stage--ph { background: linear-gradient(135deg, #E9E1D2, #B99B6E); filter: none; }
-.ka-stage__tag {
-  position: absolute; left: 18px; top: 18px;
-  font-family: var(--f-sans); font-size: 0.6rem; letter-spacing: 0.24em; text-transform: uppercase;
-  color: #fff; background: rgba(42,36,32,0.42); padding: 6px 12px;
-  backdrop-filter: blur(3px); -webkit-backdrop-filter: blur(3px);
-  transition: opacity var(--dur-fast);
-}
 .ka-stage__idx {
   position: absolute; left: 18px; bottom: 16px;
   font-family: var(--f-sans); font-size: 0.62rem; letter-spacing: 0.2em; color: #fff;

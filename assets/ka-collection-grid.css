@@ -48,6 +48,12 @@
   background: rgba(26,23,20,0.42);
   opacity: 0;
   transition: opacity var(--dur-fast);
+  /* Veil covers the full image at all times (opacity:0 doesn't disable
+     hit-testing), which was blocking clicks to .ka-p-card__image-link
+     underneath even when invisible. Let clicks pass through the veil
+     itself; only the quick-add button (below) re-enables pointer events
+     so it stays clickable on hover/focus. */
+  pointer-events: none;
 }
 .ka-p-card:hover .ka-p-card__veil { opacity: 1; }
 .ka-p-card__veil-quickadd {
@@ -63,6 +69,7 @@
   cursor: pointer;
   transform: translateY(8px);
   transition: transform var(--dur-med) var(--ease-luxury), background var(--dur-fast), color var(--dur-fast);
+  pointer-events: auto;
 }
 .ka-p-card:hover .ka-p-card__veil-quickadd { transform: translateY(0); }
 .ka-p-card__veil-quickadd:hover { background: white; color: var(--c-charcoal); }
@@ -159,7 +166,7 @@
   .ka-product-grid { grid-template-columns: repeat(2, 1fr); }
 }
 @media (max-width: 600px) {
-  .ka-product-grid { grid-template-columns: repeat(2, 1fr); gap: 2px; padding: var(--s-md) 16px var(--s-md); }
+  .ka-product-grid { grid-template-columns: repeat(2, 1fr); gap: 28px 2px; padding: var(--s-md) 16px var(--s-md); }
   .ka-p-card__info { padding: 14px 2px 0; }
   .ka-editorial-insert__frame { height: 42vh; min-height: 320px; }
 }

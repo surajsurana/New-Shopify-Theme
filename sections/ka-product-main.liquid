@@ -48,7 +48,6 @@
           type="button"
           class="ka-thumb{% if forloop.first %} active{% endif %}"
           data-full="{{ image | image_url: width: 1400 }}"
-          data-tag="{{ image.alt | escape }}"
           aria-label="View image {{ forloop.index }}"
           style="background-image:url('{{ image | image_url: width: 200 }}');"
         ></button>
@@ -63,11 +62,6 @@
       id="ka-stage"
       {% if first_image %}style="background-image:url('{{ first_image | image_url: width: 1400 }}');"{% endif %}
     >
-      {%- if first_image and first_image.alt != blank -%}
-        <span class="ka-stage__tag" id="ka-stage-tag">{{ first_image.alt | escape }}</span>
-      {%- else -%}
-        <span class="ka-stage__tag" id="ka-stage-tag" style="opacity:0;"></span>
-      {%- endif -%}
       <span class="ka-stage__idx" id="ka-stage-idx">01 / {% if product.images.size > 0 %}{{ product.images.size | prepend: '0' | slice: -2, 2 }}{% else %}01{% endif %}</span>
       <span class="ka-stage__zoom" aria-hidden="true">&#10530; Zoom</span>
     </div>
