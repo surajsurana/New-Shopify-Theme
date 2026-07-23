@@ -41,12 +41,16 @@
       <p class="ka-footer__tagline">{{ section.settings.tagline | newline_to_br }}</p>
       <div class="ka-footer__social">
         {%- comment -%}
-          Order: Instagram -> YouTube -> Pinterest -> Concierge (browsing
-          platforms first, in descending order of the brand's actual
-          channel activity per CLAUDE.md, then the pivot from "look" to
-          "ask" last). youtube_url follows the exact same blank-check
-          pattern as instagram_url/pinterest_url — Docs/search-404-footer-
-          build-spec.md §3.2 "YouTube link".
+          Content-channel links only: Instagram -> YouTube -> Pinterest, in
+          descending order of the brand's actual channel activity per
+          CLAUDE.md. youtube_url follows the exact same blank-check pattern
+          as instagram_url/pinterest_url — Docs/search-404-footer-build-
+          spec.md §3.2 "YouTube link". Concierge intentionally does NOT
+          appear in this row — it lives only in the Maison column, per
+          Docs/footer-concierge-dedup-addendum.md (this row is a pure
+          "follow us" row, not a service CTA; a "Concierge" WhatsApp link
+          used to duplicate the Maison column's and the sitewide floating
+          concierge button's job — removed 2026-07-23).
         {%- endcomment -%}
         {% if section.settings.instagram_url != blank %}
           <a href="{{ section.settings.instagram_url }}" target="_blank" rel="noopener">Instagram</a>
@@ -57,7 +61,6 @@
         {% if section.settings.pinterest_url != blank %}
           <a href="{{ section.settings.pinterest_url }}" target="_blank" rel="noopener">Pinterest</a>
         {% endif %}
-        <a href="https://wa.me/{{ settings.whatsapp_number }}" target="_blank" rel="noopener">Concierge</a>
       </div>
     </div>
 
