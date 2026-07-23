@@ -1,15 +1,5 @@
 {{ 'ka-faq-main.css' | asset_url | stylesheet_tag }}
 {%- comment -%}
-  Resync marker 2026-07-22: this file and templates/page.faq.json did
-  not sync to the staging theme on the first push (confirmed via a
-  direct Admin API files() query -- both came back with zero nodes
-  while every other file from the same commit landed correctly, the
-  same failure pattern documented in CLAUDE.md's 2026-07-11 incident
-  note). This trivial edit forces a fresh commit touching this file so
-  the GitHub->Shopify connector has something new to sync.
-{%- endcomment -%}
-
-{%- comment -%}
   K&A FAQ — Intro + Search + Topic Nav + Q&A List
   Spec: Docs/faq-build-spec.md, Section 3 (S2 "Intro + Search", S3 "Topic
   Nav", S4 "FAQ List"). Prototype: Prototypes/faq-v1.html.
@@ -171,7 +161,7 @@
 
 {% schema %}
 {
-  "name": "FAQ — Intro, Topics & List",
+  "name": "FAQ — Intro & List",
   "tag": "section",
   "class": "ka-faq-main-section",
   "settings": [
@@ -229,7 +219,7 @@
   "blocks": [
     {
       "type": "question",
-      "name": "Question (plain answer)",
+      "name": "Question",
       "settings": [
         {
           "type": "select",
@@ -249,7 +239,7 @@
     },
     {
       "type": "question_timeline",
-      "name": "Question (with lead-time list)",
+      "name": "Timeline Question",
       "settings": [
         {
           "type": "paragraph",
@@ -277,7 +267,7 @@
     }
   ],
   "presets": [
-    { "name": "FAQ — Intro, Topics & List" }
+    { "name": "FAQ — Intro & List" }
   ]
 }
 {% endschema %}
