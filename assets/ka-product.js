@@ -10,7 +10,6 @@
   var thumbs = Array.prototype.slice.call(document.querySelectorAll('.ka-thumb'));
   var stage = document.getElementById('ka-stage');
   var stageIdx = document.getElementById('ka-stage-idx');
-  var stageTag = document.getElementById('ka-stage-tag');
   var total = thumbs.length || 1;
   var pad = function (n) { return (n < 10 ? '0' : '') + n; };
 
@@ -21,8 +20,6 @@
       var full = t.getAttribute('data-full');
       if (stage && full) { stage.style.backgroundImage = "url('" + full + "')"; }
       if (stageIdx) { stageIdx.textContent = pad(i + 1) + ' / ' + pad(total); }
-      var tag = t.getAttribute('data-tag') || '';
-      if (stageTag) { stageTag.textContent = tag; stageTag.style.opacity = tag ? 1 : 0; }
     });
   });
 
