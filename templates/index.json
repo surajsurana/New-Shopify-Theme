@@ -48,6 +48,7 @@
     "ka-hero": {
       "type": "ka-hero",
       "settings": {
+        "hero_image": "shopify://shop_images/ruby_re.jpg",
         "eyebrow": "Mumbai — Est. in Craft",
         "title_line1": "Bridal",
         "title_line2": "Couture",
