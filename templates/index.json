@@ -78,17 +78,6 @@
         "image_secondary_2": "shopify://shop_images/Coffee_brown_deep_wine.jpg"
       }
     },
-    "ka-bestsellers": {
-      "type": "ka-bestsellers",
-      "settings": {
-        "eyebrow": "Most Loved",
-        "title": "Signature Pieces",
-        "view_all_label": "View the Signature edit",
-        "view_all_url": "/collections/signature-top-sellers",
-        "collection": "signature-top-sellers",
-        "products_limit": 3
-      }
-    },
     "ka-celebrity": {
       "type": "ka-celebrity",
       "settings": {
@@ -301,7 +290,6 @@
     "ka-hero",
     "ka-manifesto",
     "ka-collection-story",
-    "ka-bestsellers",
     "ka-celebrity",
     "ka-client-diaries",
     "ka-voice-of-bride",
