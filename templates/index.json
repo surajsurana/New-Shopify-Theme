@@ -250,7 +250,7 @@
     "ka-appointment": {
       "type": "ka-appointment",
       "settings": {
-        "image": "shopify://shop_images/Soft_blus_champagne_peach.jpg",
+        "image": "shopify://shop_images/Soft_blus_chamagne_peach.jpg",
         "fallback_image_filename": "appointment-bg.jpg",
         "eyebrow": "The Atelier",
         "title": "Begin with a Conversation.",
