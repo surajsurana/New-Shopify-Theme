@@ -81,6 +81,7 @@
     "ka-celebrity": {
       "type": "ka-celebrity",
       "settings": {
+        "image": "shopify://shop_images/Froze_metallic_re.jpg",
         "eyebrow": "Maison",
         "quote": "“Worn by those who believe a garment should tell a story.”",
         "attribution": ""
