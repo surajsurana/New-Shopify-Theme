@@ -250,9 +250,10 @@
     "ka-appointment": {
       "type": "ka-appointment",
       "settings": {
+        "image": "shopify://shop_images/Soft_blus_champagne_peach.jpg",
         "fallback_image_filename": "appointment-bg.jpg",
         "eyebrow": "The Atelier",
-        "title": "Begin with a\nConversation.",
+        "title": "Begin with a Conversation.",
         "body": "Every K&A bride begins with a private styling session — in our Mumbai atelier or virtually, wherever in the world you are. We listen before we design.",
         "cta_instore_label": "Book In-Store Appointment",
         "cta_instore_url": "/pages/appointments",
