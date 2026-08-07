@@ -159,6 +159,47 @@
 
 <script src="{{ 'ka-faq.js' | asset_url }}" defer></script>
 
+<!-- FAQPage JSON-LD (Docs/specs/2026-08-07-faqpage-schema.md).
+     Looped from the same section.blocks list the visible accordion renders
+     above, so this can never drift from the live Q&A content. Answer text
+     is generated from the same richtext fields via strip_html — plain text,
+     no markup — per FAQPage's Answer.text convention. "question_timeline"
+     blocks (currently just the made-to-order lead-times question) assemble
+     their answer from intro + the three lead-time lines + outro, since that
+     block type splits its answer across separate fields rather than one
+     richtext field. -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {%- for block in section.blocks -%}
+      {%- liquid
+        case block.type
+          when 'question'
+            assign faq_answer = block.settings.answer | strip_html
+          when 'question_timeline'
+            assign faq_answer = block.settings.intro | strip_html
+            assign faq_answer = faq_answer | append: ' ' | append: block.settings.lead_drapes | append: '; ' | append: block.settings.lead_indowestern | append: '; ' | append: block.settings.lead_lehengas | append: '.'
+            assign faq_outro = block.settings.outro | strip_html
+            assign faq_answer = faq_answer | append: ' ' | append: faq_outro
+          else
+            assign faq_answer = ''
+        endcase
+      -%}
+      {
+        "@type": "Question",
+        "name": {{ block.settings.question | json }},
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": {{ faq_answer | strip | json }}
+        }
+      }{% unless forloop.last %},{% endunless %}
+    {%- endfor -%}
+  ]
+}
+</script>
+
 {% schema %}
 {
   "name": "FAQ — Intro & List",
