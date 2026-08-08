@@ -11,6 +11,16 @@
 
   Read time (J4) and category (J2) use the identical computation
   used by snippets/ka-journal-card.liquid and ka-journal-featured.liquid.
+
+  Dek line (B3): sourced from the article's native Excerpt field
+  (article.summary, set in Shopify Admin's Blog posts editor) per
+  spec §3 B3 -- not a custom metafield, since Shopify already ships a
+  purpose-built field for exactly this. Only renders if article.summary
+  is present, so the 0-index Journal state and any summary-less
+  article render no empty markup. section.settings.dek_override still
+  wins if a merchant sets it in the theme editor; the legacy
+  custom.dek_line metafield remains a final fallback for compatibility
+  but is not the primary source.
 {%- endcomment -%}
 
 {%- liquid
@@ -32,6 +42,9 @@
   endif
 
   assign dek_line = section.settings.dek_override
+  if dek_line == blank and article.summary != blank
+    assign dek_line = article.summary | strip_html
+  endif
   if dek_line == blank
     assign dek_line = article.metafields.custom.dek_line
   endif
@@ -121,7 +134,7 @@
       "type": "text",
       "id": "dek_override",
       "label": "Dek line override (italic line under the H1)",
-      "info": "Optional. If left blank, reads from the article's custom.dek_line metafield if set."
+      "info": "Optional. If left blank, reads from the article's native Excerpt field (article.summary) in Shopify Admin, then falls back to the custom.dek_line metafield if set."
     }
   ],
   "presets": [
