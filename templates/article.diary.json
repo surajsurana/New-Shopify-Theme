@@ -30,6 +30,13 @@
  * data-model writeup (blog articles + metafields + metaobjects) and
  * the specific metafield/metaobject definitions that must be created
  * manually in Shopify Admin before any entry can be populated.
+ *
+ * Re-committed 2026-08-10 (deployment-verification re-push): this
+ * file did not sync to the staging theme on the first push despite
+ * committing/pushing cleanly to git -- same silent GitHub->Shopify
+ * sync-failure pattern documented in CLAUDE.md's Deployment
+ * Verification section (real incident, 2026-07-11). Confirmed via
+ * Admin GraphQL theme.files spot-check after this re-push.
  * ------------------------------------------------------------
  */
 {
