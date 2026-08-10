@@ -1,0 +1,53 @@
+{{ 'ka-diary-entry-atelier.css' | asset_url | stylesheet_tag }}
+
+{%- comment -%}
+  K&A Client Diaries — Entry "From the Atelier". Docs/client-diaries-
+  build-spec.md §3 row B2. K&A's own narrative note about the client
+  (third-person, house voice) — now follows the review.
+
+  Content source: article.metafields.custom.client_diary_atelier_note
+  (multi_line_text_field) — spec field 5. This metafield DEFINITION
+  does not exist yet on this store as of this build; see sections/
+  ka-diary-featured.liquid header comment for the full gap writeup.
+  Until it's created and populated, this section safely renders
+  nothing (not a placeholder) for every entry.
+
+  F3 gate: renders nothing unless client_diary_consent is explicitly
+  true, same as every other entry section except the Hero.
+
+  Re-committed 2026-08-10 (deployment-verification re-push): this
+  file did not sync to the staging theme on the first push. See
+  templates/article.diary.json header comment for the same note.
+{%- endcomment -%}
+
+{%- liquid
+  assign is_consented = false
+  if article.metafields.custom.client_diary_consent == true
+    assign is_consented = true
+  endif
+  assign note = article.metafields.custom.client_diary_atelier_note
+-%}
+
+{%- if is_consented and note != blank -%}
+  <section class="e-atelier" aria-label="From the Atelier">
+    <p class="eyebrow eyebrow--muted e-atelier__label reveal">From the Atelier</p>
+    <p class="e-atelier__text reveal reveal-delay-1">{{ note }}</p>
+    <p class="e-atelier__attr reveal reveal-delay-2">Karishma &amp; Ashita</p>
+  </section>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "Diary Entry — From the Atelier",
+  "tag": "section",
+  "settings": [
+    {
+      "type": "paragraph",
+      "content": "Reads from the entry's custom.client_diary_atelier_note metafield (multi-line text). Renders nothing unless both that metafield and the consent-to-publish metafield are set."
+    }
+  ],
+  "presets": [
+    { "name": "Diary Entry — From the Atelier" }
+  ]
+}
+{% endschema %}
