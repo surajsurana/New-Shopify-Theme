@@ -1,0 +1,83 @@
+{{ 'ka-diary-mast.css' | asset_url | stylesheet_tag }}
+{{ 'ka-animations.css' | asset_url | stylesheet_tag }}
+
+{%- comment -%}
+  K&A Client Diaries Index Masthead — Docs/client-diaries-build-spec.md
+  §2 row 1. Deliberately NOT a reuse of sections/ka-hero.liquid or the
+  About/Home brand-statement register: shorter (80svh) and CENTRED,
+  reading as a magazine title/contents page — same register as
+  sections/ka-journal-masthead.liquid, mirrored here with Client
+  Diaries' own two-line title treatment (italic display lead + a
+  smaller descriptive sub-line) from the approved prototype.
+
+  Occasion breadth (Bridal, sangeet, Karva Chauth, Ganpati, Diwali) is
+  named explicitly in the subtitle so the page never silently reads
+  as bridal-only, per spec §1/§2.
+{%- endcomment -%}
+
+<header class="cd-mast" aria-label="Client Diaries">
+  <div class="cd-mast__bg reveal-img" id="cdMastBg">
+    {%- if section.settings.image != blank -%}
+      <img
+        src="{{ section.settings.image | image_url: width: 1800 }}"
+        alt="{{ section.settings.image.alt | escape | default: 'A K&A client, real story' }}"
+        loading="eager"
+        fetchpriority="high"
+        width="1800"
+        height="1200"
+        class="img-filter-editorial"
+      />
+    {%- else -%}
+      <img
+        src="{{ 'cd-simran-maroon-3.jpg' | asset_url }}"
+        alt="A K&A client walking a candlelit aisle in a hand-embellished maroon gown"
+        loading="eager"
+        fetchpriority="high"
+        width="1800"
+        height="1200"
+        class="img-filter-editorial"
+      />
+    {%- endif -%}
+  </div>
+  <div class="cd-mast__overlay"></div>
+  <div class="cd-mast__content">
+    <p class="eyebrow eyebrow--on-dark cd-mast__eyebrow">{{ section.settings.eyebrow }}</p>
+    <h1 class="cd-mast__title">
+      <span class="lead">{{ section.settings.title_lead }}</span>
+      <span class="main">{{ section.settings.title_sub }}</span>
+    </h1>
+    <p class="cd-mast__sub">{{ section.settings.subtitle }}</p>
+  </div>
+  <div class="cd-mast__scroll" aria-hidden="true"><span>Scroll</span><div class="cd-mast__scroll-line"></div></div>
+</header>
+
+<script>
+  (function () {
+    var bg = document.getElementById('cdMastBg');
+    if (bg) {
+      requestAnimationFrame(function () { requestAnimationFrame(function () { bg.classList.add('loaded'); }); });
+    }
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "Diaries Masthead",
+  "tag": "header",
+  "settings": [
+    { "type": "image_picker", "id": "image", "label": "Masthead image", "info": "Falls back to cd-simran-maroon-3.jpg if none is chosen." },
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "Real Clients · Real Occasions" },
+    { "type": "text", "id": "title_lead", "label": "Title — italic lead line", "default": "Client Diaries" },
+    { "type": "text", "id": "title_sub", "label": "Title — smaller descriptive sub-line", "default": "Every K&A story, told by the woman who lived it" },
+    {
+      "type": "textarea",
+      "id": "subtitle",
+      "label": "Subtitle",
+      "default": "Weddings, sangeets, Karva Chauth, Ganpati, Diwali — every occasion a K&A piece has stood beside someone she loves. Told in her words, and ours."
+    }
+  ],
+  "presets": [
+    { "name": "Diaries Masthead" }
+  ]
+}
+{% endschema %}

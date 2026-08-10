@@ -1,0 +1,32 @@
+{{ 'ka-diary-intro.css' | asset_url | stylesheet_tag }}
+
+{%- comment -%}
+  K&A Client Diaries Index — Intro Statement. Docs/client-diaries-
+  build-spec.md §2 row 2. A single centred italic quote widening
+  scope beyond bridal before any browsing UI appears.
+{%- endcomment -%}
+
+<section class="cd-intro" aria-label="About the Client Diaries">
+  <div class="cd-intro__rule reveal"></div>
+  <p class="cd-intro__quote reveal reveal-delay-1">{{ section.settings.quote }}</p>
+  <p class="cd-intro__attr reveal reveal-delay-2">{{ section.settings.attribution }}</p>
+</section>
+
+{% schema %}
+{
+  "name": "Diaries Intro Statement",
+  "tag": "section",
+  "settings": [
+    {
+      "type": "textarea",
+      "id": "quote",
+      "label": "Quote",
+      "default": "Not every diary entry begins at the altar. Some begin at a sangeet, a Karva Chauth thali, or a Ganpati visarjan — each one a client, a moment, and a piece made only for her."
+    },
+    { "type": "text", "id": "attribution", "label": "Attribution", "default": "The K&A Atelier" }
+  ],
+  "presets": [
+    { "name": "Diaries Intro Statement" }
+  ]
+}
+{% endschema %}

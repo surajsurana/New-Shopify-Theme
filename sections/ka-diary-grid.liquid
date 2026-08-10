@@ -1,0 +1,86 @@
+{{ 'ka-diary-grid.css' | asset_url | stylesheet_tag }}
+
+{%- comment -%}
+  K&A Client Diaries — Index Diary Grid. Docs/client-diaries-build-
+  spec.md §2 row 5. Real, dynamic Shopify blog articles — no
+  fabricated placeholder cards, matching sections/ka-journal-grid.
+  liquid's own explicitly-documented refusal to invent content.
+
+  Excludes: (a) the article shown by sections/ka-diary-featured.
+  liquid (matched by ID, identical exclusion logic to the Journal),
+  (b) any article whose client_diary_consent metafield is not
+  explicitly true (F3 publishing gate — see ka-diary-featured.liquid's
+  header comment for the full data-model writeup).
+
+  Empty state: shown whenever zero non-featured, consented entries
+  exist (true today — only Simran is live, and she is the Featured
+  Diary) — "More diaries are being written," per spec §2 row 5,
+  never a fabricated card.
+{%- endcomment -%}
+
+{%- liquid
+  assign diary_blog = blogs[section.settings.blog_handle]
+  assign featured_article = blank
+  if diary_blog != blank
+    for a in diary_blog.articles
+      if a.metafields.custom.client_diary_consent == true and a.tags contains 'featured'
+        assign featured_article = a
+        break
+      endif
+    endfor
+    if featured_article == blank
+      for a in diary_blog.articles
+        if a.metafields.custom.client_diary_consent == true
+          assign featured_article = a
+          break
+        endif
+      endfor
+    endif
+  endif
+-%}
+
+<div class="cd-grid-wrap">
+  <div class="cd-grid" id="diaryGrid">
+    {%- if diary_blog != blank -%}
+      {%- for article in diary_blog.articles -%}
+        {%- if article.metafields.custom.client_diary_consent == true and article.id != featured_article.id -%}
+          {%- render 'ka-diary-card', article: article, extra_class: 'reveal-img' -%}
+        {%- endif -%}
+      {%- endfor -%}
+    {%- endif -%}
+  </div>
+
+  <div class="cd-empty is-visible" id="diaryEmpty">
+    <h3 class="cd-empty__title">More diaries are being written.</h3>
+    <p class="cd-empty__body">We add a new client story only once she has seen and approved it — never before. Simran's Diary, above, is the first of many still to come.</p>
+  </div>
+</div>
+
+<script>
+  (function () {
+    var grid = document.getElementById('diaryGrid');
+    var emptyState = document.getElementById('diaryEmpty');
+    if (!grid || !emptyState) return;
+    var hasCards = grid.querySelectorAll('.cd-card').length > 0;
+    emptyState.classList.toggle('is-visible', !hasCards);
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "Diaries Grid",
+  "tag": "div",
+  "settings": [
+    {
+      "type": "text",
+      "id": "blog_handle",
+      "label": "Client Diaries blog handle",
+      "default": "client-diaries",
+      "info": "Advanced. Must exactly match the handle of the Shopify blog used for Client Diaries entries."
+    }
+  ],
+  "presets": [
+    { "name": "Diaries Grid" }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,37 @@
+/* =================================================================
+   K&A CLIENT DIARIES — LOOK SPREADS (repeatable) (.look)
+   Docs/client-diaries-build-spec.md §3 row C. Full-bleed alternating
+   image/text spreads, one per outfit. Image side flexes from 1 to N
+   photos via a simple sub-grid (--1 / --3 variants — matches however
+   many images that Look's metaobject list actually holds; see
+   snippets/ka-diary-look-spread.liquid for how the variant is chosen).
+================================================================= */
+.look { display: grid; grid-template-columns: 1.15fr 0.85fr; min-height: 78vh; overflow: hidden; background: var(--c-paper-deep); }
+.look--reverse { grid-template-columns: 0.85fr 1.15fr; }
+.look--reverse .look__images { order: 2; }
+.look--reverse .look__text { order: 1; }
+.look__images { position: relative; display: grid; gap: 2px; grid-auto-flow: column; }
+.look__images--1 { grid-template-columns: 1fr; }
+.look__images--2 { grid-template-columns: 1fr 1fr; }
+.look__images--3 { grid-template-columns: 1.3fr 1fr 1fr; }
+.look__images--4,
+.look__images--5 { grid-template-columns: repeat(var(--look-img-count, 3), 1fr); }
+.look__img { position: relative; overflow: hidden; min-height: 340px; }
+.look__number {
+  position: absolute; top: 24px; left: 24px; z-index: 1;
+  font-family: var(--f-display); font-style: italic; font-size: 1.1rem; color: white;
+  background: rgba(26,23,20,0.55); width: 38px; height: 38px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+}
+.look__text { padding: var(--s-2xl) clamp(32px,5vw,72px); display: flex; flex-direction: column; justify-content: center; }
+.look__eyebrow { margin-bottom: 18px; }
+.look__title { font-family: var(--f-display); font-size: clamp(1.9rem,3.2vw,2.7rem); font-weight: 400; font-style: italic; color: var(--c-charcoal); line-height: 1.12; max-width: 440px; }
+.look__desc { margin-top: 22px; max-width: 440px; font-family: var(--f-sans); font-size: var(--t-body-l); font-weight: 300; line-height: 1.9; color: var(--c-ink-mid); }
+.look__cta { margin-top: 30px; }
+@media (max-width: 900px) {
+  .look, .look--reverse { grid-template-columns: 1fr; min-height: auto; }
+  .look--reverse .look__images, .look--reverse .look__text { order: initial; }
+  .look__images--2, .look__images--3, .look__images--4, .look__images--5 { grid-auto-flow: row; grid-template-columns: 1fr; }
+  .look__img { min-height: auto; aspect-ratio: 3/4; }
+  .look__text { padding: var(--s-xl) 20px; }
+}

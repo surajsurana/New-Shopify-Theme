@@ -1,0 +1,10 @@
+/* =================================================================
+   K&A CLIENT DIARIES — ENTRY "FROM THE ATELIER" (e-atelier)
+   Docs/client-diaries-build-spec.md §3 row B2. K&A's own narrative
+   note about the client — now follows the review. Centred italic
+   text column, --max-text width, quiet eyebrow.
+================================================================= */
+.e-atelier { max-width: var(--max-text); margin: 0 auto; padding: var(--s-2xl) var(--gutter) var(--s-xl); }
+.e-atelier__label { text-align: center; margin-bottom: 28px; }
+.e-atelier__text { font-family: var(--f-display); font-style: italic; font-size: clamp(1.3rem,2.4vw,1.7rem); color: var(--c-charcoal); line-height: 1.7; text-align: center; }
+.e-atelier__attr { text-align: center; margin-top: 22px; font-family: var(--f-sans); font-size: 0.68rem; letter-spacing: 0.16em; text-transform: uppercase; color: var(--c-ink-muted); }

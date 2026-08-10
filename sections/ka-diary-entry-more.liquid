@@ -1,0 +1,119 @@
+{{ 'ka-diary-entry-more.css' | asset_url | stylesheet_tag }}
+{{ 'ka-diary-grid.css' | asset_url | stylesheet_tag }}
+
+{%- comment -%}
+  K&A Client Diaries — Entry "More Diaries / Share". Docs/client-
+  diaries-build-spec.md §3 row E. Mirrors sections/ka-article-
+  related.liquid's "More From the Journal" pattern exactly: same-
+  occasion first, most-recent fill, current entry always excluded,
+  only consented entries considered. When none exist (true today),
+  shows the graceful empty-state copy + WhatsApp Share Your Story CTA
+  instead of an empty grid — identical posture to the Journal.
+
+  This section is NOT consent-gated on the CURRENT article the way
+  the other entry sections are, because per spec it must still render
+  its closer copy + WhatsApp CTA even in the (should-be-impossible)
+  case consent was revoked after publish — it never displays the
+  current article's own name/image, only other (already-consented)
+  entries' cards.
+{%- endcomment -%}
+
+{%- liquid
+  assign diary_blog = article.blog
+  assign limit = section.settings.entries_limit | default: 3
+  assign current_occasion = ''
+  if article.tags contains 'Bridal'
+    assign current_occasion = 'Bridal'
+  elsif article.tags contains 'Sangeet & Cocktail'
+    assign current_occasion = 'Sangeet & Cocktail'
+  elsif article.tags contains 'Festive'
+    assign current_occasion = 'Festive'
+  elsif article.tags contains 'Mother & Family'
+    assign current_occasion = 'Mother & Family'
+  endif
+
+  assign shown = 0
+  assign shown_ids = ''
+  for a in diary_blog.articles
+    assign a_marker = a.id | append: ','
+    assign already_shown = false
+    if shown_ids contains a_marker
+      assign already_shown = true
+    endif
+    if shown < limit and a.id != article.id and already_shown == false and a.metafields.custom.client_diary_consent == true and current_occasion != '' and a.tags contains current_occasion
+      assign shown = shown | plus: 1
+      assign shown_ids = shown_ids | append: a_marker
+    endif
+  endfor
+  for a in diary_blog.articles
+    assign a_marker = a.id | append: ','
+    assign already_shown = false
+    if shown_ids contains a_marker
+      assign already_shown = true
+    endif
+    if shown < limit and a.id != article.id and already_shown == false and a.metafields.custom.client_diary_consent == true
+      assign shown = shown | plus: 1
+      assign shown_ids = shown_ids | append: a_marker
+    endif
+  endfor
+-%}
+
+{%- if shown > 0 -%}
+  <section aria-label="More Client Diaries">
+    <div class="e-more" style="padding-bottom: var(--s-lg);">
+      <h2 class="e-more__title reveal">More Client Diaries</h2>
+    </div>
+    <div class="e-more-grid">
+      {%- assign printed_ids = '' -%}
+      {%- for a in diary_blog.articles -%}
+        {%- assign a_marker = a.id | append: ',' -%}
+        {%- assign already_printed = false -%}
+        {%- if printed_ids contains a_marker -%}{%- assign already_printed = true -%}{%- endif -%}
+        {%- if shown_ids contains a_marker and already_printed == false -%}
+          {%- render 'ka-diary-card', article: a, extra_class: 'reveal-img' -%}
+          {%- assign printed_ids = printed_ids | append: a_marker -%}
+        {%- endif -%}
+      {%- endfor -%}
+    </div>
+    <div class="e-more" style="padding-top: 0;">
+      <div class="e-more__links reveal">
+        <a href="{{ section.settings.index_url | default: '/pages/client-diaries' }}" class="text-link">Back to Client Diaries</a>
+      </div>
+    </div>
+  </section>
+{%- else -%}
+  <section class="e-more" aria-label="More Client Diaries">
+    <h2 class="e-more__title reveal">More Diaries Are Being Written.</h2>
+    <p class="e-more__body reveal reveal-delay-1">{{ section.settings.empty_body }}</p>
+    <div class="e-more__links reveal reveal-delay-2">
+      <a href="{{ section.settings.index_url | default: '/pages/client-diaries' }}" class="text-link">Back to Client Diaries</a>
+      {%- if settings.whatsapp_number != blank -%}
+        {%- liquid
+          assign wa_message = "Hi, I'm a K&A client and I'd love to share my story for the Client Diaries" | url_param_escape
+          assign wa_share_url = 'https://wa.me/' | append: settings.whatsapp_number | append: '?text=' | append: wa_message
+        -%}
+        <a href="{{ wa_share_url }}" class="text-link" target="_blank" rel="noopener">Share Your Story on WhatsApp &rarr;</a>
+      {%- endif -%}
+    </div>
+  </section>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "Diary Entry — More Diaries",
+  "tag": "div",
+  "settings": [
+    { "type": "url", "id": "index_url", "label": "Client Diaries index URL", "info": "Defaults to /pages/client-diaries." },
+    { "type": "range", "id": "entries_limit", "label": "Max related entries shown", "min": 2, "max": 4, "step": 1, "default": 3 },
+    {
+      "type": "textarea",
+      "id": "empty_body",
+      "label": "Empty-state body copy",
+      "default": "Simran's is the first Client Diary — many more are on their way. If you wore K&A for your own celebration, we'd love to feature your story too."
+    }
+  ],
+  "presets": [
+    { "name": "Diary Entry — More Diaries" }
+  ]
+}
+{% endschema %}

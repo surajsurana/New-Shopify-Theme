@@ -7,11 +7,19 @@
  * More From the Journal -> Appointment CTA (reused ka-appointment)
  * -> Footer.
  *
- * Applies to every article in every blog on this theme (Shopify
- * default — there is only one blog, handle "news", per Flag J8),
- * including /blogs/news/corset-lehenga-reconsidered and the 3
- * already-published 2024 articles, which start resolving correctly
- * the moment this template deploys.
+ * Applies to every article in every blog on this theme by DEFAULT
+ * (Shopify's own default-template behaviour), including
+ * /blogs/news/corset-lehenga-reconsidered and the 3 already-
+ * published 2024 articles.
+ *
+ * UPDATE 2026-08-10 (Docs/client-diaries-build-spec.md): a second
+ * blog, handle "client-diaries", now also exists on this theme for
+ * Client Diaries entries. Its articles must NOT use this default
+ * template — each Client Diaries article needs the alternate
+ * "diary" template (templates/article.diary.json) assigned manually
+ * per-article in Shopify Admin (Blog posts -> article -> Theme
+ * template -> "diary"). Until that's set on a given article, it will
+ * incorrectly render with this Journal template instead.
  * ------------------------------------------------------------
  */
 {

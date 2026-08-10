@@ -1,0 +1,17 @@
+/* =================================================================
+   K&A CLIENT DIARIES — ENTRY "MORE DIARIES / SHARE" (e-more)
+   Docs/client-diaries-build-spec.md §3 row E. Mirrors the Journal's
+   "More From the Journal" pattern — related cards when other
+   entries exist (assets/ka-journal-card.css .ka-j-card reused via
+   snippets/ka-diary-card.liquid), graceful empty state otherwise.
+================================================================= */
+.e-more { max-width: 640px; margin: 0 auto; padding: var(--s-2xl) var(--gutter); text-align: center; }
+.e-more__title { font-family: var(--f-display); font-style: italic; font-size: clamp(1.6rem,2.8vw,2.1rem); color: var(--c-charcoal); margin-bottom: 18px; }
+.e-more__body { font-family: var(--f-sans); font-size: 0.85rem; color: var(--c-ink-mid); line-height: 1.85; margin-bottom: 30px; }
+.e-more__links { display: flex; align-items: center; justify-content: center; gap: 28px; flex-wrap: wrap; }
+
+/* When related diary cards exist, presented as a wider strip above
+   the closer copy — reuses .ka-j-card's grid conventions directly. */
+.e-more-grid { max-width: var(--max-wide); margin: 0 auto; padding: 0 var(--gutter) var(--s-lg); display: grid; grid-template-columns: repeat(3, 1fr); gap: clamp(24px,3vw,40px); }
+@media (max-width: 900px) { .e-more-grid { grid-template-columns: repeat(2,1fr); } }
+@media (max-width: 600px) { .e-more-grid { grid-template-columns: 1fr; padding: 0 20px var(--s-md); } }

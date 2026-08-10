@@ -1,0 +1,70 @@
+{%- comment -%}
+  ka-diary-look-spread.liquid — renders one .look full-bleed
+  alternating spread from a "client_diary_look" metaobject. Docs/
+  client-diaries-build-spec.md §3 row C, §4 field 6.
+
+  Params (all required except reverse):
+    look    — a "client_diary_look" metaobject (fields: look_name,
+              look_description, look_images [list of file refs,
+              images only], cta_label, category_link, product_link)
+    index   — 1-based integer, this look's position (numbered badge
+              + "Look One"/"Look Two"/... eyebrow)
+    reverse — true/false, alternates .look / .look--reverse by
+              odd/even index (image always leads on mobile
+              regardless — see assets/ka-diary-entry-looks.css)
+{%- endcomment -%}
+
+{%- liquid
+  assign ordinal_words = 'One,Two,Three,Four,Five,Six,Seven,Eight,Nine,Ten' | split: ','
+  assign ordinal_index = index | minus: 1
+  assign ordinal_word = ordinal_words[ordinal_index] | default: index
+
+  assign images = look.look_images
+  assign image_count = images.size
+  if image_count == 0
+    assign image_count = 1
+  endif
+  assign images_class = 'look__images--' | append: image_count
+
+  assign cta_url = look.category_link
+  if look.product_link != blank
+    assign cta_url = look.product_link.url
+  endif
+  assign cta_label = look.cta_label
+  if cta_label == blank
+    assign cta_label = 'Explore the Collection'
+  endif
+-%}
+
+<section class="look{% if reverse %} look--reverse{% endif %}" data-look="{{ index }}">
+  <div class="look__images {{ images_class }}" style="--look-img-count: {{ image_count }};">
+    {%- if image_count > 0 and images.size > 0 -%}
+      {%- for img in images -%}
+        <div class="look__img reveal-img">
+          {%- if forloop.first -%}<span class="look__number">{{ index }}</span>{%- endif -%}
+          <img
+            src="{{ img.image | image_url: width: 1200 }}"
+            alt="{{ img.image.alt | escape | default: look.look_name | escape }}"
+            loading="lazy"
+            width="1200"
+            height="1500"
+            class="img-filter-editorial"
+          />
+        </div>
+      {%- endfor -%}
+    {%- else -%}
+      <div class="look__img reveal-img">
+        <span class="look__number">{{ index }}</span>
+        <img src="{{ 'cd-simran-gold.jpg' | asset_url }}" alt="{{ look.look_name | escape }}" loading="lazy" width="1200" height="1500" class="img-filter-editorial" />
+      </div>
+    {%- endif -%}
+  </div>
+  <div class="look__text">
+    <p class="eyebrow eyebrow--muted look__eyebrow reveal">Look {{ ordinal_word }}</p>
+    <h2 class="look__title reveal reveal-delay-1">{{ look.look_name }}</h2>
+    {%- if look.look_description != blank -%}<p class="look__desc reveal reveal-delay-2">{{ look.look_description }}</p>{%- endif -%}
+    {%- if cta_url != blank -%}
+      <div class="look__cta reveal reveal-delay-3"><a href="{{ cta_url }}" class="text-link">{{ cta_label }} &rarr;</a></div>
+    {%- endif -%}
+  </div>
+</section>

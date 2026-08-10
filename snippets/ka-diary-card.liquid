@@ -1,0 +1,70 @@
+{%- comment -%}
+  ka-diary-card.liquid — shared .cd-card renderer, mirroring snippets/
+  ka-journal-card.liquid's role for the Journal. Reused by sections/
+  ka-diary-grid.liquid (Index grid) and sections/ka-diary-entry-more.
+  liquid ("More Diaries"). Styling lives in assets/ka-diary-grid.css
+  (.cd-card) — entry-more.liquid additionally loads that same file.
+
+  Params (all required except extra_class):
+    article     — a Shopify article object (already consent-checked
+                  by the caller — this snippet does not re-check, so
+                  callers must never pass an unconsented article)
+    extra_class — optional string appended to the outer <article>
+                  class (used for .reveal-img)
+{%- endcomment -%}
+
+{%- liquid
+  assign occasion_label = 'Client Diary'
+  assign occasion_handle = ''
+  if article.tags contains 'Bridal'
+    assign occasion_label = 'Bridal'
+    assign occasion_handle = 'bridal'
+  elsif article.tags contains 'Sangeet & Cocktail'
+    assign occasion_label = 'Sangeet & Cocktail'
+    assign occasion_handle = 'sangeet-cocktail'
+  elsif article.tags contains 'Festive'
+    assign occasion_label = 'Festive'
+    assign occasion_handle = 'festive'
+  elsif article.tags contains 'Mother & Family'
+    assign occasion_label = 'Mother & Family'
+    assign occasion_handle = 'mother-family'
+  endif
+
+  assign entry_year = article.metafields.custom.client_diary_year
+  if entry_year == blank
+    assign entry_year = article.published_at | date: '%Y'
+  endif
+
+  assign looks = article.metafields.custom.client_diary_looks
+  assign look_count = looks.size
+
+  assign first_name = article.title | split: ' ' | first
+
+  assign card_image = article.image
+  if card_image == blank and look_count > 0
+    assign card_image = looks.first.look_images.first.image
+  endif
+-%}
+
+<article class="cd-card{% if extra_class %} {{ extra_class }}{% endif %}" data-occasion="{{ occasion_handle }}">
+  <a href="{{ article.url }}" class="cd-card__image">
+    <span class="cd-card__tag">{{ occasion_label }}</span>
+    {%- if look_count > 0 -%}<span class="cd-card__looks">{{ look_count }} Look{% if look_count != 1 %}s{% endif %}</span>{%- endif -%}
+    {%- if card_image != blank -%}
+      <img
+        src="{{ card_image | image_url: width: 800 }}"
+        alt="{{ card_image.alt | escape | default: article.title | escape }}"
+        loading="lazy"
+        width="800"
+        height="1067"
+        class="img-filter-editorial"
+      />
+    {%- else -%}
+      <img src="{{ 'cd-simran-pink.jpg' | asset_url }}" alt="{{ article.title | escape }}" loading="lazy" width="800" height="1067" class="img-filter-editorial" />
+    {%- endif -%}
+  </a>
+  <div class="cd-card__info">
+    <h3 class="cd-card__name"><a href="{{ article.url }}">{{ first_name }}&rsquo;s Diary</a></h3>
+    <p class="cd-card__meta">{{ occasion_label }} <span>&middot;</span> {{ entry_year }}</p>
+  </div>
+</article>
