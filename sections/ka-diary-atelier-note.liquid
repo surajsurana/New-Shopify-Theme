@@ -15,9 +15,14 @@
   F3 gate: renders nothing unless client_diary_consent is explicitly
   true, same as every other entry section except the Hero.
 
-  Re-committed 2026-08-10 (deployment-verification re-push): this
-  file did not sync to the staging theme on the first push. See
-  templates/article.diary.json header comment for the same note.
+  RESOLVED 2026-08-10: this file (plus 2 sibling entry sections and
+  templates/article.diaryentry.json) failed to sync from GitHub to
+  staging across several attempts. Root cause confirmed via a direct
+  themeFilesUpsert diagnostic call: the schema "name" field exceeded
+  Shopify's real 25-character hard limit ("Diary Entry — From the
+  Atelier", 30 chars) -- the GitHub sync path rejects this silently,
+  the Admin API surfaces it clearly. Same mechanism as the July 2026
+  FAQ incident (CLAUDE.md). Fixed by shortening name/preset name.
 {%- endcomment -%}
 
 {%- liquid
@@ -38,7 +43,7 @@
 
 {% schema %}
 {
-  "name": "Diary Entry — From the Atelier",
+  "name": "From the Atelier",
   "tag": "section",
   "settings": [
     {
@@ -47,7 +52,7 @@
     }
   ],
   "presets": [
-    { "name": "Diary Entry — From the Atelier" }
+    { "name": "From the Atelier" }
   ]
 }
 {% endschema %}

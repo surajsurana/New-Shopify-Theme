@@ -31,19 +31,24 @@
  * the specific metafield/metaobject definitions that must be created
  * manually in Shopify Admin before any entry can be populated.
  *
- * RENAMED 2026-08-11: the original filenames (article.diary.json,
- * ka-diary-entry-atelier/looks/more.liquid) persistently failed to
- * sync from GitHub to Shopify across three separate attempts -- two
- * git pushes, a delete+recreate, AND a full GitHub disconnect/
- * reconnect of the staging theme (which fully recreates the theme
- * from scratch). Since even a from-scratch resync still excluded
- * exactly these files, the working theory is a stuck sync state tied
- * to these specific filenames on Shopify's side, not a timing issue.
- * Renamed this file and its 3 previously-stuck section dependencies
- * to test that theory. IMPORTANT: this template's alternate-template
- * suffix is now "diaryentry" (was "diary") -- when assigning this
- * template to an article in Shopify Admin (Blog posts -> [entry] ->
- * Theme template), select "diaryentry", not "diary".
+ * RENAMED 2026-08-11 (article.diary.json -> article.diaryentry.json,
+ * ka-diary-entry-atelier/looks/more.liquid -> ka-diary-atelier-note/
+ * looks-spreads/more-share.liquid): at the time, this was a guess to
+ * work around a persistent GitHub->staging sync failure (filenames
+ * kept as-is below since reverting them isn't necessary now that the
+ * real cause is known -- "diaryentry" remains the correct
+ * alternate-template suffix to select in Shopify Admin).
+ *
+ * ROOT CAUSE FOUND 2026-08-10, same day: NOT a stuck sync state tied
+ * to filenames (that theory was wrong). Confirmed via a direct
+ * themeFilesUpsert diagnostic call against staging: the 3 section
+ * files' schema "name" fields exceeded Shopify's real 25-character
+ * hard limit. The GitHub sync path rejects an over-length schema name
+ * silently (no error anywhere); the Admin API surfaces it clearly.
+ * Since this template references those 3 sections by "type", it also
+ * failed to import as long as they didn't exist in the theme. Same
+ * mechanism as the July 2026 FAQ incident -- see CLAUDE.md. Fixed by
+ * shortening each section's schema/preset name to fit the limit.
  * ------------------------------------------------------------
  */
 {
