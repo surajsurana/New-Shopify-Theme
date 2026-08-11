@@ -28,6 +28,14 @@
   list itself. See sections/ka-diary-looks-spreads.liquid for the
   full writeup. Without this, look_count was always 0 and the hero
   image fallback to the first Look's first photo never fired.
+
+  BUGFIX 2026-08-11 (second, found while verifying the first): the
+  resolved list (.value) supports .size and `for...in` but NOT
+  `.first` or bracket indexing (`looks[0]`) -- both silently return
+  blank on this particular Drop type, confirmed via a live
+  themeFilesUpsert diagnostic. `looks.first.look_images...` therefore
+  always failed even after the .value fix above. Rewritten below as a
+  for-loop with an immediate break, which does work reliably.
 {%- endcomment -%}
 
 <div class="entry-progress" id="entryProgress" aria-hidden="true"></div>
@@ -66,7 +74,16 @@
 
     assign hero_image = article.image
     if hero_image == blank and look_count > 0
-      assign hero_image = looks.first.look_images.value.first.image
+      for first_look in looks
+        assign first_look_images = first_look.look_images.value
+        if first_look_images.size > 0
+          for first_look_img in first_look_images
+            assign hero_image = first_look_img.image
+            break
+          endfor
+        endif
+        break
+      endfor
     endif
   -%}
 

@@ -78,6 +78,12 @@
   for the full writeup, confirmed via a live themeFilesUpsert
   diagnostic against staging.
 
+  BUGFIX 2026-08-11 (second): the resolved list (.value) supports
+  .size and `for...in` but NOT `.first`/bracket indexing -- both
+  silently return blank. hero_image's fallback below uses a for-loop
+  with an immediate break instead of .first, per sections/ka-diary-
+  entry-hero.liquid's full writeup.
+
   METAFIELD/METAOBJECT DEFINITION GAP (flagged per spec §5/F2, same
   category as the Journal's custom.breakout_image gap, 2026-08-08):
   as of this build (2026-08-10), NONE of the definitions above exist
@@ -143,7 +149,16 @@
 
     assign hero_image = featured_article.image
     if hero_image == blank and look_count > 0
-      assign hero_image = looks.first.look_images.value.first.image
+      for first_look in looks
+        assign first_look_images = first_look.look_images.value
+        if first_look_images.size > 0
+          for first_look_img in first_look_images
+            assign hero_image = first_look_img.image
+            break
+          endfor
+        endif
+        break
+      endfor
     endif
 
     assign review_text = featured_article.excerpt | strip_html

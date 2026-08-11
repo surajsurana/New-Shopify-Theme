@@ -15,7 +15,10 @@
   BUGFIX 2026-08-11: client_diary_looks/look_images are LIST-type
   reference fields and need .value to resolve as iterable arrays in
   Liquid -- see sections/ka-diary-looks-spreads.liquid for the full
-  writeup.
+  writeup. Second bugfix: .value's list doesn't support .first/[0]
+  either (silently blank) -- card_image's fallback below uses a
+  for-loop with an immediate break instead, per sections/ka-diary-
+  entry-hero.liquid's full writeup.
 {%- endcomment -%}
 
 {%- liquid
@@ -47,7 +50,16 @@
 
   assign card_image = article.image
   if card_image == blank and look_count > 0
-    assign card_image = looks.first.look_images.value.first.image
+    for first_look in looks
+      assign first_look_images = first_look.look_images.value
+      if first_look_images.size > 0
+        for first_look_img in first_look_images
+          assign card_image = first_look_img.image
+          break
+        endfor
+      endif
+      break
+    endfor
   endif
 -%}
 
