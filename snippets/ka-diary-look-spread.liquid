@@ -1,19 +1,4 @@
-{%- comment -%}
-  ka-diary-look-spread.liquid — renders one .look full-bleed
-  alternating spread from a "client_diary_look" metaobject. Docs/
-  client-diaries-build-spec.md §3 row C, §4 field 6.
-
-  Params (all required except reverse):
-    look    — a "client_diary_look" metaobject (fields: look_name,
-              look_description, look_images [list of file refs,
-              images only], cta_label, category_link, product_link)
-    index   — 1-based integer, this look's position (numbered badge
-              + "Look One"/"Look Two"/... eyebrow)
-    reverse — true/false, alternates .look / .look--reverse by
-              odd/even index (image always leads on mobile
-              regardless — see assets/ka-diary-entry-looks.css)
-{%- endcomment -%}
-
+<!-- SNIPDEBUG look_name={{ look.look_name }} images_bare_size={{ look.look_images.size }} images_bare_class={{ look.look_images.class }} images_value_size={{ look.look_images.value.size }} images_value_class={{ look.look_images.value.class }} SNIPDEBUG END -->
 {%- liquid
   assign ordinal_words = 'One,Two,Three,Four,Five,Six,Seven,Eight,Nine,Ten' | split: ','
   assign ordinal_index = index | minus: 1

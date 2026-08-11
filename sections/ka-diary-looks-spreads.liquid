@@ -1,19 +1,24 @@
 {{ 'ka-diary-entry-looks.css' | asset_url | stylesheet_tag }}
 
 {%- liquid
-  assign looks_mf = article.metafields.custom.client_diary_looks
-  assign looks_val = looks_mf.value
+  assign is_consented = false
+  if article.metafields.custom.client_diary_consent == true
+    assign is_consented = true
+  endif
+  assign looks_metafield = article.metafields.custom.client_diary_looks
+  assign looks = article.metafields.custom.client_diary_looks
 -%}
-<!-- DEBUG2 START
-looks_val_size={{ looks_val.size }}
-looks_val_first_name={{ looks_val.first.look_name }}
-DEBUG2 LOOP:
-{%- for look in looks_val -%}
-[item look_name={{ look.look_name }} class={{ look.class }}]
-{%- endfor -%}
-DEBUG2 END -->
-{%- if looks_val.size > 0 -%}
-  {%- for look in looks_val -%}
+<!-- DEBUG START
+is_consented={{ is_consented }}
+looks_metafield_class={{ looks_metafield.class }}
+looks_metafield_type={{ looks_metafield.type }}
+looks_size={{ looks.size }}
+looks_first={{ looks.first }}
+looks_first_class={{ looks.first.class }}
+looks_value={{ looks_metafield.value }}
+DEBUG END -->
+{%- if is_consented and looks.size > 0 -%}
+  {%- for look in looks -%}
     {%- liquid
       assign look_index = forloop.index
       assign is_reverse = false
