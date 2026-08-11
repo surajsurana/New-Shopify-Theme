@@ -1,0 +1,79 @@
+{{ 'ka-diary-entry-review.css' | asset_url | stylesheet_tag }}
+
+{%- comment -%}
+  K&A Client Diaries — Entry "Her Review". Docs/client-diaries-
+  build-spec.md §3 row B1. Moved directly after the hero per Suraj's
+  explicit direction (10 Aug 2026) — a visitor's first priority is
+  the client's own verdict, ahead of any narrative/outfit detail.
+
+  Content source: article.excerpt (Shopify's native Excerpt field,
+  set in Blog posts editor) — the client's own words, verbatim,
+  unedited (spec field 4). Same field also feeds the shorter pulled
+  excerpt shown on the Index Featured panel / grid card (see
+  sections/ka-diary-featured.liquid). No metafield needed for this
+  field — reuses Shopify's own purpose-built field, same reasoning
+  as the Journal's dek line (article.excerpt).
+
+  F3 gate: renders nothing at all — not even an empty section shell
+  — unless client_diary_consent is explicitly true.
+
+  BUGFIX 2026-08-11: this previously read `article.summary`, which is
+  not a real Liquid property on the article object (Shopify's Admin
+  GraphQL API calls this field "summary", but the classic Liquid
+  `article` drop only exposes it as `excerpt` -- confirmed against
+  Shopify's own Liquid reference). `article.summary` silently
+  evaluates to blank in Liquid rather than erroring, so this section
+  never rendered for any real entry, including Simran's, despite the
+  excerpt being correctly set via the Admin API the whole time. Same
+  fix applied to sections/ka-diary-featured.liquid and sections/
+  ka-article-hero.liquid (Journal dek line), which had the identical
+  bug.
+{%- endcomment -%}
+
+{%- liquid
+  assign is_consented = false
+  if article.metafields.custom.client_diary_consent == true
+    assign is_consented = true
+  endif
+  assign review_text = article.excerpt | strip_html
+-%}
+
+{%- if is_consented and review_text != blank -%}
+  {%- liquid
+    assign occasion_label = 'Client Diary'
+    if article.tags contains 'Bridal'
+      assign occasion_label = 'Bridal'
+    elsif article.tags contains 'Sangeet & Cocktail'
+      assign occasion_label = 'Sangeet & Cocktail'
+    elsif article.tags contains 'Festive'
+      assign occasion_label = 'Festive'
+    elsif article.tags contains 'Mother & Family'
+      assign occasion_label = 'Mother & Family'
+    endif
+    assign entry_year = article.metafields.custom.client_diary_year
+    if entry_year == blank
+      assign entry_year = article.published_at | date: '%Y'
+    endif
+  -%}
+  <section class="e-review" aria-label="Client review">
+    <div class="e-review__mark reveal">&ldquo;</div>
+    <p class="e-review__quote reveal reveal-delay-1">{{ review_text }}</p>
+    <p class="e-review__attr reveal reveal-delay-2">{{ article.title }} &middot; {{ occasion_label }}, {{ entry_year }}</p>
+  </section>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "Diary Entry — Her Review",
+  "tag": "section",
+  "settings": [
+    {
+      "type": "paragraph",
+      "content": "Reads from the article's native Excerpt field (Shopify Admin → Blog posts → article → Excerpt). Renders nothing unless the entry's consent-to-publish metafield is explicitly set to true."
+    }
+  ],
+  "presets": [
+    { "name": "Diary Entry — Her Review" }
+  ]
+}
+{% endschema %}

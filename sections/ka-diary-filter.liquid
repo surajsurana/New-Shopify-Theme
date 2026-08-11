@@ -1,0 +1,59 @@
+{{ 'ka-diary-filter.css' | asset_url | stylesheet_tag }}
+{{ 'ka-collection-refine-bar.css' | asset_url | stylesheet_tag }}
+
+{%- comment -%}
+  K&A Client Diaries — Index Browse Bar. Docs/client-diaries-build-
+  spec.md §2 row 4. Reuses .ka-chip verbatim from assets/ka-
+  collection-refine-bar.css (loaded above) — identical mechanism to
+  sections/ka-journal-filter.liquid: pure client-side data-occasion
+  matching against sections/ka-diary-grid.liquid's cards only, never
+  against the Featured Diary panel. No native tag-archive href here
+  (unlike the Journal's blog-tagged URLs) because this bar lives on a
+  Page template, not a Blog template — there is no blog.url context
+  to build a real /tagged/ URL against from a Page; the chips are
+  progressive-enhancement-only client-side filters.
+{%- endcomment -%}
+
+<div class="cd-filter" data-ka-diary-filter>
+  <span class="cd-filter__label">Browse</span>
+  <div class="cd-filter__chips" id="diaryFilterChips">
+    <button class="ka-chip is-active" data-filter="all">All Stories</button>
+    <button class="ka-chip" data-filter="bridal">Bridal</button>
+    <button class="ka-chip" data-filter="sangeet-cocktail">Sangeet &amp; Cocktail</button>
+    <button class="ka-chip" data-filter="festive">Festive</button>
+    <button class="ka-chip" data-filter="mother-family">Mother &amp; Family</button>
+  </div>
+</div>
+
+<script>
+  (function () {
+    var chips = document.querySelectorAll('#diaryFilterChips .ka-chip');
+    var grid = document.getElementById('diaryGrid');
+    if (!chips.length || !grid) return;
+    var cards = grid.querySelectorAll('.cd-card');
+    var emptyState = document.getElementById('diaryEmpty');
+
+    chips.forEach(function (chip) {
+      chip.addEventListener('click', function () {
+        chips.forEach(function (c) { c.classList.remove('is-active'); });
+        chip.classList.add('is-active');
+        var filter = chip.getAttribute('data-filter');
+        var visibleCount = 0;
+        cards.forEach(function (card) {
+          var show = filter === 'all' || card.getAttribute('data-occasion') === filter;
+          card.classList.toggle('is-hidden', !show);
+          if (show) visibleCount++;
+        });
+        if (emptyState) emptyState.classList.toggle('is-visible', visibleCount === 0);
+      });
+    });
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "Diaries Browse Bar",
+  "tag": "div",
+  "settings": []
+}
+{% endschema %}

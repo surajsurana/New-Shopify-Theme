@@ -1,0 +1,54 @@
+{{ 'ka-diary-share.css' | asset_url | stylesheet_tag }}
+
+{%- comment -%}
+  K&A Client Diaries — Share Your Story band. Docs/client-diaries-
+  build-spec.md §2 row 6. Carries forward the exact WhatsApp story-
+  submission mechanism from the retired sections/ka-diary-coming-
+  soon.liquid (site-wide WhatsApp number from Theme Settings, not a
+  hardcoded link) — see that section for the original implementation
+  this was copied from.
+{%- endcomment -%}
+
+<section class="cd-share" aria-label="Share your Client Diaries story">
+  <p class="eyebrow eyebrow--muted reveal" style="margin-bottom: 16px;">{{ section.settings.eyebrow }}</p>
+  <h2 class="cd-share__title reveal reveal-delay-1">{{ section.settings.title }}</h2>
+  <p class="cd-share__body reveal reveal-delay-2">{{ section.settings.body }}</p>
+  {%- if settings.whatsapp_number != blank -%}
+    {%- liquid
+      assign wa_message = section.settings.whatsapp_prefill | default: "Hi, I'm a K&A client and I'd love to share my story for the Client Diaries" | url_param_escape
+      assign wa_share_url = 'https://wa.me/' | append: settings.whatsapp_number | append: '?text=' | append: wa_message
+    -%}
+    <a href="{{ wa_share_url }}" class="text-link reveal reveal-delay-3" target="_blank" rel="noopener">{{ section.settings.cta_label }} &rarr;</a>
+  {%- endif -%}
+</section>
+
+{% schema %}
+{
+  "name": "Diaries Share Your Story",
+  "tag": "section",
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "Were You a K&A Client?" },
+    { "type": "text", "id": "title", "label": "Title", "default": "We'd Love to Add Your Story." },
+    {
+      "type": "textarea",
+      "id": "body",
+      "label": "Body copy",
+      "default": "If you wore K&A for your wedding, sangeet, or any festive occasion and would like to be featured, we'd be honoured to hear from you."
+    },
+    { "type": "text", "id": "cta_label", "label": "WhatsApp CTA label", "default": "Share Your Story on WhatsApp" },
+    {
+      "type": "text",
+      "id": "whatsapp_prefill",
+      "label": "WhatsApp pre-filled message",
+      "default": "Hi, I'm a K&A client and I'd love to share my story for the Client Diaries"
+    },
+    {
+      "type": "paragraph",
+      "content": "Always opens WhatsApp using the site-wide WhatsApp number (Theme Settings → Concierge/WhatsApp)."
+    }
+  ],
+  "presets": [
+    { "name": "Diaries Share Your Story" }
+  ]
+}
+{% endschema %}

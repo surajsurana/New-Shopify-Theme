@@ -1,0 +1,217 @@
+{{ 'ka-diary-featured.css' | asset_url | stylesheet_tag }}
+
+{%- comment -%}
+  K&A Client Diaries — Index Featured Diary. Docs/client-diaries-
+  build-spec.md §2 row 3, §5 (data-modeling decision).
+
+  DATA MODEL (chosen by Technical Director — spec §5 Option C,
+  hybrid): each Client Diary entry is a Shopify BLOG ARTICLE in a
+  dedicated blog (default handle "client-diaries", overridable
+  below) — mirroring The Journal's proven index+entry+tag-filter
+  pattern exactly (spec §5's own recommendation) — with a
+  METAOBJECT type ("client_diary_look") holding the repeatable
+  Looks list (spec field 6), referenced from the article via a
+  list.metaobject_reference metafield. Metafields/metaobject used:
+
+    Article metafields (namespace "custom"):
+      client_diary_atelier_note   multi_line_text_field
+      client_diary_consent        boolean   -- publishing gate, F3
+      client_diary_year           single_line_text_field (optional
+                                   override; falls back to the
+                                   article's published year if unset)
+      client_diary_looks          list.metaobject_reference ->
+                                   client_diary_look
+
+    NOT a new metafield — reused native Shopify fields instead:
+      Client name         -> article.title (full name)
+      Occasion             -> article.tags (fixed 4-value taxonomy,
+                               identical mechanism to the Journal's
+                               category tags)
+      Client review        -> article.excerpt (native Excerpt field --
+                               NOTE 2026-08-11: not article.summary,
+                               which isn't a real Liquid property; see
+                               BUGFIX note in sections/ka-diary-entry-
+                               review.liquid)
+      Hero/cover image     -> article.image (native featured image),
+                               falling back to the first Look's first
+                               image if unset (spec field 8)
+      Featured-entry pick  -> tag "featured", else most recent --
+                               identical logic to ka-journal-featured.
+
+    Metaobject "client_diary_look" fields:
+      look_name        single_line_text_field
+      look_description  multi_line_text_field
+      look_images        list.file_reference (images only)
+      cta_label          single_line_text_field (optional)
+      category_link      url
+      product_link        product_reference (optional; wins over
+                           category_link when set -- spec field 6d)
+
+  WHY THIS SHAPE (not blog+metafield-only, not metaobjects for the
+  whole entry): the Journal's blog/tag/pagination machinery is
+  already proven in production for "index of many + individual
+  entry + occasion filter + empty state, growing indefinitely" --
+  reusing it for the entry shell costs nothing and matches spec §5's
+  explicit steer. The one place that machinery doesn't fit is the
+  Looks repeater (spec F1: a variable-length ordered list of
+  {image(s), title, description, link} groups) -- Shopify's native
+  list.metaobject_reference metafield type is a first-class, staff-
+  addable/reorderable ordered list for exactly this shape, which a
+  single rich-text or JSON metafield would not offer as cleanly. This
+  is spec §5 Option C (hybrid) named explicitly as an acceptable path.
+
+  PUBLISHING GATE (F3): every Client Diaries section (this one,
+  ka-diary-grid, and every ka-diary-entry-* section) independently
+  checks client_diary_consent == true before rendering that article's
+  name/images at all -- not merely a content field a staff member
+  could forget to check. An article with consent unset/false is
+  structurally invisible everywhere on the site, not just hidden by
+  convention. See sections/ka-diary-entry-hero.liquid for the entry-
+  page-side half of this gate.
+
+  BUGFIX 2026-08-11: client_diary_looks (list.metaobject_reference)
+  and look.look_images (list.file_reference) both need .value to
+  resolve as iterable arrays in Liquid -- bare dot-access on a
+  LIST-type reference metafield returns a non-sized wrapper, not the
+  list itself (single-reference metafields don't have this problem;
+  only list-typed ones do). See sections/ka-diary-looks-spreads.liquid
+  for the full writeup, confirmed via a live themeFilesUpsert
+  diagnostic against staging.
+
+  BUGFIX 2026-08-11 (second): the resolved list (.value) supports
+  .size and `for...in` but NOT `.first`/bracket indexing -- both
+  silently return blank. hero_image's fallback below uses a for-loop
+  with an immediate break instead of .first, per sections/ka-diary-
+  entry-hero.liquid's full writeup.
+
+  METAFIELD/METAOBJECT DEFINITION GAP (flagged per spec §5/F2, same
+  category as the Journal's custom.breakout_image gap, 2026-08-08):
+  as of this build (2026-08-10), NONE of the definitions above exist
+  yet on this store (verified via Admin GraphQL
+  metafieldDefinitions/metaobjectDefinitions — zero client_diary_*
+  definitions found), and Technical Director's Admin API access is
+  read-only (no graphql_mutation) -- cannot create them. Also: no
+  "client-diaries" blog and no Simran article exist yet either (same
+  read-only constraint -- creating Shopify content, not just theme
+  code, requires write access this session doesn't have). See this
+  build's final report for the full manual checklist required before
+  Simran's entry (or any future entry) can go live.
+{%- endcomment -%}
+
+{%- liquid
+  assign diary_blog = blogs[section.settings.blog_handle]
+  assign featured_article = blank
+  if diary_blog != blank
+    for a in diary_blog.articles
+      if a.metafields.custom.client_diary_consent == true and a.tags contains 'featured'
+        assign featured_article = a
+        break
+      endif
+    endfor
+    if featured_article == blank
+      for a in diary_blog.articles
+        if a.metafields.custom.client_diary_consent == true
+          assign featured_article = a
+          break
+        endif
+      endfor
+    endif
+  endif
+-%}
+
+{%- if featured_article != blank -%}
+  {%- liquid
+    assign occasion_label = 'Client Diary'
+    assign occasion_handle = ''
+    if featured_article.tags contains 'Bridal'
+      assign occasion_label = 'Bridal'
+      assign occasion_handle = 'bridal'
+    elsif featured_article.tags contains 'Sangeet & Cocktail'
+      assign occasion_label = 'Sangeet & Cocktail'
+      assign occasion_handle = 'sangeet-cocktail'
+    elsif featured_article.tags contains 'Festive'
+      assign occasion_label = 'Festive'
+      assign occasion_handle = 'festive'
+    elsif featured_article.tags contains 'Mother & Family'
+      assign occasion_label = 'Mother & Family'
+      assign occasion_handle = 'mother-family'
+    endif
+
+    assign entry_year = featured_article.metafields.custom.client_diary_year
+    if entry_year == blank
+      assign entry_year = featured_article.published_at | date: '%Y'
+    endif
+
+    assign looks = featured_article.metafields.custom.client_diary_looks.value
+    assign look_count = looks.size
+
+    assign first_name = featured_article.title | split: ' ' | first
+
+    assign hero_image = featured_article.image
+    if hero_image == blank and look_count > 0
+      for first_look in looks
+        assign first_look_images = first_look.look_images.value
+        if first_look_images.size > 0
+          for first_look_img in first_look_images
+            assign hero_image = first_look_img.image
+            break
+          endfor
+        endif
+        break
+      endfor
+    endif
+
+    assign review_text = featured_article.excerpt | strip_html
+    assign excerpt = featured_article.metafields.custom.client_diary_atelier_note | strip_html | truncate: 150
+  -%}
+  <section class="cd-featured" aria-label="Featured diary">
+    <a href="{{ featured_article.url }}" class="cd-featured__image reveal-img">
+      <span class="cd-featured__tag">{{ occasion_label }}</span>
+      {%- if hero_image != blank -%}
+        <img
+          src="{{ hero_image | image_url: width: 1200 }}"
+          alt="{{ hero_image.alt | escape | default: featured_article.title | escape }}"
+          loading="lazy"
+          width="1200"
+          height="1400"
+          class="img-filter-editorial"
+        />
+      {%- else -%}
+        <img src="{{ 'cd-simran-maroon-1.jpg' | asset_url }}" alt="{{ featured_article.title | escape }}" loading="lazy" width="1200" height="1400" class="img-filter-editorial" />
+      {%- endif -%}
+    </a>
+    <div class="cd-featured__text">
+      <p class="eyebrow eyebrow--muted cd-featured__eyebrow reveal">Latest Diary</p>
+      <h2 class="cd-featured__name reveal reveal-delay-1">{{ first_name }}&rsquo;s Diary</h2>
+      <p class="cd-featured__meta reveal reveal-delay-1">
+        {{ occasion_label }} <span>&middot;</span> {{ entry_year }}{% if look_count > 0 %} <span>&middot;</span> {{ look_count }} Look{% if look_count != 1 %}s{% endif %}{% endif %}
+      </p>
+      {%- if excerpt != blank -%}<p class="cd-featured__excerpt reveal reveal-delay-2">{{ excerpt }}</p>{%- endif -%}
+      {%- if review_text != blank -%}<p class="cd-featured__quote reveal reveal-delay-2">{{ review_text | truncate: 180 }}</p>{%- endif -%}
+      <div class="cd-featured__cta reveal reveal-delay-3"><a href="{{ featured_article.url }}" class="btn-dark">Read {{ first_name }}&rsquo;s Diary</a></div>
+    </div>
+  </section>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "Diaries Featured",
+  "tag": "section",
+  "settings": [
+    {
+      "type": "text",
+      "id": "blog_handle",
+      "label": "Client Diaries blog handle",
+      "default": "client-diaries",
+      "info": "Advanced. Must exactly match the handle of the Shopify blog used for Client Diaries entries."
+    },
+    {
+      "type": "paragraph",
+      "content": "Featured entry is chosen automatically from consented (published) entries only: whichever is tagged \"featured\", falling back to the most recent. No setting here selects it directly. The one-line excerpt reads from the entry's own \"From the Atelier\" note (custom.client_diary_atelier_note metafield), truncated; the pulled quote reads from the entry's native Excerpt field (article.excerpt)."
+    }
+  ],
+  "presets": [
+    { "name": "Diaries Featured" }
+  ]
+}
+{% endschema %}

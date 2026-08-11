@@ -24,25 +24,7 @@
         "label_diaries": "Client Diaries",
         "link_diaries": "/pages/client-diaries",
         "link_about": "/pages/about-us",
-        "link_visit": "",
-        "link_faq": "",
-        "link_appointment": "/pages/appointments",
-        "search_chip_1_label": "Signature",
-        "search_chip_1_url": "",
-        "search_chip_2_label": "The Bloom Soirée",
-        "search_chip_2_url": "",
-        "search_chip_3_label": "Chamakk",
-        "search_chip_3_url": "",
-        "search_chip_4_label": "Barre Oblique",
-        "search_chip_4_url": "",
-        "search_chip_5_label": "The Festive Edit",
-        "search_chip_5_url": "",
-        "search_tile_1_caption": "The Bloom Soirée",
-        "search_tile_1_url": "",
-        "search_tile_2_caption": "Chamakk",
-        "search_tile_2_url": "",
-        "search_tile_3_caption": "Barre Oblique",
-        "search_tile_3_url": ""
+        "link_appointment": "/pages/appointments"
       }
     },
     "ka-collection-breadcrumb": {
@@ -129,7 +111,6 @@
         "news_placeholder": "Your email address",
         "news_submit": "Join",
         "news_success": "Welcome in. You are one of us now.",
-        "legal_entity_name": "Peekay International Ltd.",
         "privacy_url": "",
         "terms_url": "",
         "shipping_url": ""

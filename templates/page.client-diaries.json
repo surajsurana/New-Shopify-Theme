@@ -1,10 +1,26 @@
 /*
  * ------------------------------------------------------------
- * IMPORTANT: The contents of this file are auto-generated.
+ * K&A Client Diaries — Index page template
+ * Docs/client-diaries-build-spec.md — built from
+ * Prototypes/client-diaries-index-v1.html (approved by Suraj,
+ * 10 Aug 2026, spec v2.0).
  *
- * This file may be updated by the Shopify admin theme editor
- * or related systems. Please exercise caution as any changes
- * made to this file may be overwritten.
+ * Replaces sections/ka-diary-coming-soon.liquid, which is fully
+ * retired per spec §0 — not reused as a component anywhere here.
+ *
+ * Sections: Nav -> Masthead -> Intro Statement -> Featured Diary ->
+ * Browse Bar -> Diary Grid -> Share Your Story -> Appointment CTA
+ * (reused ka-appointment) -> Footer.
+ *
+ * Data model: entries are Shopify blog articles in the blog with
+ * handle "client-diaries" (see ka-diary-featured.liquid / ka-diary-
+ * grid.liquid section settings — "Client Diaries blog handle",
+ * default "client-diaries", overridable per-section in the theme
+ * editor if that blog is ever renamed). See sections/ka-diary-
+ * featured.liquid header comment for the full data-model writeup
+ * and the metafield/metaobject definition gaps that must be created
+ * manually in Shopify Admin before any entry (including Simran's)
+ * can go live.
  * ------------------------------------------------------------
  */
 {
@@ -27,15 +43,45 @@
         "link_appointment": "/pages/appointments"
       }
     },
-    "ka-diary-coming-soon": {
-      "type": "ka-diary-coming-soon",
+    "ka-diary-mast": {
+      "type": "ka-diary-mast",
+      "settings": {}
+    },
+    "ka-diary-intro": {
+      "type": "ka-diary-intro",
+      "settings": {}
+    },
+    "ka-diary-featured": {
+      "type": "ka-diary-featured",
       "settings": {
-        "eyebrow": "Coming Soon",
-        "title": "The Diaries Are Being Written.",
-        "body": "Every page of this diary begins with a real client — a bride, a mother, a sister dressing for her own occasion. We are gathering these stories with the same care we give each garment, and will share them here soon.",
-        "cta_primary_label": "Explore the Collections",
-        "cta_primary_url": "/collections",
-        "cta_secondary_label": "Share Your Story"
+        "blog_handle": "client-diaries"
+      }
+    },
+    "ka-diary-filter": {
+      "type": "ka-diary-filter",
+      "settings": {}
+    },
+    "ka-diary-grid": {
+      "type": "ka-diary-grid",
+      "settings": {
+        "blog_handle": "client-diaries"
+      }
+    },
+    "ka-diary-share": {
+      "type": "ka-diary-share",
+      "settings": {}
+    },
+    "ka-diary-cta": {
+      "type": "ka-appointment",
+      "settings": {
+        "eyebrow": "Your Story, Next",
+        "title": "Every Diary Begins\nthe Same Way.",
+        "body": "With a conversation — about the occasion, the fabric, and the woman it's for. Bridal, sangeet, or festive, in-store or virtual, the first step is always a fitting.",
+        "cta_instore_label": "Book a Styling Appointment",
+        "cta_instore_url": "/pages/appointments",
+        "cta_virtual_label": "Explore the Collections",
+        "cta_virtual_url": "/collections",
+        "fallback_image_filename": "cd-simran-pink.jpg"
       }
     },
     "ka-footer": {
@@ -59,7 +105,13 @@
   },
   "order": [
     "ka-nav",
-    "ka-diary-coming-soon",
+    "ka-diary-mast",
+    "ka-diary-intro",
+    "ka-diary-featured",
+    "ka-diary-filter",
+    "ka-diary-grid",
+    "ka-diary-share",
+    "ka-diary-cta",
     "ka-footer"
   ]
 }

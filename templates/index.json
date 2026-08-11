@@ -24,25 +24,7 @@
         "label_diaries": "Client Diaries",
         "link_diaries": "/pages/client-diaries",
         "link_about": "/pages/about-us",
-        "link_visit": "",
-        "link_faq": "",
-        "link_appointment": "/pages/appointments",
-        "search_chip_1_label": "Corsets",
-        "search_chip_1_url": "shopify://collections/corsets",
-        "search_chip_2_label": "The Bloom Soirée",
-        "search_chip_2_url": "shopify://collections/the-bloom-soiree",
-        "search_chip_3_label": "Chamakk",
-        "search_chip_3_url": "shopify://collections/chamak",
-        "search_chip_4_label": "Barre Oblique",
-        "search_chip_4_url": "shopify://collections/barre-oblique",
-        "search_chip_5_label": "The Festive Edit",
-        "search_chip_5_url": "shopify://collections/the-festive-edit",
-        "search_tile_1_caption": "The Bloom Soirée",
-        "search_tile_1_url": "",
-        "search_tile_2_caption": "Chamakk",
-        "search_tile_2_url": "",
-        "search_tile_3_caption": "Barre Oblique",
-        "search_tile_3_url": ""
+        "link_appointment": "/pages/appointments"
       }
     },
     "ka-hero": {
@@ -79,9 +61,8 @@
         "image_secondary_2": "shopify://shop_images/Coffee_brown_deep_wine.jpg"
       }
     },
-    "ka_bestsellers_PdgfyP": {
+    "ka-bestsellers": {
       "type": "ka-bestsellers",
-      "name": "Bestsellers",
       "settings": {
         "eyebrow": "Most Loved",
         "title": "Signature Pieces",
@@ -265,16 +246,13 @@
       "type": "ka-appointment",
       "settings": {
         "image": "shopify://shop_images/Soft_blus_chamagne_peach.jpg",
-        "fallback_image_filename": "appointment-bg.jpg",
         "eyebrow": "The Atelier",
         "title": "Begin with a Conversation.",
         "body": "Every K&A bride begins with a private styling session — in our Mumbai atelier or virtually, wherever in the world you are. We listen before we design.",
         "cta_instore_label": "Book In-Store Appointment",
         "cta_instore_url": "/pages/appointments",
-        "cta_instore_wa_text": "Hi, I'd like to book an in-store appointment",
         "cta_virtual_label": "Book Virtual Styling Session",
-        "cta_virtual_url": "/pages/appointments",
-        "cta_virtual_wa_text": "Hi, I'd like to book a virtual styling session"
+        "cta_virtual_url": "/pages/appointments"
       }
     },
     "ka-footer": {
@@ -293,7 +271,6 @@
         "news_placeholder": "Your email address",
         "news_submit": "Join",
         "news_success": "Welcome in. You are one of us now.",
-        "legal_entity_name": "Peekay International Ltd.",
         "privacy_url": "",
         "terms_url": "",
         "shipping_url": ""
@@ -305,7 +282,7 @@
     "ka-hero",
     "ka-manifesto",
     "ka-collection-story",
-    "ka_bestsellers_PdgfyP",
+    "ka-bestsellers",
     "ka-celebrity",
     "ka-client-diaries",
     "ka-voice-of-bride",

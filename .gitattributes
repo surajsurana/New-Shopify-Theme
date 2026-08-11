@@ -1,0 +1,31 @@
+# Pin theme text-file types to LF regardless of a contributor's local
+# core.autocrlf setting, and explicitly mark binary asset types as
+# binary so git never attempts text normalization on them.
+#
+# This isn't cosmetic: scripts/compare-staging-verification.ps1
+# checksums the working-tree file and compares it against Shopify's
+# checksumMd5 for the deployed content. Confirmed 2026-08-11 that the
+# two currently match only because core.autocrlf's CRLF conversion
+# hadn't yet touched these files on this machine -- a fresh clone or a
+# future checkout could silently flip working-tree files to CRLF while
+# git's actual blob (and Shopify's deployed content) stays LF, breaking
+# that comparison. Pinning here removes the uncertainty at the source.
+*.liquid text eol=lf
+*.json text eol=lf
+*.css text eol=lf
+*.js text eol=lf
+*.md text eol=lf
+*.txt text eol=lf
+*.toml text eol=lf
+*.svg text eol=lf
+
+*.jpg binary
+*.jpeg binary
+*.png binary
+*.gif binary
+*.woff binary
+*.woff2 binary
+*.ttf binary
+*.otf binary
+*.pdf binary
+*.ico binary

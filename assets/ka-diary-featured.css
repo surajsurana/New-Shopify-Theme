@@ -1,0 +1,30 @@
+/* =================================================================
+   K&A CLIENT DIARIES — INDEX FEATURED DIARY (cd-featured)
+   Docs/client-diaries-build-spec.md §2 row 3. The newest published
+   entry, split-panel treatment — same grid ratio/paper-deep panel
+   as The Journal's Featured Story (assets/ka-journal-featured.css).
+   Always excluded from the grid below it (see ka-diary-grid.liquid).
+================================================================= */
+.cd-featured { display: grid; grid-template-columns: 0.95fr 1.05fr; min-height: 82vh; overflow: hidden; }
+.cd-featured__image { position: relative; overflow: hidden; min-height: 460px; }
+.cd-featured__image img { object-position: center 20%; }
+.cd-featured__tag {
+  position: absolute; top: 28px; left: 28px; z-index: 1;
+  font-family: var(--f-sans); font-size: 0.6rem; font-weight: 400; letter-spacing: 0.18em; text-transform: uppercase;
+  color: white; background: rgba(26,23,20,0.72); padding: 8px 16px;
+}
+.cd-featured__text { background: var(--c-paper-deep); padding: var(--s-2xl) clamp(32px,5vw,80px); display: flex; flex-direction: column; justify-content: center; }
+.cd-featured__eyebrow { margin-bottom: 20px; }
+.cd-featured__name { font-family: var(--f-display); font-size: clamp(2.2rem,4vw,3.4rem); font-weight: 400; font-style: italic; color: var(--c-charcoal); line-height: 1.06; max-width: 520px; }
+.cd-featured__meta { margin-top: 14px; font-family: var(--f-sans); font-size: 0.7rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--c-rosegold-2); }
+.cd-featured__meta span { margin: 0 8px; opacity: .55; }
+.cd-featured__excerpt { margin-top: 26px; max-width: 480px; font-family: var(--f-sans); font-size: var(--t-body-l); font-weight: 300; line-height: 1.9; color: var(--c-ink-mid); }
+.cd-featured__quote { margin-top: 22px; max-width: 460px; font-family: var(--f-display); font-style: italic; font-size: 1.15rem; color: var(--c-charcoal); line-height: 1.6; }
+.cd-featured__quote::before { content: '\201C'; color: var(--c-rosegold); }
+.cd-featured__quote::after { content: '\201D'; color: var(--c-rosegold); }
+.cd-featured__cta { margin-top: 36px; }
+@media (max-width: 900px) {
+  .cd-featured { grid-template-columns: 1fr; min-height: auto; }
+  .cd-featured__image { min-height: 58vh; }
+  .cd-featured__text { padding: var(--s-xl) 20px; }
+}

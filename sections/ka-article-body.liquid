@@ -18,31 +18,37 @@
   Breakout image (B6) — FEASIBILITY NOTE: a plain rich-text image in
   article.content cannot visually escape the 720px text column (that
   is a genuine Liquid/rich-text limitation, not a simplification we
-  chose casually) — see spec §6/§7. Two supported paths, in order:
-    1. If the article body contains the literal marker text
-       "[breakout]" (typed by the content editor at the exact point
-       in the article where the image should interrupt the column,
-       e.g. between two paragraphs), this section splits
-       article.content on that marker and injects the breakout
-       figure at that position — matching the prototype's mid-body
-       placement exactly.
-    2. If no marker is present but a breakout image metafield IS set,
-       the breakout renders once, after the full body (a fully
-       correct but less precisely-positioned fallback).
-    3. If neither is set, no breakout section renders at all — this
-       section will NOT force a reused image (e.g. an About-page
-       photo) onto every future article by default, since that would
-       look repetitive the moment more than one article exists. See
-       spec §5 — real breakout photography/metafield values are a
-       manual content step, not something this build can populate
-       itself (no Shopify Admin write access).
+  chose casually) — see spec §6/§7. Per-article source order:
+    1. section.settings.breakout_image (theme-editor override, wins
+       if set).
+    2. article.metafields.custom.breakout_image (per-article file/
+       image reference metafield — the real per-article path, gap-
+       fixed 2026-08-08; requires a metafield DEFINITION to exist on
+       the Article resource before any value can be set on it in
+       Admin — see below).
+    3. Static placeholder (about-craft-detail-2.jpg, per spec §5) —
+       so nothing breaks/goes blank on the 4 already-live articles
+       until the per-article metafield is populated.
+  Position: if the article body contains the literal marker text
+  "[breakout]" (typed by the content editor at the point in the
+  article where the image should interrupt the column), this section
+  splits article.content on that marker and injects the breakout
+  figure at that position. If no marker is present, the breakout
+  renders once, after the full body (a correct but less precisely-
+  positioned fallback).
 
-  Metafields used (none exist yet on the live article — must be
-  created in Shopify Admin, Settings -> Custom data -> Articles, and
-  populated per-article; same category of manual step already
-  documented elsewhere in this theme, e.g. templates/page.about-us.json):
-    article.metafields.custom.breakout_image   (type: Single image)
-    article.metafields.custom.breakout_caption (type: Single line text)
+  Metafield DEFINITION status (custom.breakout_image, Article
+  resource, file/image reference) — checked 2026-08-08 via Shopify
+  Admin GraphQL (metafieldDefinitions(ownerType: ARTICLE)): does NOT
+  exist yet. Technical Director's Admin API access is read-only
+  (graphql_query only, no graphql_mutation) — cannot create metafield
+  definitions itself. Must be created via Shopify Admin UI (Settings
+  -> Custom data -> Articles -> Add definition, type "File reference"
+  or "Single image") or a one-time authenticated mutation run outside
+  this read-only session, then populated per-article. Until that
+  definition exists, article.metafields.custom.breakout_image safely
+  resolves to blank on every article, so this section always falls
+  through to the static placeholder — nothing breaks.
 {%- endcomment -%}
 
 {%- liquid
@@ -51,7 +57,16 @@
   if article.content contains marker
     assign has_marker = true
   endif
-  assign breakout_image = section.settings.breakout_image | default: article.metafields.custom.breakout_image
+
+  assign breakout_image = section.settings.breakout_image
+  if breakout_image == blank
+    assign breakout_image = article.metafields.custom.breakout_image
+  endif
+  assign breakout_is_placeholder = false
+  if breakout_image == blank
+    assign breakout_is_placeholder = true
+  endif
+
   assign breakout_caption = section.settings.breakout_caption
   if breakout_caption == blank
     assign breakout_caption = article.metafields.custom.breakout_caption
@@ -64,9 +79,18 @@
     <div class="a-body">{{ content_parts[0] }}</div>
   </article>
 
-  {%- if breakout_image != blank -%}
-    <figure class="a-breakout reveal-img">
-      <div class="a-breakout__frame">
+  <figure class="a-breakout reveal-img">
+    <div class="a-breakout__frame">
+      {%- if breakout_is_placeholder -%}
+        <img
+          src="{{ 'about-craft-detail-2.jpg' | asset_url }}"
+          alt="{{ breakout_caption | default: article.title | escape }}"
+          loading="lazy"
+          width="1600"
+          height="1000"
+          class="img-filter-editorial"
+        />
+      {%- else -%}
         <img
           src="{{ breakout_image | image_url: width: 1600 }}"
           alt="{{ breakout_image.alt | escape | default: article.title | escape }}"
@@ -75,10 +99,10 @@
           height="1000"
           class="img-filter-editorial"
         />
-      </div>
-      {%- if breakout_caption != blank -%}<figcaption class="a-breakout__caption">{{ breakout_caption }}</figcaption>{%- endif -%}
-    </figure>
-  {%- endif -%}
+      {%- endif -%}
+    </div>
+    {%- if breakout_caption != blank -%}<figcaption class="a-breakout__caption">{{ breakout_caption }}</figcaption>{%- endif -%}
+  </figure>
 
   <article class="a-body-wrap" style="padding-top: 0;">
     <div class="a-body">{{ content_parts[1] }}</div>
@@ -88,9 +112,18 @@
     <div class="a-body">{{ article.content }}</div>
   </article>
 
-  {%- if breakout_image != blank -%}
-    <figure class="a-breakout reveal-img">
-      <div class="a-breakout__frame">
+  <figure class="a-breakout reveal-img">
+    <div class="a-breakout__frame">
+      {%- if breakout_is_placeholder -%}
+        <img
+          src="{{ 'about-craft-detail-2.jpg' | asset_url }}"
+          alt="{{ breakout_caption | default: article.title | escape }}"
+          loading="lazy"
+          width="1600"
+          height="1000"
+          class="img-filter-editorial"
+        />
+      {%- else -%}
         <img
           src="{{ breakout_image | image_url: width: 1600 }}"
           alt="{{ breakout_image.alt | escape | default: article.title | escape }}"
@@ -99,10 +132,10 @@
           height="1000"
           class="img-filter-editorial"
         />
-      </div>
-      {%- if breakout_caption != blank -%}<figcaption class="a-breakout__caption">{{ breakout_caption }}</figcaption>{%- endif -%}
-    </figure>
-  {%- endif -%}
+      {%- endif -%}
+    </div>
+    {%- if breakout_caption != blank -%}<figcaption class="a-breakout__caption">{{ breakout_caption }}</figcaption>{%- endif -%}
+  </figure>
 {%- endif -%}
 
 {% schema %}
@@ -114,7 +147,7 @@
       "type": "paragraph",
       "content": "Body copy, H2 subheads and the pull-quote all come directly from the article's own rich-text content in Shopify Admin (Blog posts editor) — nothing to configure here. To position the breakout image mid-article, type the literal text [breakout] on its own line at the point in the article body where it should appear."
     },
-    { "type": "image_picker", "id": "breakout_image", "label": "Breakout image override", "info": "Falls back to the article's custom.breakout_image metafield if set. If neither is set, no breakout image renders." },
+    { "type": "image_picker", "id": "breakout_image", "label": "Breakout image override", "info": "Falls back to the article's custom.breakout_image metafield if set, then to a static placeholder image so the breakout always renders." },
     { "type": "text", "id": "breakout_caption", "label": "Breakout caption override", "info": "Falls back to the article's custom.breakout_caption metafield if set." }
   ],
   "presets": [

@@ -1,0 +1,19 @@
+/* =================================================================
+   K&A CLIENT DIARIES — INDEX BROWSE BAR (cd-filter)
+   Docs/client-diaries-build-spec.md §2 row 4, §7. Reuses .ka-chip
+   verbatim from assets/ka-collection-refine-bar.css (loaded by
+   sections/ka-diary-filter.liquid) — only new filter values here.
+   Sticky offset (84px desktop / 78px mobile) is the identical,
+   already-justified value used by the Journal Filter Bar (sits just
+   under the fixed utility-bar + nav stack) — not a new token.
+================================================================= */
+.cd-filter {
+  position: sticky; top: 84px; z-index: 40;
+  background: var(--c-paper); max-width: var(--max-wide); margin: 0 auto;
+  padding: var(--s-md) var(--gutter);
+  display: flex; align-items: center; gap: 24px; flex-wrap: wrap;
+  border-bottom: 1px solid var(--line);
+}
+.cd-filter__label { font-family: var(--f-sans); font-size: 0.62rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--c-ink-muted); }
+.cd-filter__chips { display: flex; gap: 10px; flex-wrap: wrap; }
+@media (max-width: 600px) { .cd-filter { top: 78px; padding: var(--s-sm) 16px; } }
