@@ -30,6 +30,7 @@
     "ka-hero": {
       "type": "ka-hero",
       "settings": {
+        "hero_image": "shopify://shop_images/ruby_re_d0af872b-53f1-4bb4-b9cd-d63ef2629e15.jpg",
         "eyebrow": "Mumbai — Est. in Craft",
         "title_line1": "Bridal",
         "title_line2": "Couture",
@@ -55,9 +56,9 @@
         "body": "Some garments are made to be worn. First Love was made to be remembered. A bridal collection built around silhouettes that hold their shape and their meaning — heavily embroidered lehengas, sculptural corset gowns, draped forms that move like ceremony. Each piece made to order, each detail placed with intention.",
         "cta_label": "Explore the collection",
         "cta_url": "/collections/first-love",
-        "image_main": "shopify://shop_images/K_A_BRIDAL_10th_JUNE_2026_0639_1.jpg",
-        "image_secondary_1": "shopify://shop_images/K_A_BRIDAL_10th_JUNE_2026_1979.jpg",
-        "image_secondary_2": "shopify://shop_images/K_A_BRIDAL_10th_JUNE_2026_1104.jpg"
+        "image_main": "shopify://shop_images/Peach_sage_green_blush_raw_silk.jpg",
+        "image_secondary_1": "shopify://shop_images/white_stone_crystals.jpg",
+        "image_secondary_2": "shopify://shop_images/Coffee_brown_deep_wine.jpg"
       }
     },
     "ka-bestsellers": {
@@ -65,8 +66,8 @@
       "settings": {
         "eyebrow": "Most Loved",
         "title": "Signature Pieces",
-        "view_all_label": "View the Signature edit",
-        "view_all_url": "/collections/signature-top-sellers",
+        "view_all_label": "View all Signature Pieces",
+        "view_all_url": "shopify://collections/signature-top-sellers",
         "collection": "signature-top-sellers",
         "products_limit": 3
       }
@@ -74,6 +75,7 @@
     "ka-celebrity": {
       "type": "ka-celebrity",
       "settings": {
+        "image": "shopify://shop_images/Froze_metallic_re.jpg",
         "eyebrow": "Maison",
         "quote": "“Worn by those who believe a garment should tell a story.”",
         "attribution": ""
@@ -243,8 +245,9 @@
     "ka-appointment": {
       "type": "ka-appointment",
       "settings": {
+        "image": "shopify://shop_images/Soft_blus_chamagne_peach.jpg",
         "eyebrow": "The Atelier",
-        "title": "Begin with a\nConversation.",
+        "title": "Begin with a Conversation.",
         "body": "Every K&A bride begins with a private styling session — in our Mumbai atelier or virtually, wherever in the world you are. We listen before we design.",
         "cta_instore_label": "Book In-Store Appointment",
         "cta_instore_url": "/pages/appointments",
