@@ -6,16 +6,28 @@
   explicit direction (10 Aug 2026) — a visitor's first priority is
   the client's own verdict, ahead of any narrative/outfit detail.
 
-  Content source: article.summary (Shopify's native Excerpt field,
+  Content source: article.excerpt (Shopify's native Excerpt field,
   set in Blog posts editor) — the client's own words, verbatim,
   unedited (spec field 4). Same field also feeds the shorter pulled
   excerpt shown on the Index Featured panel / grid card (see
   sections/ka-diary-featured.liquid). No metafield needed for this
   field — reuses Shopify's own purpose-built field, same reasoning
-  as the Journal's dek line (article.summary).
+  as the Journal's dek line (article.excerpt).
 
   F3 gate: renders nothing at all — not even an empty section shell
   — unless client_diary_consent is explicitly true.
+
+  BUGFIX 2026-08-11: this previously read `article.summary`, which is
+  not a real Liquid property on the article object (Shopify's Admin
+  GraphQL API calls this field "summary", but the classic Liquid
+  `article` drop only exposes it as `excerpt` -- confirmed against
+  Shopify's own Liquid reference). `article.summary` silently
+  evaluates to blank in Liquid rather than erroring, so this section
+  never rendered for any real entry, including Simran's, despite the
+  excerpt being correctly set via the Admin API the whole time. Same
+  fix applied to sections/ka-diary-featured.liquid and sections/
+  ka-article-hero.liquid (Journal dek line), which had the identical
+  bug.
 {%- endcomment -%}
 
 {%- liquid
@@ -23,7 +35,7 @@
   if article.metafields.custom.client_diary_consent == true
     assign is_consented = true
   endif
-  assign review_text = article.summary | strip_html
+  assign review_text = article.excerpt | strip_html
 -%}
 
 {%- if is_consented and review_text != blank -%}

@@ -27,7 +27,11 @@
       Occasion             -> article.tags (fixed 4-value taxonomy,
                                identical mechanism to the Journal's
                                category tags)
-      Client review        -> article.summary (native Excerpt field)
+      Client review        -> article.excerpt (native Excerpt field --
+                               NOTE 2026-08-11: not article.summary,
+                               which isn't a real Liquid property; see
+                               BUGFIX note in sections/ka-diary-entry-
+                               review.liquid)
       Hero/cover image     -> article.image (native featured image),
                                falling back to the first Look's first
                                image if unset (spec field 8)
@@ -133,7 +137,7 @@
       assign hero_image = looks.first.look_images.first.image
     endif
 
-    assign review_text = featured_article.summary | strip_html
+    assign review_text = featured_article.excerpt | strip_html
     assign excerpt = featured_article.metafields.custom.client_diary_atelier_note | strip_html | truncate: 150
   -%}
   <section class="cd-featured" aria-label="Featured diary">
@@ -179,7 +183,7 @@
     },
     {
       "type": "paragraph",
-      "content": "Featured entry is chosen automatically from consented (published) entries only: whichever is tagged \"featured\", falling back to the most recent. No setting here selects it directly. The one-line excerpt reads from the entry's own \"From the Atelier\" note (custom.client_diary_atelier_note metafield), truncated; the pulled quote reads from the entry's native Excerpt field (article.summary)."
+      "content": "Featured entry is chosen automatically from consented (published) entries only: whichever is tagged \"featured\", falling back to the most recent. No setting here selects it directly. The one-line excerpt reads from the entry's own \"From the Atelier\" note (custom.client_diary_atelier_note metafield), truncated; the pulled quote reads from the entry's native Excerpt field (article.excerpt)."
     }
   ],
   "presets": [
