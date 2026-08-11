@@ -1,6 +1,15 @@
 {%- liquid
   assign looks = article.metafields.custom.client_diary_looks.value
-  assign look0 = looks[0]
-  assign lookfirst = looks.first
+  assign hero_image = blank
+  for look in looks
+    assign look_imgs = look.look_images.value
+    if look_imgs.size > 0
+      for img in look_imgs
+        assign hero_image = img.image
+        break
+      endfor
+    endif
+    break
+  endfor
 -%}
-<!-- HERODEBUG looks_size={{ looks.size }} look0_name={{ look0.look_name }} lookfirst_name={{ lookfirst.look_name }} look0_images_size={{ look0.look_images.value.size }} look0_images_first={{ look0.look_images.value[0].image.src }} HERODEBUG END -->
+<!-- HERODEBUG2 hero_image_src={{ hero_image.src }} hero_image_url={{ hero_image | image_url: width: 200 }} HERODEBUG2 END -->
