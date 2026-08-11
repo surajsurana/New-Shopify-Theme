@@ -7,7 +7,7 @@
 - **`gid://shopify/OnlineStoreTheme/189017096482`, name "Staging" -- IGNORE, do not use, if it ever reappears.** This was a separate, orphaned theme that was never connected to GitHub at all (no longer present in the account as of 2026-07-23, but the confusion it caused is why this warning stays). An entire night's work (2026-07-10/11) was nearly lost because this ID was mistakenly recorded as "the" staging theme. **Given the staging ID has now changed at least twice, never trust any hardcoded ID in this file (including the one above) without verifying live first:** `themes(first: 10) { nodes { id name role updatedAt } }` via the Shopify Admin GraphQL API, and cross-check `updatedAt` actually moves after a fresh push.
 - Preview staging: `https://admin.shopify.com/store/karishmaandashita/themes/189829808418/editor` (or the storefront `?preview_theme_id=189829808418` link) -- re-verify this ID against the live query above before using, per the note above.
 
-**Rule: never push to Live directly. Always target `staging` branch -> staging theme first. Work only goes to `main`/Live after Suraj has reviewed it on staging and explicitly approves -- then Claude Code merges `staging` -> `main` and pushes (Suraj does not need to manually publish from Shopify Admin -> Themes each time; a git push to `main` deploys straight to the already-published Live theme since `main` is the branch connected to it). Never merge/push to `main` without that explicit per-instance approval, even if a previous push was approved -- approval is not standing.**
+**Rule: never push to Live directly. Always target `staging` branch -> staging theme first. Work only goes to `main`/Live after Suraj has reviewed it on staging and explicitly approves -- then Technical Director merges `staging` -> `main` and pushes (Suraj does not need to manually publish from Shopify Admin -> Themes each time; a git push to `main` deploys straight to the already-published Live theme since `main` is the branch connected to it). Never merge/push to `main` without that explicit per-instance approval, even if a previous push was approved -- approval is not standing. As of 2026-08-11, this is a mandatory multi-step gate, not a single "get approval then push" step -- see "Standing rule: LIVE <-> STAGING drift check and release procedure" below. Technical Director has (or, pending a tool grant -- see that section -- will have) the technical capability to both deploy to staging and promote to Live; capability and authorization are deliberately separate, and it must never exercise the Live-promotion capability without a fresh, explicit, release-specific approval.**
 
 ## Why this project exists
 karishmaashita.com previously ran on Shopify's Dawn theme. A redesigned prototype was built and implementation kept breaking against Dawn's section schema, color-scheme system, and CSS/JS architecture (see the old project at Github/shopify-theme-github for the full history -- a long string of "fix" commits chasing Dawn conflicts). Decision: stop fighting Dawn. Build a brand-new theme from scratch with no inherited theme, no inherited constraints -- including color, typography, and spacing, which are being reconsidered from zero, not just layout.
@@ -17,7 +17,7 @@ Home page -> Collection page -> Product page -> Cart page. One page at a time: a
 
 ## Agents
 - `.claude/agents/creative-director.md` -- Creative Director. Designs unrestricted, prototypes in plain HTML/CSS/JS, hands off a platform-agnostic build spec.
-- `.claude/agents/technical-director.md` -- Builds the actual Shopify theme (Liquid/JSON templates, sections, assets) from the approved spec. Does a feasibility skim against real Shopify-platform limits (not Dawn) before full build. Has read-only Shopify Admin API access (added 2026-07-12) to verify its own builds actually deployed -- no write access, fixes still go through git.
+- `.claude/agents/technical-director.md` -- Builds the actual Shopify theme (Liquid/JSON templates, sections, assets) from the approved spec. Does a feasibility skim against real Shopify-platform limits (not Dawn) before full build. Has read-only Shopify Admin API access (added 2026-07-12) to verify its own builds actually deployed. **Intended (2026-08-11) to also own the full release pipeline: STAGING deploy, LIVE<->STAGING drift check/reconciliation, and -- only after Suraj's explicit per-release approval -- promoting to Live via git.** Currently blocked on one manual step: its `tools:` grant still needs `graphql_mutation` added by Suraj directly (Claude Code's own permission-escalation check won't let a Claude session add this itself, even under explicit chat authorization) -- see that file for the exact line to edit. Until then, the staging-write and Live-promotion steps route through the main Claude Code session; everything read-only (including the full drift check) already works today.
 - `.claude/agents/qa-reviewer.md` -- Independently verifies the live build against the approved prototype. Never trusts another agent's self-report. Has read-only Shopify Admin API access (added 2026-07-12) so it can confirm actual deployment state itself, not just repo state.
 
 ## Known issue: Shopify silently drops theme files with invalid schema (added 2026-08-10, after 4 confirmed incidents)
@@ -44,10 +44,57 @@ Whenever `sections/`, `blocks/`, `templates/`, `layout/`, `snippets/`, `assets/`
 2. `git commit` + `git push origin staging` -- GitHub remains the source of truth and audit trail for every change, always.
 3. **Deploy directly via the Shopify Admin API**, not by waiting on the GitHub sync webhook: call `themeFilesUpsert` with the exact content of every changed theme file, targeting the current staging theme ID (verify it live first, per the warning above -- don't trust a hardcoded ID). This is the reliable mechanism -- the GitHub webhook path is a known-flaky, Shopify-staff-acknowledged, best-effort background sync with no error surface back to you; the Admin API write is synchronous and returns real errors. Do this even though the git push above will also eventually reach staging via the webhook -- don't wait for it or assume it worked. **As of 2026-08-10, only the main Claude Code session has `graphql_mutation` access** -- Technical Director and QA Reviewer are read-only by design (see their agent files); route this step through the main session until/unless Suraj explicitly decides to grant a subagent write access.
 4. Run `scripts/get-staging-verification-query.ps1` (or construct the equivalent query by hand) and execute it via the Shopify Admin API to fetch what the staging theme actually has for the changed files.
-5. Run `scripts/compare-staging-verification.ps1` against that response. It must print `PASS`. `MISSING FROM STAGING` or `STALE` = the deployment failed -- go back to step 3, or re-diagnose per the Known Issue section above if the same file keeps failing.
+5. Run `scripts/compare-staging-verification.ps1` against that response. It must print `PASS`. `MISSING FROM STAGING` or `CONTENT MISMATCH` = the deployment failed -- go back to step 3, or re-diagnose per the Known Issue section above if the same file keeps failing. (This check is checksum-based, not timestamp-based -- confirmed 2026-08-11 that Shopify doesn't bump `updatedAt` on a byte-identical redeploy, so a freshness-only check would misreport a genuine no-op success as a failure.)
 6. Only after a clean `PASS` may a change be reported as "done"/"ready"/"deployed" to Suraj -- this is the QA gate from the section above, made mechanically enforceable instead of relying on memory.
 
 This procedure only ever writes to the **staging** theme. It has no path to Live -- publishing/merging to `main` remains a fully separate, manual, explicitly-approved step (see the top of this file). No script in this repo holds Shopify credentials; the Admin API calls in steps 3-4 are made through Claude Code's already-authenticated, staging-scoped MCP connection, which itself refuses `themeFilesUpsert`/`themeFilesCopy` writes against the live/published theme regardless of which theme ID is passed -- a second, independent safety net beyond this procedure's own discipline.
+
+## Standing rule: LIVE <-> STAGING drift check and release procedure (added 2026-08-11)
+**LIVE must never be treated as simply an older copy of STAGING.** Suraj sometimes makes small manual edits directly in the Shopify Admin theme editor on the Live theme. Those edits never touch git. A blind `staging` -> `main` promotion would silently overwrite them with no record anything was lost. This is now a mandatory part of the release architecture, not an optional nicety:
+
+```
+Creative Director
+    |
+Technical Director (implementation)
+    |
+STAGING deploy
+    |
+STAGING deployment verification   <- "Standing rule: staging deployment procedure" above
+    |
+QA (QA Reviewer)
+    |
+LIVE <-> STAGING drift check      <- this section
+    |
+RECONCILIATION (if drift found)
+    |
+QA again, if reconciliation changed STAGING
+    |
+Suraj's EXPLICIT, release-specific approval  <- never standing, never inferred
+    |
+Technical Director promotes the approved STAGING state to LIVE
+    |
+POST-LIVE VERIFICATION
+```
+
+**Drift detection is against the ACTUAL Shopify LIVE theme, never against git.** Comparing `main`'s git history to `staging`'s would miss any edit Suraj made directly in Shopify Admin, since that edit has no git commit at all. The check always fetches both themes' real current file state live:
+1. `scripts/get-drift-file-lists-query.ps1 -LiveThemeId <id> -StagingThemeId <id>` -- emits a cheap, `checksumMd5`-based query covering every file in both themes (verify both theme IDs live first, per the warning above -- staging's ID in particular has changed multiple times).
+2. `scripts/compare-live-staging-drift.ps1 -ResponseJsonPath <path>` -- classifies every file: staging-only, live-only, changed-in-both, identical.
+3. For anything live-only or changed-in-both, fetch actual body content for just those filenames from both themes and run `scripts/diff-theme-file-content.ps1` for a real diff. **Never classify a file from checksum or file size alone** -- for JSON templates, read the diff as structured data (a removed key whose value equals a schema default is not real drift; a removed key with no fallback is); for Liquid/CSS/JS, read the diff for actual meaning, not noise.
+
+**Reconciliation rule -- apply to every live-only or meaningful changed-in-both file, no exceptions:**
+- **A. Already represented in STAGING** (e.g. the live-only value equals a schema default that staging now relies on implicitly) -> no action required, but state this explicitly in the release summary.
+- **B. Legitimate manual LIVE change that should be preserved** -> bring it into STAGING (a real write/commit) before the release proceeds.
+- **C. STAGING intentionally replaces the LIVE implementation** -> do not resolve automatically. Flag explicitly for Suraj's approval as part of the release summary.
+- **D. Cannot confidently determine intent** -> STOP the release and ask Suraj. Do not guess.
+Never let a promotion silently overwrite a live-only change without going through A/B/C/D first.
+
+**First real run (2026-08-11):** checked the actual Live theme (`188751446306`, 201 files) against actual Staging (`189829808418`, 231 files). Result: 0 live-only files, 30 staging-only files (all expected -- the Client Diaries build, not yet promoted), 7 files changed on both sides. Inspected all 7 with real content diffs, not just checksums -- every one was confirmed Category A (staging is purely ahead: the FAQ JSON-LD addition, the Journal dek-line/breakout-image fixes, newer homepage photography, and one case worth naming specifically -- `templates/collection.json` had an explicit `"legal_entity_name": "Peekay International Ltd."` override on Live that staging's copy of the same template doesn't set explicitly, but `sections/ka-footer.liquid`'s current schema still defaults that exact setting to `"Peekay International Ltd."` (`Docs/footer-legal-entity-addendum.md`), so nothing is actually lost -- it's a redundant override being dropped, not data loss. No reconciliation was needed this run.
+
+**Approval gate:** Technical Director may have the technical capability to promote to Live (see the tool-grant status in `.claude/agents/technical-director.md`), but capability and authorization are separate. It must never promote on the strength of "looks good," "continue," a previous release's approval, approval of a different release, or QA passing alone -- QA passing is a precondition for asking, not a substitute for asking. Approval must be explicit and tied to the specific release summary just produced, e.g. `"STAGING APPROVED -- PUSH TO LIVE"`. If it's ever ambiguous whether a message is approval of the current release, treat it as not approval and ask.
+
+**Why LIVE promotion is git, not `themeFilesUpsert`:** confirmed empirically 2026-08-11 -- a `themeFilesUpsert` call against the Live theme ID was rejected before it reached Shopify at all, by the connected Shopify MCP server's own safety policy (`"reason":"This mutation targets the live (published) theme. Theme file writes against the live storefront are blocked."`). `themePublish` is separately documented as a blocked mutation by the same tool. This is not a Claude Code permission and cannot be configured away by anyone in this project -- it's an intentional platform-level guardrail, and it must never be treated as something to work around. The only mechanism this project has ever had for updating Live content is `git merge staging -> main` + `git push origin main`, since `main` is the branch Shopify's GitHub connector syncs straight to the published Live theme. That remains true under this new architecture -- "Technical Director promotes to Live" means it runs that git merge + push, after approval, never an Admin API write.
+
+**Post-live verification (mandatory, every release):** query the actual Live theme after promotion. Confirm the approved changed files are present with a fresh `updatedAt`. Confirm every live-only change marked "preserve" during reconciliation is still present. Report any unexpected difference clearly and do not report the release as successful until this comes back clean.
 
 ## Standing rule: QA gate is mandatory, not optional (added 2026-07-12; scope clarified 2026-07-26)
 Before reporting ANY build as "done"/"ready"/"live" to Suraj, QA Reviewer must independently verify it first -- both prototype-fidelity AND actual-deployment-state (file presence and content on the real staging theme, not just "git push succeeded"). No exceptions for changes that seem small -- 2026-07-11/12's real bugs (a CSS Grid track blowout, a wrong typeface, a duplicate CTA, two files silently failing to sync from GitHub to Shopify) were all in changes that looked minor going in. Skipping the QA gate because something seems low-risk is exactly how those reached Suraj instead of getting caught first. This applies without exception to any change to the actual live/staging Shopify theme, however small -- Suraj explicitly confirmed (2026-07-26) that small theme edits do NOT get a shortcut around the full Creative Director -> Technical Director -> QA Reviewer pipeline.

@@ -1,9 +1,16 @@
 <#
-Hard pass/fail gate for a staging deployment. Compares the expected file
-list (written by get-staging-verification-query.ps1 to
+Hard pass/fail gate for a staging deployment. Compares the expected
+file+checksum list (written by get-staging-verification-query.ps1 to
 .staging-verify/expected.json) against the actual Shopify Admin API
 response for the same query, and fails loudly -- non-zero exit code, no
-ambiguity -- if anything expected is missing or stale.
+ambiguity -- if anything expected is missing or its content doesn't match.
+
+Checksum-based, not updatedAt-based: confirmed 2026-08-11 that Shopify
+does not bump a file's updatedAt when the deployed content is byte-
+identical to what was already there, so a genuine no-op redeploy would
+falsely read as "stale" under a pure-freshness check. Comparing the local
+working-tree file's MD5 against Shopify's checksumMd5 directly answers
+"does staging have the content I intended" regardless of timestamps.
 
 This is deliberately a separate step from the Shopify API call itself:
 no script in this repo holds Shopify credentials. The flow is:
@@ -49,35 +56,43 @@ if ($null -eq $actualNodes) {
     exit 1
 }
 
-$deployedAfter = [datetime]::Parse($expected.deployedAfter).ToUniversalTime()
 $actualByFilename = @{}
 foreach ($node in $actualNodes) { $actualByFilename[$node.filename] = $node }
 
 $missing = New-Object System.Collections.Generic.List[string]
-$stale = New-Object System.Collections.Generic.List[string]
+$mismatched = New-Object System.Collections.Generic.List[string]
+$okCount = 0
 
-foreach ($filename in $expected.filenames) {
-    if (-not $actualByFilename.ContainsKey($filename)) {
-        $missing.Add($filename)
+foreach ($f in $expected.files) {
+    if (-not $actualByFilename.ContainsKey($f.filename)) {
+        $missing.Add($f.filename)
         continue
     }
-    $updatedAt = [datetime]::Parse($actualByFilename[$filename].updatedAt).ToUniversalTime()
-    if ($updatedAt -lt $deployedAfter) {
-        $stale.Add("$filename (updatedAt $($actualByFilename[$filename].updatedAt), before deploy cutoff $($expected.deployedAfter))")
+    $actualChecksum = $actualByFilename[$f.filename].checksumMd5
+    if ($null -eq $actualChecksum) {
+        $mismatched.Add("$($f.filename)  (Shopify returned no checksumMd5 -- cannot verify)")
+        continue
     }
+    if ($actualChecksum.ToLower() -ne $f.md5.ToLower()) {
+        $mismatched.Add("$($f.filename)  (expected md5 $($f.md5), staging has $actualChecksum)")
+        continue
+    }
+    $okCount++
 }
 
-$extra = $actualByFilename.Keys | Where-Object { $expected.filenames -notcontains $_ }
+$expectedFilenameSet = @{}
+foreach ($f in $expected.files) { $expectedFilenameSet[$f.filename] = $true }
+$extra = $actualByFilename.Keys | Where-Object { -not $expectedFilenameSet.ContainsKey($_) }
 
-$ok = ($missing.Count -eq 0) -and ($stale.Count -eq 0)
+$ok = ($missing.Count -eq 0) -and ($mismatched.Count -eq 0)
 
 if ($missing.Count -gt 0) {
     Write-Output "MISSING FROM STAGING ($($missing.Count)):"
     foreach ($m in $missing) { Write-Output "  - $m" }
 }
-if ($stale.Count -gt 0) {
-    Write-Output "STALE ON STAGING (present, but not updated by this deploy) ($($stale.Count)):"
-    foreach ($s in $stale) { Write-Output "  - $s" }
+if ($mismatched.Count -gt 0) {
+    Write-Output "CONTENT MISMATCH (present, but content doesn't match what was deployed) ($($mismatched.Count)):"
+    foreach ($m in $mismatched) { Write-Output "  - $m" }
 }
 if ($extra.Count -gt 0) {
     Write-Output "EXTRA/UNEXPECTED (returned by Shopify but not in the expected list) ($($extra.Count)):"
@@ -85,7 +100,7 @@ if ($extra.Count -gt 0) {
 }
 
 if ($ok) {
-    Write-Output "PASS: all $($expected.filenames.Count) expected file(s) present on staging with a fresh updatedAt."
+    Write-Output "PASS: all $($expected.files.Count) expected file(s) present on staging with matching content."
     exit 0
 } else {
     Write-Output "FAIL: staging deployment verification failed -- do NOT report this change as done."
