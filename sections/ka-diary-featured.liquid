@@ -69,6 +69,15 @@
   convention. See sections/ka-diary-entry-hero.liquid for the entry-
   page-side half of this gate.
 
+  BUGFIX 2026-08-11: client_diary_looks (list.metaobject_reference)
+  and look.look_images (list.file_reference) both need .value to
+  resolve as iterable arrays in Liquid -- bare dot-access on a
+  LIST-type reference metafield returns a non-sized wrapper, not the
+  list itself (single-reference metafields don't have this problem;
+  only list-typed ones do). See sections/ka-diary-looks-spreads.liquid
+  for the full writeup, confirmed via a live themeFilesUpsert
+  diagnostic against staging.
+
   METAFIELD/METAOBJECT DEFINITION GAP (flagged per spec §5/F2, same
   category as the Journal's custom.breakout_image gap, 2026-08-08):
   as of this build (2026-08-10), NONE of the definitions above exist
@@ -127,14 +136,14 @@
       assign entry_year = featured_article.published_at | date: '%Y'
     endif
 
-    assign looks = featured_article.metafields.custom.client_diary_looks
+    assign looks = featured_article.metafields.custom.client_diary_looks.value
     assign look_count = looks.size
 
     assign first_name = featured_article.title | split: ' ' | first
 
     assign hero_image = featured_article.image
     if hero_image == blank and look_count > 0
-      assign hero_image = looks.first.look_images.first.image
+      assign hero_image = looks.first.look_images.value.first.image
     endif
 
     assign review_text = featured_article.excerpt | strip_html

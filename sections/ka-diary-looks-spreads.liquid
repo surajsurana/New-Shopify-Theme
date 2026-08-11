@@ -25,6 +25,27 @@
   Spreads", 26 chars) -- the GitHub sync path rejects this silently,
   the Admin API surfaces it clearly. Same mechanism as the July 2026
   FAQ incident (CLAUDE.md). Fixed by shortening name/preset name.
+
+  BUGFIX 2026-08-11 (found independently, prior session's two fixes --
+  article.summary->excerpt, metaobject definition storefront access --
+  were real but insufficient): a LIST-type reference metafield
+  (client_diary_looks is list.metaobject_reference) does NOT
+  auto-resolve to an iterable array via the bare dot-shorthand
+  (article.metafields.custom.client_diary_looks) the way a SINGLE
+  reference metafield does. Bare access returns a non-sized wrapper --
+  `.size` and `.first` both evaluate blank, so `looks.size > 0` was
+  always false and this section rendered its empty wrapper div with
+  zero spreads inside, for every visitor, regardless of consent or
+  data. Confirmed via a live themeFilesUpsert diagnostic against
+  staging (looks.size printed blank; looks.value.size printed the
+  correct 3). The fix is `.value`, exactly the pattern this codebase
+  already uses correctly in sections/ka-article-shop-story.liquid
+  (article.metafields.custom.shop_the_story.value) -- that file just
+  wasn't used as a reference when this one was written. Same defect,
+  same fix, in sections/ka-diary-entry-hero.liquid, sections/ka-diary-
+  featured.liquid, snippets/ka-diary-card.liquid, and snippets/ka-
+  diary-look-spread.liquid (that one for look.look_images, the nested
+  list.file_reference field on each look).
 {%- endcomment -%}
 
 {%- liquid
@@ -32,7 +53,7 @@
   if article.metafields.custom.client_diary_consent == true
     assign is_consented = true
   endif
-  assign looks = article.metafields.custom.client_diary_looks
+  assign looks = article.metafields.custom.client_diary_looks.value
 -%}
 
 {%- if is_consented and looks.size > 0 -%}

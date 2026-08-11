@@ -12,6 +12,19 @@
     reverse — true/false, alternates .look / .look--reverse by
               odd/even index (image always leads on mobile
               regardless — see assets/ka-diary-entry-looks.css)
+
+  BUGFIX 2026-08-11: look.look_images is a list.file_reference field
+  (list of images) on the client_diary_look metaobject. Like the
+  parent article's client_diary_looks metafield (see sections/ka-
+  diary-looks-spreads.liquid), a LIST-type reference does not
+  auto-resolve to an iterable array via bare dot-access -- .size and
+  .first both silently evaluate blank. Confirmed live via a
+  themeFilesUpsert diagnostic: look.look_images.size printed blank,
+  look.look_images.value.size printed the correct per-look count (3,
+  1, 1). Every spread was falling through to the single fallback
+  placeholder image (cd-simran-gold.jpg) regardless of how many real
+  photos were actually attached. Fixed by reading .value, same as
+  sections/ka-article-shop-story.liquid's existing correct pattern.
 {%- endcomment -%}
 
 {%- liquid
@@ -19,7 +32,7 @@
   assign ordinal_index = index | minus: 1
   assign ordinal_word = ordinal_words[ordinal_index] | default: index
 
-  assign images = look.look_images
+  assign images = look.look_images.value
   assign image_count = images.size
   if image_count == 0
     assign image_count = 1

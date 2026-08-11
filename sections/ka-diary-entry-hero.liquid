@@ -20,6 +20,14 @@
   (templates/article.diary.json) — assigned per-article in Shopify
   Admin (Blog posts → article → Theme template dropdown → "diary").
   See templates/article.diary.json header comment.
+
+  BUGFIX 2026-08-11: client_diary_looks (list.metaobject_reference)
+  and look.look_images (list.file_reference) both need .value to
+  resolve as iterable arrays in Liquid -- bare dot-access on a
+  LIST-type reference metafield returns a non-sized wrapper, not the
+  list itself. See sections/ka-diary-looks-spreads.liquid for the
+  full writeup. Without this, look_count was always 0 and the hero
+  image fallback to the first Look's first photo never fired.
 {%- endcomment -%}
 
 <div class="entry-progress" id="entryProgress" aria-hidden="true"></div>
@@ -51,14 +59,14 @@
       assign entry_year = article.published_at | date: '%Y'
     endif
 
-    assign looks = article.metafields.custom.client_diary_looks
+    assign looks = article.metafields.custom.client_diary_looks.value
     assign look_count = looks.size
 
     assign first_name = article.title | split: ' ' | first
 
     assign hero_image = article.image
     if hero_image == blank and look_count > 0
-      assign hero_image = looks.first.look_images.first.image
+      assign hero_image = looks.first.look_images.value.first.image
     endif
   -%}
 

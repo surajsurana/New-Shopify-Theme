@@ -11,6 +11,11 @@
                   callers must never pass an unconsented article)
     extra_class — optional string appended to the outer <article>
                   class (used for .reveal-img)
+
+  BUGFIX 2026-08-11: client_diary_looks/look_images are LIST-type
+  reference fields and need .value to resolve as iterable arrays in
+  Liquid -- see sections/ka-diary-looks-spreads.liquid for the full
+  writeup.
 {%- endcomment -%}
 
 {%- liquid
@@ -35,14 +40,14 @@
     assign entry_year = article.published_at | date: '%Y'
   endif
 
-  assign looks = article.metafields.custom.client_diary_looks
+  assign looks = article.metafields.custom.client_diary_looks.value
   assign look_count = looks.size
 
   assign first_name = article.title | split: ' ' | first
 
   assign card_image = article.image
   if card_image == blank and look_count > 0
-    assign card_image = looks.first.look_images.first.image
+    assign card_image = looks.first.look_images.value.first.image
   endif
 -%}
 
