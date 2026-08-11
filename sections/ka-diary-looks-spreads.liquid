@@ -1,40 +1,22 @@
 {{ 'ka-diary-entry-looks.css' | asset_url | stylesheet_tag }}
 
-{%- comment -%}
-  K&A Client Diaries — Entry Look Spreads. Docs/client-diaries-build-
-  spec.md §3 row C, §4 field 6, §5/F1. The core of the entry: one
-  full-bleed alternating image/text spread per outfit, looping the
-  article's client_diary_looks metafield (list.metaobject_reference
-  -> "client_diary_look"). Odd/even alternation via forloop.index,
-  same technique already used elsewhere on this theme (spec §9).
-
-  This metaobject type + metafield DEFINITION do not exist yet on
-  this store as of this build; see sections/ka-diary-featured.liquid
-  header comment for the full data-model + gap writeup (F1/F2). Until
-  they're created and at least one Look is added to an entry, this
-  section renders nothing for that entry.
-
-  F3 gate: renders nothing unless client_diary_consent is explicitly
-  true.
-
-  RESOLVED 2026-08-10: this file (plus 2 sibling entry sections and
-  templates/article.diaryentry.json) failed to sync from GitHub to
-  staging across several attempts. Root cause confirmed via a direct
-  themeFilesUpsert diagnostic call: the schema "name" field exceeded
-  Shopify's real 25-character hard limit ("Diary Entry — Look
-  Spreads", 26 chars) -- the GitHub sync path rejects this silently,
-  the Admin API surfaces it clearly. Same mechanism as the July 2026
-  FAQ incident (CLAUDE.md). Fixed by shortening name/preset name.
-{%- endcomment -%}
-
 {%- liquid
   assign is_consented = false
   if article.metafields.custom.client_diary_consent == true
     assign is_consented = true
   endif
+  assign looks_metafield = article.metafields.custom.client_diary_looks
   assign looks = article.metafields.custom.client_diary_looks
 -%}
-
+<!-- DEBUG START
+is_consented={{ is_consented }}
+looks_metafield_class={{ looks_metafield.class }}
+looks_metafield_type={{ looks_metafield.type }}
+looks_size={{ looks.size }}
+looks_first={{ looks.first }}
+looks_first_class={{ looks.first.class }}
+looks_value={{ looks_metafield.value }}
+DEBUG END -->
 {%- if is_consented and looks.size > 0 -%}
   {%- for look in looks -%}
     {%- liquid
