@@ -177,6 +177,56 @@
 .ka-nav__bag__count:empty,
 .ka-nav__bag__count[data-count="0"] { display: none; }
 
+/* ── Account icon "signed in" indicator — Docs/account-wishlist-build-
+   spec.md S0. Reuses the badge's exact rosegold/position language (no
+   new accent colour) — a plain presence dot, no numeral, since
+   routes.account_url is the single source of truth for sign-in state;
+   this is a convenience hint, not a second auth system. Rendered
+   server-side only when {% if customer %} (ka-nav.liquid) — no JS
+   toggling, so no transition needed. ── */
+.ka-nav__signed-dot {
+  position: absolute;
+  top: 1px; right: 1px;
+  width: 7px; height: 7px;
+  border-radius: 50%;
+  background: var(--c-rosegold);
+  border: 1.5px solid var(--c-paper-deep);
+}
+
+/* ── Wishlist icon — Docs/account-wishlist-build-spec.md S0. Reuses the
+   bag icon's exact badge component (.ka-nav__bag__count above) via this
+   sibling class, plus its own heart fill/unfill state (.has-saved, set
+   by assets/ka-wishlist.js) — the bag icon has no equivalent fill
+   state. Motion: --ease-luxury / --dur-fast, a soft settle rather than
+   a bouncy pop, matching every other micro-interaction sitewide. ── */
+.ka-nav__wishlist__count {
+  position: absolute;
+  top: -2px; right: -4px;
+  min-width: 15px; height: 15px;
+  border-radius: 50%;
+  background: var(--c-rosegold);
+  color: #fff;
+  font-family: var(--f-sans);
+  font-size: 0.56rem;
+  line-height: 15px;
+  text-align: center;
+  padding: 0 3px;
+}
+.ka-nav__wishlist__count:empty,
+.ka-nav__wishlist__count[data-count="0"] { display: none; }
+
+.ka-nav__wishlist svg.heart-fill {
+  fill: var(--c-rosegold);
+  stroke: var(--c-rosegold);
+  opacity: 0;
+  transform: scale(0.6);
+  position: absolute;
+  transition: opacity var(--dur-fast) var(--ease-luxury), transform var(--dur-fast) var(--ease-luxury);
+}
+.ka-nav__wishlist svg.heart-line { transition: opacity var(--dur-fast) var(--ease-luxury); }
+.ka-nav__wishlist.has-saved svg.heart-fill { opacity: 1; transform: scale(1); }
+.ka-nav__wishlist.has-saved svg.heart-line { opacity: 0; }
+
 /* Mobile-only. Revision v2 (spec §1.2/§1.4): lives OUTSIDE
    .ka-nav__actions now, as its own grid item in column 1 — mutually
    exclusive with .ka-nav__links, which occupies the same column 1 at
@@ -248,6 +298,53 @@
 .ka-mobile-nav__links a:hover { color: var(--c-rosegold); }
 /* Current-page state (Docs/about-us-build-spec.md Section 6 H3) — matches the existing hover colour */
 .ka-mobile-nav__links a.is-current { color: var(--c-rosegold); }
+
+/* ── My Account / My Wishlist rows — Docs/account-wishlist-build-spec.md
+     S1. Same row treatment as the My Bag row below (icon size, row
+     rhythm, border) via this shared class — applied only to these two
+     new rows; My Bag keeps its own existing class/markup untouched. ── */
+.ka-mobile-nav__util-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 18px 0;
+  border-bottom: 1px solid rgba(255,255,255,0.07);
+  font-family: var(--f-sans);
+  font-size: 0.78rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: white;
+}
+.ka-mobile-nav__util-row svg {
+  width: 18px; height: 18px;
+  stroke: currentColor; fill: none;
+  flex: 0 0 auto;
+}
+/* Account row's right-aligned value — combines the signed-in dot with
+   changing text ("Log In" / "View Account"), so it needs a wrapper the
+   simpler Wishlist count span (below) doesn't. */
+.ka-mobile-nav__util-row .val {
+  margin-left: auto;
+  font-family: var(--f-sans);
+  font-size: 0.7rem;
+  color: var(--c-rosegold);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.ka-mobile-nav__util-row .dot {
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: var(--c-rosegold);
+}
+.ka-mobile-nav__wishlist-count {
+  margin-left: auto;
+  font-family: var(--f-sans);
+  font-size: 0.7rem;
+  color: var(--c-rosegold);
+}
+.ka-mobile-nav__wishlist-count:empty,
+.ka-mobile-nav__wishlist-count[data-count="0"] { display: none; }
 
 /* ── My Bag row — Round 2 addition (R2-7), mobile-drawer equivalent of
      the desktop bag icon. Sits between the nav links and the
@@ -335,4 +432,11 @@
   .ka-nav__logo    { font-size: 1.2rem; }
   .ka-nav__logo small { font-size: 0.44rem; letter-spacing: 0.26em; }
   .ka-nav__actions { gap: 14px; }
+  /* Account + Wishlist stay out of the mobile action cluster entirely
+     (Docs/account-wishlist-build-spec.md S0 "Responsive") — that
+     cluster's tested minimum width keeps the logo centred (see the
+     .ka-nav__toggle comment above) and stays Search + Bag only. Both
+     move into the drawer instead (S1, above). */
+  .ka-nav__actions .ka-nav__account,
+  .ka-nav__actions .ka-nav__wishlist { display: none; }
 }

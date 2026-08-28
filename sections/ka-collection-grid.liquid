@@ -85,6 +85,17 @@
           {% if product.tags contains 'made-to-order' or product.tags contains 'Made to Order' %}
             <span class="ka-p-card__badge">Made to Order</span>
           {% endif %}
+          {%- comment -%}
+            Wishlist heart — Docs/account-wishlist-build-spec.md S2, Flag
+            G1 (canonical .ka-p-card implementation). data-product-handle
+            is the only thing that lets assets/ka-wishlist.js identify
+            which saved handle this button represents (Section 1.4) —
+            every .ka-p-card render site needs this same attribute.
+          {%- endcomment -%}
+          <button type="button" class="ka-p-card__wish" data-product-handle="{{ product.handle }}" aria-label="Save to wishlist" aria-pressed="false">
+            <svg class="heart-line" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20s-7-4.35-9.5-8.5C.8 8.3 1.4 4.9 4.4 3.6c2.1-.9 4.4-.2 5.7 1.6L12 7.4l1.9-2.2c1.3-1.8 3.6-2.5 5.7-1.6 3 1.3 3.6 4.7 1.9 7.9C19 15.65 12 20 12 20z"/></svg>
+            <svg class="heart-fill" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20s-7-4.35-9.5-8.5C.8 8.3 1.4 4.9 4.4 3.6c2.1-.9 4.4-.2 5.7 1.6L12 7.4l1.9-2.2c1.3-1.8 3.6-2.5 5.7-1.6 3 1.3 3.6 4.7 1.9 7.9C19 15.65 12 20 12 20z"/></svg>
+          </button>
           <div class="ka-p-card__veil">
             <button
               type="button"

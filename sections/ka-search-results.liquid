@@ -90,6 +90,16 @@
               {%- else -%}
                 <div style="background: var(--c-smoke); width:100%; height:100%;"></div>
               {%- endif -%}
+              {%- comment -%}
+                Wishlist heart — Docs/account-wishlist-build-spec.md S2,
+                Flag G1 (independent re-implementation, same as
+                ka-collection-grid.liquid). data-product-handle lets
+                assets/ka-wishlist.js identify this button (Section 1.4).
+              {%- endcomment -%}
+              <button type="button" class="ka-p-card__wish" data-product-handle="{{ product.handle }}" aria-label="Save to wishlist" aria-pressed="false">
+                <svg class="heart-line" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20s-7-4.35-9.5-8.5C.8 8.3 1.4 4.9 4.4 3.6c2.1-.9 4.4-.2 5.7 1.6L12 7.4l1.9-2.2c1.3-1.8 3.6-2.5 5.7-1.6 3 1.3 3.6 4.7 1.9 7.9C19 15.65 12 20 12 20z"/></svg>
+                <svg class="heart-fill" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20s-7-4.35-9.5-8.5C.8 8.3 1.4 4.9 4.4 3.6c2.1-.9 4.4-.2 5.7 1.6L12 7.4l1.9-2.2c1.3-1.8 3.6-2.5 5.7-1.6 3 1.3 3.6 4.7 1.9 7.9C19 15.65 12 20 12 20z"/></svg>
+              </button>
             </div>
             <div class="ka-p-card__info">
               <h3 class="ka-p-card__name"><a href="{{ product.url }}">{{ product.title }}</a></h3>

@@ -1,0 +1,69 @@
+/*
+ * ------------------------------------------------------------
+ * K&A Wishlist page template — Docs/account-wishlist-build-spec.md
+ * Built from Prototypes/wishlist-page-v1.html (approved by Suraj).
+ * Sections: Nav -> Wishlist Main (client-hydrated header/grid/empty
+ * state, Flag G6) -> Footer. No closing CTA (ka-appointment) — the
+ * spec leaves this open and recommends omitting it to match the
+ * approved prototype exactly (Section 6, file map note).
+ *
+ * MANUAL STEP REQUIRED (Flag G4): the live /pages/wishlist Page needs
+ * its Theme template set to "wishlist" from Shopify Admin (Online
+ * Store -> Pages -> Wishlist -> Theme template dropdown) once this
+ * file is deployed — same manual step About Us / Client Diaries / FAQ
+ * needed. If the /pages/wishlist Page doesn't exist yet, it also needs
+ * to be created first (title "Wishlist", handle "wishlist").
+ * ------------------------------------------------------------
+ */
+{
+  "sections": {
+    "ka-nav": {
+      "type": "ka-nav",
+      "settings": {
+        "utility_1": "Complimentary Worldwide Delivery",
+        "utility_2": "Hand-Embroidered to Order",
+        "utility_3": "Private & Virtual Appointments",
+        "logo_text": "Karishma Ashita",
+        "logo_subline": "Bridal Couture · Mumbai",
+        "label_bestsellers": "Signature",
+        "link_bestsellers": "/collections/signature-top-sellers",
+        "label_collections": "Collections",
+        "link_collections": "/collections",
+        "label_diaries": "Client Diaries",
+        "link_diaries": "/pages/client-diaries",
+        "link_about": "/pages/about-us",
+        "link_visit": "/pages/visit-the-atelier",
+        "link_faq": "/pages/faq",
+        "link_wishlist": "/pages/wishlist",
+        "link_appointment": "/pages/appointments"
+      }
+    },
+    "ka-wishlist-main": {
+      "type": "ka-wishlist-main",
+      "settings": {}
+    },
+    "ka-footer": {
+      "type": "ka-footer",
+      "settings": {
+        "brand_name": "Karishma Ashita",
+        "logo_subline": "Bridal Couture · Mumbai",
+        "tagline": "Bridal couture, handcrafted\nin Mumbai.",
+        "instagram_url": "https://www.instagram.com/karishmaashita",
+        "youtube_url": "https://www.youtube.com/@KarishmaAshita",
+        "pinterest_url": "https://www.pinterest.com/karishmaashita/",
+        "email": "info@karishmaashita.com",
+        "address": "Mumbai, India\nComplimentary worldwide shipping via DHL Express",
+        "news_title": "The Inner Circle",
+        "news_body": "Collection previews, styling notes and private trunk show invitations — delivered quietly to your inbox.",
+        "news_placeholder": "Your email address",
+        "news_submit": "Join",
+        "news_success": "Welcome in. You are one of us now."
+      }
+    }
+  },
+  "order": [
+    "ka-nav",
+    "ka-wishlist-main",
+    "ka-footer"
+  ]
+}

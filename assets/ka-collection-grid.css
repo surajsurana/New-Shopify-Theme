@@ -38,6 +38,60 @@
   padding: 7px 14px;
 }
 
+/* ── Wishlist heart — Docs/account-wishlist-build-spec.md S2, Flag G1.
+   Sitewide because this stylesheet is loaded sitewide via ka-nav.liquid
+   (see that file's own comment on why) and every .ka-p-card render site
+   (Collection grid, Search results, Article shop-the-story, predictive
+   search's client-built cards, the Wishlist page's own client-built
+   cards) shares this exact markup/class contract. Mirrors the "Made to
+   Order" badge's top-left corner treatment, top-right instead, so the
+   two read as a matched pair. Persistent (not hover-only) — must work
+   on tap, where there is no hover state at all. ── */
+.ka-p-card__wish {
+  position: absolute;
+  top: 12px; right: 12px;
+  z-index: 4;
+  width: 34px; height: 34px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(247,243,236,0.88);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  transition: background var(--dur-fast), transform var(--dur-fast) var(--ease-luxury);
+}
+.ka-p-card__wish:hover { background: var(--c-paper); transform: scale(1.06); }
+.ka-p-card__wish svg {
+  width: 17px; height: 17px;
+  stroke: var(--c-charcoal);
+  fill: none;
+  stroke-width: 1.4;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.ka-p-card__wish svg.heart-fill {
+  fill: var(--c-rosegold);
+  stroke: var(--c-rosegold);
+  opacity: 0;
+  transform: scale(0.6);
+  position: absolute;
+  transition: opacity var(--dur-fast) var(--ease-luxury), transform var(--dur-fast) var(--ease-luxury);
+}
+.ka-p-card__wish svg.heart-line { transition: opacity var(--dur-fast) var(--ease-luxury); }
+.ka-p-card__wish.is-saved svg.heart-fill { opacity: 1; transform: scale(1); }
+.ka-p-card__wish.is-saved svg.heart-line { opacity: 0; }
+
+/* Removal transition — a saved card unsaved on the Wishlist page itself
+   fades and collapses out rather than vanishing instantly (Docs/
+   account-wishlist-build-spec.md Section 2 S4), so the grid never
+   jump-cuts under the visitor's cursor. */
+.ka-p-card.is-removing {
+  opacity: 0;
+  transform: scale(0.96);
+  transition: opacity var(--dur-med) var(--ease-luxury), transform var(--dur-med) var(--ease-luxury);
+  pointer-events: none;
+}
+
 .ka-p-card__veil {
   position: absolute;
   inset: 0;
@@ -169,6 +223,8 @@
   .ka-product-grid { grid-template-columns: repeat(2, 1fr); gap: 28px 2px; padding: var(--s-md) 16px var(--s-md); }
   .ka-p-card__info { padding: 14px 2px 0; }
   .ka-editorial-insert__frame { height: 42vh; min-height: 320px; }
+  .ka-p-card__wish { width: 30px; height: 30px; }
+  .ka-p-card__wish svg { width: 15px; height: 15px; }
 }
 
 /* Empty state — Coming Soon */
