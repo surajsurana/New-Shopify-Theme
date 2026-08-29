@@ -7,7 +7,7 @@
 ================================================================= */
 .entry-progress { position: fixed; top: 0; left: 0; height: 2px; background: var(--c-rosegold); z-index: 110; width: 0%; transition: width 0.1s linear; }
 .entry-return {
-  position: fixed; top: 120px; left: var(--gutter); z-index: 90;
+  position: fixed; top: 132px; left: var(--gutter); z-index: 90;
   font-family: var(--f-sans); font-size: 0.66rem; letter-spacing: 0.14em; text-transform: uppercase;
   color: rgba(255,255,255,0.8); transition: color var(--dur-fast);
 }
