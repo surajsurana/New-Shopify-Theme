@@ -39,8 +39,16 @@
 
 {%- liquid
   assign reviews_data = shop.metafields.custom.google_reviews.value
+
+  assign synced_quote_count = 0
+  for review in reviews_data.reviews
+    if review.quote != blank
+      assign synced_quote_count = synced_quote_count | plus: 1
+    endif
+  endfor
+
   assign has_synced_data = false
-  if reviews_data != blank and reviews_data.reviews.size > 0 and reviews_data.rating_label != blank
+  if reviews_data != blank and synced_quote_count > 0 and reviews_data.rating_label != blank
     assign has_synced_data = true
   endif
 
