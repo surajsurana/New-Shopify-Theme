@@ -81,6 +81,45 @@
 }
 .ka-stage:hover .ka-stage__zoom { opacity: 1; }
 
+/* ── Wishlist heart — Docs/account-wishlist-build-spec.md S6. Same
+   construction as .ka-p-card__wish (assets/ka-collection-grid.css),
+   scaled up (34px -> 46px) to suit the much larger hero canvas. Position
+   never changes across breakpoints (top-right, per the spec's placement
+   rationale), only size — see the ≤900px override below. ── */
+.ka-stage__wish {
+  position: absolute;
+  top: 20px; right: 20px;
+  z-index: 4;
+  width: 46px; height: 46px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(247,243,236,0.88);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  transition: background var(--dur-fast), transform var(--dur-fast) var(--ease-luxury);
+}
+.ka-stage__wish:hover { background: var(--c-paper); transform: scale(1.06); }
+.ka-stage__wish svg {
+  width: 21px; height: 21px;
+  stroke: var(--c-charcoal);
+  fill: none;
+  stroke-width: 1.4;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.ka-stage__wish svg.heart-fill {
+  fill: var(--c-rosegold);
+  stroke: var(--c-rosegold);
+  opacity: 0;
+  transform: scale(0.6);
+  position: absolute;
+  transition: opacity var(--dur-fast) var(--ease-luxury), transform var(--dur-fast) var(--ease-luxury);
+}
+.ka-stage__wish svg.heart-line { transition: opacity var(--dur-fast) var(--ease-luxury); }
+.ka-stage__wish.is-saved svg.heart-fill { opacity: 1; transform: scale(1); }
+.ka-stage__wish.is-saved svg.heart-line { opacity: 0; }
+
 /* ── info panel ── */
 .ka-info-wrap { position: relative; }
 .ka-panel { padding-top: 6px; }
@@ -235,6 +274,12 @@
   .ka-panel { padding: 30px 0 0; }
   .ka-mobile-bar { display: flex; }
   body { padding-bottom: 74px; }
+  /* Heart scales down slightly to sit comfortably within the narrower
+     stage, but keeps its exact top-right position — no placement change
+     between breakpoints, only size (Docs/account-wishlist-build-spec.md
+     S6 "Responsive"). */
+  .ka-stage__wish { width: 40px; height: 40px; top: 14px; right: 14px; }
+  .ka-stage__wish svg { width: 18px; height: 18px; }
 }
 @media (max-width: 600px) {
   .ka-p-title { font-size: 2.4rem; }

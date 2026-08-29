@@ -208,7 +208,15 @@
   var lb = document.getElementById('ka-lb');
   var lbFrame = document.getElementById('ka-lb-frame');
   if (stage && lb) {
-    stage.addEventListener('click', function () {
+    stage.addEventListener('click', function (e) {
+      /* Docs/account-wishlist-build-spec.md S6 — the wishlist heart
+         button (assets/ka-product-main.css .ka-stage__wish) lives inside
+         #ka-stage, so without this guard tapping it would also pop open
+         the lightbox underneath. Not in the original build spec's file
+         map for this file, but verified necessary against this actual
+         click handler (mirrors the equivalent guard already present in
+         Prototypes/product-page-wishlist-v1.html's own lightbox script). */
+      if (e.target.closest('.ka-stage__wish')) return;
       if (window.innerWidth <= 900) return;
       if (lbFrame) lbFrame.style.backgroundImage = stage.style.backgroundImage;
       lb.classList.add('show');

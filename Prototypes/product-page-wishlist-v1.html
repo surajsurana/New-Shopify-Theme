@@ -1,0 +1,740 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>K&amp;A — Product Page Wishlist — Prototype v1</title>
+<meta name="description" content="Add-to-wishlist affordance on the real product detail page — sticky gallery + info panel, not the .ka-p-card grid layout." />
+
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Jost:wght@200;300;400;500&display=swap" rel="stylesheet" />
+
+<style>
+/* ═══════════════════════════════════════════════════════════════
+   DESIGN TOKENS — verbatim from assets/ka-base.css. No new tokens.
+═══════════════════════════════════════════════════════════════ */
+:root {
+  --c-paper:      #F7F3EC;
+  --c-paper-deep: #EFE8DD;
+  --c-smoke:      #E9E1D2;
+  --c-charcoal:   #2A2420;
+  --c-charcoal-2: #1D1916;
+  --c-ink:        #2A2420;
+  --c-ink-mid:    #6E655B;
+  --c-ink-muted:  #9C9389;
+  --c-rosegold:      #9A7B4F;
+  --c-rosegold-2:    #7E6440;
+  --c-rosegold-pale: #B99B6E;
+  --f-display: 'Cormorant Garamond', Georgia, 'Times New Roman', serif;
+  --f-sans:    'Jost', 'Helvetica Neue', Arial, sans-serif;
+  --t-display: clamp(2.6rem, 5.5vw, 5.2rem);
+  --t-eyebrow: 0.66rem;
+  --s-xs: 8px; --s-sm: 16px; --s-md: 32px; --s-lg: 64px; --s-xl: 96px;
+  --max-wide: 1680px;
+  --gutter: clamp(20px, 5vw, 80px);
+  --ease-luxury: cubic-bezier(0.16, 0.84, 0.44, 1);
+  --dur-slow: 1s; --dur-med: 0.65s; --dur-fast: 0.35s;
+  --line: rgba(42,36,32,0.12);
+  --line-strong: rgba(42,36,32,0.20);
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; font-size: 16px; }
+body {
+  background: var(--c-paper); color: var(--c-ink);
+  font-family: var(--f-sans); font-weight: 300; line-height: 1.75;
+  -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; overflow-x: hidden;
+}
+img { display: block; width: 100%; height: 100%; object-fit: cover; }
+a { text-decoration: none; color: inherit; }
+button { border: none; background: none; cursor: pointer; font-family: inherit; }
+.eyebrow { font-family: var(--f-sans); font-size: var(--t-eyebrow); font-weight: 400; letter-spacing: 0.24em; text-transform: uppercase; color: var(--c-rosegold-2); }
+.img-filter-product { filter: sepia(0.10) saturate(0.90) brightness(0.94); }
+
+/* ═══════════════════════════════════════════════════════════════
+   PRESENTATION CHROME — not part of the site
+═══════════════════════════════════════════════════════════════ */
+.proto-ribbon {
+  position: sticky; top: 0; z-index: 500; background: #14212B; color: #cfe0ea;
+  font-family: -apple-system, Segoe UI, Arial, sans-serif; font-size: 12.5px; letter-spacing: 0.02em;
+  padding: 10px 20px; display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap;
+}
+.proto-ribbon strong { color: #fff; font-weight: 600; }
+.proto-ribbon nav { display: flex; gap: 14px; flex-wrap: wrap; }
+.proto-ribbon a { color: #9fd0e6; border-bottom: 1px dotted rgba(159,208,230,0.5); }
+.proto-ribbon a:hover { color: #fff; }
+.proto-section-label {
+  font-family: -apple-system, Segoe UI, Arial, sans-serif;
+  background: #EDEFF1; color: #445; padding: 26px var(--gutter) 18px; border-top: 6px solid #14212B;
+}
+.proto-section-label b { display: block; font-size: 20px; color: #14212B; margin-bottom: 6px; }
+.proto-section-label p { font-size: 13.5px; line-height: 1.6; max-width: 900px; color: #556; margin-bottom: 8px; }
+.proto-section-label ul { font-size: 13.5px; line-height: 1.7; color: #556; max-width: 900px; margin: 4px 0 8px 20px; }
+.proto-note {
+  font-family: -apple-system, Segoe UI, Arial, sans-serif; font-size: 12.5px; color: #778;
+  background: #fff; border: 1px dashed #ccd; padding: 10px 14px; margin: 14px var(--gutter) 22px; max-width: 900px;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   GLOBAL HEADER — settled state, verbatim from account-nav-entry-v1 /
+   wishlist-page-v1 (Search / Account / Wishlist / Bag cluster).
+   Included so the reviewer sees the product-page heart living
+   alongside the nav wishlist icon it feeds — not in isolation.
+═══════════════════════════════════════════════════════════════ */
+.ka-utility-bar {
+  position: sticky; top: 0; z-index: 101; background: var(--c-charcoal); color: rgba(233,224,210,0.78);
+  font-size: 0.62rem; font-weight: 400; letter-spacing: 0.18em; text-transform: uppercase;
+  display: flex; align-items: center; justify-content: center; padding: 9px 16px;
+}
+.ka-utility-bar span { opacity: 0.55; margin: 0 14px; }
+.ka-utility-bar b { font-weight: 400; opacity: 0.95; }
+.ka-nav {
+  position: sticky; top: 34px; z-index: 100; padding: 14px var(--gutter);
+  display: grid; grid-template-columns: 1fr auto 1fr; align-items: center;
+  background: rgba(247,243,236,0.96); backdrop-filter: blur(12px); border-bottom: 1px solid var(--line);
+}
+.ka-nav__links { display: flex; gap: 32px; list-style: none; grid-column: 1; }
+.ka-nav__links a { font-size: 0.66rem; font-weight: 400; letter-spacing: 0.16em; text-transform: uppercase; color: var(--c-ink-mid); }
+.ka-nav__links a:hover, .ka-nav__links a.is-active { color: var(--c-charcoal); }
+.ka-nav__logo { grid-column: 2; text-align: center; font-family: var(--f-display); font-size: clamp(1.2rem, 2.2vw, 1.6rem); color: var(--c-charcoal); line-height: 1; }
+.ka-nav__logo small { display: block; font-size: 0.5rem; letter-spacing: 0.32em; text-transform: uppercase; color: var(--c-rosegold-2); margin-top: 6px; }
+.ka-nav__actions { display: flex; align-items: center; justify-content: flex-end; gap: 22px; grid-column: 3; }
+.ka-nav__icon-btn { position: relative; display: inline-flex; align-items: center; justify-content: center; width: 30px; height: 30px; padding: 4px; color: var(--c-charcoal); }
+.ka-nav__icon-btn svg { width: 20px; height: 20px; stroke: currentColor; fill: none; }
+.ka-nav__badge { position: absolute; top: -2px; right: -4px; min-width: 15px; height: 15px; border-radius: 50%; background: var(--c-rosegold); color: #fff; font-size: 0.56rem; line-height: 15px; text-align: center; padding: 0 3px; transition: transform var(--dur-fast) var(--ease-luxury); }
+.ka-nav__badge[data-count="0"] { display: none; }
+.ka-nav__badge.bump { transform: scale(1.35); }
+.ka-nav__wishlist svg.heart-fill { fill: var(--c-rosegold); stroke: var(--c-rosegold); opacity: 0; transform: scale(0.6); position: absolute; transition: opacity var(--dur-fast) var(--ease-luxury), transform var(--dur-fast) var(--ease-luxury); }
+.ka-nav__wishlist svg.heart-line { transition: opacity var(--dur-fast) var(--ease-luxury); }
+.has-saved .ka-nav__wishlist svg.heart-fill { opacity: 1; transform: scale(1); }
+.has-saved .ka-nav__wishlist svg.heart-line { opacity: 0; }
+.ka-nav__toggle { display: none; }
+@media (max-width: 900px) {
+  .ka-nav { padding: 14px 20px; }
+  .ka-nav__links { display: none; }
+  .ka-nav__toggle { display: flex; flex-direction: column; gap: 5px; padding: 4px; grid-column: 1; }
+  .ka-nav__toggle span { display: block; width: 24px; height: 1px; background: var(--c-charcoal); }
+  .ka-nav__account, .ka-nav__wishlist { display: none; }
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   BREADCRUMB — quiet, matches ka-product-breadcrumb.css register
+═══════════════════════════════════════════════════════════════ */
+.ka-crumb { max-width: var(--max-wide); margin: 0 auto; padding: 18px var(--gutter) 0; }
+.ka-crumb ol { list-style: none; display: flex; gap: 8px; font-size: 0.68rem; letter-spacing: 0.06em; color: var(--c-ink-muted); }
+.ka-crumb a { color: var(--c-ink-muted); }
+.ka-crumb a:hover { color: var(--c-rosegold-2); }
+.ka-crumb li:last-child { color: var(--c-ink-mid); }
+
+/* ═══════════════════════════════════════════════════════════════
+   PRODUCT HERO — verbatim structure/CSS from sections/ka-product-main.liquid
+   + assets/ka-product-main.css. Trimmed only where noted (accordion
+   panels shortened for prototype brevity; all class names, layout
+   mechanics and breakpoints are real).
+═══════════════════════════════════════════════════════════════ */
+.ka-btn {
+  font-family: var(--f-sans); font-weight: 400; font-size: 0.7rem;
+  letter-spacing: 0.2em; text-transform: uppercase;
+  display: inline-flex; align-items: center; justify-content: center; gap: 0.6em;
+  padding: 18px 30px; border: 1px solid var(--c-charcoal);
+  background: var(--c-charcoal); color: var(--c-paper);
+  cursor: pointer; transition: all 0.5s var(--ease-luxury); width: 100%;
+}
+.ka-btn:hover { background: transparent; color: var(--c-charcoal); }
+.ka-btn--ghost { background: transparent; color: var(--c-charcoal); border-color: var(--c-charcoal); }
+.ka-btn--ghost:hover { background: var(--c-charcoal); color: var(--c-paper); }
+.ka-btn--concierge { background: var(--c-smoke); color: var(--c-charcoal); border: 1px solid var(--c-rosegold-pale); }
+.ka-btn--concierge:hover { background: var(--c-rosegold); border-color: var(--c-rosegold); color: #fff; }
+.ka-btn--concierge .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--c-rosegold); }
+.ka-btn--bag { background: var(--c-rosegold); border-color: var(--c-rosegold); color: #fff; }
+.ka-btn--bag:hover { background: var(--c-rosegold-2); border-color: var(--c-rosegold-2); color: #fff; }
+.ka-btn--bag[aria-disabled="true"] { background: var(--c-smoke); border-color: var(--line); color: var(--c-ink-muted); cursor: not-allowed; }
+.ka-btn--bag[aria-disabled="true"]:hover { background: var(--c-smoke); border-color: var(--line); color: var(--c-ink-muted); }
+.ka-btn-line {
+  background: transparent; color: var(--c-charcoal); border: none;
+  border-bottom: 1px solid var(--c-charcoal); padding: 8px 2px; width: auto;
+  letter-spacing: 0.18em; font-family: var(--f-sans); font-size: 0.7rem; text-transform: uppercase; cursor: pointer;
+}
+.ka-btn-line:hover { color: var(--c-rosegold); border-color: var(--c-rosegold); }
+
+.ka-product {
+  max-width: var(--max-wide); margin: 0 auto; padding: 26px var(--gutter) 0;
+  display: grid; grid-template-columns: 1.18fr 1fr; gap: 60px; align-items: start;
+}
+
+.ka-media { position: sticky; top: 104px; display: grid; grid-template-columns: 86px 1fr; gap: 16px; }
+.ka-thumbs { display: flex; flex-direction: column; gap: 12px; }
+.ka-thumb {
+  width: 86px; height: 116px; cursor: pointer; opacity: 0.48; border: 1px solid transparent;
+  background-size: cover; background-position: center;
+  transition: opacity 0.45s var(--ease-luxury), border-color 0.45s var(--ease-luxury);
+  filter: sepia(0.10) saturate(0.90) brightness(0.94);
+}
+.ka-thumb:hover { opacity: 0.82; }
+.ka-thumb.active { opacity: 1; border-color: var(--c-charcoal); }
+
+.ka-stage {
+  position: relative; overflow: hidden; min-height: 640px;
+  background-size: cover; background-position: center; cursor: zoom-in;
+  filter: sepia(0.10) saturate(0.90) brightness(0.94);
+}
+.ka-stage__idx {
+  position: absolute; left: 18px; bottom: 16px;
+  font-family: var(--f-sans); font-size: 0.62rem; letter-spacing: 0.2em; color: #fff;
+  background: rgba(42,36,32,0.42); backdrop-filter: blur(3px); padding: 6px 11px;
+}
+.ka-stage__zoom {
+  position: absolute; right: 16px; bottom: 16px;
+  font-family: var(--f-sans); font-size: 0.62rem; letter-spacing: 0.18em; text-transform: uppercase;
+  color: #fff; background: rgba(42,36,32,0.42); backdrop-filter: blur(3px); padding: 6px 11px;
+  opacity: 0; transition: opacity 0.4s;
+}
+.ka-stage:hover .ka-stage__zoom { opacity: 1; }
+
+/* ── WISHLIST HEART — placement decision for this prototype ──
+   Lives on the gallery stage, top-right corner, NOT in the info
+   panel and NOT in the CTA stack. Reasoning:
+   1. Visual parity with .ka-p-card: on Collection grids, search
+      results and the Wishlist page itself, the heart already sits
+      top-right of the product image. Putting it top-right of THIS
+      page's hero image (the largest, most prominent image on the
+      site) is the same gesture at a larger scale — a visitor's
+      "save this" muscle memory transfers with zero relearning.
+   2. The info panel's top zone (collection tag → title → poem →
+      Google rating) is the page's one purely emotional beat, with
+      nothing competing with the title/poem's rhythm. The CTA stack
+      below is the page's one purely transactional beat, engineered
+      in Round 2 (Docs/cta-architecture-revision.md) so Add to Bag
+      reads as the unambiguous primary action. A heart icon dropped
+      into either zone would blur exactly the hierarchy those zones
+      were built to keep clean — wishlisting is a third, distinct
+      kind of action (save-for-later, not buy, not read) and reads
+      most honestly living on the image itself, not wedged into
+      either text hierarchy.
+   3. Scaled up from the card's 34px to 46px to suit the hero
+      canvas (640px+ tall vs. a 3:4 grid thumbnail) — same icon,
+      same stroke weight, same rosegold fill-on-save, same absence
+      of toast/popup, just sized to the container it's on.
+   Deliberately NOT duplicated into the sticky minibar or the mobile
+   sticky action bar — those two are pure buy-path furniture (Add to
+   Bag / Book an Appointment / Concierge only); adding a fourth,
+   non-transactional action there would crowd the one thing those
+   bars exist to keep frictionless. On mobile the stage sits at the
+   very top of the page (not sticky, per the 900px breakpoint below),
+   so the heart is still the first interactive thing a visitor sees. */
+.ka-stage__wish {
+  position: absolute; top: 20px; right: 20px; z-index: 4;
+  width: 46px; height: 46px; display: inline-flex; align-items: center; justify-content: center;
+  background: rgba(247,243,236,0.88); backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px);
+  transition: background var(--dur-fast), transform var(--dur-fast) var(--ease-luxury);
+}
+.ka-stage__wish:hover { background: var(--c-paper); transform: scale(1.06); }
+.ka-stage__wish svg { width: 21px; height: 21px; stroke: var(--c-charcoal); fill: none; stroke-width: 1.4; stroke-linecap: round; stroke-linejoin: round; }
+.ka-stage__wish svg.heart-fill { fill: var(--c-rosegold); stroke: var(--c-rosegold); opacity: 0; transform: scale(0.6); position: absolute; transition: opacity var(--dur-fast) var(--ease-luxury), transform var(--dur-fast) var(--ease-luxury); }
+.ka-stage__wish svg.heart-line { transition: opacity var(--dur-fast) var(--ease-luxury); }
+.ka-stage__wish.is-saved svg.heart-fill { opacity: 1; transform: scale(1); }
+.ka-stage__wish.is-saved svg.heart-line { opacity: 0; }
+
+.ka-info-wrap { position: relative; }
+.ka-panel { padding-top: 6px; }
+.ka-collection-tag { display: inline-block; margin-bottom: 18px; }
+.ka-collection-tag:hover { color: var(--c-rosegold-2); }
+.ka-p-title { font-family: var(--f-display); font-size: var(--t-display); font-weight: 300; line-height: 1.05; margin: 10px 0 14px; color: var(--c-ink); }
+.ka-p-poem { font-family: var(--f-display); font-size: 1.25rem; font-style: italic; color: var(--c-ink-mid); font-weight: 300; line-height: 1.5; max-width: 30ch; margin-bottom: 24px; }
+
+.ka-grating { display: flex; align-items: center; gap: 12px; margin: 0 0 22px; cursor: pointer; }
+.ka-grating__stars { color: var(--c-rosegold); letter-spacing: 0.18em; font-size: 0.9rem; }
+.ka-grating__tx { font-family: var(--f-sans); font-size: 0.72rem; letter-spacing: 0.04em; color: var(--c-ink-mid); }
+.ka-grating__tx b { color: var(--c-ink); font-weight: 500; }
+.ka-glogo { font-family: var(--f-sans); font-weight: 500; font-size: 0.78rem; display: inline-flex; align-items: center; gap: 2px; }
+.ka-glogo .b { color: #4285F4; } .ka-glogo .r { color: #EA4335; } .ka-glogo .y { color: #FBBC05; } .ka-glogo .g2 { color: #34A853; }
+
+.ka-p-price-row { display: flex; align-items: baseline; gap: 14px; margin-bottom: 6px; }
+.ka-p-price { font-family: var(--f-display); font-size: 1.7rem; font-weight: 400; color: var(--c-ink); }
+.ka-p-tax { font-family: var(--f-sans); font-size: 0.68rem; letter-spacing: 0.1em; color: var(--c-ink-muted); text-transform: uppercase; }
+.ka-p-made {
+  font-family: var(--f-sans); font-size: 0.7rem; letter-spacing: 0.12em; text-transform: uppercase;
+  color: var(--c-rosegold-2); display: flex; align-items: center; gap: 9px; margin-bottom: 30px;
+}
+.ka-p-made::before { content: ""; width: 26px; height: 1px; background: var(--c-rosegold); }
+
+.ka-opt-head { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 14px; }
+.ka-opt-label { font-family: var(--f-sans); font-size: var(--t-eyebrow); font-weight: 400; letter-spacing: 0.2em; text-transform: uppercase; color: var(--c-ink); }
+.ka-size-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; margin-bottom: 12px; }
+.ka-size {
+  font-family: var(--f-sans); font-size: 0.8rem; letter-spacing: 0.06em;
+  border: 1px solid var(--line); background: var(--c-paper);
+  padding: 14px 0; text-align: center; cursor: pointer; color: var(--c-ink-mid);
+  transition: all 0.35s var(--ease-luxury);
+}
+.ka-size:hover { border-color: var(--c-ink-mid); color: var(--c-ink); }
+.ka-size.sel { background: var(--c-charcoal); color: var(--c-paper); border-color: var(--c-charcoal); }
+.ka-bespoke {
+  display: flex; align-items: center; gap: 13px; width: 100%;
+  border: 1px solid var(--line); background: var(--c-paper);
+  padding: 14px 16px; cursor: pointer; text-align: left;
+  transition: all 0.35s var(--ease-luxury); margin-bottom: 6px;
+}
+.ka-bespoke:hover { border-color: var(--c-rosegold-pale); }
+.ka-bespoke.sel { border-color: var(--c-rosegold); background: var(--c-smoke); }
+.ka-bespoke__k { font-family: var(--f-sans); font-size: 0.72rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--c-ink); }
+.ka-bespoke__s { font-family: var(--f-display); font-size: 0.9rem; font-style: italic; color: var(--c-ink-mid); margin-left: auto; }
+.ka-bespoke__dot { width: 9px; height: 9px; border: 1px solid var(--c-ink-mid); border-radius: 50%; flex: 0 0 auto; }
+.ka-bespoke.sel .ka-bespoke__dot { background: var(--c-rosegold); border-color: var(--c-rosegold); }
+
+.ka-mtm { max-height: 0; overflow: hidden; opacity: 0; transition: max-height 0.55s var(--ease-luxury), opacity 0.5s var(--ease-luxury); border-left: 2px solid var(--c-rosegold-pale); }
+.ka-mtm.open { max-height: 620px; opacity: 1; margin-top: 12px; }
+.ka-mtm__inner { padding: 16px 18px; background: var(--c-smoke); }
+.ka-mtm__inner h4 { font-family: var(--f-sans); font-size: 0.7rem; letter-spacing: 0.16em; text-transform: uppercase; color: var(--c-ink); margin-bottom: 12px; }
+.ka-mtm__foot { font-family: var(--f-display); font-size: 0.95rem; font-style: italic; color: var(--c-ink-mid); line-height: 1.5; margin: 2px 0 13px; }
+.ka-mtm__steps { counter-reset: m; display: flex; flex-direction: column; gap: 9px; margin-bottom: 12px; }
+.ka-mtm__steps li { list-style: none; display: flex; gap: 11px; font-size: 0.92rem; color: var(--c-ink-mid); line-height: 1.45; }
+.ka-mtm__steps li::before { counter-increment: m; content: counter(m); font-family: var(--f-display); font-style: italic; color: var(--c-rosegold); font-size: 1rem; flex: 0 0 auto; width: 16px; }
+
+.ka-cta-stack { display: flex; flex-direction: column; gap: 11px; margin-top: 22px; }
+.ka-size-required-hint {
+  font-family: var(--f-sans); font-size: 0.64rem; letter-spacing: 0.08em; color: var(--c-rosegold-2); text-align: center;
+  max-height: 0; opacity: 0; overflow: hidden; transition: max-height 0.4s var(--ease-luxury), opacity 0.35s var(--ease-luxury), margin-top 0.35s var(--ease-luxury);
+}
+.ka-size-required-hint.show { opacity: 1; max-height: 24px; margin-top: 2px; }
+
+.ka-assure { margin-top: 26px; display: flex; flex-direction: column; gap: 12px; }
+.ka-assure__row { display: flex; gap: 13px; align-items: flex-start; font-family: var(--f-sans); font-size: 0.82rem; color: var(--c-ink-mid); line-height: 1.5; }
+.ka-assure__row .mk { color: var(--c-rosegold); font-size: 0.85rem; line-height: 1.4; flex: 0 0 auto; }
+
+.ka-accordion { margin-top: 34px; border-top: 1px solid var(--line); }
+.ka-acc { border-bottom: 1px solid var(--line); }
+.ka-acc__head {
+  width: 100%; background: none; border: none; cursor: pointer;
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 20px 2px; font-family: var(--f-sans); font-size: 0.72rem; letter-spacing: 0.16em; text-transform: uppercase; color: var(--c-ink);
+}
+.ka-acc__pm { font-size: 1.1rem; color: var(--c-rosegold); transition: transform 0.4s var(--ease-luxury); font-family: var(--f-display); }
+.ka-acc.open .ka-acc__pm { transform: rotate(45deg); }
+.ka-acc__body { max-height: 0; overflow: hidden; transition: max-height 0.55s var(--ease-luxury); }
+.ka-acc__inner { padding: 0 2px 24px; color: var(--c-ink-mid); font-size: 0.92rem; line-height: 1.65; }
+
+/* ── sticky minibar — Add to Bag / Book an Appointment only, no heart (see rationale above) ── */
+.ka-minibar {
+  position: fixed; left: 0; right: 0; top: 0; z-index: 70;
+  background: rgba(247,243,236,0.97); backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--line); transform: translateY(-120%);
+  transition: transform 0.55s var(--ease-luxury);
+}
+.ka-minibar.show { transform: translateY(76px); }
+.ka-minibar__in { max-width: var(--max-wide); margin: 0 auto; padding: 12px var(--gutter); display: flex; align-items: center; justify-content: space-between; gap: 20px; }
+.ka-minibar__l { display: flex; align-items: center; gap: 18px; }
+.ka-minibar__thumb { width: 44px; height: 58px; background-size: cover; background-position: center; flex: 0 0 auto; }
+.ka-minibar__name { font-family: var(--f-display); font-size: 1.1rem; line-height: 1.1; color: var(--c-ink); }
+.ka-minibar__price { font-family: var(--f-sans); font-size: 0.7rem; letter-spacing: 0.08em; color: var(--c-ink-mid); margin-top: 2px; }
+.ka-minibar__r { display: flex; gap: 10px; }
+.ka-minibar__r .ka-btn { width: auto; padding: 12px 22px; font-size: 0.62rem; }
+
+.ka-lb { position: fixed; inset: 0; z-index: 150; background: rgba(28,24,21,0.94); display: none; align-items: center; justify-content: center; cursor: zoom-out; }
+.ka-lb.show { display: flex; }
+.ka-lb__frame { width: 70vw; max-width: 900px; height: 80vh; background-size: contain; background-repeat: no-repeat; background-position: center; background-color: #1c1815; box-shadow: 0 30px 80px rgba(0,0,0,0.5); }
+.ka-lb__x { position: absolute; top: 26px; right: 34px; color: #E9E0D2; font-family: var(--f-sans); font-size: 0.7rem; letter-spacing: 0.2em; text-transform: uppercase; cursor: pointer; }
+
+/* ── mobile sticky action bar — Appointment / Concierge / Add to Bag only, no heart (see rationale above) ── */
+.ka-mobile-bar {
+  display: none; position: fixed; left: 0; right: 0; bottom: 0; z-index: 95;
+  background: var(--c-paper); border-top: 1px solid var(--line); padding: 11px 14px; gap: 10px;
+}
+.ka-mobile-bar .ka-btn { padding: 15px 10px; font-size: 0.62rem; }
+.ka-btn--concierge { display: inline-flex; align-items: center; gap: 8px; }
+
+@media (max-width: 1100px) { .ka-product { grid-template-columns: 1.1fr 1fr; gap: 40px; } }
+@media (max-width: 900px) {
+  .ka-minibar { display: none; }
+  .ka-product { display: block; padding-top: 14px; }
+  .ka-media { position: static; display: block; }
+  .ka-stage { cursor: default; min-height: 480px; }
+  .ka-stage__zoom { display: none; }
+  .ka-thumbs { flex-direction: row; overflow-x: auto; gap: 9px; padding: 12px 0 2px; }
+  .ka-thumb { flex: 0 0 64px; width: 64px; height: 86px; }
+  .ka-panel { padding: 30px 0 0; }
+  .ka-mobile-bar { display: flex; }
+  body { padding-bottom: 74px; }
+  /* Heart scales down slightly on mobile to sit comfortably within the
+     narrower stage, but keeps its exact top-right position — no
+     placement change between breakpoints, only size. */
+  .ka-stage__wish { width: 40px; height: 40px; top: 14px; right: 14px; }
+  .ka-stage__wish svg { width: 18px; height: 18px; }
+}
+@media (max-width: 600px) { .ka-p-title { font-size: 2.4rem; } }
+
+/* ── footer (trimmed) ── */
+.ka-footer { background: var(--c-charcoal-2); padding: var(--s-lg) var(--gutter); margin-top: var(--s-xl); }
+.ka-footer__inner { max-width: var(--max-wide); margin: 0 auto; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; }
+.ka-footer__logo { font-family: var(--f-display); font-size: 1.3rem; color: #F4ECDE; letter-spacing: 0.06em; }
+.ka-footer__copy { font-size: 0.63rem; font-weight: 300; color: #7E7567; letter-spacing: 0.1em; text-transform: uppercase; }
+</style>
+</head>
+<body>
+
+<div class="proto-ribbon">
+  <div><strong>K&amp;A Prototype</strong> — Product Page Wishlist — v1</div>
+  <nav>
+    <a href="#sec-decision">1 — Placement Decision</a>
+    <a href="#ka-product">2 — Product Page in Context</a>
+    <a href="#sec-alt">3 — Options Considered &amp; Rejected</a>
+  </nav>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════════
+     SECTION 1 — THE DECISION
+═══════════════════════════════════════════════════════════════ -->
+<div class="proto-section-label" id="sec-decision">
+  <b>1 — Where the wishlist heart lives on the Product page, and why</b>
+  <p>The product detail page is not built from <code>.ka-p-card</code> — it's the sticky two-column gallery + info panel from <code>sections/ka-product-main.liquid</code>. The card's heart button doesn't translate directly; it needed its own placement decision against this page's real hierarchy.</p>
+  <p><strong>Decision: the heart sits on the gallery stage itself, top-right corner (46px circle, 20px inset) — not in the info panel, not in the CTA stack.</strong></p>
+  <ul>
+    <li><strong>Visual parity with the card.</strong> Every card across the Collection grid, search results and the Wishlist page already carries the heart top-right of the product image. Placing it top-right of this page's hero image — the largest, most prominent image on the entire site — is the same gesture at a larger scale. No relearning for a visitor who has already saved a piece from a grid.</li>
+    <li><strong>Protects the info panel's two working zones.</strong> The top of the panel (collection tag → title → poem → Google rating) is the page's one purely emotional beat. The CTA stack below is the page's one purely transactional beat, deliberately engineered in Round 2 (<code>Docs/cta-architecture-revision.md</code>) so Add to Bag reads as the unambiguous primary action. Wishlisting is neither of those — it's a third, quieter kind of action (save-for-later) — and belongs on the image, not wedged into either text hierarchy.</li>
+    <li><strong>Kept out of the minibar and mobile action bar.</strong> Both are pure buy-path furniture (Add to Bag / Book an Appointment / Concierge). A fourth, non-transactional icon there would crowd the one job those bars exist to do.</li>
+  </ul>
+  <p>Same interaction as the card everywhere else: line-heart → filled rosegold heart on click, no confirmation popup or toast, persistent (not hover-only) so it works on touch. Only the size changed — 46px on the hero stage vs. 34px on a grid thumbnail — to suit the much larger canvas.</p>
+</div>
+<div class="proto-note">Scroll past the product hero below to see the sticky minibar (desktop) appear without a heart. Resize the browser under 900px to see the real mobile layout — stage on top, heart scaled to 40px, mobile action bar docked at the bottom with no heart in it.</div>
+
+<!-- GLOBAL HEADER -->
+<div class="ka-utility-bar">
+  <span><b>Complimentary Worldwide Delivery</b></span><span>·</span><span><b>Hand-Embroidered to Order</b></span><span>·</span><span><b>Private &amp; Virtual Appointments</b></span>
+</div>
+<nav class="ka-nav">
+  <button class="ka-nav__toggle" aria-label="Open menu"><span></span><span></span><span></span></button>
+  <ul class="ka-nav__links">
+    <li><a href="#">Signature</a></li>
+    <li><a href="#">Collections</a></li>
+    <li><a href="#">Client Diaries</a></li>
+  </ul>
+  <a href="#" class="ka-nav__logo">Karishma Ashita<small>Bridal Couture · Mumbai</small></a>
+  <div class="ka-nav__actions">
+    <button class="ka-nav__icon-btn" aria-label="Search"><svg viewBox="0 0 24 24" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M20 20l-4.8-4.8"/></svg></button>
+    <a href="#" class="ka-nav__icon-btn ka-nav__account" aria-label="Log in or view your account"><svg viewBox="0 0 24 24" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8.3" r="3.6"/><path d="M4.8 20c1-3.7 4-5.7 7.2-5.7s6.2 2 7.2 5.7"/></svg></a>
+    <a href="#" class="ka-nav__icon-btn ka-nav__wishlist has-saved" id="navWishlistBtn" aria-label="View your wishlist">
+      <svg class="heart-line" viewBox="0 0 24 24" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20s-7-4.35-9.5-8.5C.8 8.3 1.4 4.9 4.4 3.6c2.1-.9 4.4-.2 5.7 1.6L12 7.4l1.9-2.2c1.3-1.8 3.6-2.5 5.7-1.6 3 1.3 3.6 4.7 1.9 7.9C19 15.65 12 20 12 20z"/></svg>
+      <svg class="heart-fill" viewBox="0 0 24 24"><path d="M12 20s-7-4.35-9.5-8.5C.8 8.3 1.4 4.9 4.4 3.6c2.1-.9 4.4-.2 5.7 1.6L12 7.4l1.9-2.2c1.3-1.8 3.6-2.5 5.7-1.6 3 1.3 3.6 4.7 1.9 7.9C19 15.65 12 20 12 20z"/></svg>
+      <span class="ka-nav__badge" id="navWishlistBadge" data-count="2">2</span>
+    </a>
+    <a href="#" class="ka-nav__icon-btn ka-nav__bag" aria-label="View your bag">
+      <svg viewBox="0 0 24 24" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8h12l-1 12H7L6 8z"/><path d="M9 8V6a3 3 0 0 1 6 0v2"/></svg>
+      <span class="ka-nav__badge" data-count="0">0</span>
+    </a>
+  </div>
+</nav>
+
+<!-- ══════════════════════════════════════════════════════════════
+     SECTION 2 — THE PRODUCT PAGE, IN CONTEXT
+═══════════════════════════════════════════════════════════════ -->
+<div class="ka-crumb">
+  <ol>
+    <li><a href="#">Home</a></li>
+    <li>/</li>
+    <li><a href="#">Wedding &amp; Festive</a></li>
+    <li>/</li>
+    <li>Bloom Soirée Lehenga</li>
+  </ol>
+</div>
+
+<section class="ka-product" id="ka-product">
+
+  <!-- ── Gallery: sticky thumbnail rail + stage ── -->
+  <div class="ka-media" id="ka-media">
+    <div class="ka-thumbs" id="ka-thumbs">
+      <button type="button" class="ka-thumb active" data-full="../assets/bloom-soiree-hero.jpg" aria-label="View image 1" style="background-image:url('../assets/bloom-soiree-hero.jpg');"></button>
+      <button type="button" class="ka-thumb" data-full="../assets/bloom-soiree-main.jpg" aria-label="View image 2" style="background-image:url('../assets/bloom-soiree-main.jpg');"></button>
+      <button type="button" class="ka-thumb" data-full="../assets/product-bloom-lehenga.jpg" aria-label="View image 3" style="background-image:url('../assets/product-bloom-lehenga.jpg');"></button>
+      <button type="button" class="ka-thumb" data-full="../assets/bloom-soiree-card.jpg" aria-label="View image 4" style="background-image:url('../assets/bloom-soiree-card.jpg');"></button>
+    </div>
+
+    <div class="ka-stage img-filter-product" id="ka-stage" style="background-image:url('../assets/bloom-soiree-hero.jpg');">
+      <span class="ka-stage__idx" id="ka-stage-idx">01 / 04</span>
+      <span class="ka-stage__zoom" aria-hidden="true">&#10530; Zoom</span>
+
+      <!-- NEW — add-to-wishlist, top-right of the hero stage. See Section 1 rationale above. -->
+      <button type="button" class="ka-stage__wish" id="ka-stage-wish" aria-label="Save to wishlist" aria-pressed="false">
+        <svg class="heart-line" viewBox="0 0 24 24"><path d="M12 20s-7-4.35-9.5-8.5C.8 8.3 1.4 4.9 4.4 3.6c2.1-.9 4.4-.2 5.7 1.6L12 7.4l1.9-2.2c1.3-1.8 3.6-2.5 5.7-1.6 3 1.3 3.6 4.7 1.9 7.9C19 15.65 12 20 12 20z"/></svg>
+        <svg class="heart-fill" viewBox="0 0 24 24"><path d="M12 20s-7-4.35-9.5-8.5C.8 8.3 1.4 4.9 4.4 3.6c2.1-.9 4.4-.2 5.7 1.6L12 7.4l1.9-2.2c1.3-1.8 3.6-2.5 5.7-1.6 3 1.3 3.6 4.7 1.9 7.9C19 15.65 12 20 12 20z"/></svg>
+      </button>
+    </div>
+  </div>
+
+  <!-- ── Info panel — untouched by the wishlist addition ── -->
+  <div class="ka-info-wrap">
+    <div class="ka-panel">
+      <a href="#" class="eyebrow ka-collection-tag">Wedding &amp; Festive</a>
+
+      <h1 class="ka-p-title">Bloom Soirée Lehenga</h1>
+
+      <p class="ka-p-poem">Blush silk, hand-embroidered — a bloom that never raises its voice.</p>
+
+      <button type="button" class="ka-grating" id="ka-grating" title="Read our Google reviews">
+        <span class="ka-grating__stars">&#9733;&#9733;&#9733;&#9733;&#9733;</span>
+        <span class="ka-grating__tx"><b>4.9</b> · 217 reviews on</span>
+        <span class="ka-glogo"><span class="b">G</span><span class="r">o</span><span class="y">o</span><span class="b">g</span><span class="g2">l</span><span class="r">e</span></span>
+      </button>
+
+      <div class="ka-p-price-row">
+        <div class="ka-p-price">₹68,000</div>
+        <div class="ka-p-tax">Taxes included</div>
+      </div>
+      <div class="ka-p-made">Made to measure · Crafted to order in 20–25 days</div>
+
+      <div class="ka-opt-head">
+        <span class="ka-opt-label">Select Your Size</span>
+        <button type="button" class="ka-btn-line" data-open-acc="size">Size &amp; Fit Guide</button>
+      </div>
+
+      <div class="ka-size-grid" id="ka-sizes">
+        <button type="button" class="ka-size" data-value="XS">XS</button>
+        <button type="button" class="ka-size" data-value="S">S</button>
+        <button type="button" class="ka-size" data-value="M">M</button>
+        <button type="button" class="ka-size" data-value="L">L</button>
+        <button type="button" class="ka-size" data-value="XL">XL</button>
+      </div>
+
+      <button class="ka-bespoke" id="ka-bespoke" type="button">
+        <span class="ka-bespoke__dot" aria-hidden="true"></span>
+        <span class="ka-bespoke__k">Made to my measurements</span>
+        <span class="ka-bespoke__s">Recommended</span>
+      </button>
+
+      <div class="ka-mtm" id="ka-mtm">
+        <div class="ka-mtm__inner">
+          <h4>How Your Piece Comes to Life</h4>
+          <ul class="ka-mtm__steps">
+            <li>Place your order — no measurements needed yet. Your personal style advisor will be in touch within 24 hours to begin.</li>
+            <li>Confirm your fit with your advisor — over WhatsApp, on a virtual call, or in our Mumbai atelier.</li>
+            <li>Our atelier cuts, drapes and hand-embroiders your piece to your exact measurements.</li>
+          </ul>
+          <p class="ka-mtm__foot">Your piece is then pressed, quality-checked and delivered worldwide in 20–25 days.</p>
+        </div>
+      </div>
+
+      <div class="ka-cta-stack">
+        <button type="button" class="ka-btn ka-btn--bag" id="ka-bag-btn" aria-disabled="true">Add to Bag</button>
+        <p class="ka-size-required-hint" id="ka-size-hint">Please select a size, or choose Made to my measurements.</p>
+        <button type="button" class="ka-btn ka-btn--ghost">Book an Appointment</button>
+      </div>
+
+      <div class="ka-assure">
+        <div class="ka-assure__row"><span class="mk" aria-hidden="true">&#10022;</span><span>Each piece is cut, draped and hand-embroidered to order by our karigars — never machine-made.</span></div>
+        <div class="ka-assure__row"><span class="mk" aria-hidden="true">&#10022;</span><span>Complimentary worldwide delivery by DHL Express, beautifully packaged.</span></div>
+        <div class="ka-assure__row"><span class="mk" aria-hidden="true">&#10022;</span><span>A personal advisor accompanies every order, confirming your measurements and fit after you enquire.</span></div>
+      </div>
+
+      <div class="ka-accordion" id="ka-accordion">
+        <div class="ka-acc" data-acc="atelier">
+          <button class="ka-acc__head" type="button">The Atelier Process<span class="ka-acc__pm" aria-hidden="true">+</span></button>
+          <div class="ka-acc__body"><div class="ka-acc__inner">Every Karishma &amp; Ashita piece is made to measure. After your enquiry, our atelier cuts and constructs the garment to your individual measurements, then hand-embroiders the bodice over several weeks before a final press and quality check. Your piece reaches you in 20–25 days.</div></div>
+        </div>
+        <div class="ka-acc" data-acc="fabric">
+          <button class="ka-acc__head" type="button">Fabric &amp; Embroidery<span class="ka-acc__pm" aria-hidden="true">+</span></button>
+          <div class="ka-acc__body"><div class="ka-acc__inner">
+            <p><strong>Fabric:</strong> Silk, blush rosegold</p>
+            <ul style="list-style:none; margin-top:8px;">
+              <li style="padding-left:18px; position:relative; margin-bottom:6px;"><span style="position:absolute; left:0; color:var(--c-rosegold);">—</span>Natural-fibre base fabrics — naturally breathable, fluid and soothing to wear</li>
+              <li style="padding-left:18px; position:relative; margin-bottom:6px;"><span style="position:absolute; left:0; color:var(--c-rosegold);">—</span>Zardozi and sequin florals scattered across the pallu, hand-finished by our karigars over three weeks</li>
+            </ul>
+          </div></div>
+        </div>
+        <div class="ka-acc" data-acc="size">
+          <button class="ka-acc__head" type="button">Size &amp; Fit Guide<span class="ka-acc__pm" aria-hidden="true">+</span></button>
+          <div class="ka-acc__body"><div class="ka-acc__inner">All measurements in inches. For a true couture fit, select <em>Made to my measurements</em> and share your details with your style advisor.</div></div>
+        </div>
+        <div class="ka-acc" data-acc="delivery">
+          <button class="ka-acc__head" type="button">Delivery &amp; Care<span class="ka-acc__pm" aria-hidden="true">+</span></button>
+          <div class="ka-acc__body"><div class="ka-acc__inner">Crafted to order in 20–25 days · Complimentary worldwide shipping via DHL Express · Dry clean only — store flat, away from direct light.</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── Sticky minibar (desktop) — no heart, buy-path only ── -->
+<div class="ka-minibar" id="ka-minibar">
+  <div class="ka-minibar__in">
+    <div class="ka-minibar__l">
+      <div class="ka-minibar__thumb" style="background-image:url('../assets/bloom-soiree-hero.jpg');"></div>
+      <div>
+        <div class="ka-minibar__name">Bloom Soirée Lehenga</div>
+        <div class="ka-minibar__price">₹68,000 · Wedding &amp; Festive</div>
+      </div>
+    </div>
+    <div class="ka-minibar__r">
+      <button type="button" class="ka-btn ka-btn--ghost">Book an Appointment</button>
+      <button type="button" class="ka-btn ka-btn--bag" aria-disabled="true">Add to Bag</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── Mobile sticky action bar — no heart, buy-path only ── -->
+<div class="ka-mobile-bar">
+  <button type="button" class="ka-btn ka-btn--ghost">Appointment</button>
+  <a class="ka-btn ka-btn--concierge" href="#"><span class="dot"></span>Concierge</a>
+  <button type="button" class="ka-btn ka-btn--bag" aria-disabled="true">Add to Bag</button>
+</div>
+
+<!-- ── Lightbox ── -->
+<div class="ka-lb" id="ka-lb">
+  <span class="ka-lb__x" aria-hidden="true">Close &#10005;</span>
+  <div class="ka-lb__frame" id="ka-lb-frame"></div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════════
+     SECTION 3 — OPTIONS CONSIDERED & REJECTED
+═══════════════════════════════════════════════════════════════ -->
+<div class="proto-section-label" id="sec-alt" style="margin-top:64px;">
+  <b>3 — Options considered and rejected</b>
+  <p><strong>Near the title/price, top of the info panel:</strong> rejected. That zone (collection tag → title → poem → rating) is the page's only quiet, editorial beat — the one place nothing is asking the visitor to act. An icon button there starts asking before the visitor has even read the piece's name.</p>
+  <p><strong>Inline with the CTA stack (next to Add to Bag / Book an Appointment):</strong> rejected. The CTA stack was rebuilt in Round 2 specifically so Add to Bag reads as one unambiguous primary action. A same-weight icon button beside it — even a small one — reintroduces the "which button is the real one" ambiguity that rebuild was meant to resolve. Wishlisting is also not a purchase-path action; grouping it with buy-path buttons misrepresents what it does.</p>
+  <p><strong>Floating on the gallery stage (chosen):</strong> the only option that adds a save affordance without touching either of the two zones the rest of the page was deliberately built to keep clean, and the only one that mirrors the card's existing top-right placement one-for-one.</p>
+</div>
+
+<footer class="ka-footer">
+  <div class="ka-footer__inner">
+    <span class="ka-footer__logo">Karishma Ashita</span>
+    <span class="ka-footer__copy">© 2026 Karishma Ashita, a brand of Peekay International Ltd. All rights reserved.</span>
+  </div>
+</footer>
+
+<script>
+/* ---------- gallery: thumbnail rail + stage ---------- */
+var thumbs = Array.prototype.slice.call(document.querySelectorAll('.ka-thumb'));
+var stage = document.getElementById('ka-stage');
+var stageIdx = document.getElementById('ka-stage-idx');
+var total = thumbs.length || 1;
+var pad = function (n) { return (n < 10 ? '0' : '') + n; };
+
+thumbs.forEach(function (t, i) {
+  t.addEventListener('click', function () {
+    thumbs.forEach(function (x) { x.classList.remove('active'); });
+    t.classList.add('active');
+    var full = t.getAttribute('data-full');
+    if (stage && full) { stage.style.backgroundImage = "url('" + full + "')"; }
+    if (stageIdx) { stageIdx.textContent = pad(i + 1) + ' / ' + pad(total); }
+  });
+});
+
+/* ---------- size selection + made-to-measure reveal ---------- */
+var sizes = Array.prototype.slice.call(document.querySelectorAll('.ka-size'));
+var bespoke = document.getElementById('ka-bespoke');
+var mtm = document.getElementById('ka-mtm');
+var sizeHint = document.getElementById('ka-size-hint');
+var bagButtons = Array.prototype.slice.call(document.querySelectorAll('.ka-btn--bag'));
+
+function refreshBagButtons(ready) {
+  bagButtons.forEach(function (btn) {
+    if (ready) { btn.removeAttribute('aria-disabled'); }
+    else { btn.setAttribute('aria-disabled', 'true'); }
+  });
+}
+
+sizes.forEach(function (s) {
+  s.addEventListener('click', function () {
+    sizes.forEach(function (x) { x.classList.remove('sel'); });
+    if (bespoke) bespoke.classList.remove('sel');
+    s.classList.add('sel');
+    if (mtm) mtm.classList.remove('open');
+    if (sizeHint) sizeHint.classList.remove('show');
+    refreshBagButtons(true);
+  });
+});
+
+if (bespoke) {
+  bespoke.addEventListener('click', function () {
+    sizes.forEach(function (x) { x.classList.remove('sel'); });
+    bespoke.classList.add('sel');
+    if (mtm) mtm.classList.add('open');
+    if (sizeHint) sizeHint.classList.remove('show');
+    refreshBagButtons(true);
+  });
+}
+
+bagButtons.forEach(function (btn) {
+  btn.addEventListener('click', function () {
+    if (btn.getAttribute('aria-disabled') === 'true') {
+      if (sizeHint) sizeHint.classList.add('show');
+      var sizesEl = document.getElementById('ka-sizes');
+      if (sizesEl) sizesEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+  });
+});
+
+/* ---------- accordion ---------- */
+function toggleAcc(head) {
+  var acc = head.parentElement;
+  var body = acc.querySelector('.ka-acc__body');
+  if (acc.classList.contains('open')) {
+    acc.classList.remove('open');
+    body.style.maxHeight = null;
+  } else {
+    acc.classList.add('open');
+    body.style.maxHeight = body.scrollHeight + 'px';
+  }
+}
+document.querySelectorAll('.ka-acc__head').forEach(function (h) {
+  h.addEventListener('click', function () { toggleAcc(h); });
+});
+document.querySelectorAll('[data-open-acc]').forEach(function (btn) {
+  btn.addEventListener('click', function () {
+    var acc = document.querySelector('.ka-acc[data-acc="' + btn.getAttribute('data-open-acc') + '"]');
+    if (acc && !acc.classList.contains('open')) toggleAcc(acc.querySelector('.ka-acc__head'));
+    if (acc) acc.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  });
+});
+
+/* ---------- lightbox ---------- */
+var lb = document.getElementById('ka-lb');
+var lbFrame = document.getElementById('ka-lb-frame');
+if (stage && lb) {
+  stage.addEventListener('click', function (e) {
+    if (e.target.closest('.ka-stage__wish')) return;
+    if (window.innerWidth <= 900) return;
+    if (lbFrame) lbFrame.style.backgroundImage = stage.style.backgroundImage;
+    lb.classList.add('show');
+  });
+  lb.addEventListener('click', function () { lb.classList.remove('show'); });
+}
+
+/* ---------- sticky minibar ---------- */
+var minibar = document.getElementById('ka-minibar');
+var hero = document.getElementById('ka-product');
+if (minibar && hero && 'IntersectionObserver' in window) {
+  var mbObs = new IntersectionObserver(function (entries) {
+    entries.forEach(function (en) {
+      if (!en.isIntersecting && en.boundingClientRect.top < 0) { minibar.classList.add('show'); }
+      else { minibar.classList.remove('show'); }
+    });
+  }, { threshold: 0 });
+  mbObs.observe(hero);
+}
+
+/* ---------- NEW — wishlist heart on the gallery stage ----------
+   Same interaction as the .ka-p-card heart: plain class toggle,
+   rosegold fill on save, no popup/toast. Also updates the nav
+   wishlist badge count live, so the reviewer can see this page's
+   heart and the nav icon it feeds behave as one connected system. */
+var stageWish = document.getElementById('ka-stage-wish');
+var navBadge = document.getElementById('navWishlistBadge');
+if (stageWish) {
+  stageWish.addEventListener('click', function (e) {
+    e.stopPropagation();
+    var saved = stageWish.classList.toggle('is-saved');
+    stageWish.setAttribute('aria-pressed', saved ? 'true' : 'false');
+    stageWish.setAttribute('aria-label', saved ? 'Remove from wishlist' : 'Save to wishlist');
+    if (navBadge) {
+      var count = parseInt(navBadge.getAttribute('data-count'), 10) || 0;
+      count = saved ? count + 1 : Math.max(0, count - 1);
+      navBadge.setAttribute('data-count', count);
+      navBadge.textContent = count;
+      navBadge.classList.remove('bump');
+      void navBadge.offsetWidth;
+      navBadge.classList.add('bump');
+    }
+  });
+}
+</script>
+</body>
+</html>

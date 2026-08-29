@@ -1,0 +1,295 @@
+{{ 'ka-wishlist-main.css' | asset_url | stylesheet_tag }}
+
+{%- comment -%}
+  K&A Wishlist — client-hydrated shell
+  Spec: Docs/account-wishlist-build-spec.md, Section 2 (S3 header, S4
+  populated grid, S5 empty state), Flag G6. Prototype: Prototypes/
+  wishlist-page-v1.html.
+
+  This section renders three pieces of static markup — the page header
+  (S3), the empty product-grid container (S4), and the hidden empty-
+  state (S5) — and does none of the actual data work itself: Liquid has
+  no access to a given visitor's localStorage at request time, so which
+  state to show and what the grid actually contains is entirely
+  determined client-side by the inline script below, built on top of
+  window.kaWishlist (assets/ka-wishlist.js, loaded sitewide via
+  layout/theme.liquid, which must run before this script — it does,
+  since ka-wishlist.js is a `defer` script and this inline script only
+  ever calls window.kaWishlist from inside a DOMContentLoaded-or-later
+  handler, by which point every earlier `defer` script, including
+  ka-wishlist.js, has already executed).
+
+  All three states start hidden (inline style="display:none") so
+  nothing flashes the wrong one before JS decides which applies — the
+  localStorage read itself is synchronous/instant (Section 1.3); only
+  the per-handle /products/{handle}.js fetch below is async, and that
+  gap is the one deliberately-accepted small polish item Flag G6 flags
+  (not a structural risk).
+
+  Card markup built below matches sections/ka-collection-grid.liquid's
+  real .ka-p-card structure field-for-field (image wrapper, optional
+  "Made to Order" badge, wish button, name, price) via DOM APIs — not
+  innerHTML string-building for any user/product-controlled text — so a
+  product title with special characters can never be mis-parsed as
+  markup. Metafields (e.g. the fabric line) are omitted: /products/
+  {handle}.js does not expose product.metafields by default, the same
+  documented limitation assets/ka-search.js's own client-built predictive-
+  search cards already accept.
+{%- endcomment -%}
+
+<header class="wl-header" id="wlHeader" style="display:none;">
+  <p class="eyebrow">Saved For You</p>
+  <h1 class="wl-header__title">Your Wishlist</h1>
+  <p class="wl-header__meta" id="wlCountMeta"></p>
+</header>
+
+<div class="ka-product-grid" id="wlGrid" style="display:none;" data-ka-wishlist-grid></div>
+
+<section class="wl-empty" id="wlEmptyState" style="display:none;">
+  <div class="wl-empty__mark" aria-hidden="true">
+    <svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20s-7-4.35-9.5-8.5C.8 8.3 1.4 4.9 4.4 3.6c2.1-.9 4.4-.2 5.7 1.6L12 7.4l1.9-2.2c1.3-1.8 3.6-2.5 5.7-1.6 3 1.3 3.6 4.7 1.9 7.9C19 15.65 12 20 12 20z"/></svg>
+  </div>
+  <p class="eyebrow">Your Wishlist</p>
+  <h2 class="wl-empty__title">Nothing Saved, Yet.</h2>
+  <p class="wl-empty__body">The pieces you return to, gathered in one place. Tap the heart on any piece across the collections to begin your own edit — we&rsquo;ll keep it here, exactly as you left it.</p>
+  <div class="wl-empty__actions">
+    <a href="/collections" class="btn-outline-dark">Explore the Collections</a>
+    <p class="wl-empty__note">Saved on this device — no account needed to begin.</p>
+  </div>
+</section>
+
+<script>
+(function () {
+  'use strict';
+
+  var wlHeader = document.getElementById('wlHeader');
+  var wlCountMeta = document.getElementById('wlCountMeta');
+  var wlGrid = document.getElementById('wlGrid');
+  var wlEmptyState = document.getElementById('wlEmptyState');
+
+  if (!wlGrid) return;
+
+  var HEART_LINE = '<svg class="heart-line" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20s-7-4.35-9.5-8.5C.8 8.3 1.4 4.9 4.4 3.6c2.1-.9 4.4-.2 5.7 1.6L12 7.4l1.9-2.2c1.3-1.8 3.6-2.5 5.7-1.6 3 1.3 3.6 4.7 1.9 7.9C19 15.65 12 20 12 20z"/></svg>';
+  var HEART_FILL = '<svg class="heart-fill" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20s-7-4.35-9.5-8.5C.8 8.3 1.4 4.9 4.4 3.6c2.1-.9 4.4-.2 5.7 1.6L12 7.4l1.9-2.2c1.3-1.8 3.6-2.5 5.7-1.6 3 1.3 3.6 4.7 1.9 7.9C19 15.65 12 20 12 20z"/></svg>';
+
+  function countLabel(n) {
+    return n + (n === 1 ? ' Piece Saved' : ' Pieces Saved');
+  }
+
+  function showEmpty() {
+    if (wlHeader) wlHeader.style.display = 'none';
+    wlGrid.style.display = 'none';
+    if (wlEmptyState) wlEmptyState.style.display = '';
+  }
+
+  function showPopulated(count) {
+    if (wlCountMeta) wlCountMeta.textContent = countLabel(count);
+    if (wlHeader) wlHeader.style.display = '';
+    wlGrid.style.display = '';
+    if (wlEmptyState) wlEmptyState.style.display = 'none';
+  }
+
+  /* Shopify CDN accepts a ?width= (or &width=) param on any file URL for
+     on-the-fly resizing — same mechanism image_url: width: 800 uses
+     server-side, and the same technique assets/ka-search.js already
+     applies to its own client-built cards. */
+  function cdnWidth(url, width) {
+    if (!url) return url;
+    return url + (url.indexOf('?') === -1 ? '?' : '&') + 'width=' + width;
+  }
+
+  function isMadeToOrder(tags) {
+    if (!tags || !tags.length) return false;
+    for (var i = 0; i < tags.length; i++) {
+      var t = String(tags[i]).toLowerCase();
+      if (t === 'made-to-order' || t === 'made to order') return true;
+    }
+    return false;
+  }
+
+  /* /products/{handle}.js reports price as an integer in the shop's
+     smallest currency unit (paise for INR) — the same [data-price]
+     contract assets/ka-currency.js already sweeps sitewide (unlike
+     assets/ka-search.js's /search/suggest.json endpoint, which reports
+     a decimal rupee string instead — a different Shopify endpoint with
+     a different price shape). */
+  function formatINR(cents) {
+    var rupees = Math.round((cents || 0) / 100);
+    var grouped;
+    try {
+      grouped = new Intl.NumberFormat('en-IN').format(rupees);
+    } catch (e) {
+      grouped = String(rupees);
+    }
+    return '₹' + grouped;
+  }
+
+  /* Removing a piece from this page — a direct listener on the button
+     itself (not delegated from document), so it fires and can
+     stopPropagation() before assets/ka-wishlist.js's own document-level
+     delegated heart handler (Section 1.3 item 2) ever sees the click:
+     that generic handler only knows how to toggle a single button, but
+     this page's own removal needs the fade-and-collapse of the whole
+     card (Section 2 S4) plus a live header-count update, so this page
+     owns the click here instead. Direct target-element listeners always
+     run before a same-event bubble reaches a document-level delegated
+     one, regardless of script load order, so this is reliable without
+     depending on registration order. */
+  function wireRemove(btn, card, handle) {
+    btn.addEventListener('click', function (e) {
+      e.preventDefault();
+      e.stopPropagation();
+      if (window.kaWishlist) window.kaWishlist.remove(handle);
+      card.classList.add('is-removing');
+      setTimeout(function () {
+        card.remove();
+        var remaining = wlGrid.querySelectorAll('[data-wl-item]').length;
+        if (remaining === 0) {
+          showEmpty();
+        } else if (wlCountMeta) {
+          wlCountMeta.textContent = countLabel(remaining);
+        }
+      }, 380);
+    });
+  }
+
+  function buildCard(product) {
+    var card = document.createElement('div');
+    card.className = 'ka-p-card';
+    card.setAttribute('data-wl-item', '');
+
+    var imageWrap = document.createElement('div');
+    imageWrap.className = 'ka-p-card__image';
+
+    if (isMadeToOrder(product.tags)) {
+      var badge = document.createElement('span');
+      badge.className = 'ka-p-card__badge';
+      badge.textContent = 'Made to Order';
+      imageWrap.appendChild(badge);
+    }
+
+    /* Pre-filled — everything rendered on this page is, by definition,
+       already saved (Section 2 S4 step 4). */
+    var wishBtn = document.createElement('button');
+    wishBtn.type = 'button';
+    wishBtn.className = 'ka-p-card__wish is-saved';
+    wishBtn.setAttribute('data-wl-remove', '');
+    wishBtn.setAttribute('data-product-handle', product.handle);
+    wishBtn.setAttribute('aria-label', 'Remove from wishlist');
+    wishBtn.setAttribute('aria-pressed', 'true');
+    wishBtn.innerHTML = HEART_LINE + HEART_FILL;
+    imageWrap.appendChild(wishBtn);
+
+    var productUrl = product.url || ('/products/' + product.handle);
+    var imageLink = document.createElement('a');
+    imageLink.href = productUrl;
+    imageLink.className = 'ka-p-card__image-link';
+    imageLink.setAttribute('aria-label', 'View ' + product.title);
+    imageWrap.appendChild(imageLink);
+
+    var imgUrl = product.featured_image || (product.images && product.images[0]);
+    if (imgUrl) {
+      var img = document.createElement('img');
+      img.src = cdnWidth(imgUrl, 800);
+      img.alt = product.title || '';
+      img.loading = 'lazy';
+      img.width = 800;
+      img.height = 1067;
+      img.className = 'img-filter-coll-page';
+      imageWrap.appendChild(img);
+    } else {
+      var placeholder = document.createElement('div');
+      placeholder.style.background = 'var(--c-smoke)';
+      placeholder.style.width = '100%';
+      placeholder.style.height = '100%';
+      imageWrap.appendChild(placeholder);
+    }
+    card.appendChild(imageWrap);
+
+    var info = document.createElement('div');
+    info.className = 'ka-p-card__info';
+
+    var name = document.createElement('h3');
+    name.className = 'ka-p-card__name';
+    var nameLink = document.createElement('a');
+    nameLink.href = productUrl;
+    nameLink.textContent = product.title;
+    name.appendChild(nameLink);
+    info.appendChild(name);
+
+    var priceEl = document.createElement('p');
+    priceEl.className = 'ka-p-card__price';
+    var priceSpan = document.createElement('span');
+    priceSpan.setAttribute('data-price', product.price || 0);
+    priceSpan.textContent = formatINR(product.price);
+    priceEl.appendChild(priceSpan);
+    info.appendChild(priceEl);
+
+    card.appendChild(info);
+
+    wireRemove(wishBtn, card, product.handle);
+
+    return card;
+  }
+
+  /* Section 2 S4: fetch each saved handle's live product data in
+     parallel via Shopify's own storefront JSON endpoint — same-origin,
+     no auth, standard AJAX API. A 404/failed fetch (product deleted,
+     unpublished, or its handle changed since it was saved — Flag G7)
+     silently prunes that handle from the stored array rather than
+     showing a broken card or aborting the rest of the render loop. */
+  function renderGrid(handles) {
+    var fetches = handles.map(function (handle) {
+      return fetch('/products/' + handle + '.js', { credentials: 'same-origin' })
+        .then(function (res) { return res.ok ? res.json() : null; })
+        .catch(function () { return null; });
+    });
+
+    Promise.all(fetches).then(function (results) {
+      var rendered = 0;
+      results.forEach(function (product, i) {
+        if (product) {
+          wlGrid.appendChild(buildCard(product));
+          rendered++;
+        } else if (window.kaWishlist) {
+          window.kaWishlist.remove(handles[i]);
+        }
+      });
+
+      if (rendered > 0) {
+        showPopulated(rendered);
+      } else {
+        showEmpty();
+      }
+    });
+  }
+
+  function init() {
+    if (!window.kaWishlist) { showEmpty(); return; }
+    var handles = window.kaWishlist.getAll();
+    if (!handles.length) {
+      showEmpty();
+      return;
+    }
+    renderGrid(handles);
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+  } else {
+    init();
+  }
+})();
+</script>
+
+{% schema %}
+{
+  "name": "Wishlist Main",
+  "tag": "div",
+  "class": "ka-wishlist-main-section",
+  "settings": [],
+  "presets": [
+    { "name": "Wishlist Main" }
+  ]
+}
+{% endschema %}

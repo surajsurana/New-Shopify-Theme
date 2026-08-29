@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>K&amp;A — Wishlist Page — Prototype v1</title>
+<meta name="description" content="The Wishlist page: add-to-wishlist card affordance in context, populated grid, and empty state." />
+
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Jost:wght@200;300;400;500&display=swap" rel="stylesheet" />
+
+<style>
+/* ═══════════════════════════════════════════════════════════════
+   DESIGN TOKENS — verbatim from assets/ka-base.css. No new tokens.
+═══════════════════════════════════════════════════════════════ */
+:root {
+  --c-paper:      #F7F3EC;
+  --c-paper-deep: #EFE8DD;
+  --c-smoke:      #E9E1D2;
+  --c-charcoal:   #2A2420;
+  --c-charcoal-2: #1D1916;
+  --c-ink:        #2A2420;
+  --c-ink-mid:    #6E655B;
+  --c-ink-muted:  #9C9389;
+  --c-rosegold:      #9A7B4F;
+  --c-rosegold-2:    #7E6440;
+  --c-rosegold-pale: #B99B6E;
+  --f-display: 'Cormorant Garamond', Georgia, 'Times New Roman', serif;
+  --f-sans:    'Jost', 'Helvetica Neue', Arial, sans-serif;
+  --t-display: clamp(2.6rem, 5.5vw, 5.2rem);
+  --t-h2:      clamp(2rem, 3.5vw, 3.2rem);
+  --t-h3:      clamp(1.4rem, 2.2vw, 2rem);
+  --t-eyebrow: 0.66rem;
+  --s-xs: 8px; --s-sm: 16px; --s-md: 32px; --s-lg: 64px; --s-xl: 96px; --s-2xl: 140px; --s-3xl: 200px;
+  --max-wide: 1680px;
+  --gutter: clamp(20px, 5vw, 80px);
+  --ease-luxury: cubic-bezier(0.16, 0.84, 0.44, 1);
+  --ease-soft:   cubic-bezier(0.22, 0.61, 0.36, 1);
+  --dur-slow: 1s; --dur-med: 0.65s; --dur-fast: 0.35s;
+  --line: rgba(42,36,32,0.12);
+  --line-strong: rgba(42,36,32,0.20);
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; font-size: 16px; }
+body {
+  background: var(--c-paper); color: var(--c-ink);
+  font-family: var(--f-sans); font-weight: 300; line-height: 1.75;
+  -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; overflow-x: hidden;
+}
+img { display: block; width: 100%; height: 100%; object-fit: cover; }
+a { text-decoration: none; color: inherit; }
+button { border: none; background: none; cursor: pointer; font-family: inherit; }
+.eyebrow { font-family: var(--f-sans); font-size: var(--t-eyebrow); font-weight: 400; letter-spacing: 0.24em; text-transform: uppercase; color: var(--c-rosegold-2); }
+.img-filter-product { filter: sepia(0.10) saturate(0.90) brightness(0.97); }
+
+.btn-outline-dark {
+  font-family: var(--f-sans); font-size: 0.66rem; font-weight: 400; letter-spacing: 0.2em; text-transform: uppercase;
+  color: var(--c-charcoal); border: 1px solid var(--line-strong); padding: 14px 32px;
+  transition: background var(--dur-fast), color var(--dur-fast), border-color var(--dur-fast);
+  display: inline-block;
+}
+.btn-outline-dark:hover { background: var(--c-charcoal); color: #fff; border-color: var(--c-charcoal); }
+.btn-dark {
+  display: inline-flex; align-items: center; gap: 16px;
+  font-family: var(--f-sans); font-size: 0.68rem; font-weight: 400; letter-spacing: 0.2em; text-transform: uppercase;
+  color: var(--c-charcoal); border-bottom: 1px solid var(--c-rosegold-pale); padding-bottom: 6px;
+  transition: border-color var(--dur-fast), color var(--dur-fast); width: fit-content;
+}
+.btn-dark::after { content: '\2192'; font-size: 0.9em; transition: transform var(--dur-med) var(--ease-luxury); }
+.btn-dark:hover { color: var(--c-rosegold-2); border-color: var(--c-rosegold-2); }
+.btn-dark:hover::after { transform: translateX(6px); }
+
+/* ═══════════════════════════════════════════════════════════════
+   PRESENTATION CHROME — not part of the site
+═══════════════════════════════════════════════════════════════ */
+.proto-ribbon {
+  position: sticky; top: 0; z-index: 500; background: #14212B; color: #cfe0ea;
+  font-family: -apple-system, Segoe UI, Arial, sans-serif; font-size: 12.5px; letter-spacing: 0.02em;
+  padding: 10px 20px; display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap;
+}
+.proto-ribbon strong { color: #fff; font-weight: 600; }
+.proto-ribbon nav { display: flex; gap: 14px; flex-wrap: wrap; }
+.proto-ribbon a { color: #9fd0e6; border-bottom: 1px dotted rgba(159,208,230,0.5); }
+.proto-ribbon a:hover { color: #fff; }
+.proto-section-label {
+  font-family: -apple-system, Segoe UI, Arial, sans-serif;
+  background: #EDEFF1; color: #445; padding: 26px var(--gutter) 18px; border-top: 6px solid #14212B;
+}
+.proto-section-label b { display: block; font-size: 20px; color: #14212B; margin-bottom: 6px; }
+.proto-section-label p { font-size: 13.5px; line-height: 1.6; max-width: 900px; color: #556; margin-bottom: 8px; }
+.proto-note {
+  font-family: -apple-system, Segoe UI, Arial, sans-serif; font-size: 12.5px; color: #778;
+  background: #fff; border: 1px dashed #ccd; padding: 10px 14px; margin: 14px var(--gutter) 22px; max-width: 900px;
+}
+.proto-controlbar {
+  display: flex; gap: 10px; align-items: center; flex-wrap: wrap; padding: 14px var(--gutter);
+  background: #EDEFF1; font-family: -apple-system, Segoe UI, Arial, sans-serif;
+}
+.proto-controlbar span.lbl { font-size: 12px; color: #667; margin-right: 4px; }
+.proto-controlbar button { font-size: 12px; padding: 7px 14px; border: 1px solid #99a; color: #334; background: #fff; }
+.proto-controlbar button.is-on { background: #14212B; color: #fff; border-color: #14212B; }
+
+/* ═══════════════════════════════════════════════════════════════
+   GLOBAL HEADER — settled state (permanent on every interior page,
+   incl. this one). Search / Account / Wishlist / Bag icon cluster,
+   per account-nav-entry-v1.html.
+═══════════════════════════════════════════════════════════════ */
+.ka-utility-bar {
+  position: sticky; top: 0; z-index: 101; background: var(--c-charcoal); color: rgba(233,224,210,0.78);
+  font-size: 0.62rem; font-weight: 400; letter-spacing: 0.18em; text-transform: uppercase;
+  display: flex; align-items: center; justify-content: center; padding: 9px 16px;
+}
+.ka-utility-bar span { opacity: 0.55; margin: 0 14px; }
+.ka-utility-bar b { font-weight: 400; opacity: 0.95; }
+.ka-nav {
+  position: sticky; top: 34px; z-index: 100; padding: 14px var(--gutter);
+  display: grid; grid-template-columns: 1fr auto 1fr; align-items: center;
+  background: rgba(247,243,236,0.96); backdrop-filter: blur(12px); border-bottom: 1px solid var(--line);
+}
+.ka-nav__links { display: flex; gap: 32px; list-style: none; grid-column: 1; }
+.ka-nav__links a { font-size: 0.66rem; font-weight: 400; letter-spacing: 0.16em; text-transform: uppercase; color: var(--c-ink-mid); }
+.ka-nav__links a:hover, .ka-nav__links a.is-active { color: var(--c-charcoal); }
+.ka-nav__logo { grid-column: 2; text-align: center; font-family: var(--f-display); font-size: clamp(1.2rem, 2.2vw, 1.6rem); color: var(--c-charcoal); line-height: 1; }
+.ka-nav__logo small { display: block; font-size: 0.5rem; letter-spacing: 0.32em; text-transform: uppercase; color: var(--c-rosegold-2); margin-top: 6px; }
+.ka-nav__actions { display: flex; align-items: center; justify-content: flex-end; gap: 22px; grid-column: 3; }
+.ka-nav__icon-btn { position: relative; display: inline-flex; align-items: center; justify-content: center; width: 30px; height: 30px; padding: 4px; color: var(--c-charcoal); }
+.ka-nav__icon-btn svg { width: 20px; height: 20px; stroke: currentColor; fill: none; }
+.ka-nav__badge { position: absolute; top: -2px; right: -4px; min-width: 15px; height: 15px; border-radius: 50%; background: var(--c-rosegold); color: #fff; font-size: 0.56rem; line-height: 15px; text-align: center; padding: 0 3px; }
+.ka-nav__badge[data-count="0"] { display: none; }
+.ka-nav__wishlist svg.heart-fill { fill: var(--c-rosegold); stroke: var(--c-rosegold); opacity: 0; transform: scale(0.6); position: absolute; transition: opacity var(--dur-fast) var(--ease-luxury), transform var(--dur-fast) var(--ease-luxury); }
+.ka-nav__wishlist svg.heart-line { transition: opacity var(--dur-fast) var(--ease-luxury); }
+.has-saved .ka-nav__wishlist svg.heart-fill { opacity: 1; transform: scale(1); }
+.has-saved .ka-nav__wishlist svg.heart-line { opacity: 0; }
+.ka-nav__toggle { display: none; }
+@media (max-width: 900px) {
+  .ka-nav { padding: 14px 20px; }
+  .ka-nav__links { display: none; }
+  .ka-nav__toggle { display: flex; flex-direction: column; gap: 5px; padding: 4px; grid-column: 1; }
+  .ka-nav__toggle span { display: block; width: 24px; height: 1px; background: var(--c-charcoal); }
+  .ka-nav__account, .ka-nav__wishlist { display: none; }
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   PAGE HEADER — quiet editorial band, matches the register used by
+   the Collection page / Journal index headers (eyebrow + italic
+   serif title + one meta line), not a hero.
+═══════════════════════════════════════════════════════════════ */
+.wl-header { max-width: var(--max-wide); margin: 0 auto; padding: var(--s-xl) var(--gutter) var(--s-md); text-align: center; }
+.wl-header__title { font-family: var(--f-display); font-style: italic; font-weight: 400; font-size: var(--t-display); color: var(--c-charcoal); line-height: 1.1; margin: 16px 0 14px; }
+.wl-header__meta { font-family: var(--f-sans); font-size: 0.76rem; letter-spacing: 0.08em; color: var(--c-ink-muted); text-transform: uppercase; }
+
+/* ═══════════════════════════════════════════════════════════════
+   PRODUCT GRID + CARD — verbatim from assets/ka-collection-grid.css
+   .ka-p-card, with ONE addition: the wishlist heart button, top-right,
+   mirroring the existing badge's top-left position (16px inset) so the
+   two corner treatments read as a matched pair. Persistent (not
+   hover-only) — a save action needs to work on touch, where there is
+   no hover state at all.
+═══════════════════════════════════════════════════════════════ */
+.ka-product-grid { max-width: var(--max-wide); margin: 0 auto; padding: var(--s-md) var(--gutter) var(--s-md); display: grid; grid-template-columns: repeat(3, 1fr); gap: clamp(2px, 0.3vw, 32px); }
+.ka-p-card { position: relative; }
+.ka-p-card__image { position: relative; display: block; aspect-ratio: 3/4; overflow: hidden; background: var(--c-smoke); }
+.ka-p-card__image-link { position: absolute; inset: 0; z-index: 1; }
+.ka-p-card__image img { position: relative; z-index: 0; transition: transform 1.2s var(--ease-luxury); }
+.ka-p-card:hover .ka-p-card__image img { transform: scale(1.045); }
+.ka-p-card__badge { position: absolute; top: 16px; left: 16px; z-index: 3; font-size: 0.6rem; font-weight: 400; letter-spacing: 0.14em; text-transform: uppercase; color: #fff; background: rgba(26,23,20,0.78); padding: 7px 14px; }
+
+/* Wishlist heart button — top-right corner of every card image */
+.ka-p-card__wish {
+  position: absolute; top: 12px; right: 12px; z-index: 4;
+  width: 34px; height: 34px; display: inline-flex; align-items: center; justify-content: center;
+  background: rgba(247,243,236,0.88); backdrop-filter: blur(4px);
+  transition: background var(--dur-fast), transform var(--dur-fast) var(--ease-luxury);
+}
+.ka-p-card__wish:hover { background: var(--c-paper); transform: scale(1.06); }
+.ka-p-card__wish svg { width: 17px; height: 17px; stroke: var(--c-charcoal); fill: none; stroke-width: 1.4; stroke-linecap: round; stroke-linejoin: round; }
+.ka-p-card__wish svg.heart-fill { fill: var(--c-rosegold); stroke: var(--c-rosegold); opacity: 0; transform: scale(0.6); position: absolute; transition: opacity var(--dur-fast) var(--ease-luxury), transform var(--dur-fast) var(--ease-luxury); }
+.ka-p-card__wish svg.heart-line { transition: opacity var(--dur-fast) var(--ease-luxury); }
+.ka-p-card__wish.is-saved svg.heart-fill { opacity: 1; transform: scale(1); }
+.ka-p-card__wish.is-saved svg.heart-line { opacity: 0; }
+
+.ka-p-card__veil { position: absolute; inset: 0; z-index: 2; display: flex; align-items: center; justify-content: center; background: rgba(26,23,20,0.42); opacity: 0; transition: opacity var(--dur-fast); pointer-events: none; }
+.ka-p-card:hover .ka-p-card__veil { opacity: 1; }
+.ka-p-card__veil-quickadd { font-size: 0.66rem; font-weight: 400; letter-spacing: 0.18em; text-transform: uppercase; color: #fff; border: 1px solid rgba(255,255,255,0.65); padding: 12px 26px; transform: translateY(8px); transition: transform var(--dur-med) var(--ease-luxury), background var(--dur-fast), color var(--dur-fast); pointer-events: auto; }
+.ka-p-card:hover .ka-p-card__veil-quickadd { transform: translateY(0); }
+.ka-p-card__veil-quickadd:hover { background: #fff; color: var(--c-charcoal); }
+
+.ka-p-card__info { padding: 20px 4px 0; position: relative; z-index: 1; }
+.ka-p-card__name { font-family: var(--f-display); font-size: clamp(1rem, 1.6vw, 1.25rem); font-weight: 400; font-style: italic; color: var(--c-charcoal); line-height: 1.3; margin-bottom: 6px; }
+.ka-p-card__fabric { font-size: 0.74rem; font-weight: 300; color: var(--c-ink-muted); margin-bottom: 10px; line-height: 1.6; }
+.ka-p-card__price { font-size: 0.78rem; font-weight: 400; letter-spacing: 0.04em; color: var(--c-ink); }
+.ka-p-card__price span { color: var(--c-ink-muted); font-weight: 300; margin-left: 6px; }
+
+/* Removal transition — a saved-card unsaved on the Wishlist page itself
+   fades and collapses out, rather than vanishing instantly, so the grid
+   never jump-cuts under the visitor's cursor. */
+.ka-p-card.is-removing { opacity: 0; transform: scale(0.96); transition: opacity var(--dur-med) var(--ease-luxury), transform var(--dur-med) var(--ease-luxury); pointer-events: none; }
+
+@media (max-width: 900px) { .ka-product-grid { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 600px) {
+  .ka-product-grid { grid-template-columns: repeat(2, 1fr); gap: 22px 2px; padding: var(--s-sm) 16px var(--s-md); }
+  .ka-p-card__info { padding: 14px 2px 0; }
+  .ka-p-card__wish { width: 30px; height: 30px; }
+  .ka-p-card__wish svg { width: 15px; height: 15px; }
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   EMPTY STATE — same component/voice family as the Client Diaries
+   "Coming Soon" page and the Collection page's own empty state
+   (assets/ka-collection-grid.css .ka-collection-empty): quiet
+   eyebrow, italic serif headline, muted body copy, one primary CTA.
+   Not literally "coming soon" language (the feature exists — the
+   visitor's own list is just empty), but the identical restrained
+   register.
+═══════════════════════════════════════════════════════════════ */
+.wl-empty { text-align: center; padding: var(--s-2xl) var(--s-md) var(--s-3xl); max-width: 560px; margin: 0 auto; }
+.wl-empty__mark { width: 44px; height: 44px; margin: 0 auto 26px; color: var(--line-strong); }
+.wl-empty__mark svg { width: 100%; height: 100%; stroke: var(--c-rosegold-pale); fill: none; stroke-width: 1; }
+.wl-empty__title { font-family: var(--f-display); font-style: italic; font-size: clamp(2rem, 5vw, 3rem); font-weight: 400; color: var(--c-charcoal); margin: 0 0 22px; line-height: 1.15; }
+.wl-empty__body { font-size: 0.88rem; color: var(--c-ink-muted); line-height: 1.85; margin-bottom: 36px; letter-spacing: 0.02em; }
+.wl-empty__actions { display: flex; flex-direction: column; align-items: center; gap: 18px; }
+.wl-empty__note { font-size: 0.72rem; color: var(--c-ink-muted); letter-spacing: 0.04em; }
+
+/* ═══════════════════════════════════════════════════════════════
+   FOOTER — condensed reference, matches other prototypes
+═══════════════════════════════════════════════════════════════ */
+.ka-footer { background: var(--c-charcoal); padding: var(--s-xl) var(--gutter) var(--s-lg); color: #C9BFAE; }
+.ka-footer__inner { max-width: var(--max-wide); margin: 0 auto; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 24px; }
+.ka-footer__logo { font-family: var(--f-display); font-size: 1.3rem; color: #F4ECDE; letter-spacing: 0.06em; }
+.ka-footer__copy { font-size: 0.63rem; font-weight: 300; color: #7E7567; letter-spacing: 0.1em; text-transform: uppercase; }
+
+/* Context demo section (add-to-wishlist shown on a Collection-style
+   card, outside the Wishlist page's own grid) */
+.demo-band { background: var(--c-paper-deep); padding: var(--s-lg) 0 var(--s-xl); }
+</style>
+</head>
+<body>
+
+<div class="proto-ribbon">
+  <div><strong>K&amp;A Prototype</strong> — Wishlist Page — v1</div>
+  <nav>
+    <a href="#sec-context">1 — Add-to-Wishlist in Context</a>
+    <a href="#sec-populated">2 — Wishlist (Populated)</a>
+    <a href="#sec-empty">3 — Wishlist (Empty State)</a>
+  </nav>
+</div>
+
+<!-- GLOBAL HEADER -->
+<div class="ka-utility-bar">
+  <span><b>Complimentary Worldwide Delivery</b></span><span>·</span><span><b>Hand-Embroidered to Order</b></span><span>·</span><span><b>Private &amp; Virtual Appointments</b></span>
+</div>
+<nav class="ka-nav">
+  <button class="ka-nav__toggle" aria-label="Open menu"><span></span><span></span><span></span></button>
+  <ul class="ka-nav__links">
+    <li><a href="#">Signature</a></li>
+    <li><a href="#">Collections</a></li>
+    <li><a href="#">Client Diaries</a></li>
+  </ul>
+  <a href="#" class="ka-nav__logo">Karishma Ashita<small>Bridal Couture · Mumbai</small></a>
+  <div class="ka-nav__actions">
+    <button class="ka-nav__icon-btn" aria-label="Search"><svg viewBox="0 0 24 24" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M20 20l-4.8-4.8"/></svg></button>
+    <a href="#" class="ka-nav__icon-btn ka-nav__account" aria-label="Log in or view your account"><svg viewBox="0 0 24 24" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8.3" r="3.6"/><path d="M4.8 20c1-3.7 4-5.7 7.2-5.7s6.2 2 7.2 5.7"/></svg></a>
+    <a href="#" class="ka-nav__icon-btn ka-nav__wishlist has-saved" aria-label="View your wishlist">
+      <svg class="heart-line" viewBox="0 0 24 24" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20s-7-4.35-9.5-8.5C.8 8.3 1.4 4.9 4.4 3.6c2.1-.9 4.4-.2 5.7 1.6L12 7.4l1.9-2.2c1.3-1.8 3.6-2.5 5.7-1.6 3 1.3 3.6 4.7 1.9 7.9C19 15.65 12 20 12 20z"/></svg>
+      <svg class="heart-fill" viewBox="0 0 24 24"><path d="M12 20s-7-4.35-9.5-8.5C.8 8.3 1.4 4.9 4.4 3.6c2.1-.9 4.4-.2 5.7 1.6L12 7.4l1.9-2.2c1.3-1.8 3.6-2.5 5.7-1.6 3 1.3 3.6 4.7 1.9 7.9C19 15.65 12 20 12 20z"/></svg>
+      <span class="ka-nav__badge" id="navWishlistBadge" data-count="3">3</span>
+    </a>
+    <a href="#" class="ka-nav__icon-btn ka-nav__bag" aria-label="View your bag">
+      <svg viewBox="0 0 24 24" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8h12l-1 12H7L6 8z"/><path d="M9 8V6a3 3 0 0 1 6 0v2"/></svg>
+      <span class="ka-nav__badge" data-count="2">2</span>
+    </a>
+  </div>
+</nav>
+
+<!-- ══════════════════════════════════════════════════════════════
+     SECTION 1 — ADD-TO-WISHLIST SHOWN IN CONTEXT
+═══════════════════════════════════════════════════════════════ -->
+<div id="sec-context"></div>
+<div class="proto-section-label">
+  <b>1 — The add-to-wishlist affordance, shown in context on a Collection card</b>
+  <p><strong>One card component, everywhere:</strong> the heart button is added directly to the existing <code>.ka-p-card</code> used sitewide — Collection grid, search results, this page's own grid. No second card style. The three cards below are styled and behave exactly as they would on the real Collection page (same quick-add hover veil, same zoom-on-hover image) — only the heart is new.</p>
+  <p><strong>Placement + behavior:</strong> top-right corner, mirroring the existing "Made to Order" badge's top-left position. Persistent, not hover-only (a save action must work on tap, where hover doesn't exist). Outline heart at rest; a click/tap fills it rosegold with a soft, quiet scale-in (the same easing as every other micro-interaction on the site) — no toast, no popup. The fill itself is the confirmation; a separate notification would be one interruption too many for what should feel like a small, private gesture. Click any heart below to try it.</p>
+</div>
+
+<section class="demo-band">
+  <div class="ka-product-grid" style="padding-top:var(--s-lg);" id="demoGrid">
+    <div class="ka-p-card">
+      <div class="ka-p-card__image">
+        <span class="ka-p-card__badge">Made to Order</span>
+        <button class="ka-p-card__wish" aria-label="Save to wishlist" aria-pressed="false">
+          <svg class="heart-line" viewBox="0 0 24 24"><path d="M12 20s-7-4.35-9.5-8.5C.8 8.3 1.4 4.9 4.4 3.6c2.1-.9 4.4-.2 5.7 1.6L12 7.4l1.9-2.2c1.3-1.8 3.6-2.5 5.7-1.6 3 1.3 3.6 4.7 1.9 7.9C19 15.65 12 20 12 20z"/></svg>
+          <svg class="heart-fill" viewBox="0 0 24 24"><path d="M12 20s-7-4.35-9.5-8.5C.8 8.3 1.4 4.9 4.4 3.6c2.1-.9 4.4-.2 5.7 1.6L12 7.4l1.9-2.2c1.3-1.8 3.6-2.5 5.7-1.6 3 1.3 3.6 4.7 1.9 7.9C19 15.65 12 20 12 20z"/></svg>
+        </button>
+        <a href="#" class="ka-p-card__image-link"><img class="img-filter-product" src="../assets/product-bloom-lehenga.jpg" alt="Bloom Soirée Lehenga" /></a>
+        <div class="ka-p-card__veil"><button class="ka-p-card__veil-quickadd">Quick Add</button></div>
+      </div>
+      <div class="ka-p-card__info">
+        <p class="ka-p-card__name">Bloom Soirée Lehenga</p>
+        <p class="ka-p-card__fabric">Hand-embroidered silk, blush rosegold</p>
+        <p class="ka-p-card__price">₹68,000</p>
+      </div>
+    </div>
+    <div class="ka-p-card">
+      <div class="ka-p-card__image">
+        <button class="ka-p-card__wish" aria-label="Save to wishlist" aria-pressed="false">
+          <svg class="heart-line" viewBox="0 0 24 24"><path d="M12 20s-7-4.35-9.5-8.5C.8 8.3 1.4 4.9 4.4 3.6c2.1-.9 4.4-.2 5.7 1.6L12 7.4l1.9-2.2c1.3-1.8 3.6-2.5 5.7-1.6 3 1.3 3.6 4.7 1.9 7.9C19 15.65 12 20 12 20z"/></svg>
+          <svg class="heart-fill" viewBox="0 0 24 24"><path d="M12 20s-7-4.35-9.5-8.5C.8 8.3 1.4 4.9 4.4 3.6c2.1-.9 4.4-.2 5.7 1.6L12 7.4l1.9-2.2c1.3-1.8 3.6-2.5 5.7-1.6 3 1.3 3.6 4.7 1.9 7.9C19 15.65 12 20 12 20z"/></svg>
+        </button>
+        <a href="#" class="ka-p-card__image-link"><img class="img-filter-product" src="../assets/product-ivory-column-corset.jpg" alt="Ivory Column Corset" /></a>
+        <div class="ka-p-card__veil"><button class="ka-p-card__veil-quickadd">Quick Add</button></div>
+      </div>
+      <div class="ka-p-card__info">
+        <p class="ka-p-card__name">Ivory Column Corset</p>
+        <p class="ka-p-card__fabric">Corset bodice, silk column drape</p>
+        <p class="ka-p-card__price">₹52,000</p>
+      </div>
+    </div>
+    <div class="ka-p-card">
+      <div class="ka-p-card__image">
+        <button class="ka-p-card__wish is-saved" aria-label="Remove from wishlist" aria-pressed="true">
+          <svg class="heart-line" viewBox="0 0 24 24"><path d="M12 20s-7-4.35-9.5-8.5C.8 8.3 1.4 4.9 4.4 3.6c2.1-.9 4.4-.2 5.7 1.6L12 7.4l1.9-2.2c1.3-1.8 3.6-2.5 5.7-1.6 3 1.3 3.6 4.7 1.9 7.9C19 15.65 12 20 12 20z"/></svg>
+          <svg class="heart-fill" viewBox="0 0 24 24"><path d="M12 20s-7-4.35-9.5-8.5C.8 8.3 1.4 4.9 4.4 3.6c2.1-.9 4.4-.2 5.7 1.6L12 7.4l1.9-2.2c1.3-1.8 3.6-2.5 5.7-1.6 3 1.3 3.6 4.7 1.9 7.9C19 15.65 12 20 12 20z"/></svg>
+        </button>
+        <a href="#" class="ka-p-card__image-link"><img class="img-filter-product" src="../assets/product-snow-veil-corset.jpg" alt="Snow Veil Corset" /></a>
+        <div class="ka-p-card__veil"><button class="ka-p-card__veil-quickadd">Quick Add</button></div>
+      </div>
+      <div class="ka-p-card__info">
+        <p class="ka-p-card__name">Snow Veil Corset</p>
+        <p class="ka-p-card__fabric">Corset with ivory tulle drape saree</p>
+        <p class="ka-p-card__price">₹58,000</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════════════════════
+     SECTION 2 — WISHLIST PAGE, POPULATED
+═══════════════════════════════════════════════════════════════ -->
+<div id="sec-populated"></div>
+<div class="proto-section-label">
+  <b>2 — The Wishlist page itself, populated</b>
+  <p>Same page header register as the Collection page and Journal index — eyebrow, italic serif title, one quiet meta line (piece count) — not a hero, since this is a utility page the visitor arrives at with intent, not a page that needs to sell the brand's world to them again. The grid below is the identical <code>.ka-p-card</code> grid, hearts pre-filled (everything here is already saved). Click a heart to remove a piece — it fades out with a soft transition rather than snapping away instantly, and the header count updates live. Remove all three to see the empty state below take over automatically.</p>
+</div>
+
+<header class="wl-header">
+  <p class="eyebrow">Saved For You</p>
+  <h1 class="wl-header__title">Your Wishlist</h1>
+  <p class="wl-header__meta" id="wlCountMeta">3 Pieces Saved</p>
+</header>
+
+<div class="ka-product-grid" id="wlGrid">
+  <div class="ka-p-card" data-wl-item>
+    <div class="ka-p-card__image">
+      <span class="ka-p-card__badge">Made to Order</span>
+      <button class="ka-p-card__wish is-saved" data-wl-remove aria-label="Remove from wishlist" aria-pressed="true">
+        <svg class="heart-line" viewBox="0 0 24 24"><path d="M12 20s-7-4.35-9.5-8.5C.8 8.3 1.4 4.9 4.4 3.6c2.1-.9 4.4-.2 5.7 1.6L12 7.4l1.9-2.2c1.3-1.8 3.6-2.5 5.7-1.6 3 1.3 3.6 4.7 1.9 7.9C19 15.65 12 20 12 20z"/></svg>
+        <svg class="heart-fill" viewBox="0 0 24 24"><path d="M12 20s-7-4.35-9.5-8.5C.8 8.3 1.4 4.9 4.4 3.6c2.1-.9 4.4-.2 5.7 1.6L12 7.4l1.9-2.2c1.3-1.8 3.6-2.5 5.7-1.6 3 1.3 3.6 4.7 1.9 7.9C19 15.65 12 20 12 20z"/></svg>
+      </button>
+      <a href="#" class="ka-p-card__image-link"><img class="img-filter-product" src="../assets/product-bloom-lehenga.jpg" alt="Bloom Soirée Lehenga" /></a>
+      <div class="ka-p-card__veil"><button class="ka-p-card__veil-quickadd">Quick Add</button></div>
+    </div>
+    <div class="ka-p-card__info">
+      <p class="ka-p-card__name">Bloom Soirée Lehenga</p>
+      <p class="ka-p-card__fabric">Hand-embroidered silk, blush rosegold</p>
+      <p class="ka-p-card__price">₹68,000</p>
+    </div>
+  </div>
+  <div class="ka-p-card" data-wl-item>
+    <div class="ka-p-card__image">
+      <button class="ka-p-card__wish is-saved" data-wl-remove aria-label="Remove from wishlist" aria-pressed="true">
+        <svg class="heart-line" viewBox="0 0 24 24"><path d="M12 20s-7-4.35-9.5-8.5C.8 8.3 1.4 4.9 4.4 3.6c2.1-.9 4.4-.2 5.7 1.6L12 7.4l1.9-2.2c1.3-1.8 3.6-2.5 5.7-1.6 3 1.3 3.6 4.7 1.9 7.9C19 15.65 12 20 12 20z"/></svg>
+        <svg class="heart-fill" viewBox="0 0 24 24"><path d="M12 20s-7-4.35-9.5-8.5C.8 8.3 1.4 4.9 4.4 3.6c2.1-.9 4.4-.2 5.7 1.6L12 7.4l1.9-2.2c1.3-1.8 3.6-2.5 5.7-1.6 3 1.3 3.6 4.7 1.9 7.9C19 15.65 12 20 12 20z"/></svg>
+      </button>
+      <a href="#" class="ka-p-card__image-link"><img class="img-filter-product" src="../assets/product-ivory-column-corset.jpg" alt="Ivory Column Corset" /></a>
+      <div class="ka-p-card__veil"><button class="ka-p-card__veil-quickadd">Quick Add</button></div>
+    </div>
+    <div class="ka-p-card__info">
+      <p class="ka-p-card__name">Ivory Column Corset</p>
+      <p class="ka-p-card__fabric">Corset bodice, silk column drape</p>
+      <p class="ka-p-card__price">₹52,000</p>
+    </div>
+  </div>
+  <div class="ka-p-card" data-wl-item>
+    <div class="ka-p-card__image">
+      <button class="ka-p-card__wish is-saved" data-wl-remove aria-label="Remove from wishlist" aria-pressed="true">
+        <svg class="heart-line" viewBox="0 0 24 24"><path d="M12 20s-7-4.35-9.5-8.5C.8 8.3 1.4 4.9 4.4 3.6c2.1-.9 4.4-.2 5.7 1.6L12 7.4l1.9-2.2c1.3-1.8 3.6-2.5 5.7-1.6 3 1.3 3.6 4.7 1.9 7.9C19 15.65 12 20 12 20z"/></svg>
+        <svg class="heart-fill" viewBox="0 0 24 24"><path d="M12 20s-7-4.35-9.5-8.5C.8 8.3 1.4 4.9 4.4 3.6c2.1-.9 4.4-.2 5.7 1.6L12 7.4l1.9-2.2c1.3-1.8 3.6-2.5 5.7-1.6 3 1.3 3.6 4.7 1.9 7.9C19 15.65 12 20 12 20z"/></svg>
+      </button>
+      <a href="#" class="ka-p-card__image-link"><img class="img-filter-product" src="../assets/product-snow-veil-corset.jpg" alt="Snow Veil Corset" /></a>
+      <div class="ka-p-card__veil"><button class="ka-p-card__veil-quickadd">Quick Add</button></div>
+    </div>
+    <div class="ka-p-card__info">
+      <p class="ka-p-card__name">Snow Veil Corset</p>
+      <p class="ka-p-card__fabric">Corset with ivory tulle drape saree</p>
+      <p class="ka-p-card__price">₹58,000</p>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════════
+     SECTION 3 — WISHLIST PAGE, EMPTY STATE
+═══════════════════════════════════════════════════════════════ -->
+<div id="sec-empty"></div>
+<div class="proto-section-label">
+  <b>3 — Empty state</b>
+  <p>Same restrained voice family as the Client Diaries "Coming Soon" page and the Collection page's own empty state — quiet mark, italic serif headline, one line of muted body copy, one primary CTA. Not "coming soon" wording (the feature is live, the visitor's own list is simply empty) but the identical register: warm, unhurried, never apologetic about having nothing to show yet. A single small line under the CTA states plainly that the wishlist lives on this device — honest about what a no-login, localStorage-based wishlist actually does, without over-promising cross-device sync that isn't being built.</p>
+</div>
+<div class="proto-controlbar">
+  <span class="lbl">Preview:</span>
+  <button id="btnShowEmpty">Show Empty State</button>
+  <button id="btnShowPopulated">Restore 3 Saved Pieces</button>
+</div>
+
+<section class="wl-empty" id="wlEmptyState" style="display:none;">
+  <div class="wl-empty__mark">
+    <svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20s-7-4.35-9.5-8.5C.8 8.3 1.4 4.9 4.4 3.6c2.1-.9 4.4-.2 5.7 1.6L12 7.4l1.9-2.2c1.3-1.8 3.6-2.5 5.7-1.6 3 1.3 3.6 4.7 1.9 7.9C19 15.65 12 20 12 20z"/></svg>
+  </div>
+  <p class="eyebrow">Your Wishlist</p>
+  <h2 class="wl-empty__title">Nothing Saved, Yet.</h2>
+  <p class="wl-empty__body">The pieces you return to, gathered in one place. Tap the heart on any piece across the collections to begin your own edit — we'll keep it here, exactly as you left it.</p>
+  <div class="wl-empty__actions">
+    <a href="#" class="btn-outline-dark">Explore the Collections</a>
+    <p class="wl-empty__note">Saved on this device — no account needed to begin.</p>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="ka-footer">
+  <div class="ka-footer__inner">
+    <span class="ka-footer__logo">Karishma Ashita</span>
+    <span class="ka-footer__copy">© 2026 Karishma Ashita, a brand of Peekay International Ltd. All rights reserved.</span>
+  </div>
+</footer>
+
+<script>
+/* ── Context demo hearts (Section 1) — simple toggle, no persistence needed for the demo ── */
+document.querySelectorAll('#demoGrid .ka-p-card__wish').forEach(function (btn) {
+  btn.addEventListener('click', function (e) {
+    e.preventDefault();
+    var saved = btn.classList.toggle('is-saved');
+    btn.setAttribute('aria-pressed', saved ? 'true' : 'false');
+    btn.setAttribute('aria-label', saved ? 'Remove from wishlist' : 'Save to wishlist');
+  });
+});
+
+/* ── Wishlist page grid (Section 2) — clicking a filled heart removes
+   the card with a fade, updates the count, and reveals the empty state
+   automatically once the last piece is removed. ── */
+var wlGrid = document.getElementById('wlGrid');
+var wlCountMeta = document.getElementById('wlCountMeta');
+var wlEmptyState = document.getElementById('wlEmptyState');
+var navBadge = document.getElementById('navWishlistBadge');
+
+function updateWlCount() {
+  var remaining = wlGrid.querySelectorAll('[data-wl-item]').length;
+  wlCountMeta.textContent = remaining + (remaining === 1 ? ' Piece Saved' : ' Pieces Saved');
+  if (navBadge) { navBadge.setAttribute('data-count', remaining); navBadge.textContent = remaining; }
+  if (remaining === 0) {
+    wlGrid.style.display = 'none';
+    document.querySelector('.wl-header').style.display = 'none';
+    wlEmptyState.style.display = '';
+  }
+}
+
+wlGrid.querySelectorAll('[data-wl-remove]').forEach(function (btn) {
+  btn.addEventListener('click', function (e) {
+    e.preventDefault();
+    var card = btn.closest('[data-wl-item]');
+    card.classList.add('is-removing');
+    setTimeout(function () {
+      card.remove();
+      updateWlCount();
+    }, 380);
+  });
+});
+
+/* ── Section 3 preview toggles (presentation-only) ── */
+document.getElementById('btnShowEmpty').addEventListener('click', function () {
+  wlGrid.style.display = 'none';
+  document.querySelector('.wl-header').style.display = 'none';
+  wlEmptyState.style.display = '';
+});
+document.getElementById('btnShowPopulated').addEventListener('click', function () {
+  location.reload();
+});
+</script>
+</body>
+</html>

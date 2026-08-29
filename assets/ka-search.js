@@ -195,15 +195,25 @@
      via DOM APIs — not innerHTML string-building — so product titles
      with special characters (e.g. "K&A") can never be mis-parsed as
      markup. Omits the fabric line: predictive search's own JSON
-     doesn't include product.metafields (see file header). */
+     doesn't include product.metafields (see file header).
+
+     Restructured (Docs/account-wishlist-build-spec.md Flag G1) from a
+     single <a class="ka-p-card__image"> into the div-wrapper +
+     .ka-p-card__image-link pattern every other .ka-p-card render site
+     uses, so the new wishlist <button> below isn't invalid HTML nested
+     inside an <a>. */
   function buildCard(product) {
     var card = document.createElement('div');
     card.className = 'ka-p-card';
 
+    var imageWrap = document.createElement('div');
+    imageWrap.className = 'ka-p-card__image';
+
     var imageLink = document.createElement('a');
     imageLink.href = product.url;
-    imageLink.className = 'ka-p-card__image';
+    imageLink.className = 'ka-p-card__image-link';
     imageLink.setAttribute('aria-label', 'View ' + product.title);
+    imageWrap.appendChild(imageLink);
 
     if (product.featured_image && product.featured_image.url) {
       var img = document.createElement('img');
@@ -213,15 +223,38 @@
       img.width = 800;
       img.height = 1067;
       img.className = 'img-filter-coll-page';
-      imageLink.appendChild(img);
+      imageWrap.appendChild(img);
     } else {
       var placeholder = document.createElement('div');
       placeholder.style.background = 'var(--c-smoke)';
       placeholder.style.width = '100%';
       placeholder.style.height = '100%';
-      imageLink.appendChild(placeholder);
+      imageWrap.appendChild(placeholder);
     }
-    card.appendChild(imageLink);
+
+    /* Wishlist heart (Docs/account-wishlist-build-spec.md S2, Flag G1).
+       Hydrated right here at build time — not left to assets/
+       ka-wishlist.js's own DOMContentLoaded pass, which already ran
+       before this card existed (predictive search results are built
+       well after initial page load, on keystroke) — via the same
+       public window.kaWishlist.has() API every other heart button's
+       state ultimately derives from. The click itself is still handled
+       generically by ka-wishlist.js's document-level delegation
+       (Section 1.3), same as every server-rendered card. */
+    var wishBtn = document.createElement('button');
+    wishBtn.type = 'button';
+    wishBtn.className = 'ka-p-card__wish';
+    wishBtn.setAttribute('data-product-handle', product.handle);
+    var isSaved = !!(window.kaWishlist && window.kaWishlist.has(product.handle));
+    if (isSaved) wishBtn.classList.add('is-saved');
+    wishBtn.setAttribute('aria-pressed', isSaved ? 'true' : 'false');
+    wishBtn.setAttribute('aria-label', isSaved ? 'Remove from wishlist' : 'Save to wishlist');
+    wishBtn.innerHTML =
+      '<svg class="heart-line" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20s-7-4.35-9.5-8.5C.8 8.3 1.4 4.9 4.4 3.6c2.1-.9 4.4-.2 5.7 1.6L12 7.4l1.9-2.2c1.3-1.8 3.6-2.5 5.7-1.6 3 1.3 3.6 4.7 1.9 7.9C19 15.65 12 20 12 20z"/></svg>' +
+      '<svg class="heart-fill" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20s-7-4.35-9.5-8.5C.8 8.3 1.4 4.9 4.4 3.6c2.1-.9 4.4-.2 5.7 1.6L12 7.4l1.9-2.2c1.3-1.8 3.6-2.5 5.7-1.6 3 1.3 3.6 4.7 1.9 7.9C19 15.65 12 20 12 20z"/></svg>';
+    imageWrap.appendChild(wishBtn);
+
+    card.appendChild(imageWrap);
 
     var info = document.createElement('div');
     info.className = 'ka-p-card__info';

@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>K&amp;A — Account + Wishlist Nav Entry — Prototype v1</title>
+<meta name="description" content="Nav entry point for Account and Wishlist — desktop icon cluster and mobile drawer rows." />
+
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Jost:wght@200;300;400;500&display=swap" rel="stylesheet" />
+
+<style>
+/* ═══════════════════════════════════════════════════════════════
+   DESIGN TOKENS — verbatim from assets/ka-base.css. No new tokens.
+═══════════════════════════════════════════════════════════════ */
+:root {
+  --c-paper:      #F7F3EC;
+  --c-paper-deep: #EFE8DD;
+  --c-smoke:      #E9E1D2;
+  --c-charcoal:   #2A2420;
+  --c-charcoal-2: #1D1916;
+  --c-ink:        #2A2420;
+  --c-ink-mid:    #6E655B;
+  --c-ink-muted:  #9C9389;
+  --c-rosegold:      #9A7B4F;
+  --c-rosegold-2:    #7E6440;
+  --c-rosegold-pale: #B99B6E;
+  --f-display: 'Cormorant Garamond', Georgia, 'Times New Roman', serif;
+  --f-sans:    'Jost', 'Helvetica Neue', Arial, sans-serif;
+  --t-eyebrow: 0.66rem;
+  --s-xs: 8px; --s-sm: 16px; --s-md: 32px; --s-lg: 64px;
+  --gutter: clamp(20px, 5vw, 80px);
+  --ease-luxury: cubic-bezier(0.16, 0.84, 0.44, 1);
+  --ease-soft:   cubic-bezier(0.22, 0.61, 0.36, 1);
+  --dur-slow: 1s; --dur-med: 0.65s; --dur-fast: 0.35s;
+  --line: rgba(42,36,32,0.12);
+  --line-strong: rgba(42,36,32,0.20);
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { font-size: 16px; }
+body {
+  background: var(--c-paper); color: var(--c-ink);
+  font-family: var(--f-sans); font-weight: 300; line-height: 1.75;
+  -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale;
+}
+img { display: block; width: 100%; height: 100%; object-fit: cover; }
+a { text-decoration: none; color: inherit; }
+button { border: none; background: none; cursor: pointer; font-family: inherit; }
+.eyebrow { font-family: var(--f-sans); font-size: var(--t-eyebrow); font-weight: 400; letter-spacing: 0.24em; text-transform: uppercase; color: var(--c-rosegold-2); }
+
+/* ═══════════════════════════════════════════════════════════════
+   PRESENTATION CHROME — not part of the site
+═══════════════════════════════════════════════════════════════ */
+.proto-ribbon {
+  position: sticky; top: 0; z-index: 500; background: #14212B; color: #cfe0ea;
+  font-family: -apple-system, Segoe UI, Arial, sans-serif; font-size: 12.5px; letter-spacing: 0.02em;
+  padding: 10px 20px; display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap;
+}
+.proto-ribbon strong { color: #fff; font-weight: 600; }
+.proto-ribbon nav { display: flex; gap: 14px; flex-wrap: wrap; }
+.proto-ribbon a { color: #9fd0e6; border-bottom: 1px dotted rgba(159,208,230,0.5); }
+.proto-ribbon a:hover { color: #fff; }
+.proto-section-label {
+  font-family: -apple-system, Segoe UI, Arial, sans-serif;
+  background: #EDEFF1; color: #445; padding: 26px var(--gutter) 18px; border-top: 6px solid #14212B;
+}
+.proto-section-label b { display: block; font-size: 20px; color: #14212B; margin-bottom: 6px; }
+.proto-section-label p { font-size: 13.5px; line-height: 1.6; max-width: 900px; color: #556; margin-bottom: 8px; }
+.proto-note {
+  font-family: -apple-system, Segoe UI, Arial, sans-serif; font-size: 12.5px; color: #778;
+  background: #fff; border: 1px dashed #ccd; padding: 10px 14px; margin: 14px var(--gutter) 0; max-width: 900px;
+}
+.proto-controlbar {
+  display: flex; gap: 10px; align-items: center; flex-wrap: wrap; padding: 14px var(--gutter);
+  background: #EDEFF1; font-family: -apple-system, Segoe UI, Arial, sans-serif;
+}
+.proto-controlbar span.lbl { font-size: 12px; color: #667; margin-right: 4px; }
+.proto-controlbar button { font-size: 12px; padding: 7px 14px; border: 1px solid #99a; color: #334; background: #fff; }
+.proto-controlbar button.is-on { background: #14212B; color: #fff; border-color: #14212B; }
+.proto-controlbar .sep { width: 1px; height: 20px; background: #cbd0d4; margin: 0 6px; }
+.proto-framewrap { background: #dfe3e6; padding: 30px var(--gutter); display: flex; justify-content: center; }
+.proto-frame { width: 100%; max-width: 1440px; margin: 0 auto; background: var(--c-paper); box-shadow: 0 10px 40px rgba(0,0,0,0.18); transition: max-width 0.35s ease; overflow: hidden; position: relative; min-height: 120px; }
+.proto-frame.is-tablet { max-width: 820px; }
+.proto-frame.is-mobile { max-width: 390px; }
+
+/* ═══════════════════════════════════════════════════════════════
+   1 — DESKTOP NAV — adapted verbatim from sections/ka-nav.liquid +
+   assets/ka-nav.css, shown in its permanent "settled" state (the
+   state every interior page — Collection, Product, Wishlist, Account
+   itself — renders in). Only change from the real file: two new
+   icon-buttons inserted into .ka-nav__actions.
+═══════════════════════════════════════════════════════════════ */
+.ka-utility-bar {
+  position: relative; z-index: 101; background: var(--c-charcoal); color: rgba(233,224,210,0.78);
+  font-size: 0.62rem; font-weight: 400; letter-spacing: 0.18em; text-transform: uppercase;
+  display: flex; align-items: center; justify-content: center; padding: 9px 16px;
+}
+.ka-utility-bar span { opacity: 0.55; margin: 0 14px; }
+.ka-utility-bar b { font-weight: 400; opacity: 0.95; }
+
+.ka-nav {
+  position: relative; z-index: 100; padding: 14px var(--gutter);
+  display: grid; grid-template-columns: 1fr auto 1fr; align-items: center;
+  background: rgba(247,243,236,0.96); backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--line);
+}
+.ka-nav__links { display: flex; gap: 32px; list-style: none; grid-column: 1; }
+.ka-nav__links a {
+  font-size: 0.66rem; font-weight: 400; letter-spacing: 0.16em; text-transform: uppercase;
+  color: var(--c-ink-mid); transition: color var(--dur-fast); position: relative;
+}
+.ka-nav__links a:hover, .ka-nav__links a.is-active { color: var(--c-charcoal); }
+.ka-nav__logo {
+  grid-column: 2; text-align: center; font-family: var(--f-display);
+  font-size: clamp(1.2rem, 2.2vw, 1.6rem); font-weight: 400; letter-spacing: 0.1em;
+  color: var(--c-charcoal); line-height: 1;
+}
+.ka-nav__logo small {
+  display: block; font-size: 0.5rem; letter-spacing: 0.32em; text-transform: uppercase;
+  color: var(--c-rosegold-2); margin-top: 6px;
+}
+.ka-nav__actions { display: flex; align-items: center; justify-content: flex-end; gap: 22px; grid-column: 3; }
+
+/* Every icon in this cluster — Search / Account / Wishlist / Bag — shares
+   one exact glyph spec (24x24 viewBox, stroke-width 1.4, round caps,
+   30x30 hit target) so all four read as one considered set, never a
+   later add-on. This is the ONLY rule that governs the new icons; no new
+   icon language was invented for Account or Wishlist. */
+.ka-nav__icon-btn {
+  position: relative; display: inline-flex; align-items: center; justify-content: center;
+  width: 30px; height: 30px; padding: 4px; color: var(--c-charcoal); transition: color var(--dur-med);
+}
+.ka-nav__icon-btn svg { width: 20px; height: 20px; stroke: currentColor; fill: none; }
+
+/* Bag + Wishlist badge — the exact same component, reused verbatim
+   (not a new badge style for wishlist). Rosegold fill, white numeral,
+   hidden entirely at zero per the existing [data-count="0"] contract —
+   so an empty wishlist shows a plain, unbadged heart, identical in
+   weight to how an empty bag shows a plain, unbadged bag icon today. */
+.ka-nav__badge {
+  position: absolute; top: -2px; right: -4px; min-width: 15px; height: 15px; border-radius: 50%;
+  background: var(--c-rosegold); color: #fff; font-family: var(--f-sans); font-size: 0.56rem;
+  line-height: 15px; text-align: center; padding: 0 3px;
+}
+.ka-nav__badge[data-count="0"] { display: none; }
+
+/* Account "signed in" indicator — a plain rosegold dot, no numeral.
+   Deliberately reuses the badge's exact color/position language rather
+   than inventing a second accent color for account state, so a visitor
+   who already understands "rosegold mark = something's here" from the
+   bag/wishlist badges reads this the same way at a glance. Shown only
+   in the Logged In state below; absent (not just faded) when logged out,
+   since New Customer Accounts makes /account itself the single source
+   of truth for that state — this dot is a convenience hint, not a second
+   auth system. */
+.ka-nav__signed-dot {
+  position: absolute; top: 1px; right: 1px; width: 7px; height: 7px; border-radius: 50%;
+  background: var(--c-rosegold); border: 1.5px solid var(--c-paper-deep);
+  opacity: 0; transform: scale(0.4); transition: opacity var(--dur-fast), transform var(--dur-fast);
+}
+.is-signed-in .ka-nav__signed-dot { opacity: 1; transform: scale(1); }
+
+/* Heart fill/unfill — identical easing to the rest of the site's
+   micro-interactions (--ease-luxury), a soft settle rather than a bouncy
+   pop, matching the brand's "quiet" motion register. */
+.ka-nav__wishlist svg.heart-fill { fill: var(--c-rosegold); stroke: var(--c-rosegold); opacity: 0; transform: scale(0.6); position: absolute; transition: opacity var(--dur-fast) var(--ease-luxury), transform var(--dur-fast) var(--ease-luxury); }
+.ka-nav__wishlist svg.heart-line { transition: opacity var(--dur-fast) var(--ease-luxury); }
+.has-saved .ka-nav__wishlist svg.heart-fill { opacity: 1; transform: scale(1); }
+.has-saved .ka-nav__wishlist svg.heart-line { opacity: 0; }
+
+.ka-nav__toggle { display: none; flex-direction: column; gap: 5px; padding: 4px; grid-column: 1; align-items: flex-start; }
+.ka-nav__toggle span { display: block; width: 24px; height: 1px; background: var(--c-charcoal); }
+@media (max-width: 900px) {
+  .ka-nav { padding: 14px 20px; }
+  .ka-nav__links { display: none; }
+  .ka-nav__toggle { display: flex; min-width: 74px; }
+  /* Mobile action cluster stays exactly as it is today — Search + Bag
+     only. Account and Wishlist deliberately do NOT join it (see Section
+     2 label below for the reasoning): a third and fourth icon squeezed
+     into an already-tight 74px mobile action column would crowd the
+     logo and read as clutter on a brand that keeps mobile especially
+     lean. They move into the drawer instead. */
+  .ka-nav__actions { gap: 14px; }
+  .ka-nav__actions .ka-nav__account,
+  .ka-nav__actions .ka-nav__wishlist { display: none; }
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   2 — MOBILE DRAWER — new "My Account" + "My Wishlist" rows, styled
+   identically to the existing "My Bag" row (same icon size, same row
+   rhythm), positioned directly above it so the drawer reads top-to-
+   bottom as: browse links → who you are → what you've saved → what
+   you're buying → currency → concierge. Mirrors the desktop cluster's
+   left-to-right order exactly.
+═══════════════════════════════════════════════════════════════ */
+.ka-mobile-nav {
+  position: relative; background: var(--c-charcoal); display: flex; flex-direction: column;
+  padding: 56px var(--gutter) var(--s-lg); min-height: 560px;
+}
+.ka-mobile-nav__close {
+  position: absolute; top: 20px; right: var(--gutter); color: rgba(255,255,255,0.45);
+  font-size: 0.63rem; letter-spacing: 0.22em; text-transform: uppercase;
+}
+.ka-mobile-nav__links { list-style: none; margin-bottom: var(--s-md); }
+.ka-mobile-nav__links li { border-bottom: 1px solid rgba(255,255,255,0.07); }
+.ka-mobile-nav__links a {
+  display: block; font-family: var(--f-display); font-style: italic; color: white;
+  font-size: clamp(1.5rem, 6vw, 2.2rem); letter-spacing: 0.02em; padding: 15px 0;
+}
+.ka-mobile-nav__util { margin-bottom: var(--s-md); }
+.ka-mobile-nav__util-row {
+  display: flex; align-items: center; gap: 12px; width: 100%; padding: 16px 0;
+  border-bottom: 1px solid rgba(255,255,255,0.07);
+  font-family: var(--f-sans); font-size: 0.78rem; letter-spacing: 0.08em; text-transform: uppercase; color: white;
+}
+.ka-mobile-nav__util-row svg { width: 18px; height: 18px; stroke: currentColor; fill: none; flex: 0 0 auto; }
+.ka-mobile-nav__util-row .val { margin-left: auto; font-size: 0.7rem; color: var(--c-rosegold); display: flex; align-items: center; gap: 6px; }
+.ka-mobile-nav__util-row .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--c-rosegold); }
+.ka-mobile-nav__footer { margin-top: auto; }
+.ka-mobile-nav__footer p { font-size: 0.7rem; color: rgba(255,255,255,0.3); margin-bottom: 8px; }
+.ka-mobile-nav__footer a { font-size: 0.82rem; color: var(--c-rosegold); }
+
+@media (max-width: 900px) {
+  .desktop-only-frame { display: none !important; }
+}
+@media (min-width: 901px) {
+  .mobile-only-frame { display: none !important; }
+}
+</style>
+</head>
+<body>
+
+<div class="proto-ribbon">
+  <div><strong>K&amp;A Prototype</strong> — Account + Wishlist Nav Entry — v1</div>
+  <nav>
+    <a href="#sec-desktop">1 — Desktop Cluster</a>
+    <a href="#sec-mobile">2 — Mobile Drawer</a>
+  </nav>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════════
+     SECTION 1 — DESKTOP
+═══════════════════════════════════════════════════════════════ -->
+<div id="sec-desktop"></div>
+<div class="proto-section-label">
+  <b>1 — Desktop icon cluster: Search · Account · Wishlist · Bag</b>
+  <p><strong>Placement decision:</strong> Account and Wishlist do NOT join the top-tier text links (Signature / Collections / Client Diaries). That row is deliberately short and exclusive — three curated doors into the collections, read as editorial choices, not a utility menu. Account and Wishlist are utility, not editorial, so they belong with Search and Bag in the icon cluster at the right — the same tier the brand already uses for "things you do," not "things you browse."</p>
+  <p><strong>Order — Search / Account / Wishlist / Bag:</strong> reads left to right as a narrative — find something → who you are → what you've kept → what you're buying — and matches the icon order used by Net-a-Porter, Mytheresa and Moda Operandi, the closest luxury-fashion-ecommerce benchmarks for this exact 4-icon pattern. Four thin-line icons at this scale still reads as quiet and considered, not as a busier header.</p>
+  <p><strong>Icon choice:</strong> a minimal person-outline for Account, a minimal heart-outline for Wishlist — both drawn to the identical spec already governing Search and Bag (24x24 viewBox, 1.4 stroke, round caps). No filled icons, no color at rest — color is reserved entirely for state (the rosegold "signed in" dot, the rosegold saved-count badge), so the icons themselves stay visually silent until they have something to say.</p>
+</div>
+<div class="proto-note">Use the controls below to preview both states live. Toggle <strong>Logged In</strong> to see the quiet rosegold dot appear on the Account icon (no numeral — it's a presence indicator, not a count). Toggle <strong>Items Saved</strong> to see the Wishlist badge appear/hide using the exact same badge component as the Bag icon.</div>
+
+<div class="proto-controlbar" data-frame="desktop-nav-frame">
+  <span class="lbl">Account state:</span>
+  <button data-account="out" class="is-on">Logged Out</button>
+  <button data-account="in">Logged In</button>
+  <div class="sep"></div>
+  <span class="lbl">Wishlist:</span>
+  <button data-wishlist="0" class="is-on">Empty</button>
+  <button data-wishlist="3">3 Saved</button>
+</div>
+
+<div class="proto-framewrap desktop-only-frame">
+<div class="proto-frame" id="desktop-nav-frame">
+  <div class="ka-utility-bar">
+    <span><b>Complimentary Worldwide Delivery</b></span><span>·</span><span><b>Hand-Embroidered to Order</b></span><span>·</span><span><b>Private &amp; Virtual Appointments</b></span>
+  </div>
+  <nav class="ka-nav">
+    <button class="ka-nav__toggle" aria-label="Open menu"><span></span><span></span><span></span></button>
+    <ul class="ka-nav__links">
+      <li><a href="#">Signature</a></li>
+      <li><a href="#" class="is-active">Collections</a></li>
+      <li><a href="#">Client Diaries</a></li>
+    </ul>
+    <a href="#" class="ka-nav__logo">Karishma Ashita<small>Bridal Couture · Mumbai</small></a>
+    <div class="ka-nav__actions">
+      <button class="ka-nav__icon-btn" aria-label="Search">
+        <svg viewBox="0 0 24 24" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M20 20l-4.8-4.8"/></svg>
+      </button>
+      <!-- ACCOUNT — links straight to Shopify's hosted /account (New
+           Customer Accounts renders its own login form when signed out
+           and the account overview / order history when signed in — one
+           URL handles both, no separate "log in" vs "my account" link
+           needed here). -->
+      <a href="#" class="ka-nav__icon-btn ka-nav__account" id="navAccountIcon" aria-label="Log in or view your account">
+        <svg viewBox="0 0 24 24" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8.3" r="3.6"/><path d="M4.8 20c1-3.7 4-5.7 7.2-5.7s6.2 2 7.2 5.7"/></svg>
+        <span class="ka-nav__signed-dot" aria-hidden="true"></span>
+      </a>
+      <!-- WISHLIST — localStorage-based, no login required. Links to
+           the dedicated /pages/wishlist page (see wishlist-page-v1.html). -->
+      <a href="#" class="ka-nav__icon-btn ka-nav__wishlist" id="navWishlistIcon" aria-label="View your wishlist">
+        <svg class="heart-line" viewBox="0 0 24 24" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20s-7-4.35-9.5-8.5C.8 8.3 1.4 4.9 4.4 3.6c2.1-.9 4.4-.2 5.7 1.6L12 7.4l1.9-2.2c1.3-1.8 3.6-2.5 5.7-1.6 3 1.3 3.6 4.7 1.9 7.9C19 15.65 12 20 12 20z"/></svg>
+        <svg class="heart-fill" viewBox="0 0 24 24"><path d="M12 20s-7-4.35-9.5-8.5C.8 8.3 1.4 4.9 4.4 3.6c2.1-.9 4.4-.2 5.7 1.6L12 7.4l1.9-2.2c1.3-1.8 3.6-2.5 5.7-1.6 3 1.3 3.6 4.7 1.9 7.9C19 15.65 12 20 12 20z"/></svg>
+        <span class="ka-nav__badge" id="navWishlistBadge" data-count="0">0</span>
+      </a>
+      <a href="#" class="ka-nav__icon-btn ka-nav__bag" aria-label="View your bag">
+        <svg viewBox="0 0 24 24" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8h12l-1 12H7L6 8z"/><path d="M9 8V6a3 3 0 0 1 6 0v2"/></svg>
+        <span class="ka-nav__badge" data-count="2">2</span>
+      </a>
+    </div>
+  </nav>
+  <div style="padding:56px var(--gutter);text-align:center;color:var(--c-ink-muted);font-size:0.82rem;">
+    ↑ Page content sits below the nav as usual.
+  </div>
+</div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════════
+     SECTION 2 — MOBILE DRAWER
+═══════════════════════════════════════════════════════════════ -->
+<div id="sec-mobile"></div>
+<div class="proto-section-label">
+  <b>2 — Mobile: hamburger drawer, not the header row</b>
+  <p><strong>Why the mobile header itself stays untouched:</strong> today's mobile action cluster (Search + Bag) already sits at its tested minimum width, hand-tuned once already to keep the logo perfectly centred (see ka-nav.css's own comments on this). Adding two more icons there would either shrink hit targets below a comfortable tap size or push the logo off-centre again. A luxury brand's mobile header should feel even calmer than desktop, not busier — so Account and Wishlist move to the drawer instead, styled as two new rows using the exact row treatment the "My Bag" row already established (Round 2 addition), not a new row style.</p>
+  <p><strong>Row order — My Account, My Wishlist, My Bag:</strong> mirrors the desktop cluster's left-to-right order top-to-bottom, directly below the main link list. The Wishlist row shows its own count on the right in the same rosegold text style already used for the Bag row's count — no new badge component for mobile either.</p>
+</div>
+<div class="proto-note">This is the same drawer that opens from the hamburger already in production — only the two new rows are added, everything else (links, Currency, Concierge) is unchanged.</div>
+
+<div class="proto-controlbar" data-frame="mobile-drawer-frame">
+  <span class="lbl">Account state:</span>
+  <button data-account="out" class="is-on">Logged Out</button>
+  <button data-account="in">Logged In</button>
+  <div class="sep"></div>
+  <span class="lbl">Wishlist:</span>
+  <button data-wishlist="0" class="is-on">Empty</button>
+  <button data-wishlist="3">3 Saved</button>
+</div>
+
+<div class="proto-framewrap">
+<div class="proto-frame is-mobile" id="mobile-drawer-frame">
+  <div class="ka-mobile-nav">
+    <button class="ka-mobile-nav__close">Close</button>
+    <ul class="ka-mobile-nav__links">
+      <li><a href="#">Signature</a></li>
+      <li><a href="#">Collections</a></li>
+      <li><a href="#">Client Diaries</a></li>
+      <li><a href="#">About</a></li>
+      <li><a href="#">Book an Appointment</a></li>
+    </ul>
+    <div class="ka-mobile-nav__util">
+      <!-- MY ACCOUNT row -->
+      <a href="#" class="ka-mobile-nav__util-row" id="mobAccountRow">
+        <svg viewBox="0 0 24 24" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8.3" r="3.6"/><path d="M4.8 20c1-3.7 4-5.7 7.2-5.7s6.2 2 7.2 5.7"/></svg>
+        My Account
+        <span class="val" id="mobAccountVal"><span id="mobAccountLabel">Log In</span></span>
+      </a>
+      <!-- MY WISHLIST row -->
+      <a href="#" class="ka-mobile-nav__util-row" id="mobWishlistRow">
+        <svg viewBox="0 0 24 24" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20s-7-4.35-9.5-8.5C.8 8.3 1.4 4.9 4.4 3.6c2.1-.9 4.4-.2 5.7 1.6L12 7.4l1.9-2.2c1.3-1.8 3.6-2.5 5.7-1.6 3 1.3 3.6 4.7 1.9 7.9C19 15.65 12 20 12 20z"/></svg>
+        My Wishlist
+        <span class="val" id="mobWishlistVal"></span>
+      </a>
+      <!-- MY BAG row — unchanged, existing pattern -->
+      <a href="#" class="ka-mobile-nav__util-row">
+        <svg viewBox="0 0 24 24" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8h12l-1 12H7L6 8z"/><path d="M9 8V6a3 3 0 0 1 6 0v2"/></svg>
+        My Bag
+        <span class="val">2</span>
+      </a>
+    </div>
+    <div class="ka-mobile-nav__footer">
+      <p>Concierge</p>
+      <a href="#">+91 99675 43087</a>
+    </div>
+  </div>
+</div>
+</div>
+
+<script>
+function applyState(accountState, wishlistCount) {
+  document.querySelectorAll('.ka-nav__account').forEach(function (el) { el.classList.toggle('is-signed-in', accountState === 'in'); });
+  var badge = document.getElementById('navWishlistBadge');
+  var wishlistIcon = document.getElementById('navWishlistIcon');
+  if (badge) { badge.setAttribute('data-count', wishlistCount); badge.textContent = wishlistCount; }
+  if (wishlistIcon) { wishlistIcon.classList.toggle('has-saved', Number(wishlistCount) > 0); }
+
+  var mobAccountLabel = document.getElementById('mobAccountLabel');
+  if (mobAccountLabel) { mobAccountLabel.textContent = accountState === 'in' ? 'View Account' : 'Log In'; }
+  var mobAccountVal = document.getElementById('mobAccountVal');
+  if (mobAccountVal) {
+    mobAccountVal.innerHTML = accountState === 'in'
+      ? '<span class="dot"></span><span id="mobAccountLabel">View Account</span>'
+      : '<span id="mobAccountLabel">Log In</span>';
+  }
+  var mobWishlistVal = document.getElementById('mobWishlistVal');
+  if (mobWishlistVal) { mobWishlistVal.textContent = Number(wishlistCount) > 0 ? wishlistCount : ''; }
+}
+
+var state = { account: 'out', wishlist: '0' };
+document.querySelectorAll('.proto-controlbar').forEach(function (bar) {
+  bar.querySelectorAll('button[data-account]').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      bar.querySelectorAll('button[data-account]').forEach(function (b) { b.classList.remove('is-on'); });
+      btn.classList.add('is-on');
+      state.account = btn.getAttribute('data-account');
+      applyState(state.account, state.wishlist);
+    });
+  });
+  bar.querySelectorAll('button[data-wishlist]').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      bar.querySelectorAll('button[data-wishlist]').forEach(function (b) { b.classList.remove('is-on'); });
+      btn.classList.add('is-on');
+      state.wishlist = btn.getAttribute('data-wishlist');
+      applyState(state.account, state.wishlist);
+    });
+  });
+});
+applyState('out', '0');
+</script>
+</body>
+</html>

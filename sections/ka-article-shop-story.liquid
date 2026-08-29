@@ -41,7 +41,19 @@
     <div class="shop-grid">
       {%- for product in shop_products limit: limit -%}
         <div class="ka-p-card reveal-img">
-          <a href="{{ product.url }}" class="ka-p-card__image" aria-label="View {{ product.title | escape }}">
+          {%- comment -%}
+            Restructured from a single <a class="ka-p-card__image"> into
+            the div-wrapper + separate .ka-p-card__image-link anchor
+            pattern already used by ka-collection-grid.liquid/
+            ka-search-results.liquid (Docs/account-wishlist-build-spec.md
+            Flag G1) — required so the new wishlist <button> below isn't
+            invalid HTML nested inside an <a> (interactive content cannot
+            nest). .ka-p-card__image's CSS (assets/ka-collection-grid.css)
+            is already class-based, not tag-based, so this is a pure
+            markup change with zero styling impact.
+          {%- endcomment -%}
+          <div class="ka-p-card__image">
+            <a href="{{ product.url }}" class="ka-p-card__image-link" aria-label="View {{ product.title | escape }}"></a>
             {%- if product.featured_image -%}
               <img
                 src="{{ product.featured_image | image_url: width: 800 }}"
@@ -54,7 +66,16 @@
             {%- else -%}
               <div style="background: var(--c-smoke); width:100%; height:100%;"></div>
             {%- endif -%}
-          </a>
+            {%- comment -%}
+              Wishlist heart — Docs/account-wishlist-build-spec.md S2,
+              Flag G1. data-product-handle lets assets/ka-wishlist.js
+              identify this button (Section 1.4).
+            {%- endcomment -%}
+            <button type="button" class="ka-p-card__wish" data-product-handle="{{ product.handle }}" aria-label="Save to wishlist" aria-pressed="false">
+              <svg class="heart-line" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20s-7-4.35-9.5-8.5C.8 8.3 1.4 4.9 4.4 3.6c2.1-.9 4.4-.2 5.7 1.6L12 7.4l1.9-2.2c1.3-1.8 3.6-2.5 5.7-1.6 3 1.3 3.6 4.7 1.9 7.9C19 15.65 12 20 12 20z"/></svg>
+              <svg class="heart-fill" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20s-7-4.35-9.5-8.5C.8 8.3 1.4 4.9 4.4 3.6c2.1-.9 4.4-.2 5.7 1.6L12 7.4l1.9-2.2c1.3-1.8 3.6-2.5 5.7-1.6 3 1.3 3.6 4.7 1.9 7.9C19 15.65 12 20 12 20z"/></svg>
+            </button>
+          </div>
           <div class="ka-p-card__info">
             <h3 class="ka-p-card__name"><a href="{{ product.url }}">{{ product.title }}</a></h3>
             {%- if product.metafields.custom.fabric_description != blank -%}
