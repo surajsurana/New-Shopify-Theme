@@ -20,7 +20,16 @@
   overflow: hidden;
   background: var(--c-smoke);
 }
-.ka-j-card__image img { transition: transform 1.2s var(--ease-luxury); object-position: center 22%; }
+/* object-position Y (2026-08-29, item #13 reopen): corrected from 22% to
+   8% after 22% was found to crop off the "What Makes a Corset 'Structured'"
+   card's face. 8% was validated via pixel-accurate object-fit:cover crop
+   simulation against the real featured image of EVERY article in the news
+   blog that has one (4 currently published + 4 scheduled-future + 1 image-
+   bearing draft — 9 real images total, all aspect ratios present today:
+   2100x2850, 2606x3047, 2048x1152) — see Docs/pending-tasks.md #13 for the
+   full per-article table. A single value covers all 9 with margin; no known
+   accepted-gap article, unlike item #22's breakout-image fix. */
+.ka-j-card__image img { transition: transform 1.2s var(--ease-luxury); object-position: center 8%; }
 .ka-j-card:hover .ka-j-card__image img { transform: scale(1.045); }
 .ka-j-card__cat {
   position: absolute;

@@ -89,6 +89,20 @@
    token, see build spec §4). */
 .a-breakout { max-width: var(--max-breakout); margin: var(--s-lg) auto; padding: 0 var(--gutter); }
 .a-breakout__frame { position: relative; height: 62vh; min-height: 380px; max-height: 640px; overflow: hidden; }
+/* Faces in breakout source photography commonly sit high in frame
+   (sampled as high as ~2% down on published articles). The sitewide
+   `img { object-fit: cover }` default (assets/ka-base.css) crops
+   dead-center with no object-position, which guillotines through
+   hairlines/tiaras at this frame's aspect ratio range (~1.6:1–2.7:1,
+   driven by the vh-based height above). 10% (not 0%/top, and not the
+   20–22% used on less-extreme hero/grid slots elsewhere) leaves a
+   small buffer above the tightest sampled face position while still
+   pulling the crop band up enough to cover faces as low as ~30% down.
+   Known accepted gap: an unusually large-headroom source image
+   (face ~39% down) isn't fully solved by this global value — per-
+   article focal point was considered and rejected as not worth the
+   recurring workflow cost for now. */
+.a-breakout__frame img { object-position: center 10%; }
 .a-breakout__caption { margin-top: 14px; font-family: var(--f-sans); font-size: 0.7rem; letter-spacing: 0.06em; color: var(--c-ink-muted); text-align: center; }
 
 @media (max-width: 600px) {
