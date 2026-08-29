@@ -7,7 +7,7 @@
 ================================================================= */
 .entry-progress { position: fixed; top: 0; left: 0; height: 2px; background: var(--c-rosegold); z-index: 110; width: 0%; transition: width 0.1s linear; }
 .entry-return {
-  position: fixed; top: 44px; left: var(--gutter); z-index: 102;
+  position: fixed; top: 132px; left: var(--gutter); z-index: 90;
   font-family: var(--f-sans); font-size: 0.66rem; letter-spacing: 0.14em; text-transform: uppercase;
   color: rgba(255,255,255,0.8); transition: color var(--dur-fast);
 }
@@ -36,4 +36,4 @@
 .e-hero--unpublished .e-hero__content { position: static; align-items: center; padding: 0 var(--gutter); max-width: 560px; }
 .e-hero--unpublished .e-hero__title { font-size: clamp(2rem,4vw,3rem); }
 
-@media (max-width: 600px) { .e-hero { min-height: 520px; } .entry-return { top: 44px; left: 20px; } }
+@media (max-width: 600px) { .e-hero { min-height: 520px; } .entry-return { left: 20px; } }

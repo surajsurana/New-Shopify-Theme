@@ -49,7 +49,8 @@
 
 /* ── gallery ── */
 .ka-media { position: sticky; top: 104px; display: grid; grid-template-columns: 86px 1fr; gap: 16px; }
-.ka-thumbs { display: flex; flex-direction: column; gap: 12px; }
+.ka-thumbs { grid-column: 1; display: flex; flex-direction: column; gap: 12px; }
+.ka-stage { grid-column: 2; }
 .ka-thumb {
   width: 86px; height: 116px; cursor: pointer; opacity: 0.48;
   border: 1px solid transparent;

@@ -2,12 +2,84 @@
 
 {%- comment -%}
   Voice of the Bride — conditionally hidden until real review data is present.
+
+  Data source (added 2026-08-29, pending task #3 -- live Google Reviews sync):
+  Suraj decided against a third-party embed widget (Elfsight/EmbedSocial/etc.)
+  and is instead getting Owner-level Google Business Profile API access
+  directly, so this section reads from a single JSON metafield instead --
+  `shop.metafields.custom.google_reviews` (definition created 2026-08-29,
+  gid://shopify/MetafieldDefinition/292565483810). That metafield is written
+  by a droplet cron job (scripts/google-reviews-sync/, same pattern as the
+  Petty Cash bot on the stocktradingbot droplet) once Suraj's Google API
+  access is approved -- see that script for the sync flow. Until then the
+  metafield is empty and this section falls back to the pre-existing
+  editor-block behaviour untouched below.
+
+  Expected JSON shape of shop.metafields.custom.google_reviews.value:
+    {
+      "rating_number": "4.9",
+      "rating_count": 52,
+      "rating_label": "4.9 · 52 Google Reviews",
+      "google_url": "https://g.page/r/xxxxxxxxxxxx",
+      "reviews": [
+        { "quote": "...", "reviewer_name": "Priya S.", "occasion": "Bridal, 2024" },
+        { "quote": "...", "reviewer_name": "Anika R.", "occasion": "Festive Wear, 2024" },
+        { "quote": "...", "reviewer_name": "Meera K.", "occasion": "Bridal, 2025" }
+      ],
+      "synced_at": "2026-08-29T00:00:00Z"
+    }
+
   The section renders only when section.settings.show_section is true AND
-  at least one review block exists with non-empty quote text.
+  there is actual content to show -- either synced metafield data (preferred)
+  or at least one editor block with non-empty quote text (fallback, e.g. for
+  manual curation before live sync is wired up). This prevents an empty or
+  broken-looking section from ever going live by accident.
   Creative Director spec note: "Do not publish placeholder review content."
 {%- endcomment -%}
 
-{% if section.settings.show_section %}
+{%- liquid
+  assign reviews_data = shop.metafields.custom.google_reviews.value
+
+  assign synced_quote_count = 0
+  for review in reviews_data.reviews
+    if review.quote != blank
+      assign synced_quote_count = synced_quote_count | plus: 1
+    endif
+  endfor
+
+  assign has_synced_data = false
+  if reviews_data != blank and synced_quote_count > 0 and reviews_data.rating_label != blank
+    assign has_synced_data = true
+  endif
+
+  assign block_quote_count = 0
+  for block in section.blocks
+    if block.settings.quote != blank
+      assign block_quote_count = block_quote_count | plus: 1
+    endif
+  endfor
+  assign has_editor_content = false
+  if block_quote_count > 0
+    assign has_editor_content = true
+  endif
+
+  assign has_content = false
+  if has_synced_data or has_editor_content
+    assign has_content = true
+  endif
+
+  if has_synced_data
+    assign rating_number = reviews_data.rating_number
+    assign rating_label = reviews_data.rating_label
+    assign google_url = reviews_data.google_url
+  else
+    assign rating_number = section.settings.rating_number
+    assign rating_label = section.settings.rating_label
+    assign google_url = section.settings.google_url
+  endif
+-%}
+
+{% if section.settings.show_section and has_content %}
 <section class="ka-voices" aria-label="What our brides say">
   <div class="ka-voices__inner">
     <div class="ka-voices__header reveal">
@@ -15,17 +87,32 @@
         <p class="eyebrow eyebrow--on-dark" style="margin-bottom: 16px;">{{ section.settings.eyebrow }}</p>
         <h2 class="ka-voices__title">{{ section.settings.title }}</h2>
       </div>
-      {% if section.settings.rating_number != blank %}
+      {% if rating_number != blank %}
         <div class="ka-voices__rating-block">
-          <span class="ka-voices__rating-number">{{ section.settings.rating_number }}</span>
-          <span class="ka-voices__rating-label">{{ section.settings.rating_label }}</span>
+          <span class="ka-voices__rating-number">{{ rating_number }}</span>
+          <span class="ka-voices__rating-label">{{ rating_label }}</span>
         </div>
       {% endif %}
     </div>
 
-    {% if section.blocks.size > 0 %}
+    {% assign delay_classes = 'reveal, reveal reveal-delay-1, reveal reveal-delay-2' | split: ', ' %}
+    {% if has_synced_data %}
       <div class="ka-voices__grid">
-        {% assign delay_classes = 'reveal, reveal reveal-delay-1, reveal reveal-delay-2' | split: ', ' %}
+        {% for review in reviews_data.reviews limit: 3 %}
+          {% if review.quote != blank %}
+            <div class="ka-voice-card {{ delay_classes[forloop.index0] }}">
+              <div class="ka-voice-card__quote-mark">&ldquo;</div>
+              <p class="ka-voice-card__quote">{{ review.quote }}</p>
+              <div class="ka-voice-card__meta">
+                <span class="ka-voice-card__name">{{ review.reviewer_name }}</span>
+                <span class="ka-voice-card__occasion">{{ review.occasion }}</span>
+              </div>
+            </div>
+          {% endif %}
+        {% endfor %}
+      </div>
+    {% elsif section.blocks.size > 0 %}
+      <div class="ka-voices__grid">
         {% for block in section.blocks %}
           {% if block.settings.quote != blank %}
             <div class="ka-voice-card {{ delay_classes[forloop.index0] }}" {{ block.shopify_attributes }}>
@@ -42,7 +129,7 @@
     {% endif %}
 
     <div class="ka-voices__cta reveal reveal-delay-3">
-      <a href="{{ section.settings.google_url }}" class="btn-outline-rose" target="_blank" rel="noopener">
+      <a href="{{ google_url }}" class="btn-outline-rose" target="_blank" rel="noopener">
         {{ section.settings.google_cta_label }}
       </a>
     </div>
@@ -56,26 +143,30 @@
   "tag": "section",
   "settings": [
     {
+      "type": "paragraph",
+      "content": "Prefers live-synced data from the custom.google_reviews Shop metafield (written automatically by the droplet Google Reviews sync job) when present. The rating, review URL, and review cards below are only a manual fallback used before that sync is active."
+    },
+    {
       "type": "checkbox",
       "id": "show_section",
       "label": "Show this section",
       "default": false,
-      "info": "IMPORTANT: Only enable once real client review data has been entered below. Do not publish with placeholder content."
+      "info": "IMPORTANT: Only enable once real review data exists, either synced automatically or entered manually below. Do not publish with placeholder content."
     },
     { "type": "text", "id": "eyebrow",          "label": "Eyebrow",         "default": "What Brides Say" },
     { "type": "text", "id": "title",             "label": "Section title",   "default": "The words of\nour brides." },
     {
       "type": "header",
-      "content": "Rating block"
+      "content": "Rating block (manual fallback)"
     },
-    { "type": "text", "id": "rating_number", "label": "Rating (e.g. 4.9 or ★★★★★)",    "info": "Leave blank to hide the rating block." },
+    { "type": "text", "id": "rating_number", "label": "Rating (e.g. 4.9 or ★★★★★)",    "info": "Leave blank to hide the rating block. Ignored once live sync data exists." },
     { "type": "text", "id": "rating_label",  "label": "Rating label (e.g. 4.9 · 52 Google Reviews)" },
     {
       "type": "header",
       "content": "CTA"
     },
     { "type": "text", "id": "google_cta_label", "label": "Google reviews CTA label", "default": "Read all reviews on Google" },
-    { "type": "url",  "id": "google_url",        "label": "Google Maps review URL",  "info": "Obtain from your Google Business Profile." }
+    { "type": "url",  "id": "google_url",        "label": "Google Maps review URL (manual fallback)",  "info": "Obtain from your Google Business Profile. Ignored once live sync data exists." }
   ],
   "blocks": [
     {
