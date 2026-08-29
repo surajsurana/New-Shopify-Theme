@@ -65,12 +65,15 @@
 
 /* B2 — quiet return link, replaces a conventional e-commerce
    breadcrumb (see build spec §3 rationale — a reading page asks a
-   different wayfinding question than a shopping page). Sits above
-   the utility bar + nav stack (top:92px clears both), switches from
-   light to dark text in sync with the nav's own .scrolled state. */
+   different wayfinding question than a shopping page). Positioned
+   below the nav's bottom edge (top:120px — the nav's opaque bottom
+   sits at a near-constant ~96-102px across all real viewport widths
+   because of the .ka-nav__logo clamp() sizing; the old top:92px value
+   never actually cleared it at any width, fixed 2026-08-29), switches
+   from light to dark text in sync with the nav's own .scrolled state. */
 .article-return {
   position: fixed;
-  top: 92px; left: var(--gutter);
+  top: 120px; left: var(--gutter);
   z-index: 90;
   font-family: var(--f-sans);
   font-size: 0.64rem;
@@ -101,5 +104,4 @@
 
 @media (max-width: 600px) {
   .a-hero { height: 78svh; }
-  .article-return { top: 76px; }
 }
