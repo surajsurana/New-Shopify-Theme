@@ -200,8 +200,21 @@
     deliberately kept this bar static-text-only; that reasoning still
     applies, there's just no second logistics line to carry it anymore.
   {%- endcomment -%}
+  {%- comment -%}
+    legal_entity_name double-period fix (Docs/pending-tasks.md #5, QA
+    2026-08-11) — the setting's own default value already ends in a
+    period ("Peekay International Ltd."), and this line used to also
+    hardcode a trailing period after it, producing "Ltd..". Normalize
+    instead of assuming either way: only append the period when the
+    setting's own current value doesn't already end in one, so a future
+    editor who changes this setting to a value WITHOUT a trailing period
+    (e.g. "Peekay International Pvt Ltd") still gets correct punctuation
+    rather than losing the period entirely.
+  {%- endcomment -%}
+  {%- assign legal_entity_name = section.settings.legal_entity_name -%}
+  {%- assign legal_entity_last_char = legal_entity_name | slice: -1 -%}
   <div class="ka-footer__bottom">
-    <p class="ka-footer__copy">&copy; {{ 'now' | date: '%Y' }} {{ section.settings.brand_name }}, a brand of {{ section.settings.legal_entity_name }}. All rights reserved.</p>
+    <p class="ka-footer__copy">&copy; {{ 'now' | date: '%Y' }} {{ section.settings.brand_name }}, a brand of {{ legal_entity_name }}{% unless legal_entity_last_char == '.' %}.{% endunless %} All rights reserved.</p>
     <ul class="ka-footer__legal">
       <li><a href="{{ section.settings.privacy_url | default: '/policies/privacy-policy' }}">Privacy Policy</a></li>
       <li><a href="{{ section.settings.terms_url | default: '/policies/terms-of-service' }}">Terms of Service</a></li>

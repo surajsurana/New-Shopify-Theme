@@ -16,10 +16,11 @@
  * blog, handle "client-diaries", now also exists on this theme for
  * Client Diaries entries. Its articles must NOT use this default
  * template — each Client Diaries article needs the alternate
- * "diary" template (templates/article.diary.json) assigned manually
- * per-article in Shopify Admin (Blog posts -> article -> Theme
- * template -> "diary"). Until that's set on a given article, it will
- * incorrectly render with this Journal template instead.
+ * "diaryentry" template (templates/article.diaryentry.json) assigned
+ * manually per-article in Shopify Admin (Blog posts -> article ->
+ * Theme template -> "diaryentry"). Until that's set on a given
+ * article, it will incorrectly render with this Journal template
+ * instead.
  * ------------------------------------------------------------
  */
 {
