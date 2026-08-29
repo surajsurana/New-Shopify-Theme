@@ -50,7 +50,10 @@
       assign block_quote_count = block_quote_count | plus: 1
     endif
   endfor
-  assign has_editor_content = block_quote_count > 0
+  assign has_editor_content = false
+  if block_quote_count > 0
+    assign has_editor_content = true
+  endif
 
   assign has_content = false
   if has_synced_data or has_editor_content
