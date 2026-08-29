@@ -20,7 +20,7 @@
   overflow: hidden;
   background: var(--c-smoke);
 }
-.ka-j-card__image img { transition: transform 1.2s var(--ease-luxury); }
+.ka-j-card__image img { transition: transform 1.2s var(--ease-luxury); object-position: center 22%; }
 .ka-j-card:hover .ka-j-card__image img { transform: scale(1.045); }
 .ka-j-card__cat {
   position: absolute;
