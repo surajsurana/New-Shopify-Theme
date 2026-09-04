@@ -21,7 +21,14 @@
 }
 .ka-p-card__image-link { position: absolute; inset: 0; z-index: 1; }
 .ka-p-card__image img { position: relative; z-index: 0; transition: transform 1.2s var(--ease-luxury); }
-.ka-p-card:hover .ka-p-card__image img { transform: scale(1.045); }
+/* Hover-only cosmetic zoom + the veil/quick-add reveal below are gated to
+   real-mouse devices only (2026-09-04 fix, see .ka-p-card__veil's own
+   comment for the full root-cause note) — this is what stops WebKit's
+   "first tap simulates :hover, second tap actually clicks" behavior from
+   swallowing the first tap on .ka-p-card__image-link on touch devices. */
+@media (hover: hover) and (pointer: fine) {
+  .ka-p-card:hover .ka-p-card__image img { transform: scale(1.045); }
+}
 
 .ka-p-card__badge {
   position: absolute;
@@ -109,7 +116,40 @@
      so it stays clickable on hover/focus. */
   pointer-events: none;
 }
-.ka-p-card:hover .ka-p-card__veil { opacity: 1; }
+/* 2026-09-04 — real bug report: "a single click on the photo... is not
+   opening the product page." Root cause traced (not guessed): this veil
+   reveals new interactive content (the quick-add button) purely via
+   .ka-p-card:hover. Any ancestor :hover rule that reveals fresh
+   interactive content is the textbook trigger for WebKit's mobile
+   Safari/Chrome "first tap only simulates :hover, a second tap is needed
+   to actually follow the link" behavior — so a single tap on the photo
+   (which sits in the very same .ka-p-card:hover subtree) needed two taps
+   to navigate instead of one. Confirmed this is specific to the
+   Collection grid's veil/quick-add markup, not the wishlist heart's own
+   click handler: assets/ka-wishlist.js's delegated click listener already
+   scopes stopPropagation()/preventDefault() to `e.target.closest(
+   '.ka-p-card__wish, .ka-stage__wish')` only, so it never fires for a
+   click anywhere else on the card — verified against the exact deployed
+   Staging AND Live theme file content (checksums matched the repo, no
+   drift). ka-search-results.liquid and ka-article-shop-story.liquid reuse
+   the same .ka-p-card__image-link + .ka-p-card__wish pattern but render
+   no .ka-p-card__veil at all, so they never had this ancestor-hover-
+   reveals-new-content pattern in the first place (flagged in the release
+   summary as worth a sweep, not touched here — no evidence they're
+   actually broken).
+   Fix: gate the hover-triggered reveal to real-mouse devices only. On
+   touch (no true hover), the veil now simply never appears via CSS
+   :hover, so there is no ambiguous hover-reveal for WebKit to resolve
+   with a "wasted" first tap — a tap on the photo goes straight to
+   .ka-p-card__image-link and navigates immediately, exactly like tapping
+   any ordinary link. This does not change desktop behavior at all (real
+   mouse hover still reveals the veil/quick-add exactly as before) and
+   does not touch the wishlist heart, which was never gated by :hover to
+   begin with (it's an always-visible button per its own build-spec
+   comment) and keeps working identically on both input types. */
+@media (hover: hover) and (pointer: fine) {
+  .ka-p-card:hover .ka-p-card__veil { opacity: 1; }
+}
 .ka-p-card__veil-quickadd {
   font-family: var(--f-sans);
   font-size: 0.66rem;
@@ -125,7 +165,13 @@
   transition: transform var(--dur-med) var(--ease-luxury), background var(--dur-fast), color var(--dur-fast);
   pointer-events: auto;
 }
-.ka-p-card:hover .ka-p-card__veil-quickadd { transform: translateY(0); }
+/* Gated with the veil's own opacity reveal above — on touch the veil
+   stays permanently invisible/inset (see that rule's comment), so this
+   button's own translateY offset is moot there anyway; gating it too
+   just keeps every .ka-p-card:hover rule consistently mouse-only. */
+@media (hover: hover) and (pointer: fine) {
+  .ka-p-card:hover .ka-p-card__veil-quickadd { transform: translateY(0); }
+}
 .ka-p-card__veil-quickadd:hover { background: white; color: var(--c-charcoal); }
 .ka-p-card__veil-quickadd--oos,
 .ka-p-card__veil-quickadd[aria-disabled="true"] {
