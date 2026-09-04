@@ -163,13 +163,24 @@
   cursor: pointer;
   transform: translateY(8px);
   transition: transform var(--dur-med) var(--ease-luxury), background var(--dur-fast), color var(--dur-fast);
-  pointer-events: auto;
+  /* QA correction (2026-09-04): this was `pointer-events: auto` here,
+     unconditionally, so the button's own opacity/translateY being
+     gated to desktop via the media query below did NOT stop it from
+     still being a live hit-test target on touch devices — it was just
+     invisible there. .ka-p-card__veil (its parent) is centered via
+     flex + inset:0, so this invisible-but-clickable button sat right
+     across the vertical/horizontal middle of every card's photo,
+     silently swallowing a tap in exactly that spot into a quick-add
+     (or a no-op for sold-out items) instead of letting it reach
+     .ka-p-card__image-link underneath — reproducing this same bug
+     report for a large, centered part of the image. Defaulting to
+     `none` and only re-enabling `auto` inside the desktop-only media
+     query (with the existing translateY reveal) removes it from touch
+     hit-testing entirely, matching its intended desktop-only reach. */
+  pointer-events: none;
 }
-/* Gated with the veil's own opacity reveal above — on touch the veil
-   stays permanently invisible/inset (see that rule's comment), so this
-   button's own translateY offset is moot there anyway; gating it too
-   just keeps every .ka-p-card:hover rule consistently mouse-only. */
 @media (hover: hover) and (pointer: fine) {
+  .ka-p-card__veil-quickadd { pointer-events: auto; }
   .ka-p-card:hover .ka-p-card__veil-quickadd { transform: translateY(0); }
 }
 .ka-p-card__veil-quickadd:hover { background: white; color: var(--c-charcoal); }
