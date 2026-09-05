@@ -24,8 +24,10 @@
 
     NOT a new metafield — reused native Shopify fields instead:
       Client name         -> article.title (full name)
-      Occasion             -> article.tags (fixed 4-value taxonomy,
-                               identical mechanism to the Journal's
+      Occasion             -> article.tags (fixed taxonomy -- Bridal,
+                               Sangeet & Cocktail, Festive, Mother &
+                               Family, Welcome Event (added 2026-09-05)
+                               -- identical mechanism to the Journal's
                                category tags)
       Client review        -> article.excerpt (native Excerpt field --
                                NOTE 2026-08-11: not article.summary,
@@ -135,6 +137,9 @@
     elsif featured_article.tags contains 'Mother & Family'
       assign occasion_label = 'Mother & Family'
       assign occasion_handle = 'mother-family'
+    elsif featured_article.tags contains 'Welcome Event'
+      assign occasion_label = 'Welcome Event'
+      assign occasion_handle = 'welcome-event'
     endif
 
     assign entry_year = featured_article.metafields.custom.client_diary_year

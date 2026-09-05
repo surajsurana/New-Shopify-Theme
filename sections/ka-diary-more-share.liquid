@@ -39,6 +39,8 @@
     assign current_occasion = 'Festive'
   elsif article.tags contains 'Mother & Family'
     assign current_occasion = 'Mother & Family'
+  elsif article.tags contains 'Welcome Event'
+    assign current_occasion = 'Welcome Event'
   endif
 
   assign shown = 0
