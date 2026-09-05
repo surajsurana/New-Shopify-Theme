@@ -36,6 +36,9 @@
   elsif article.tags contains 'Mother & Family'
     assign occasion_label = 'Mother & Family'
     assign occasion_handle = 'mother-family'
+  elsif article.tags contains 'Welcome Event'
+    assign occasion_label = 'Welcome Event'
+    assign occasion_handle = 'welcome-event'
   endif
 
   assign entry_year = article.metafields.custom.client_diary_year
