@@ -63,7 +63,9 @@
 .ka-thumb--ph { background: linear-gradient(135deg, #E9E1D2, #B99B6E); filter: none; }
 
 .ka-stage {
-  position: relative; overflow: hidden; min-height: 640px;
+  position: relative; overflow: hidden;
+  aspect-ratio: 3 / 4;
+  max-height: 90vh;
   background-size: cover; background-position: center;
   cursor: zoom-in;
   filter: sepia(0.10) saturate(0.90) brightness(0.94);
@@ -268,7 +270,7 @@
   .ka-minibar { display: none; }
   .ka-product { display: block; padding-top: 14px; }
   .ka-media { position: static; display: block; }
-  .ka-stage { cursor: default; min-height: 480px; }
+  .ka-stage { cursor: default; max-height: 80vh; min-height: 380px; }
   .ka-stage__zoom { display: none; }
   .ka-thumbs { flex-direction: row; overflow-x: auto; gap: 9px; padding: 12px 0 2px; }
   .ka-thumb { flex: 0 0 64px; width: 64px; height: 86px; }
