@@ -5,7 +5,14 @@
 ───────────────────────────────────────────────────────────────── */
 
 .ka-product-desc {
-  padding: 56px 40px 80px;
+  /* bottom padding changed from hardcoded 80px to var(--s-lg) (64px) per
+     item #27 4th-pass CD spec (2026-09-07) — top (56px) and left/right
+     (40px) are untouched. Combined with .ka-note's padding-top also
+     moving to --s-lg, the worst-case (no-gallery-images) gap above
+     "THE DESIGNERS' NOTE" is now 64+64=128px, down from 176px. Mobile
+     override below (48px 20px, symmetric) intentionally left alone —
+     flagged by CD as a secondary, non-required cleanup. */
+  padding: 56px 40px var(--s-lg);
   background: var(--c-paper, #faf9f7);
   border-top: 1px solid var(--line, rgba(42,36,32,0.12));
 }
