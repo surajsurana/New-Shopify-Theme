@@ -47,12 +47,17 @@
   display: grid; grid-template-columns: 1.18fr 1fr; gap: 60px; align-items: start;
 }
 
-/* ── gallery ── */
-.ka-media { position: sticky; top: 104px; display: grid; grid-template-columns: 86px 1fr; gap: 16px; }
-.ka-thumbs { grid-column: 1; display: flex; flex-direction: column; gap: 12px; }
-.ka-stage { grid-column: 2; }
+/* ── gallery — horizontal filmstrip below the stage (Docs — item #27
+   3rd-pass CD spec, 2026-09-07): the old 86px-column vertical rail plus
+   grid-stretch of .ka-thumbs to .ka-stage's height was the root cause of
+   a tall empty box beside short thumbnail content. Single-column flow
+   removes the height-link entirely — .ka-thumbs now only ever takes the
+   height its own row of thumbnails needs. ── */
+.ka-media { position: sticky; top: 104px; display: flex; flex-direction: column; gap: var(--s-sm); }
+.ka-thumbs { display: flex; flex-direction: row; gap: 12px; overflow-x: auto; }
 .ka-thumb {
-  width: 86px; height: 116px; cursor: pointer; opacity: 0.48;
+  flex: 1 1 0; max-width: 150px; min-width: 64px; aspect-ratio: 3 / 4;
+  cursor: pointer; opacity: 0.48;
   border: 1px solid transparent;
   background-size: cover; background-position: center;
   transition: opacity 0.45s var(--ease-luxury), border-color 0.45s var(--ease-luxury);
@@ -292,7 +297,11 @@
   .ka-media { position: static; display: block; }
   .ka-stage { cursor: default; max-height: 80vh; min-height: 380px; }
   .ka-stage__zoom { display: none; }
-  .ka-thumbs { flex-direction: row; overflow-x: auto; gap: 9px; padding: 12px 0 2px; }
+  /* flex-direction:row and overflow-x:auto now come from the base
+     .ka-thumbs rule above (desktop uses the same filmstrip mechanism as
+     of this pass) — mobile only overrides gap/padding, i.e. scale, not
+     layout strategy. */
+  .ka-thumbs { gap: 9px; padding: 12px 0 2px; }
   .ka-thumb { flex: 0 0 64px; width: 64px; height: 86px; }
   .ka-panel { padding: 30px 0 0; }
   .ka-mobile-bar { display: flex; }

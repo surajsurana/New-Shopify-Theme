@@ -1,6 +1,11 @@
 /* KA-PRODUCT-NOTE — Designers' note */
 .ka-rule { width: 46px; height: 1px; background: var(--c-rosegold); opacity: 0.7; }
-.ka-note { padding: var(--s-3xl) var(--gutter); text-align: center; background: var(--c-paper); }
+/* padding-top reduced from var(--s-3xl) (200px) to var(--s-xl) (96px) per
+   item #27 3rd-pass CD spec (2026-09-07) — right/bottom/left stay on
+   --s-3xl/--gutter unchanged (bottom deliberately left alone per CD; the
+   token itself is untouched since .ka-product-atelier/.ka-product-invite
+   still correctly use it). Longhand so only top changes. */
+.ka-note { padding: var(--s-3xl) var(--gutter) var(--s-3xl) var(--gutter); padding-top: var(--s-xl); text-align: center; background: var(--c-paper); }
 .ka-note__inner { max-width: 760px; margin: 0 auto; }
 .ka-note__quote { font-family: var(--f-display); font-size: 1.85rem; font-weight: 300; line-height: 1.5; font-style: italic; color: var(--c-ink); margin: 30px 0 34px; }
 .ka-note__sig { font-family: var(--f-display); font-size: 1.85rem; font-style: italic; color: var(--c-ink); margin-bottom: 6px; }
