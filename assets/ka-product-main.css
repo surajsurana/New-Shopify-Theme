@@ -64,6 +64,26 @@
 
 .ka-stage {
   position: relative; overflow: hidden;
+  /* width:100% is load-bearing, not decorative — see
+     Docs/product-stage-image-fix-spec.md addendum (2026-09-07 regression
+     fix). .ka-stage is a grid item (grid-column:2 in .ka-media) with no
+     intrinsic content box (it's a <div> painted via background-image, not
+     an <img>), so nothing else gives it a definite width. Pairing
+     aspect-ratio with max-height (below) means that whenever the
+     aspect-ratio-derived height from a full-width box would exceed
+     max-height — which happens at ordinary desktop widths once the
+     column gets wide enough — the browser resolves the conflict by
+     recomputing WIDTH down from the clamped height to preserve the 3:4
+     ratio, instead of keeping width filled to the column/container and
+     only capping height. That silently shrinks the box below its grid
+     track (thumbnails then look wrongly placed beside a narrower stage)
+     and, at narrow/mobile widths where the same clamp can trigger against
+     the ≤900px max-height override below, left-aligns a visibly
+     narrower-than-container box. Setting width explicitly makes it a
+     definite value the aspect-ratio/max-height negotiation can never
+     renegotiate — only height is ever adjusted, which is exactly the
+     item #27 crop behavior this must not weaken. */
+  width: 100%;
   aspect-ratio: 3 / 4;
   max-height: 90vh;
   background-size: cover; background-position: center;
