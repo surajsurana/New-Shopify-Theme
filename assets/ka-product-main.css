@@ -342,6 +342,20 @@
   .ka-product { display: block; padding-top: 14px; }
   .ka-media { position: static; display: block; }
   .ka-stage { cursor: default; max-height: 80vh; min-height: 380px; }
+  /* .ka-stage--native-ratio's width formula (above, desktop-authored)
+     is keyed to 90vh to match .ka-stage's desktop max-height. This
+     breakpoint changes the ACTIVE max-height to 80vh -- without this
+     override the width formula keeps dividing by 90vh while height
+     actually clamps at 80vh, so width and height stop agreeing with
+     each other and the box no longer matches --ratio (confirmed via
+     real headless-Chrome measurement at the catalog's most extreme
+     ratio, 0.6875: width computed from 90vh came out 428.78px while
+     height clamped to 554.39px from 80vh, giving a rendered 0.7734
+     box instead of 0.6875 -- real cropping, not just off-by-a-few-px).
+     Re-deriving width from the SAME 80vh this breakpoint actually uses
+     keeps the two mutually consistent, so background-size:cover still
+     has zero cropping to do at any real catalog ratio on mobile. ── */
+  .ka-stage--native-ratio { width: min(100%, 80vh * var(--ratio, 0.75)); }
   .ka-stage__zoom { display: none; }
   /* flex-direction:row and overflow-x:auto now come from the base
      .ka-thumbs rule above (desktop uses the same filmstrip mechanism as
