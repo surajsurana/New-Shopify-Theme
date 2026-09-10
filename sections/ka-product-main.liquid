@@ -11,6 +11,18 @@
   assign appt_url = section.settings.appointment_url | default: '/pages/appointments'
   assign price = product.price | money_without_trailing_zeros | replace: 'Rs.', '₹'
 
+  # Item #27 (Docs/pending-tasks.md #27) — native photo-ratio gallery
+  # boxes are now the STANDARD, permanent product-page behavior
+  # (generalized site-wide 2026-09-11, after Suraj approved the fix on
+  # the Electric Blue Victorian Corset trial). Every product's gallery
+  # box now adapts to its own real photo aspect ratio instead of a
+  # fixed 3:4 crop — see ka-stage--native-ratio / ka-thumb--native-ratio
+  # below, applied unconditionally (gated only on an image actually
+  # being present, same as the existing first_image / images-loop
+  # guards already here — never on product.handle). Collection grid
+  # cards and search results are explicitly OUT of scope — they keep
+  # the fixed 3:4 box untouched, per Suraj's explicit scope decision.
+
   # Pre-filled WhatsApp enquiry with product context (F2)
   assign wa_text = 'Hi, I' | append: '%27' | append: 'd like to enquire about the ' | append: product.title
   assign wa_text_enc = wa_text | url_param_escape
@@ -76,9 +88,9 @@
   <div class="ka-media" id="ka-media">
     {%- assign first_image = product.featured_image -%}
     <div
-      class="ka-stage{% unless first_image %} ka-stage--ph{% endunless %}"
+      class="ka-stage{% unless first_image %} ka-stage--ph{% endunless %}{% if first_image %} ka-stage--native-ratio{% endif %}"
       id="ka-stage"
-      {% if first_image %}style="background-image:url('{{ first_image | image_url: width: 1400 }}');"{% endif %}
+      {% if first_image %}style="background-image:url('{{ first_image | image_url: width: 1400 }}'); --ratio: {{ first_image.aspect_ratio }};"{% endif %}
     >
       <span class="ka-stage__idx" id="ka-stage-idx">01 / {% if product.images.size > 0 %}{{ product.images.size | prepend: '0' | slice: -2, 2 }}{% else %}01{% endif %}</span>
       <span class="ka-stage__zoom" aria-hidden="true">&#10530; Zoom</span>
@@ -105,10 +117,10 @@
       {%- for image in product.images -%}
         <button
           type="button"
-          class="ka-thumb{% if forloop.first %} active{% endif %}"
+          class="ka-thumb{% if forloop.first %} active{% endif %} ka-thumb--native-ratio"
           data-full="{{ image | image_url: width: 1400 }}"
           aria-label="View image {{ forloop.index }}"
-          style="background-image:url('{{ image | image_url: width: 200 }}');"
+          style="background-image:url('{{ image | image_url: width: 200 }}'); --ratio: {{ image.aspect_ratio }};"
         ></button>
       {%- else -%}
         <button type="button" class="ka-thumb active ka-thumb--ph" aria-label="Product image"></button>

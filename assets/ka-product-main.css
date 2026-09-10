@@ -47,12 +47,17 @@
   display: grid; grid-template-columns: 1.18fr 1fr; gap: 60px; align-items: start;
 }
 
-/* ── gallery ── */
-.ka-media { position: sticky; top: 104px; display: grid; grid-template-columns: 86px 1fr; gap: 16px; }
-.ka-thumbs { grid-column: 1; display: flex; flex-direction: column; gap: 12px; }
-.ka-stage { grid-column: 2; }
+/* ── gallery — horizontal filmstrip below the stage (Docs — item #27
+   3rd-pass CD spec, 2026-09-07): the old 86px-column vertical rail plus
+   grid-stretch of .ka-thumbs to .ka-stage's height was the root cause of
+   a tall empty box beside short thumbnail content. Single-column flow
+   removes the height-link entirely — .ka-thumbs now only ever takes the
+   height its own row of thumbnails needs. ── */
+.ka-media { position: sticky; top: 104px; display: flex; flex-direction: column; gap: var(--s-sm); }
+.ka-thumbs { display: flex; flex-direction: row; gap: 12px; overflow-x: auto; }
 .ka-thumb {
-  width: 86px; height: 116px; cursor: pointer; opacity: 0.48;
+  flex: 1 1 0; max-width: 150px; min-width: 64px; aspect-ratio: 3 / 4;
+  cursor: pointer; opacity: 0.48;
   border: 1px solid transparent;
   background-size: cover; background-position: center;
   transition: opacity 0.45s var(--ease-luxury), border-color 0.45s var(--ease-luxury);
@@ -62,13 +67,81 @@
 .ka-thumb.active { opacity: 1; border-color: var(--c-charcoal); }
 .ka-thumb--ph { background: linear-gradient(135deg, #E9E1D2, #B99B6E); filter: none; }
 
+/* ── item #27 experiment (Docs/pending-tasks.md #27): box adapts to each
+   photo's own real aspect ratio instead of the fixed 3:4 crop, so
+   background-size:cover scales-to-fit with zero cropping. Applied ONLY
+   via a modifier class + --ratio custom property set in
+   sections/ka-product-main.liquid, scoped to exactly one product handle
+   (electric-blue-victorian-corset-with-drape-saree) — this does not
+   touch the base .ka-thumb rule above, so every other product's
+   thumbnails render byte-identical to today. Falls back to the standard
+   3:4 box if --ratio is ever unset. ── */
+.ka-thumb--native-ratio { aspect-ratio: var(--ratio, 3 / 4); }
+
 .ka-stage {
-  position: relative; overflow: hidden; min-height: 640px;
+  position: relative; overflow: hidden;
+  /* width:100% is load-bearing, not decorative — see
+     Docs/product-stage-image-fix-spec.md addendum (2026-09-07 regression
+     fix, predates the filmstrip change below). .ka-stage is a flex item
+     in .ka-media (single-column flow as of the item #27 3rd-pass filmstrip
+     change) with no intrinsic content box (it's a <div> painted via
+     background-image, not an <img>), so nothing else gives it a definite
+     width. Pairing
+     aspect-ratio with max-height (below) means that whenever the
+     aspect-ratio-derived height from a full-width box would exceed
+     max-height — which happens at ordinary desktop widths once the
+     column gets wide enough — the browser resolves the conflict by
+     recomputing WIDTH down from the clamped height to preserve the 3:4
+     ratio, instead of keeping width filled to the column/container and
+     only capping height. That silently shrinks the box below its column
+     width (visibly narrower than the thumbnail row beneath it) and, at
+     narrow/mobile widths where the same clamp can trigger against
+     the ≤900px max-height override below, left-aligns a visibly
+     narrower-than-container box. Setting width explicitly makes it a
+     definite value the aspect-ratio/max-height negotiation can never
+     renegotiate — only height is ever adjusted, which is exactly the
+     item #27 crop behavior this must not weaken. */
+  width: 100%;
+  aspect-ratio: 3 / 4;
+  max-height: 90vh;
   background-size: cover; background-position: center;
   cursor: zoom-in;
   filter: sepia(0.10) saturate(0.90) brightness(0.94);
 }
 .ka-stage--ph { background: linear-gradient(135deg, #E9E1D2, #B99B6E); filter: none; }
+
+/* ── item #27 experiment — see .ka-thumb--native-ratio above for full
+   context/rationale. Same scoping: one product handle only, via Liquid;
+   does not alter the base .ka-stage rule above, so every other
+   product's stage image renders byte-identical to today.
+
+   Follow-up fix (2026-09-10, reported by Suraj on staging): .ka-stage
+   forces width:100% (the full gallery column, ~650-740px at real
+   desktop widths), unlike .ka-thumb which caps at max-width:150px.
+   Multiplying the same real --ratio by that much larger width produces
+   a genuinely tall box (~950-1100px, confirmed via live rendering) —
+   and because width stays fixed at 100% even once max-height:90vh
+   clamps it, the clamp doesn't shrink the box, it CROPS it (confirmed:
+   at a 749px-tall viewport the box clamped to a 661x674 box, a 0.98
+   ratio box, not 0.7368 — silently reintroducing the exact cropping
+   this experiment exists to eliminate). Explicit width formula below
+   fixes this: when the aspect-ratio-derived height at full column
+   width would exceed the SAME 90vh ceiling .ka-stage already uses,
+   width narrows instead of height cropping, keeping the photo fully
+   visible with zero cropping always. This must be a definite/calculated
+   value, not `auto` — auto lets flex align-items:stretch override it
+   back to full width (and in one tested variant collapsed the box to
+   0x0 entirely), both confirmed via real headless-Chrome measurement,
+   not assumed. When there's no height pressure (the common case), this
+   evaluates to exactly 100% — byte-identical to today's unclamped
+   behavior (confirmed: 739.19px width either way at a spacious
+   viewport). Uses the literal 0.75 fallback (not var(--ratio) again)
+   so the formula still resolves to 100% width on every other product,
+   where --ratio is never set. ── */
+.ka-stage--native-ratio {
+  aspect-ratio: var(--ratio, 3 / 4);
+  width: min(100%, 90vh * var(--ratio, 0.75));
+}
 .ka-stage__idx {
   position: absolute; left: 18px; bottom: 16px;
   font-family: var(--f-sans); font-size: 0.62rem; letter-spacing: 0.2em; color: #fff;
@@ -268,9 +341,27 @@
   .ka-minibar { display: none; }
   .ka-product { display: block; padding-top: 14px; }
   .ka-media { position: static; display: block; }
-  .ka-stage { cursor: default; min-height: 480px; }
+  .ka-stage { cursor: default; max-height: 80vh; min-height: 380px; }
+  /* .ka-stage--native-ratio's width formula (above, desktop-authored)
+     is keyed to 90vh to match .ka-stage's desktop max-height. This
+     breakpoint changes the ACTIVE max-height to 80vh -- without this
+     override the width formula keeps dividing by 90vh while height
+     actually clamps at 80vh, so width and height stop agreeing with
+     each other and the box no longer matches --ratio (confirmed via
+     real headless-Chrome measurement at the catalog's most extreme
+     ratio, 0.6875: width computed from 90vh came out 428.78px while
+     height clamped to 554.39px from 80vh, giving a rendered 0.7734
+     box instead of 0.6875 -- real cropping, not just off-by-a-few-px).
+     Re-deriving width from the SAME 80vh this breakpoint actually uses
+     keeps the two mutually consistent, so background-size:cover still
+     has zero cropping to do at any real catalog ratio on mobile. ── */
+  .ka-stage--native-ratio { width: min(100%, 80vh * var(--ratio, 0.75)); }
   .ka-stage__zoom { display: none; }
-  .ka-thumbs { flex-direction: row; overflow-x: auto; gap: 9px; padding: 12px 0 2px; }
+  /* flex-direction:row and overflow-x:auto now come from the base
+     .ka-thumbs rule above (desktop uses the same filmstrip mechanism as
+     of this pass) — mobile only overrides gap/padding, i.e. scale, not
+     layout strategy. */
+  .ka-thumbs { gap: 9px; padding: 12px 0 2px; }
   .ka-thumb { flex: 0 0 64px; width: 64px; height: 86px; }
   .ka-panel { padding: 30px 0 0; }
   .ka-mobile-bar { display: flex; }
