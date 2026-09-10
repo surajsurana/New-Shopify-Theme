@@ -113,8 +113,35 @@
 /* ── item #27 experiment — see .ka-thumb--native-ratio above for full
    context/rationale. Same scoping: one product handle only, via Liquid;
    does not alter the base .ka-stage rule above, so every other
-   product's stage image renders byte-identical to today. ── */
-.ka-stage--native-ratio { aspect-ratio: var(--ratio, 3 / 4); }
+   product's stage image renders byte-identical to today.
+
+   Follow-up fix (2026-09-10, reported by Suraj on staging): .ka-stage
+   forces width:100% (the full gallery column, ~650-740px at real
+   desktop widths), unlike .ka-thumb which caps at max-width:150px.
+   Multiplying the same real --ratio by that much larger width produces
+   a genuinely tall box (~950-1100px, confirmed via live rendering) —
+   and because width stays fixed at 100% even once max-height:90vh
+   clamps it, the clamp doesn't shrink the box, it CROPS it (confirmed:
+   at a 749px-tall viewport the box clamped to a 661x674 box, a 0.98
+   ratio box, not 0.7368 — silently reintroducing the exact cropping
+   this experiment exists to eliminate). Explicit width formula below
+   fixes this: when the aspect-ratio-derived height at full column
+   width would exceed the SAME 90vh ceiling .ka-stage already uses,
+   width narrows instead of height cropping, keeping the photo fully
+   visible with zero cropping always. This must be a definite/calculated
+   value, not `auto` — auto lets flex align-items:stretch override it
+   back to full width (and in one tested variant collapsed the box to
+   0x0 entirely), both confirmed via real headless-Chrome measurement,
+   not assumed. When there's no height pressure (the common case), this
+   evaluates to exactly 100% — byte-identical to today's unclamped
+   behavior (confirmed: 739.19px width either way at a spacious
+   viewport). Uses the literal 0.75 fallback (not var(--ratio) again)
+   so the formula still resolves to 100% width on every other product,
+   where --ratio is never set. ── */
+.ka-stage--native-ratio {
+  aspect-ratio: var(--ratio, 3 / 4);
+  width: min(100%, 90vh * var(--ratio, 0.75));
+}
 .ka-stage__idx {
   position: absolute; left: 18px; bottom: 16px;
   font-family: var(--f-sans); font-size: 0.62rem; letter-spacing: 0.2em; color: #fff;
