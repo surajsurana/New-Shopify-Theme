@@ -37,7 +37,7 @@
         "appointment_url": "/pages/appointments",
         "default_lead_time": "20–25 days",
         "rating_score": "4.7",
-        "rating_count": "64"
+        "rating_count": "67"
       }
     },
     "ka-product-desc": {
@@ -214,6 +214,22 @@
             "reviewer_name": "Ragini G.",
             "source": "via Google"
           }
+        },
+        "review-6": {
+          "type": "review",
+          "settings": {
+            "quote": "Absolutely loved my outfit from K&A by Karishma & Ashita! 💜 The outfit was even more beautiful in person — the fit, detailing, colour and little floral embellishments were just perfect. I received so many compliments throughout the evening. Thank you, Karishma & Ashita, for creating something so stunning and making me feel absolutely gorgeous! ✨",
+            "reviewer_name": "Arushi G.",
+            "source": "via Google"
+          }
+        },
+        "review-7": {
+          "type": "review",
+          "settings": {
+            "quote": "Good design love the outfit",
+            "reviewer_name": "Sakshi K.",
+            "source": "via Google"
+          }
         }
       },
       "block_order": [
@@ -221,11 +237,13 @@
         "review-2",
         "review-3",
         "review-4",
-        "review-5"
+        "review-5",
+        "review-6",
+        "review-7"
       ],
       "settings": {
         "rating_score": "4.7",
-        "rating_count": "64",
+        "rating_count": "67",
         "heading": "Loved by brides & their families, across the world.",
         "google_url": "https://www.google.com/maps/search/?api=1&query=Karishma+and+Ashita+Santacruz+Mumbai",
         "disclaimer": ""

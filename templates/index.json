@@ -127,19 +127,37 @@
             "reviewer_name": "Kavita S.",
             "occasion": "Graduation, Corset Saree"
           }
+        },
+        "review-4": {
+          "type": "review",
+          "settings": {
+            "quote": "Absolutely loved my outfit from K&A by Karishma & Ashita! 💜 The outfit was even more beautiful in person — the fit, detailing, colour and little floral embellishments were just perfect. I received so many compliments throughout the evening. Thank you, Karishma & Ashita, for creating something so stunning and making me feel absolutely gorgeous! ✨",
+            "reviewer_name": "Arushi G.",
+            "occasion": ""
+          }
+        },
+        "review-5": {
+          "type": "review",
+          "settings": {
+            "quote": "Good design love the outfit",
+            "reviewer_name": "Sakshi K.",
+            "occasion": ""
+          }
         }
       },
       "block_order": [
         "review-1",
         "review-2",
-        "review-3"
+        "review-3",
+        "review-4",
+        "review-5"
       ],
       "settings": {
         "show_section": true,
         "eyebrow": "What Brides Say",
         "title": "The words of\nour brides.",
         "rating_number": "4.7",
-        "rating_label": "4.7 · 64 Google Reviews",
+        "rating_label": "4.7 · 67 Google Reviews",
         "google_cta_label": "Read all reviews on Google",
         "google_url": "https://www.google.com/maps/search/?api=1&query=Karishma+and+Ashita+Santacruz+Mumbai"
       }
