@@ -95,7 +95,16 @@
       {% endif %}
     </div>
 
-    {% assign delay_classes = 'reveal, reveal reveal-delay-1, reveal reveal-delay-2' | split: ', ' %}
+    {% comment %}
+      Extended from 3 to 5 entries (2026-09-11, Google review count
+      64->67 update) to cover up to 5 editor-block review cards without
+      indexing out of bounds -- reveal-delay-3/-4 already exist in
+      ka-base.css (unused elsewhere in this file until now), so this
+      needed no new CSS. The synced-data path above still only ever
+      loops `limit: 3`, so this extension doesn't change that path at
+      all -- only the editor-block fallback path can now show up to 5.
+    {% endcomment %}
+    {% assign delay_classes = 'reveal, reveal reveal-delay-1, reveal reveal-delay-2, reveal reveal-delay-3, reveal reveal-delay-4' | split: ', ' %}
     {% if has_synced_data %}
       <div class="ka-voices__grid">
         {% for review in reviews_data.reviews limit: 3 %}
@@ -172,7 +181,7 @@
     {
       "type": "review",
       "name": "Review",
-      "limit": 3,
+      "limit": 5,
       "settings": [
         {
           "type": "textarea",
