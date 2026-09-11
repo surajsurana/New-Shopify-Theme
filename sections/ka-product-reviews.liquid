@@ -14,8 +14,25 @@
 
     <div class="ka-rev-grid">
       {%- for block in section.blocks -%}
+        {%- comment -%}
+          Per-review star rating (2026-09-11, follow-up to the 64->67
+          review-count update): was hardcoded to 5 filled stars for
+          every card regardless of the reviewer's real Google rating
+          (e.g. Sakshi K.'s 4-star review was misrepresented as 5).
+          Now driven by block.settings.rating (1-5, default 5 so any
+          existing/future block left unset renders identically to the
+          old hardcoded behavior). Same glyph family/size/color as
+          before (--rosegold-pale) -- filled stars (&#9733;) up to the
+          rating, outline stars (&#9734;) for the remainder, so a 4-star
+          card visually reads as 4-of-5, not a dimmer version of 5.
+        {%- endcomment -%}
+        {%- assign rating = block.settings.rating | default: 5 -%}
         <div class="ka-rev" {{ block.shopify_attributes }}>
-          <div class="ka-rev__stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+          <div class="ka-rev__stars">
+            {%- for i in (1..5) -%}
+              {%- if i <= rating -%}&#9733;{%- else -%}&#9734;{%- endif -%}
+            {%- endfor -%}
+          </div>
           <p>{{ block.settings.quote }}</p>
           <div class="ka-rev__who">
             <div class="ka-rev__av">{{ block.settings.reviewer_name | slice: 0 }}</div>
@@ -56,7 +73,8 @@
       "settings": [
         { "type": "textarea", "id": "quote",         "label": "Quote" },
         { "type": "text",     "id": "reviewer_name", "label": "Reviewer name" },
-        { "type": "text",     "id": "source",        "label": "Source", "default": "via Google" }
+        { "type": "text",     "id": "source",        "label": "Source", "default": "via Google" },
+        { "type": "range",    "id": "rating",         "label": "Star rating", "min": 1, "max": 5, "step": 1, "default": 5, "info": "The reviewer's actual Google rating (1-5). Do not guess -- verify against the real Google Business Profile review." }
       ]
     }
   ],
