@@ -72,7 +72,7 @@
       { "type": "text",     "id": "welcome_offer_email_toggle",   "label": "Email toggle label",   "default": "Prefer it by email? →" },
       { "type": "textarea", "id": "welcome_offer_email_note",     "label": "Email field note",     "default": "We'll also add you to The Inner Circle — collection previews and styling notes, delivered quietly. Unsubscribe anytime." },
       { "type": "text",     "id": "welcome_offer_email_success",  "label": "Email success message", "default": "Sent. And welcome to The Inner Circle." },
-      { "type": "textarea", "id": "welcome_offer_fine_print",     "label": "Fine print", "default": "Valid toward your first order. One use per customer. Not combinable with other offers.", "info": "Confirm this matches the discount code's actual configured Shopify rules (usage limits, eligibility, combinability) before relying on it — see build spec Flag F3." },
+      { "type": "textarea", "id": "welcome_offer_fine_print",     "label": "Fine print", "default": "Valid toward your first order. Not combinable with other offers.", "info": "Checked against KLP3000's actual Shopify discount config on 2026-09-14: appliesOncePerCustomer is false (the code is genuinely reusable per customer, not one-use — per Suraj, the real Shopify discount config stays as-is, so the earlier 'One use per customer' claim was removed from this copy instead of being made true) and combinesWith is false on every axis (so 'Not combinable with other offers' is accurate and was kept). If the discount's real configuration ever changes, re-check this text against it — see build spec Flag F3." },
       { "type": "text",     "id": "welcome_offer_dismiss_label",  "label": "Dismiss link label",   "default": "Not today" }
     ]
   }

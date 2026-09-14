@@ -129,7 +129,16 @@
     {%- endform -%}
     <p class="ka-welcome__email-success{% if form.posted_successfully? %} is-shown{% endif %}" id="kaWelcomeEmailSuccess">{{ settings.welcome_offer_email_success | default: 'Sent. And welcome to The Inner Circle.' }}</p>
 
-    <p class="ka-welcome__fine">{{ settings.welcome_offer_fine_print | default: 'Valid toward your first order. One use per customer. Not combinable with other offers.' }}</p>
+    {%- comment -%}
+      Fine print default corrected 2026-09-14 — QA queried KLP3000's real
+      Shopify discount config directly and found appliesOncePerCustomer:
+      false (the code IS actually reusable per customer, not one-use).
+      Suraj's decision: do not change the real coupon's Shopify config;
+      fix this copy instead so it stops claiming a restriction that isn't
+      real. "Not combinable with other offers" was separately confirmed
+      accurate (combinesWith is false on every axis) and is unchanged.
+    {%- endcomment -%}
+    <p class="ka-welcome__fine">{{ settings.welcome_offer_fine_print | default: 'Valid toward your first order. Not combinable with other offers.' }}</p>
     <button type="button" class="ka-welcome__dismiss" id="kaWelcomeDismiss">{{ settings.welcome_offer_dismiss_label | default: 'Not today' }}</button>
   </div>
 </div>
