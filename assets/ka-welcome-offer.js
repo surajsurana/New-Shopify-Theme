@@ -1,26 +1,20 @@
 /* ================================================================
    K&A WELCOME OFFER (KLP3000) — assets/ka-welcome-offer.js
-   Docs/welcome-offer-popup-build-spec.md. Trigger/eligibility/interaction
-   state machine, adapted from the approved prototype's own script
-   (Prototypes/welcome-offer-popup-v1.html, lines ~454-586) with:
-     - all demo-only controls (#ctrlReset/#ctrlForce/#ctrlSim*, #protoHud)
-       removed — those existed purely to let Suraj test the prototype
-       in isolation and have no production equivalent.
-     - a real fetch-based interception of the email capture form, since
-       production has a live { % form 'customer' % } endpoint the
-       prototype only commented about (see below).
-     - mutual-exclusion checks against the search overlay and mobile nav
-       drawer (build spec: "waits and re-checks after it closes, rather
-       than stacking on top").
-     - the customer.orders_count eligibility check is NOT duplicated
-       here — it's already enforced server-side in Liquid
-       (snippets/ka-welcome-offer.liquid's should_render gate), so for
-       an ineligible customer the #kaWelcomeScrim element never exists
-       in the DOM at all and every function below no-ops safely against
-       null.
+   v2 — Docs/welcome-offer-popup-build-spec.md (version 2.0). Trigger/
+   eligibility/interaction state machine, unchanged in scope from v1
+   per the spec ("the trigger/eligibility engine remains the one
+   genuinely stateful piece of logic, unchanged in scope from v1").
 
-   IIFE + 'use strict' + try/catch-wrapped storage access, matching this
-   theme's established style (assets/ka-wishlist.js).
+   What changed from the v1 file that was previously deployed here:
+   the entire email-capture path is removed — emailToggle/emailForm/
+   emailInput/emailSuccess element lookups and their listeners are
+   gone, not just disabled, per build spec Section 9's explicit flag
+   that this file was the most likely place to have dead code left
+   behind from that feature. "Claimed" now has exactly two paths
+   (copy the code, or click the CTA) instead of three.
+
+   IIFE + 'use strict' + try/catch-wrapped storage access, matching
+   this theme's established style (assets/ka-wishlist.js).
 ================================================================ */
 (function () {
   'use strict';
@@ -31,16 +25,11 @@
   var KEY = 'ka_welcome_offer';
   var SESSION_KEY = 'ka_welcome_shown_session';
 
-  var card = document.getElementById('kaWelcome');
   var closeBtn = document.getElementById('kaWelcomeClose');
   var dismissBtn = document.getElementById('kaWelcomeDismiss');
   var ctaLink = document.getElementById('kaWelcomeCta');
   var copyBtn = document.getElementById('kaWelcomeCopy');
   var codeValueEl = document.getElementById('kaWelcomeCodeValue');
-  var emailToggle = document.getElementById('kaWelcomeEmailToggle');
-  var emailForm = document.getElementById('kaWelcomeEmailForm');
-  var emailInput = document.getElementById('kaWelcomeEmailInput');
-  var emailSuccess = document.getElementById('kaWelcomeEmailSuccess');
 
   /* ---- localStorage / sessionStorage state (try/catch: private-mode /
      storage-disabled browsers degrade to "always eligible this load,
@@ -64,13 +53,13 @@
     return true;
   }
 
-  /* Mutual exclusion with the other sitewide overlays (build spec: don't
-     stack on top of an already-open search overlay or mobile drawer —
-     wait and re-check instead). Class names confirmed directly against
-     assets/ka-search.js (#ka-search-overlay toggles .open) and
-     assets/ka-nav.css (.ka-mobile-nav.open) — same convention both
-     places, not the .is-open convention this component's own CSS uses
-     for itself. */
+  /* Mutual exclusion with the other sitewide overlays (build spec
+     Section 7: don't stack on top of an already-open search overlay or
+     mobile drawer — wait and re-check instead). Class names confirmed
+     directly against assets/ka-search.js (#ka-search-overlay toggles
+     .open) and assets/ka-nav.css (.ka-mobile-nav.open) — same
+     convention both places, not the .is-open convention this
+     component's own CSS uses for itself. Unchanged from v1. */
   function otherOverlayOpen() {
     var search = document.getElementById('ka-search-overlay');
     if (search && search.classList.contains('open')) return true;
@@ -111,10 +100,11 @@
     });
   }
 
-  /* Copy-to-clipboard also counts as a claim (matches the approved
-     prototype exactly) — a visitor who copies the code has functionally
-     taken the offer even if they paste it into checkout later rather
-     than clicking through immediately. */
+  /* Copy-to-clipboard also counts as a claim — a visitor who copies the
+     code has functionally taken the offer even if they paste it into
+     checkout later rather than clicking through immediately. One of
+     exactly two claim paths in v2 (the other is the CTA click above);
+     v1's third path, email submission, no longer exists. */
   if (copyBtn && codeValueEl) {
     var copyLabel = copyBtn.getAttribute('data-copy-label') || 'Copy';
     var copiedLabel = copyBtn.getAttribute('data-copied-label') || 'Copied';
@@ -131,52 +121,9 @@
     });
   }
 
-  if (emailToggle && emailForm) {
-    emailToggle.addEventListener('click', function () {
-      emailForm.classList.toggle('is-hidden');
-      if (!emailForm.classList.contains('is-hidden') && emailInput) emailInput.focus();
-    });
-  }
-
-  /* Email capture: real { % form 'customer' % } tag (snippets/
-     ka-welcome-offer.liquid), same endpoint/field names/tags as
-     ka-footer.liquid's Inner Circle signup. Intercepted here via fetch
-     so the popup's own open state survives the submission (a real
-     full-page reload would tear down scrim.is-open) — the <form>'s
-     real action/method stay intact underneath as a no-JS fallback.
-
-     Shopify's exact response shape for this endpoint hasn't been
-     independently verified against a live submission in this project.
-     Rather than parse response HTML/JSON and risk silently treating a
-     real success as a failure (or vice versa) on an unverified shape,
-     this takes the deliberate, documented position: any fetch that
-     resolves at all (no thrown network error) is treated as success.
-     A malformed submission would be caught by the form's own
-     server-side validation (required email field) before it ever
-     reaches this handler. Worth confirming with one real test
-     submission during QA. */
-  if (emailForm) {
-    emailForm.addEventListener('submit', function (e) {
-      e.preventDefault();
-      var formData = new FormData(emailForm);
-      var action = emailForm.getAttribute('action') || '/contact';
-      function showSuccess() {
-        emailForm.classList.add('is-hidden');
-        if (emailSuccess) emailSuccess.classList.add('is-shown');
-        setState('claimed');
-      }
-      try {
-        fetch(action, { method: 'POST', body: formData, credentials: 'same-origin' })
-          .then(showSuccess)
-          .catch(showSuccess); // network error: still show success rather than strand the visitor — the real <form> fallback (progressive enhancement) remains available if they reload.
-      } catch (err) {
-        showSuccess();
-      }
-    });
-  }
-
   /* ---- Trigger: scroll depth OR dwell time, whichever comes first
-     (build spec Section 2 — never on page-load, never exit-intent). ---- */
+     (build spec Section 2 — never on page-load, never exit-intent).
+     Unchanged from v1. ---- */
   var startTime = Date.now();
   var fired = false;
 
