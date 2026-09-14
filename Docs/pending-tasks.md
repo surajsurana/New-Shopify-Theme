@@ -168,6 +168,22 @@ Elfsight/EmbedSocial/etc. -- doesn't want a permanent external-app dependency).
   work. Worth confirming with Suraj what's actually showing on Live right now
   before assuming it's still placeholder content.
 
+**Follow-up filed 2026-09-13.** Original case `2-4183000041674` ran past
+Google's stated 7-10 business day window with no response (confirmed no
+approval/decision email in `suraj.surana@gmail.com`, and confirmed directly
+in Google Cloud Console that the Business Profile APIs' real quota is still
+0 -- not just an email-search gap). Suraj enabled the two non-restricted
+APIs (My Business Account Management API, My Business Business Information
+API) in Cloud Console project `project-da1a7b04-6eee-443f-bb8`
+(number `250716548984`) -- confirmed enabled but quota still 0, consistent
+with access not yet granted. Submitted a status-check follow-up via
+Google's official Business Profile API Support form (support.google.com/
+business/contact/api_default), category "GBP API v4.9" (the specific
+legacy reviews-serving API the original request gates), referencing the
+original case ID and asking for a status update. **New case ID:
+`6-4354000041396`.** Watching `suraj.surana@gmail.com` for a reply on
+either case number.
+
 See memory `ka_google_reviews_livesync_status` for full detail if resuming
 this in a future session.
 
@@ -805,7 +821,17 @@ Deployed to staging only, following the full validate/push/themeFilesUpsert/
 checksum-verify procedure. Live/main untouched, no promotion approval
 sought or in scope for this change.
 
-### 28. Homepage Google Reviews -- manual refresh, blocked on Suraj
+**RESOLVED and LIVE 2026-09-11.** Suraj reviewed on staging and approved.
+Drift check against actual Live came back clean (Category A, 0 unrelated
+changes, 0 live-only edits) both times. Promoted `staging` -> `main`,
+post-live verification PASS (checksums matched approved staging state,
+fresh `updatedAt`) -- independently re-verified in a separate pass via a
+direct Shopify API query and real git history, not just the promotion
+agent's own report. Item #27 is now fully closed: native-ratio product
+gallery live sitewide (product page only, as scoped) and the Designers'
+Note spacing reduction both confirmed on karishmaashita.com.
+
+### 28. Homepage Google Reviews -- RESOLVED and LIVE 2026-09-11
 **Source:** Suraj, 2026-09-07: wants to bring in new/current real Google
 reviews and update the homepage section now (separate from the automated
 live-sync in #3, which stays deferred until the Google API access is
@@ -824,3 +850,24 @@ copy-paste (a) the current star rating + review count, and (b) full text of
 whichever 2-3 reviews he wants featured. Candidates flagged from truncated
 previews, if he wants a starting point: Arushi, Trina, and Rajdeep (all
 5-star, strong positive openers, just need the complete text pulled).
+
+**RESOLVED and LIVE 2026-09-11.** Suraj noticed the site's count (64) had
+fallen behind his real Google Business Profile count (67) and sent
+screenshots of the actual reviews panel, supplying verified complete text
+directly (unblocking this). Count corrected to 67 in all 3 places it
+appears (`ka-voice-of-bride` homepage section, `ka-product-main` and
+`ka-product-reviews` on the product page); rating stayed 4.7, unchanged.
+Two new reviews added verbatim: Arushi G. (5-star, full quote) and Sakshi K.
+(4-star, "Good design love the outfit"); Anmol Yoseph Yadav's review has no
+written text so contributes only to the count. Also built real per-card
+star ratings on `ka-product-reviews.liquid` (previously every card hardcoded
+5 stars regardless of actual rating -- Sakshi's card would have shown 5
+despite her real 4-star review). Shivani R.'s and Ragini G.'s ratings
+(pre-existing cards, set provisionally to match old behavior) were
+independently confirmed genuinely 5-star from a second round of Suraj's
+screenshots. Promoted to Live 2026-09-11 following the full drift-check +
+approval procedure, post-live verification PASS, independently re-verified
+via direct git/Shopify API checks outside the promotion agent's own report.
+Note: the automated live-sync in #3 above is unaffected and still
+separately blocked on Google's API approval -- this was a manual content
+refresh only, same mechanism as Suraj's earlier manual curation.

@@ -48,5 +48,29 @@
         "info": "Display-only price converter (INR / USD / GBP / CAD / AED) for international visitors — a chip in the header lets them browse in their own currency. Shopify checkout always stays in Indian Rupees; this setting never changes what a customer is actually charged. Turn off instantly (no redeploy needed) if the exchange-rate service ever misbehaves — every price reverts to its normal server-rendered INR display with nothing else affected."
       }
     ]
+  },
+  {
+    "name": "Welcome Offer (KLP3000)",
+    "settings": [
+      {
+        "type": "paragraph",
+        "content": "Docs/welcome-offer-popup-build-spec.md (v2). Sitewide, engagement-triggered invitation card for the first-purchase discount code — not gated behind an on/off toggle here by design (spec's file map: same unconditional-load tier as the wishlist module). To pause it, remove/blank the discount code below; the card never renders with a blank code. v2 revision (2026-09-14): email capture removed entirely per Suraj's review of the staged v1 build — the card is now offer + code + CTA only, and every setting below reflects that (the old title/body/email-* settings from v1 are gone, replaced by the amount + amount-caption settings that now carry the card's main message)."
+      },
+      { "type": "text", "id": "welcome_offer_code", "label": "Discount code", "default": "KLP3000", "info": "Must exactly match a live, active Shopify discount code. Leave blank to disable the card entirely." },
+      { "type": "text", "id": "welcome_offer_redirect", "label": "Redirect path after auto-apply", "default": "/collections/all", "info": "Where the native /discount/{code}?redirect= deep link sends the visitor once the code is applied to their session." },
+      {
+        "type": "header",
+        "content": "Copy"
+      },
+      { "type": "text",     "id": "welcome_offer_eyebrow",        "label": "Eyebrow",              "default": "A Welcome, From Us" },
+      { "type": "text",     "id": "welcome_offer_amount",         "label": "Amount (large display numeral)", "default": "₹3,000", "info": "The single largest, highest-contrast element on the card — replaces v1's separate italic headline, which is removed in v2 (build spec v2 Section 3)." },
+      { "type": "text",     "id": "welcome_offer_amount_sub",     "label": "Amount caption (one line)", "default": "toward your first piece, with our compliments" },
+      { "type": "text",     "id": "welcome_offer_code_label",     "label": "Code plate label",     "default": "Code" },
+      { "type": "text",     "id": "welcome_offer_copy_label",     "label": "Copy button label",    "default": "Copy" },
+      { "type": "text",     "id": "welcome_offer_copied_label",   "label": "Copy button, after copying", "default": "Copied" },
+      { "type": "text",     "id": "welcome_offer_cta_label",      "label": "Primary CTA label",    "default": "Begin Shopping" },
+      { "type": "textarea", "id": "welcome_offer_fine_print",     "label": "Fine print", "default": "Valid toward your first order. Not combinable with other offers.", "info": "Checked against KLP3000's actual Shopify discount config on 2026-09-14: appliesOncePerCustomer is false (the code is genuinely reusable per customer, not one-use — per Suraj, the real Shopify discount config stays as-is, so no 'one use per customer' claim is made here) and combinesWith is false on every axis (so 'Not combinable with other offers' is accurate and is kept). If the discount's real configuration ever changes, re-check this text against it — see build spec Flag F3." },
+      { "type": "text",     "id": "welcome_offer_dismiss_label",  "label": "Dismiss link label",   "default": "Not today" }
+    ]
   }
 ]
