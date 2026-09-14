@@ -1,0 +1,136 @@
+{%- comment -%}
+  K&A Welcome Offer (KLP3000) — sitewide, engagement-triggered invitation
+  card. Docs/welcome-offer-popup-build-spec.md.
+  Prototype: Prototypes/welcome-offer-popup-v1.html.
+
+  RENDERED FROM: layout/theme.liquid, once, sitewide, excluding the cart
+  template (see the {%- unless template == 'cart' -%} guard at the call
+  site) — NOT nested inside sections/ka-nav.liquid like the search
+  overlay (snippets/ka-search-overlay.liquid), because there's no parent
+  section to borrow `section.settings` from when rendering directly out
+  of a layout file. Instead this follows the OTHER established pattern
+  for a global, singleton, theme-editor-configurable overlay already in
+  this codebase — snippets/ka-concierge-float.liquid — reading copy/
+  config from global `settings.*` (config/settings_schema.json, "Welcome
+  Offer (KLP3000)" group) rather than a per-instance section schema.
+  This still satisfies the build spec's "Suraj can edit copy from the
+  theme editor without a code change" requirement exactly as well as a
+  section schema would.
+
+  ELIGIBILITY GATE (spec Section 2, condition 1) — server-side, before
+  any client-side trigger logic gets a chance to run: a signed-in
+  customer with at least one prior order NEVER receives this markup at
+  all, not even hidden markup the JS could theoretically open. Also
+  gated on the discount code setting being non-blank, so a merchant who
+  clears the code field gets a clean "card doesn't exist" rather than a
+  broken empty card (mirrors ka-voice-of-bride.liquid's own "don't ever
+  publish placeholder/empty content" guard).
+
+  Conditions 2-5 (no prior claim, no recent dismissal, once per session,
+  not on cart / not while another overlay is open) are all client-side,
+  in assets/ka-welcome-offer.js — see that file's header for the full
+  state machine. The cart-template exclusion happens at the call site
+  in layout/theme.liquid (this snippet never even renders there), so
+  it's a third, redundant-on-purpose layer alongside the JS's own belt-
+  and-suspenders check against document.body's template class.
+{%- endcomment -%}
+
+{%- comment -%}
+  Explicit step-by-step assigns rather than a single compound `and`/`or`
+  condition — Liquid has no parentheses for grouping boolean logic, so
+  `A and B or A and C` is genuinely ambiguous/error-prone to reason
+  about correctly in one line. Same defensive style already used for
+  ka-voice-of-bride.liquid's own has_synced_data / has_editor_content
+  gate.
+{%- endcomment -%}
+{%- liquid
+  assign is_returning_customer = false
+  if customer and customer.orders_count > 0
+    assign is_returning_customer = true
+  endif
+
+  assign should_render = false
+  if settings.welcome_offer_code != blank and is_returning_customer == false
+    assign should_render = true
+  endif
+-%}
+{%- if should_render -%}
+{{ 'ka-welcome-offer.css' | asset_url | stylesheet_tag }}
+
+<div class="ka-welcome-scrim" id="kaWelcomeScrim" role="presentation" data-ka-welcome-redirect="{{ settings.welcome_offer_redirect | default: '/collections/all' }}">
+  <div class="ka-welcome" id="kaWelcome" role="dialog" aria-modal="true" aria-labelledby="kaWelcomeTitle">
+    <div class="ka-welcome__handle" aria-hidden="true"></div>
+    <button type="button" class="ka-welcome__close" id="kaWelcomeClose" aria-label="Close">&times;</button>
+
+    <div class="ka-welcome__mark" aria-hidden="true"></div>
+    <span class="eyebrow ka-welcome__eyebrow">{{ settings.welcome_offer_eyebrow | default: 'A Welcome, From Us' }}</span>
+    {%- comment -%}
+      No inline Liquid-level `| default:` fallback here (unlike the other
+      text fields below) — a literal embedded newline inside a filter
+      argument string is untested/risky Liquid syntax to rely on. The
+      schema default (config/settings_schema.json) already guarantees
+      settings.welcome_offer_title is never actually blank once the
+      theme loads on Shopify, so newline_to_br always has a real value
+      to work with regardless.
+    {%- endcomment -%}
+    <h2 class="ka-welcome__title" id="kaWelcomeTitle">{{ settings.welcome_offer_title | newline_to_br }}</h2>
+    <p class="ka-welcome__body">{{ settings.welcome_offer_body | default: "Every piece we create begins with a conversation — a fitting, a fabric chosen, a silhouette considered. As you begin yours, please accept ₹3,000 toward your first, with our compliments." }}</p>
+
+    <div class="ka-welcome__code">
+      <div class="ka-welcome__code-text">
+        <span class="ka-welcome__code-label">{{ settings.welcome_offer_code_label | default: 'Your Code' }}</span>
+        <span class="ka-welcome__code-value" id="kaWelcomeCodeValue">{{ settings.welcome_offer_code }}</span>
+      </div>
+      <button type="button" class="ka-welcome__copy" id="kaWelcomeCopy" data-copy-label="{{ settings.welcome_offer_copy_label | default: 'Copy' }}" data-copied-label="{{ settings.welcome_offer_copied_label | default: 'Copied' }}">{{ settings.welcome_offer_copy_label | default: 'Copy' }}</button>
+    </div>
+
+    {%- comment -%}
+      Native Shopify discount deep-link (build spec §5, Flag F1) — applies
+      the code to the visitor's checkout session and redirects, zero app
+      dependency. Real anchor href (not JS-only) so it works even if the
+      claim-tracking JS below fails to attach for any reason; the click
+      handler in ka-welcome-offer.js only adds the localStorage "claimed"
+      write on top of this, it doesn't replace the navigation itself.
+    {%- endcomment -%}
+    <a href="/discount/{{ settings.welcome_offer_code }}?redirect={{ settings.welcome_offer_redirect | default: '/collections/all' }}" class="ka-welcome__cta" id="kaWelcomeCta">{{ settings.welcome_offer_cta_label | default: 'Begin Shopping' }}</a>
+    <button type="button" class="ka-welcome__email-toggle" id="kaWelcomeEmailToggle">{{ settings.welcome_offer_email_toggle | default: 'Prefer it by email? →' }}</button>
+
+    {%- comment -%}
+      Same {% form 'customer' %} pattern as sections/ka-footer.liquid's
+      Inner Circle signup (build spec §5) — same contact[email] field
+      name, same underlying Shopify customer-subscribe endpoint, third
+      tag "welcome-offer-KLP3000" added alongside the footer's existing
+      two so this acquisition source is attributable without a second,
+      disconnected capture flow (Flag F4: no new Shopify config needed).
+
+      UNLIKE the footer's version, this form is intercepted client-side
+      (assets/ka-welcome-offer.js, preventDefault + fetch) rather than
+      left as a plain full-page-reload submit. Reasoning: a real
+      full-page navigation would tear down this popup's own open JS
+      state entirely, contradicting the prototype's demonstrated
+      in-place "Sent." confirmation with the card still open (Prototypes/
+      welcome-offer-popup-v1.html). The <form>'s real action/method are
+      left intact as a no-JS fallback (progressive enhancement, same
+      principle already used for the search form in
+      snippets/ka-search-overlay.liquid) — if JS fails to attach, this
+      still works as a normal full-page subscribe, just without the
+      inline success message. If `form.posted_successfully?` is true here
+      (a real no-JS submission genuinely completed and reloaded this
+      page), skip straight to the success paragraph server-side too —
+      belt-and-suspenders with the JS path, not a replacement for it.
+    {%- endcomment -%}
+    {%- form 'customer', id: 'kaWelcomeEmailForm', class: 'ka-welcome__email-form is-hidden' -%}
+      <input type="hidden" name="contact[tags]" value="newsletter,ka-correspondence,welcome-offer-{{ settings.welcome_offer_code }}" />
+      <div class="ka-welcome__email-row">
+        <input type="email" name="contact[email]" id="kaWelcomeEmailInput" placeholder="Your email address" required />
+        <button type="submit">Send</button>
+      </div>
+      <p class="ka-welcome__email-note">{{ settings.welcome_offer_email_note | default: "We'll also add you to The Inner Circle — collection previews and styling notes, delivered quietly. Unsubscribe anytime." }}</p>
+    {%- endform -%}
+    <p class="ka-welcome__email-success{% if form.posted_successfully? %} is-shown{% endif %}" id="kaWelcomeEmailSuccess">{{ settings.welcome_offer_email_success | default: 'Sent. And welcome to The Inner Circle.' }}</p>
+
+    <p class="ka-welcome__fine">{{ settings.welcome_offer_fine_print | default: 'Valid toward your first order. One use per customer. Not combinable with other offers.' }}</p>
+    <button type="button" class="ka-welcome__dismiss" id="kaWelcomeDismiss">{{ settings.welcome_offer_dismiss_label | default: 'Not today' }}</button>
+  </div>
+</div>
+{%- endif -%}

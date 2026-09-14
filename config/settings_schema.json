@@ -48,5 +48,32 @@
         "info": "Display-only price converter (INR / USD / GBP / CAD / AED) for international visitors — a chip in the header lets them browse in their own currency. Shopify checkout always stays in Indian Rupees; this setting never changes what a customer is actually charged. Turn off instantly (no redeploy needed) if the exchange-rate service ever misbehaves — every price reverts to its normal server-rendered INR display with nothing else affected."
       }
     ]
+  },
+  {
+    "name": "Welcome Offer (KLP3000)",
+    "settings": [
+      {
+        "type": "paragraph",
+        "content": "Docs/welcome-offer-popup-build-spec.md. Sitewide, engagement-triggered invitation card for the first-purchase discount code — not gated behind an on/off toggle here by design (spec's file map: same unconditional-load tier as the wishlist module). To pause it, remove/blank the discount code below; the card never renders with a blank code."
+      },
+      { "type": "text", "id": "welcome_offer_code", "label": "Discount code", "default": "KLP3000", "info": "Must exactly match a live, active Shopify discount code. Leave blank to disable the card entirely." },
+      { "type": "text", "id": "welcome_offer_redirect", "label": "Redirect path after auto-apply", "default": "/collections/all", "info": "Where the native /discount/{code}?redirect= deep link sends the visitor once the code is applied to their session." },
+      {
+        "type": "header",
+        "content": "Copy"
+      },
+      { "type": "text",     "id": "welcome_offer_eyebrow",        "label": "Eyebrow",              "default": "A Welcome, From Us" },
+      { "type": "text",     "id": "welcome_offer_title",          "label": "Title (two lines)",    "default": "Consider This\nOur Welcome.", "info": "Line break becomes the two-line title, matching the Appointment section's title construction." },
+      { "type": "textarea", "id": "welcome_offer_body",           "label": "Body",                 "default": "Every piece we create begins with a conversation — a fitting, a fabric chosen, a silhouette considered. As you begin yours, please accept ₹3,000 toward your first, with our compliments." },
+      { "type": "text",     "id": "welcome_offer_code_label",     "label": "Code plate label",     "default": "Your Code" },
+      { "type": "text",     "id": "welcome_offer_copy_label",     "label": "Copy button label",    "default": "Copy" },
+      { "type": "text",     "id": "welcome_offer_copied_label",   "label": "Copy button, after copying", "default": "Copied" },
+      { "type": "text",     "id": "welcome_offer_cta_label",      "label": "Primary CTA label",    "default": "Begin Shopping" },
+      { "type": "text",     "id": "welcome_offer_email_toggle",   "label": "Email toggle label",   "default": "Prefer it by email? →" },
+      { "type": "textarea", "id": "welcome_offer_email_note",     "label": "Email field note",     "default": "We'll also add you to The Inner Circle — collection previews and styling notes, delivered quietly. Unsubscribe anytime." },
+      { "type": "text",     "id": "welcome_offer_email_success",  "label": "Email success message", "default": "Sent. And welcome to The Inner Circle." },
+      { "type": "textarea", "id": "welcome_offer_fine_print",     "label": "Fine print", "default": "Valid toward your first order. One use per customer. Not combinable with other offers.", "info": "Confirm this matches the discount code's actual configured Shopify rules (usage limits, eligibility, combinability) before relying on it — see build spec Flag F3." },
+      { "type": "text",     "id": "welcome_offer_dismiss_label",  "label": "Dismiss link label",   "default": "Not today" }
+    ]
   }
 ]
