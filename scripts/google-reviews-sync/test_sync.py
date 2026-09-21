@@ -98,6 +98,13 @@ class RatingAndSelection(unittest.TestCase):
         payload = sync.transform_reviews({"reviews": [review("FIVE", "a"), review("FOUR", "b")], "average_rating": 5, "total_review_count": 2})
         self.assertEqual(len(payload["reviews"]), 2)
 
+    def test_payload_reviews_carry_numeric_rating(self):
+        payload = sync.transform_reviews({"reviews": [review("FIVE", "a"), review("FOUR", "b"), review("THREE", "c")], "average_rating": 5, "total_review_count": 3})
+        self.assertEqual([(r["quote"], r["rating"]) for r in payload["reviews"]], [("a", 5), ("b", 4)])
+        for r in payload["reviews"]:
+            self.assertIsInstance(r["rating"], int)
+            self.assertGreaterEqual(r["rating"], config.MIN_STAR_RATING)
+
     def test_threshold_is_configurable(self):
         config.MIN_STAR_RATING = 5
         payload = sync.transform_reviews({"reviews": [review("FOUR", "a"), review("FIVE", "b")], "average_rating": 5, "total_review_count": 2})

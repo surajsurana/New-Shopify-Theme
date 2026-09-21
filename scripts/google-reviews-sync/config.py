@@ -86,10 +86,12 @@ METAFIELD_NAMESPACE = "custom"
 METAFIELD_KEY = "google_reviews"
 METAFIELD_TYPE = "json"
 
-# How many review excerpts to keep in the synced payload. Matches the
-# section's card grid (sections/ka-voice-of-bride.liquid renders up to 5 on the
-# synced path, same as the editor-block fallback path).
-MAX_REVIEWS = int(_optional("MAX_REVIEWS", "5"))
+# How many review excerpts to keep in the synced payload (a CAP on the data, not
+# a layout decision). Each theme surface renders its own `limit`: the homepage
+# section (sections/ka-voice-of-bride.liquid) currently shows the first 5 and the
+# product page (sections/ka-product-reviews.liquid) up to 6, so 6 covers both.
+# Final on-page card counts/layout are a Creative Director decision.
+MAX_REVIEWS = int(_optional("MAX_REVIEWS", "6"))
 
 # Minimum star rating (1-5) for a review to be eligible for the homepage cards.
 # Per-review `starRating` from Google is the enum ONE..FIVE (see

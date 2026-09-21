@@ -1,18 +1,81 @@
 {{ 'ka-product-reviews.css' | asset_url | stylesheet_tag }}
 
+{%- comment -%}
+  Live-synced data (2026-09-21): when the Shop metafield custom.google_reviews
+  (written by scripts/google-reviews-sync) is populated -- same rule as the
+  homepage voice-of-bride section: a rating + count and at least one synced
+  review -- the score, count and up to 6 review cards come from it; otherwise
+  the section settings/blocks below are used exactly as before. Every synced
+  review is 4-5 stars and carries its numeric `rating`. Synced values are
+  untrusted text (Liquid does not auto-escape), so every one is escaped.
+{%- endcomment -%}
+{%- liquid
+  assign gr = shop.metafields.custom.google_reviews.value
+  assign gr_quotes = 0
+  for gr_review in gr.reviews
+    if gr_review.quote != blank
+      assign gr_quotes = gr_quotes | plus: 1
+    endif
+  endfor
+
+  assign use_synced = false
+  if gr != blank and gr_quotes > 0 and gr.rating_number != blank and gr.rating_count != blank
+    assign use_synced = true
+  endif
+
+  if use_synced
+    assign score = gr.rating_number | escape
+    assign count = gr.rating_count | escape
+    assign synced_url = gr.google_url
+    if synced_url != blank
+      assign more_url = synced_url | escape
+    else
+      assign more_url = section.settings.google_url
+    endif
+  else
+    assign score = section.settings.rating_score
+    assign count = section.settings.rating_count
+    assign more_url = section.settings.google_url
+  endif
+-%}
+
 <section class="ka-voice" id="reviews">
   <div class="reveal">
     <div class="ka-voice__glogo">Google Reviews</div>
     <div class="ka-voice__summary">
-      <div class="ka-voice__score">{{ section.settings.rating_score }}</div>
+      <div class="ka-voice__score">{{ score }}</div>
       <div style="text-align:left">
         <div class="ka-voice__summary"><span class="ka-voice__stars">&#9733;&#9733;&#9733;&#9733;&#9733;</span></div>
-        <div class="ka-voice__cnt">Based on {{ section.settings.rating_count }} reviews</div>
+        <div class="ka-voice__cnt">Based on {{ count }} reviews</div>
       </div>
     </div>
     <div class="ka-voice__head">{{ section.settings.heading }}</div>
 
     <div class="ka-rev-grid">
+      {%- if use_synced -%}
+        {%- for review in gr.reviews limit: 6 -%}
+          {%- if review.quote != blank -%}
+            {%- assign rating = review.rating | default: 0 -%}
+            <div class="ka-rev">
+              {%- if rating > 0 -%}
+                <div class="ka-rev__stars">
+                  {%- for i in (1..5) -%}
+                    {%- if i <= rating -%}&#9733;{%- else -%}&#9734;{%- endif -%}
+                  {%- endfor -%}
+                </div>
+              {%- endif -%}
+              <p>{{ review.quote | escape }}</p>
+              <div class="ka-rev__who">
+                <div class="ka-rev__av">{{ review.reviewer_name | slice: 0 | escape }}</div>
+                <div>
+                  <div class="ka-rev__nm">{{ review.reviewer_name | escape }}</div>
+                  <div class="ka-rev__src">via Google</div>
+                </div>
+              </div>
+            </div>
+          {%- endif -%}
+        {%- endfor -%}
+      {%- else -%}
       {%- for block in section.blocks -%}
         {%- comment -%}
           Per-review star rating (2026-09-11, follow-up to the 64->67
@@ -43,10 +106,11 @@
           </div>
         </div>
       {%- endfor -%}
+      {%- endif -%}
     </div>
 
-    {%- if section.settings.google_url != blank -%}
-      <div class="ka-voice__more"><a href="{{ section.settings.google_url }}" target="_blank" rel="noopener">Read all {{ section.settings.rating_count }} reviews on Google &rarr;</a></div>
+    {%- if more_url != blank -%}
+      <div class="ka-voice__more"><a href="{{ more_url }}" target="_blank" rel="noopener">Read all {{ count }} reviews on Google &rarr;</a></div>
     {%- endif -%}
     {%- if section.settings.disclaimer != blank -%}
       <div class="ka-voice__note">{{ section.settings.disclaimer }}</div>

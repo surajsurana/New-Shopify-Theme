@@ -192,6 +192,9 @@ def transform_reviews(raw: dict) -> dict:
                 "quote": review_text(r.get("comment")),
                 "reviewer_name": format_reviewer_name(r.get("reviewer", {}).get("displayName", "")),
                 "occasion": "",  # see KNOWN LIMITATION above
+                # Numeric 1-5 star rating of THIS review (always >= MIN_STAR_RATING). Used by the
+                # product page's review cards; the homepage section ignores it.
+                "rating": star_rating_value(r),
             }
             for r in top_reviews
         ],
