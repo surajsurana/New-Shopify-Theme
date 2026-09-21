@@ -139,9 +139,9 @@
               <p class="ka-voice-card__quote">{{ review.quote | truncatewords: 40, '…' | escape }}</p>
               <div class="ka-voice-card__meta">
                 <span class="ka-voice-card__name">{{ review.reviewer_name | escape }}</span>
-                {%- comment -%} plus: 0 coerces to a number, so a non-numeric value can never reach the aria-label {%- endcomment -%}
-                {%- assign r = review.rating | plus: 0 -%}
-                {%- if r > 0 -%}<span class="ka-voice-card__stars" aria-label="{{ r }} out of 5">{% for i in (1..5) %}{% if i <= r %}&#9733;{% else %}&#9734;{% endif %}{% endfor %}</span>{%- endif -%}
+                {%- comment -%} plus: 0 coerces to a number (a non-numeric value can never reach the aria-label); round + at_most: 5 clamp it to at most 5, and r > 0 below means 1-5 {%- endcomment -%}
+                {%- assign r = review.rating | plus: 0 | round | at_most: 5 -%}
+                {%- if r > 0 -%}<span class="ka-voice-card__stars" role="img" aria-label="{{ r }} out of 5 stars">{% for i in (1..5) %}{% if i <= r %}&#9733;{% else %}&#9734;{% endif %}{% endfor %}</span>{%- endif -%}
               </div>
             </div>
           {% endif %}

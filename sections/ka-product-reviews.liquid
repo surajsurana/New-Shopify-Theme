@@ -58,11 +58,11 @@
       {%- if use_synced -%}
         {%- for review in gr.reviews limit: 6 -%}
           {%- if review.quote != blank -%}
-            {%- comment -%} plus: 0 coerces to a number (missing/non-numeric -> 0 -> no star row) {%- endcomment -%}
-            {%- assign rating = review.rating | plus: 0 -%}
+            {%- comment -%} plus: 0 coerces to a number (missing/non-numeric -> 0 -> no star row); round + at_most: 5 clamp to 1-5 {%- endcomment -%}
+            {%- assign rating = review.rating | plus: 0 | round | at_most: 5 -%}
             <div class="ka-rev">
               {%- if rating > 0 -%}
-                <div class="ka-rev__stars">
+                <div class="ka-rev__stars" role="img" aria-label="{{ rating }} out of 5 stars">
                   {%- for i in (1..5) -%}
                     {%- if i <= rating -%}&#9733;{%- else -%}&#9734;{%- endif -%}
                   {%- endfor -%}
