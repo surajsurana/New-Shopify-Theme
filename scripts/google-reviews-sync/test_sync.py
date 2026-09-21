@@ -97,5 +97,41 @@ class RatingAndSelection(unittest.TestCase):
         self.assertEqual([r["quote"] for r in payload["reviews"]], ["b"])
 
 
+class TranslatedComments(unittest.TestCase):
+    HINDI = "आउटफिट बहुत पसंद आया"
+
+    def test_translated_with_original_uses_original(self):
+        c = "(Translated by Google) Loved the outfit!\n\n(Original) " + self.HINDI
+        self.assertEqual(sync.review_text(c), self.HINDI)
+        self.assertTrue(sync.has_translation_prefix(c))
+
+    def test_translated_without_original_falls_back_to_text_after_prefix(self):
+        self.assertEqual(sync.review_text("(Translated by Google) Loved the outfit!"), "Loved the outfit!")
+        self.assertEqual(sync.review_text("  (Translated by Google)   Loved it  "), "Loved it")
+
+    def test_original_marker_with_empty_original_uses_translated_text(self):
+        self.assertEqual(sync.review_text("(Translated by Google) Loved it\n\n(Original) "), "Loved it")
+
+    def test_normal_comment_unchanged(self):
+        for c in ["Absolutely loved it!", "  padded  ", "Mentions (Original) design but no prefix", "Not (Translated by Google) at start"]:
+            self.assertEqual(sync.review_text(c), c.strip())
+            self.assertFalse(sync.has_translation_prefix(c))
+        self.assertEqual(sync.review_text(None), "")
+        self.assertEqual(sync.review_text(""), "")
+
+    def test_marker_strings_never_published(self):
+        reviews = [
+            review("FIVE", "(Translated by Google) Nice\n\n(Original) Bien"),
+            review("FIVE", "(Translated by Google) Only translated"),
+            review("FIVE", "(Translated by Google) \n\n(Original) "),  # nothing left -> no text
+        ]
+        payload = sync.transform_reviews({"reviews": reviews, "average_rating": 5, "total_review_count": 3})
+        self.assertEqual([r["quote"] for r in payload["reviews"]], ["Bien", "Only translated"])
+        for r in payload["reviews"]:
+            self.assertNotIn("Translated by Google", r["quote"])
+            self.assertNotIn("(Original)", r["quote"])
+        self.assertEqual(len(sync.classify_reviews(reviews)["no_text"]), 1)
+
+
 if __name__ == "__main__":
     unittest.main(verbosity=2)

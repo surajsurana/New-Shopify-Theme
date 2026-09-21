@@ -106,6 +106,39 @@ def format_reviewer_name(display_name: str) -> str:
     return f"{first} {initial.upper()[:1]}." if initial else first
 
 
+TRANSLATED_PREFIX = "(Translated by Google)"
+ORIGINAL_MARKER = "(Original)"
+
+
+def has_translation_prefix(comment) -> bool:
+    return (comment or "").strip().startswith(TRANSLATED_PREFIX)
+
+
+def review_text(comment) -> str:
+    """
+    The verbatim reviewer text to publish (the site's rule: never a translation).
+
+    Google's v4 API can return a machine-translated comment shaped like
+        "(Translated by Google) <translated text>
+
+(Original) <original text>"
+    In that case return the ORIGINAL text, with both markers removed. If the
+    "(Original)" marker (or the original text after it) is missing, fall back
+    to the text after the "(Translated by Google)" prefix so a marker string is
+    never shown. Any comment that does not start with the prefix is returned
+    unchanged (just stripped).
+    """
+    text = (comment or "").strip()
+    if not text.startswith(TRANSLATED_PREFIX):
+        return text
+    body = text[len(TRANSLATED_PREFIX):]
+    idx = body.find(ORIGINAL_MARKER)
+    if idx == -1:
+        return body.strip()
+    original = body[idx + len(ORIGINAL_MARKER):].strip()
+    return original or body[:idx].strip()
+
+
 def classify_reviews(reviews: list[dict]) -> dict:
     """
     Buckets every fetched review. Precedence: no text first (any rating), then
@@ -114,7 +147,7 @@ def classify_reviews(reviews: list[dict]) -> dict:
     """
     eligible, no_text, below_min = [], [], []
     for r in reviews:
-        if not r.get("comment", "").strip():
+        if not review_text(r.get("comment")):
             no_text.append(r)
         elif star_rating_value(r) < config.MIN_STAR_RATING:
             below_min.append(r)
@@ -156,7 +189,7 @@ def transform_reviews(raw: dict) -> dict:
         "google_url": config.GOOGLE_REVIEW_URL or None,
         "reviews": [
             {
-                "quote": r["comment"].strip(),
+                "quote": review_text(r.get("comment")),
                 "reviewer_name": format_reviewer_name(r.get("reviewer", {}).get("displayName", "")),
                 "occasion": "",  # see KNOWN LIMITATION above
             }
@@ -176,12 +209,14 @@ def print_dry_run(raw: dict, payload: dict) -> None:
         pass
     reviews = raw["reviews"]
     buckets = classify_reviews(reviews)
-    with_text = [r for r in reviews if r.get("comment", "").strip()]
+    with_text = [r for r in reviews if review_text(r.get("comment"))]
     print("=" * 70)
     print("DRY RUN -- nothing was written to Shopify. Raw figures from Google:")
     print(f"  totalReviewCount (Google) : {raw['total_review_count']}")
     print(f"  averageRating   (Google)  : {raw['average_rating']}")
     print(f"  reviews returned by fetch : {len(reviews)}  ({len(with_text)} with text, {len(reviews) - len(with_text)} without)")
+    translated = [r for r in reviews if has_translation_prefix(r.get("comment"))]
+    print(f"  comments with a '(Translated by Google)' prefix : {len(translated)}")
     print(f"  min star rating for cards  : {config.MIN_STAR_RATING}   max cards: {config.MAX_REVIEWS}")
     print("  Selection breakdown (counts only):")
     print(f"    excluded - no text (any rating)          : {len(buckets['no_text'])}")
@@ -191,7 +226,7 @@ def print_dry_run(raw: dict, payload: dict) -> None:
     print("-" * 70)
     print("All fetched reviews (order the API returned = updateTime desc):")
     for i, r in enumerate(reviews, 1):
-        has_text = "text" if r.get("comment", "").strip() else "NO TEXT"
+        has_text = "text" if review_text(r.get("comment")) else "NO TEXT"
         name = r.get("reviewer", {}).get("displayName", "")
         print(
             f"  {i:>2}. {r.get('starRating', '?'):<5} {has_text:<7} "
