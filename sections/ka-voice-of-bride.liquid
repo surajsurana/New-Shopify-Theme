@@ -126,8 +126,10 @@
       is replaced by the real star rating of the review (each synced review
       carries a numeric `rating`), and quotes are cut at a word boundary
       after 40 words (truncatewords, then escape -- truncate first so the
-      count is on raw text). The editor-block path is untouched: it keeps
-      its occasion field and is never truncated.
+      count is on raw text). The editor-block fallback path now renders the
+      same footer (name + star row from block.settings.rating; the occasion
+      setting is kept in the schema but no longer displayed) and is never
+      truncated (CD addendum 8.2 CR-1/CR-2).
     {% endcomment %}
     {% assign delay_classes = 'reveal, reveal reveal-delay-1, reveal reveal-delay-2, reveal reveal-delay-3, reveal reveal-delay-4, reveal reveal-delay-4' | split: ', ' %}
     {% if has_synced_data %}
@@ -141,7 +143,7 @@
                 <span class="ka-voice-card__name">{{ review.reviewer_name | escape }}</span>
                 {%- comment -%} plus: 0 coerces to a number (a non-numeric value can never reach the aria-label); round + at_most: 5 clamp it to at most 5, and r > 0 below means 1-5 {%- endcomment -%}
                 {%- assign r = review.rating | plus: 0 | round | at_most: 5 -%}
-                {%- if r > 0 -%}<span class="ka-voice-card__stars" role="img" aria-label="{{ r }} out of 5 stars">{% for i in (1..5) %}{% if i <= r %}&#9733;{% else %}&#9734;{% endif %}{% endfor %}</span>{%- endif -%}
+                {%- if r > 0 -%}<span class="ka-voice-card__stars" role="img" aria-label="{{ r }} out of 5 stars">{% for i in (1..5) %}<span{% unless i <= r %} class="is-off"{% endunless %}>&#9733;</span>{% endfor %}</span>{%- endif -%}
               </div>
             </div>
           {% endif %}
@@ -156,7 +158,9 @@
               <p class="ka-voice-card__quote">{{ block.settings.quote }}</p>
               <div class="ka-voice-card__meta">
                 <span class="ka-voice-card__name">{{ block.settings.reviewer_name }}</span>
-                <span class="ka-voice-card__occasion">{{ block.settings.occasion }}</span>
+                {%- comment -%} same star row as the synced path (occasion is no longer displayed); rating is a 1-5 block setting {%- endcomment -%}
+                {%- assign r = block.settings.rating | plus: 0 | round | at_most: 5 -%}
+                {%- if r > 0 -%}<span class="ka-voice-card__stars" role="img" aria-label="{{ r }} out of 5 stars">{% for i in (1..5) %}<span{% unless i <= r %} class="is-off"{% endunless %}>&#9733;</span>{% endfor %}</span>{%- endif -%}
               </div>
             </div>
           {% endif %}
@@ -219,7 +223,8 @@
           "info": "Must be the exact text from the reviewer's Google review. Do not paraphrase."
         },
         { "type": "text", "id": "reviewer_name", "label": "Reviewer first name and initial (e.g. Priya S.)" },
-        { "type": "text", "id": "occasion",       "label": "Occasion and year (e.g. Bridal, 2024)" }
+        { "type": "range", "id": "rating", "label": "Star rating", "min": 1, "max": 5, "step": 1, "default": 5, "info": "The reviewer's actual Google rating (1-5). Verify against the real Google review; do not guess." },
+        { "type": "text", "id": "occasion",       "label": "Occasion (no longer displayed)", "info": "No longer displayed. Kept only so previously saved values are not lost." }
       ]
     }
   ],

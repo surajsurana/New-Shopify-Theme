@@ -105,6 +105,18 @@ class RatingAndSelection(unittest.TestCase):
             self.assertIsInstance(r["rating"], int)
             self.assertGreaterEqual(r["rating"], config.MIN_STAR_RATING)
 
+    def test_review_text_and_emoji_pass_through_verbatim(self):
+        # Suraj: keep reviews exactly as written -- the sync must never strip emoji or edit text.
+        q = "Absolutely loved it! \U0001F49C  Thank you ✨ " + self.words_for_test()
+        payload = sync.transform_reviews({"reviews": [review("FIVE", q, name="Arushi \U0001F49C G")], "average_rating": 5, "total_review_count": 1})
+        self.assertEqual(payload["reviews"][0]["quote"], q.strip())
+        self.assertIn("\U0001F49C", payload["reviews"][0]["quote"])
+        self.assertIn("✨", payload["reviews"][0]["quote"])
+
+    @staticmethod
+    def words_for_test():
+        return " ".join(["word"] * 10)
+
     def test_threshold_is_configurable(self):
         config.MIN_STAR_RATING = 5
         payload = sync.transform_reviews({"reviews": [review("FOUR", "a"), review("FIVE", "b")], "average_rating": 5, "total_review_count": 2})

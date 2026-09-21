@@ -1,4 +1,4 @@
-﻿/* ================================================================
+/* ================================================================
    KA-VOICE-OF-BRIDE
 ================================================================ */
 .ka-voices {
@@ -89,13 +89,20 @@
   font-size: 0.62rem; font-weight: 300;
   letter-spacing: 0.1em; color: var(--c-rosegold);
 }
-/* Star row: replaces the (empty) occasion slot on the SYNCED path. The
-   editor-block fallback path keeps its occasion span (styled above). */
+/* Star row (both the synced path and the editor-block fallback path; the
+   occasion slot is no longer displayed). CD addendum 8.2 CR-2: ONE glyph
+   (U+2605) always, unfilled stars dimmed, because U+2605/U+2606 are not in
+   Jost so each OS substitutes a different symbol font and the hollow star is
+   hairline-thin at this size. gap (not letter-spacing) so nothing trails the
+   last star and the row aligns flush right. */
 .ka-voice-card__stars {
+  display: inline-flex; gap: 0.22em;
   font-family: var(--f-sans);
-  font-size: 0.62rem; letter-spacing: 0.22em;
-  color: var(--c-rosegold); white-space: nowrap;
+  font-size: 0.72rem; line-height: 1;
+  color: var(--c-rosegold-pale);
+  white-space: nowrap;
 }
+.ka-voice-card__stars > span.is-off { opacity: 0.28; }
 .ka-voices__cta {
   margin-top: var(--s-lg);
   display: flex; align-items: center; justify-content: center;
