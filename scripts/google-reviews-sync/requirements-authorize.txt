@@ -1,0 +1,4 @@
+# Only needed on the PC where authorize.py is run (one-time interactive consent).
+# NOT needed on the droplet -- sync.py only needs requirements.txt.
+-r requirements.txt
+google-auth-oauthlib>=1.2,<2

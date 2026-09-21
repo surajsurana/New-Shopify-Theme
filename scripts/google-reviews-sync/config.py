@@ -32,18 +32,15 @@ def _optional(name: str, default: str = "") -> str:
 # ---------------------------------------------------------------------------
 # Google Business Profile API (Basic API Access)
 # ---------------------------------------------------------------------------
-# THE BLOCKER (as of 2026-08-29): Suraj is personally submitting Google's
-# "Application for Basic API Access" (manual, human-reviewed, 1-6 weeks).
-# None of GOOGLE_CLIENT_ID / GOOGLE_CLIENT_SECRET / GOOGLE_REFRESH_TOKEN can
-# exist until that access is approved and Suraj completes the one-time OAuth
-# consent flow (see google_business_client.py's module docstring for exactly
-# what that flow looks like and where it plugs in). Everything else in this
-# script is written to be structurally ready for that moment.
+# Google approved Basic API Access on 2026-09-14. These three values are
+# produced by the one-time interactive authorize.py (run locally by Suraj; it
+# writes them to the gitignored .env). See google_business_client.py's module
+# docstring and README.md for exactly what that flow looks like.
 GOOGLE_CLIENT_ID = _optional("GOOGLE_CLIENT_ID")
 GOOGLE_CLIENT_SECRET = _optional("GOOGLE_CLIENT_SECRET")
 GOOGLE_REFRESH_TOKEN = _optional("GOOGLE_REFRESH_TOKEN")
 
-# Once Basic API Access is approved, these identify which Business Profile
+# These identify which Business Profile
 # account/location to pull reviews from. Can be discovered at runtime (see
 # google_business_client.discover_account_and_location), but pinning them
 # here after the first successful run avoids a repeated discovery call on
