@@ -1,33 +1,89 @@
 {{ 'ka-voice-of-bride.css' | asset_url | stylesheet_tag }}
-{%- comment -%} STAGING-ONLY FIXTURE TEST COPY (temporary) {%- endcomment -%}
+
+{%- comment -%}
+  Voice of the Bride — conditionally hidden until real review data is present.
+
+  Data source (added 2026-08-29, pending task #3 -- live Google Reviews sync):
+  Suraj decided against a third-party embed widget (Elfsight/EmbedSocial/etc.)
+  and is instead getting Owner-level Google Business Profile API access
+  directly, so this section reads from a single JSON metafield instead --
+  `shop.metafields.custom.google_reviews` (definition created 2026-08-29,
+  gid://shopify/MetafieldDefinition/292565483810). That metafield is written
+  by a droplet cron job (scripts/google-reviews-sync/, same pattern as the
+  Petty Cash bot on the stocktradingbot droplet) once Suraj's Google API
+  access is approved -- see that script for the sync flow. Until then the
+  metafield is empty and this section falls back to the pre-existing
+  editor-block behaviour untouched below.
+
+  Expected JSON shape of shop.metafields.custom.google_reviews.value:
+    {
+      "rating_number": "4.9",
+      "rating_count": 52,
+      "rating_label": "4.9 · 52 Google Reviews",
+      "google_url": "https://g.page/r/xxxxxxxxxxxx",
+      "reviews": [
+        { "quote": "...", "reviewer_name": "Priya S.", "occasion": "", "rating": 5 },
+        { "quote": "...", "reviewer_name": "Anika R.", "occasion": "", "rating": 4 }
+      ],
+      "synced_at": "2026-08-29T00:00:00Z"
+    }
+
+  The section renders only when section.settings.show_section is true AND
+  there is actual content to show -- either synced metafield data (preferred)
+  or at least one editor block with non-empty quote text (fallback, e.g. for
+  manual curation before live sync is wired up). This prevents an empty or
+  broken-looking section from ever going live by accident.
+  Creative Director spec note: "Do not publish placeholder review content."
+{%- endcomment -%}
+
 {%- liquid
-  assign fx_cards = 'w1 w2 w3 w4 w5 w6 w7 w8 w9 w10 w11 w12 w13 w14 w15 w16 w17 w18 w19 w20 w21 w22 w23 w24 w25 w26 w27 w28 w29 w30 w31 w32 w33 w34 w35 w36 w37 w38 w39 w40 w41 w42 w43 w44 w45 w46 w47 w48 w49 w50 w51 w52 w53 w54 w55 w56 w57 w58 w59 w60@@@Arushi G.@@@5###Good design love the outfit@@@Sakshi K.@@@4###Hostile <script>alert(1)</script> & "quoted" <img src=x onerror=alert(2)>@@@<i>Eve</i> O.@@@5###w1 w2 w3 w4 w5 w6 w7 w8 w9 w10 w11 w12 w13 w14 w15 w16 w17 w18 w19 w20 w21 w22 w23 w24 w25 w26 w27 w28 w29 w30 w31 w32 w33 w34 w35 w36 w37 w38 w39 w40 w41 w42 w43 w44 w45@@@Kavita S.@@@abc###Loved the collection, really cool styles.@@@Shivani R.@@@###w1 w2 w3 w4 w5 w6 w7 w8 w9 w10 w11 w12 w13 w14 w15 w16 w17 w18 w19 w20 w21 w22 w23 w24 w25 w26 w27 w28 w29 w30 w31 w32 w33 w34 w35 w36 w37 w38 w39 w40 w41 w42 w43 w44 w45 w46 w47 w48 w49 w50 w51 w52 w53 w54 w55 w56 w57 w58 w59 w60 w61 w62 w63 w64 w65 w66 w67 w68 w69 w70 w71 w72 w73 w74 w75 w76 w77 w78 w79 w80@@@Simran J.@@@5' | split: '###'
-  assign fx_rating_number = '4.7'
-  assign fx_rating_count = '67'
-  assign fx_rating_label = '4.7 · 67 Google Reviews'
-  assign fx_google_url = ''
+  assign reviews_data = shop.metafields.custom.google_reviews.value
 
   assign synced_quote_count = 0
-  for fxc in fx_cards
-    assign fxq = fxc | split: '@@@' | first
-    if fxq != blank
+  for review in reviews_data.reviews
+    if review.quote != blank
       assign synced_quote_count = synced_quote_count | plus: 1
     endif
   endfor
 
   assign has_synced_data = false
-  if synced_quote_count > 0 and fx_rating_label != blank
+  if reviews_data != blank and synced_quote_count > 0 and reviews_data.rating_label != blank
     assign has_synced_data = true
   endif
-  assign has_content = has_synced_data
+
+  assign block_quote_count = 0
+  for block in section.blocks
+    if block.settings.quote != blank
+      assign block_quote_count = block_quote_count | plus: 1
+    endif
+  endfor
+  assign has_editor_content = false
+  if block_quote_count > 0
+    assign has_editor_content = true
+  endif
+
+  assign has_content = false
+  if has_synced_data or has_editor_content
+    assign has_content = true
+  endif
 
   if has_synced_data
-    assign rating_number = fx_rating_number | escape
-    assign rating_label = fx_rating_label | escape
-    assign synced_google_url = fx_google_url
+    comment
+      Synced values are UNTRUSTED text (public Google reviews, written by a
+      cron job) and Liquid does not auto-escape output, so escape everything
+      that comes from the metafield. The editor-setting fallbacks below are
+      merchant-entered and left exactly as before.
+    endcomment
+    assign rating_number = reviews_data.rating_number | escape
+    assign rating_label = reviews_data.rating_label | escape
+    assign synced_google_url = reviews_data.google_url
     if synced_google_url != blank
       assign google_url = synced_google_url | escape
     else
+      comment
+        The sync's GOOGLE_REVIEW_URL env var may be unset/blank; never let
+        the CTA render an empty href -- fall back to the editor setting.
+      endcomment
       assign google_url = section.settings.google_url
     endif
   else
@@ -53,20 +109,54 @@
       {% endif %}
     </div>
 
+    {% comment %}
+      Extended from 3 to 5 entries (2026-09-11, Google review count
+      64->67 update) to cover up to 5 editor-block review cards without
+      indexing out of bounds -- reveal-delay-3/-4 already exist in
+      ka-base.css (unused elsewhere in this file until now), so this
+      needed no new CSS. The synced-data path now loops `limit: 6`
+      (2026-09-21, fully automatic card selection: the sync picks up to
+      MAX_REVIEWS=6 eligible 4-5 star reviews with text -- a full 3 x 2
+      grid) and uses the same delay_classes (ka-base.css only defines
+      reveal-delay-1..4, so the 5th and 6th cards both reuse -4). The
+      grid layout for 6/5/4/3/2/1 cards is pure CSS quantity queries on
+      the rendered cards (assets/ka-voice-of-bride.css), so fewer than 6
+      cards never leaves an empty cell. Per Docs/google-reviews-sections-
+      build-spec.md sec 1.4: on the SYNCED path the (blank) occasion slot
+      is replaced by the real star rating of the review (each synced review
+      carries a numeric `rating`), and quotes are cut at a word boundary
+      after 40 words (truncatewords, then escape -- truncate first so the
+      count is on raw text). The editor-block path is untouched: it keeps
+      its occasion field and is never truncated.
+    {% endcomment %}
     {% assign delay_classes = 'reveal, reveal reveal-delay-1, reveal reveal-delay-2, reveal reveal-delay-3, reveal reveal-delay-4, reveal reveal-delay-4' | split: ', ' %}
     {% if has_synced_data %}
       <div class="ka-voices__grid">
-        {% for fxc in fx_cards limit: 6 %}
-          {% assign fxp = fxc | split: '@@@' %}
-          {% if fxp[0] != blank %}
+        {% for review in reviews_data.reviews limit: 6 %}
+          {% if review.quote != blank %}
             <div class="ka-voice-card {{ delay_classes[forloop.index0] }}">
               <div class="ka-voice-card__quote-mark">&ldquo;</div>
-              <p class="ka-voice-card__quote">{{ fxp[0] | truncatewords: 40, '…' | escape }}</p>
+              <p class="ka-voice-card__quote">{{ review.quote | truncatewords: 40, '…' | escape }}</p>
               <div class="ka-voice-card__meta">
-                <span class="ka-voice-card__name">{{ fxp[1] | escape }}</span>
+                <span class="ka-voice-card__name">{{ review.reviewer_name | escape }}</span>
                 {%- comment -%} plus: 0 coerces to a number, so a non-numeric value can never reach the aria-label {%- endcomment -%}
-                {%- assign r = fxp[2] | plus: 0 -%}
+                {%- assign r = review.rating | plus: 0 -%}
                 {%- if r > 0 -%}<span class="ka-voice-card__stars" aria-label="{{ r }} out of 5">{% for i in (1..5) %}{% if i <= r %}&#9733;{% else %}&#9734;{% endif %}{% endfor %}</span>{%- endif -%}
+              </div>
+            </div>
+          {% endif %}
+        {% endfor %}
+      </div>
+    {% elsif section.blocks.size > 0 %}
+      <div class="ka-voices__grid">
+        {% for block in section.blocks %}
+          {% if block.settings.quote != blank %}
+            <div class="ka-voice-card {{ delay_classes[forloop.index0] }}" {{ block.shopify_attributes }}>
+              <div class="ka-voice-card__quote-mark">&ldquo;</div>
+              <p class="ka-voice-card__quote">{{ block.settings.quote }}</p>
+              <div class="ka-voice-card__meta">
+                <span class="ka-voice-card__name">{{ block.settings.reviewer_name }}</span>
+                <span class="ka-voice-card__occasion">{{ block.settings.occasion }}</span>
               </div>
             </div>
           {% endif %}
@@ -90,17 +180,51 @@
   "name": "Voice of the Bride",
   "tag": "section",
   "settings": [
-    { "type": "checkbox", "id": "show_section", "label": "Show this section", "default": false },
-    { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "What Brides Say" },
-    { "type": "text", "id": "title", "label": "Section title", "default": "The words of\nour brides." },
-    { "type": "text", "id": "rating_number", "label": "Rating" },
-    { "type": "text", "id": "rating_label", "label": "Rating label" },
+    {
+      "type": "paragraph",
+      "content": "Prefers live-synced data from the custom.google_reviews Shop metafield (written automatically by the droplet Google Reviews sync job) when present. The rating, review URL, and review cards below are only a manual fallback used before that sync is active."
+    },
+    {
+      "type": "checkbox",
+      "id": "show_section",
+      "label": "Show this section",
+      "default": false,
+      "info": "IMPORTANT: Only enable once real review data exists, either synced automatically or entered manually below. Do not publish with placeholder content."
+    },
+    { "type": "text", "id": "eyebrow",          "label": "Eyebrow",         "default": "What Brides Say" },
+    { "type": "text", "id": "title",             "label": "Section title",   "default": "The words of\nour brides." },
+    {
+      "type": "header",
+      "content": "Rating block (manual fallback)"
+    },
+    { "type": "text", "id": "rating_number", "label": "Rating (e.g. 4.9 or ★★★★★)",    "info": "Leave blank to hide the rating block. Ignored once live sync data exists." },
+    { "type": "text", "id": "rating_label",  "label": "Rating label (e.g. 4.9 · 52 Google Reviews)" },
+    {
+      "type": "header",
+      "content": "CTA"
+    },
     { "type": "text", "id": "google_cta_label", "label": "Google reviews CTA label", "default": "Read all reviews on Google" },
-    { "type": "url", "id": "google_url", "label": "Google review URL" }
+    { "type": "url",  "id": "google_url",        "label": "Google Maps review URL (manual fallback)",  "info": "Obtain from your Google Business Profile. Ignored once live sync data exists." }
   ],
   "blocks": [
-    { "type": "review", "name": "Review", "limit": 6, "settings": [ { "type": "textarea", "id": "quote", "label": "Quote" }, { "type": "text", "id": "reviewer_name", "label": "Reviewer" }, { "type": "text", "id": "occasion", "label": "Occasion" } ] }
+    {
+      "type": "review",
+      "name": "Review",
+      "limit": 6,
+      "settings": [
+        {
+          "type": "textarea",
+          "id": "quote",
+          "label": "Review quote (verbatim from Google)",
+          "info": "Must be the exact text from the reviewer's Google review. Do not paraphrase."
+        },
+        { "type": "text", "id": "reviewer_name", "label": "Reviewer first name and initial (e.g. Priya S.)" },
+        { "type": "text", "id": "occasion",       "label": "Occasion and year (e.g. Bridal, 2024)" }
+      ]
+    }
   ],
-  "presets": [ { "name": "Voice of the Bride" } ]
+  "presets": [
+    { "name": "Voice of the Bride" }
+  ]
 }
 {% endschema %}
