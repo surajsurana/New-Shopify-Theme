@@ -141,9 +141,32 @@
         <p class="ka-p-poem">{{ poem }}</p>
       {%- endif -%}
 
+      {%- comment -%}
+        Google rating badge: reads the live-synced Shop metafield
+        custom.google_reviews (scripts/google-reviews-sync) when it is populated
+        -- same "is there real data" rule as the homepage section (needs a
+        rating and count and at least one synced review) -- otherwise the
+        section settings below are used exactly as before. Synced values are
+        untrusted text, so they are escaped.
+      {%- endcomment -%}
+      {%- liquid
+        assign gr = shop.metafields.custom.google_reviews.value
+        assign gr_quotes = 0
+        for gr_review in gr.reviews
+          if gr_review.quote != blank
+            assign gr_quotes = gr_quotes | plus: 1
+          endif
+        endfor
+        assign badge_score = section.settings.rating_score
+        assign badge_count = section.settings.rating_count
+        if gr != blank and gr_quotes > 0 and gr.rating_number != blank and gr.rating_count != blank
+          assign badge_score = gr.rating_number | escape
+          assign badge_count = gr.rating_count | escape
+        endif
+      -%}
       <button type="button" class="ka-grating" id="ka-grating" title="Read our Google reviews">
         <span class="ka-grating__stars">&#9733;&#9733;&#9733;&#9733;&#9733;</span>
-        <span class="ka-grating__tx"><b>{{ section.settings.rating_score }}</b> · {{ section.settings.rating_count }} reviews on</span>
+        <span class="ka-grating__tx"><b>{{ badge_score }}</b> · {{ badge_count }} reviews on</span>
         <span class="ka-glogo"><span class="b">G</span><span class="r">o</span><span class="y">o</span><span class="b">g</span><span class="g2">l</span><span class="r">e</span></span>
       </button>
 

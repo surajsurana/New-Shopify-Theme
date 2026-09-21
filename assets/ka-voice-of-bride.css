@@ -1,4 +1,4 @@
-﻿/* ================================================================
+/* ================================================================
    KA-VOICE-OF-BRIDE
 ================================================================ */
 .ka-voices {
@@ -35,15 +35,27 @@
   letter-spacing: 0.2em; text-transform: uppercase;
   color: var(--c-rosegold); display: block; margin-top: 6px;
 }
+/* Google Reviews sections spec (Docs/google-reviews-sections-build-spec.md, sec 1.3).
+   Hairlines are drawn as top/left borders ON THE CARDS (not a grid background
+   showing through a gap), so an unfilled cell can never paint a solid block.
+   Mobile-first: the base grid is ONE column; every span rule lives inside
+   @media (min-width: 901px) so it cannot leak into mobile. The grid is pulled
+   1px up/left and clipped so the outermost top/left borders never show (no
+   outer frame); the clip is left open on the right/bottom so the .reveal
+   slide-up is not cut off. Layout by card count uses CSS quantity queries on
+   the RENDERED cards (the DOM is the truth; the Liquid loop skips blank quotes). */
 .ka-voices__grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 1px;
-  background: var(--line-on-dark);
+  grid-template-columns: 1fr;
+  gap: 0;
+  margin: -1px 0 0 -1px;
+  clip-path: inset(1px -100vw -200px 1px);
 }
 .ka-voice-card {
   padding: 40px 36px 44px;
   background: var(--c-charcoal);
+  border-top: 1px solid var(--line-on-dark);
+  border-left: 1px solid var(--line-on-dark);
   display: flex; flex-direction: column;
 }
 .ka-voice-card__quote-mark {
@@ -58,11 +70,13 @@
   font-weight: 400; font-style: italic;
   color: rgba(255,255,255,0.88);
   line-height: 1.65; flex: 1; margin-bottom: 28px;
+  overflow-wrap: anywhere;   /* long URLs / unbroken strings never overflow the card */
 }
 .ka-voice-card__meta {
   border-top: 1px solid var(--line-on-dark);
   padding-top: 20px;
   display: flex; align-items: center; justify-content: space-between;
+  gap: 12px;                 /* name and star row never touch */
 }
 .ka-voice-card__name {
   font-family: var(--f-sans);
@@ -75,13 +89,48 @@
   font-size: 0.62rem; font-weight: 300;
   letter-spacing: 0.1em; color: var(--c-rosegold);
 }
+/* Star row (both the synced path and the editor-block fallback path; the
+   occasion slot is no longer displayed). CD addendum 8.2 CR-2: ONE glyph
+   (U+2605) always, unfilled stars dimmed, because U+2605/U+2606 are not in
+   Jost so each OS substitutes a different symbol font and the hollow star is
+   hairline-thin at this size. gap (not letter-spacing) so nothing trails the
+   last star and the row aligns flush right. */
+.ka-voice-card__stars {
+  display: inline-flex; gap: 0.22em;
+  font-family: var(--f-sans);
+  font-size: 0.72rem; line-height: 1;
+  color: var(--c-rosegold-pale);
+  white-space: nowrap;
+}
+.ka-voice-card__stars > span.is-off { opacity: 0.28; }
 .ka-voices__cta {
   margin-top: var(--s-lg);
   display: flex; align-items: center; justify-content: center;
 }
 
+@media (min-width: 901px) {
+  .ka-voices__grid { grid-template-columns: repeat(6, 1fr); }
+  .ka-voice-card   { grid-column: span 2; min-height: 280px; }
+
+  /* 5 cards: row 1 = three thirds, row 2 = two halves (no empty cell) */
+  .ka-voice-card:nth-child(4):nth-last-child(2),
+  .ka-voice-card:nth-child(5):last-child { grid-column: span 3; }
+
+  /* 4 or 2 cards: two columns */
+  .ka-voice-card:first-child:nth-last-child(4),
+  .ka-voice-card:first-child:nth-last-child(4) ~ .ka-voice-card,
+  .ka-voice-card:first-child:nth-last-child(2),
+  .ka-voice-card:first-child:nth-last-child(2) ~ .ka-voice-card { grid-column: span 3; }
+
+  /* 1 card: a single featured pull-quote, centred and unframed */
+  .ka-voice-card:only-child {
+    grid-column: 1 / -1; max-width: 720px; margin: 0 auto;
+    border: 0; align-items: center; text-align: center; min-height: 0;
+  }
+  .ka-voice-card:only-child .ka-voice-card__quote { font-size: clamp(1.25rem, 2vw, 1.7rem); }
+  .ka-voice-card:only-child .ka-voice-card__meta  { width: 100%; justify-content: center; gap: 24px; }
+}
 @media (max-width: 900px) {
-  .ka-voices__grid { grid-template-columns: 1fr; gap: 1px; }
   .ka-voices__header { flex-direction: column; align-items: flex-start; gap: 20px; }
   .ka-voices__rating-block { text-align: left; }
 }

@@ -32,18 +32,15 @@ def _optional(name: str, default: str = "") -> str:
 # ---------------------------------------------------------------------------
 # Google Business Profile API (Basic API Access)
 # ---------------------------------------------------------------------------
-# THE BLOCKER (as of 2026-08-29): Suraj is personally submitting Google's
-# "Application for Basic API Access" (manual, human-reviewed, 1-6 weeks).
-# None of GOOGLE_CLIENT_ID / GOOGLE_CLIENT_SECRET / GOOGLE_REFRESH_TOKEN can
-# exist until that access is approved and Suraj completes the one-time OAuth
-# consent flow (see google_business_client.py's module docstring for exactly
-# what that flow looks like and where it plugs in). Everything else in this
-# script is written to be structurally ready for that moment.
+# Google approved Basic API Access on 2026-09-14. These three values are
+# produced by the one-time interactive authorize.py (run locally by Suraj; it
+# writes them to the gitignored .env). See google_business_client.py's module
+# docstring and README.md for exactly what that flow looks like.
 GOOGLE_CLIENT_ID = _optional("GOOGLE_CLIENT_ID")
 GOOGLE_CLIENT_SECRET = _optional("GOOGLE_CLIENT_SECRET")
 GOOGLE_REFRESH_TOKEN = _optional("GOOGLE_REFRESH_TOKEN")
 
-# Once Basic API Access is approved, these identify which Business Profile
+# These identify which Business Profile
 # account/location to pull reviews from. Can be discovered at runtime (see
 # google_business_client.discover_account_and_location), but pinning them
 # here after the first successful run avoids a repeated discovery call on
@@ -62,13 +59,19 @@ GOOGLE_REVIEW_URL = _optional("GOOGLE_REVIEW_URL")
 # ---------------------------------------------------------------------------
 # Shopify Admin API
 # ---------------------------------------------------------------------------
-# This half is NOT blocked on anything -- a Shopify custom app scoped to the
-# write_metafields (and read_metafields) Admin API scope can be created today
-# in Shopify Admin > Settings > Apps and sales channels > Develop apps.
-# See README.md for the exact steps. Store the resulting Admin API access
-# token as SHOPIFY_ADMIN_API_TOKEN; never commit it.
+# Shopify no longer lets you create classic admin "custom apps" with a
+# reveal-once token. Auth is now an app created in the Shopify Dev Dashboard
+# ("K&A Reviews Sync"), installed on this store, using the OAuth
+# client-credentials grant: SHOPIFY_CLIENT_ID + SHOPIFY_CLIENT_SECRET (from the
+# app's Settings page) are exchanged for a short-lived (~24h) Admin API token on
+# every run (shopify_client.get_access_token; held in memory only, never
+# written to disk or logged). SHOPIFY_ADMIN_API_TOKEN is kept ONLY as an
+# optional static-token fallback (used when the client id/secret are not set).
+# See README.md. Never commit any of these values.
 SHOPIFY_STORE_DOMAIN = _optional("SHOPIFY_STORE_DOMAIN", "d21bac.myshopify.com")
-SHOPIFY_ADMIN_API_TOKEN = _optional("SHOPIFY_ADMIN_API_TOKEN")
+SHOPIFY_CLIENT_ID = _optional("SHOPIFY_CLIENT_ID")
+SHOPIFY_CLIENT_SECRET = _optional("SHOPIFY_CLIENT_SECRET")
+SHOPIFY_ADMIN_API_TOKEN = _optional("SHOPIFY_ADMIN_API_TOKEN")  # optional legacy fallback
 SHOPIFY_API_VERSION = _optional("SHOPIFY_API_VERSION", "2025-01")
 
 # Confirmed live 2026-08-29 (Admin GraphQL `shop { id }`): gid://shopify/Shop/76831129890.
@@ -83,6 +86,23 @@ METAFIELD_NAMESPACE = "custom"
 METAFIELD_KEY = "google_reviews"
 METAFIELD_TYPE = "json"
 
-# How many review excerpts to keep in the synced payload. Matches the
-# section's card grid (sections/ka-voice-of-bride.liquid renders up to 3).
-MAX_REVIEWS = 3
+# How many review excerpts to keep in the synced payload. 6 = a full 3 x 2 grid on
+# both surfaces (Docs/google-reviews-sections-build-spec.md): the homepage section
+# (sections/ka-voice-of-bride.liquid) and the product page
+# (sections/ka-product-reviews.liquid) each loop `limit: 6`.
+MAX_REVIEWS = int(_optional("MAX_REVIEWS", "6"))
+
+# Minimum star rating (1-5) for a review to be eligible for the homepage cards.
+# Per-review `starRating` from Google is the enum ONE..FIVE (see
+# sync.STAR_RATING_MAP). Default 4: only 4- and 5-star reviews WITH text are
+# published automatically. This does NOT affect the rating average / total
+# count, which always come from Google's top-level fields unchanged.
+MIN_STAR_RATING = int(_optional("MIN_STAR_RATING", "4"))
+
+# Length preference for choosing the homepage/product cards (Docs/google-reviews-
+# sections-build-spec.md sec 3): among the ELIGIBLE reviews prefer ones of roughly
+# 8-55 words, so the homepage rarely truncates and no card is a one-liner beside a
+# wall of text. A preference, never a filter: if fewer than MAX_REVIEWS preferred-
+# length reviews exist, the rest are filled from the other eligible reviews.
+PREFERRED_MIN_WORDS = int(_optional("PREFERRED_MIN_WORDS", "8"))
+PREFERRED_MAX_WORDS = int(_optional("PREFERRED_MAX_WORDS", "55"))

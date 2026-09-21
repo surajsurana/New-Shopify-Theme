@@ -2,30 +2,29 @@
 Google Business Profile API client -- fetches reviews for K&A's location.
 
 ======================================================================
-THE MISSING PIECE LIVES HERE: get_access_token() below is a STUB.
+STATUS (2026-09-21): Google APPROVED Business Profile API access on
+2026-09-14 (Cloud project number 250716548984, 300 QPM). The code in this
+file is ready to run the moment three env vars exist. What's left is the
+ONE-TIME interactive consent, which is done by authorize.py (next to this
+file) -- not by anything in here.
 ======================================================================
-Everything else in this file (discover_account_and_location, fetch_reviews)
-is written against Google's real, documented API shapes and is structurally
-ready to run. It cannot actually run yet because there is no OAuth token to
-call it with -- Suraj is personally submitting Google's "Application for
-Basic API Access" (manual, human-reviewed, 1-6 weeks, confirmed 2026-08-29).
-That access does not exist yet. Nobody should fabricate a token or pretend
-this works before it's real.
-
-What "wiring up the OAuth flow" will actually involve, once Basic API
-Access is approved (this is the ONLY step left in this file):
-  1. Create OAuth 2.0 credentials (Client ID + Client Secret) for K&A's
-     Google Cloud project in Google Cloud Console, with the Business
-     Profile API(s) enabled for that project.
-  2. Run an interactive, one-time consent flow as the Owner (Suraj) --
-     e.g. Google's OAuth Playground, or a small local `google-auth-oauthlib`
-     script -- granting scope https://www.googleapis.com/auth/business.manage
-     against Suraj's Google account (the one with confirmed Owner access to
-     K&A's Business Profile). That produces a refresh token.
-  3. Store CLIENT_ID / CLIENT_SECRET / REFRESH_TOKEN as env vars on the
-     droplet (see config.py + .env.example) -- never in git.
-  4. get_access_token() below then just works: it's a standard OAuth refresh
-     grant, the same shape for every Google API.
+How the credentials get here:
+  1. Suraj runs, on his Windows PC, from the repo root:
+         py -m pip install -r scripts/google-reviews-sync/requirements-authorize.txt
+         py scripts/google-reviews-sync/authorize.py "Google My Business Reviews API/client_secret_<...>.json"
+     He signs in as suraj.surana@gmail.com (Owner of K&A's Business Profile),
+     clicks through Google's "unverified app" warning (Advanced -> Go to <app>
+     (unsafe) -> Allow), and grants scope
+     https://www.googleapis.com/auth/business.manage (access_type=offline,
+     prompt=consent so a refresh token always comes back).
+  2. authorize.py writes GOOGLE_CLIENT_ID / GOOGLE_CLIENT_SECRET /
+     GOOGLE_REFRESH_TOKEN into scripts/google-reviews-sync/.env (gitignored;
+     never printed) and smoke-tests accounts.list.
+  3. For production, those same three values go into the droplet's systemd
+     unit environment (see config.py + .env.example) -- never in git.
+  4. get_access_token() below is a standard OAuth refresh-token grant, the
+     same shape for every Google API, and just works from then on.
+See README.md for the full walkthrough.
 
 Reference docs (fetched/confirmed 2026-08-29, not guessed):
   - Reviews (legacy v4, still active, this is what Basic API Access unlocks):
@@ -52,25 +51,23 @@ REVIEWS_BASE = "https://mybusiness.googleapis.com/v4"  # legacy v4 -- reviews st
 
 
 class GoogleAuthNotConfigured(RuntimeError):
-    """Raised when Google OAuth credentials aren't present yet (the expected state today)."""
+    """Raised when Google OAuth credentials aren't present (authorize.py hasn't been run yet)."""
 
 
 def get_access_token() -> str:
     """
-    ### STUB -- THE MISSING PIECE ###
     Exchanges the stored refresh token for a short-lived access token via
-    Google's standard OAuth 2.0 refresh grant. Structurally correct and
-    ready to run the moment config.GOOGLE_CLIENT_ID / GOOGLE_CLIENT_SECRET /
-    GOOGLE_REFRESH_TOKEN are real values -- today they are empty strings on
-    purpose, so this raises immediately instead of silently doing nothing.
+    Google's standard OAuth 2.0 refresh grant. Needs config.GOOGLE_CLIENT_ID /
+    GOOGLE_CLIENT_SECRET / GOOGLE_REFRESH_TOKEN to be real values (produced
+    by authorize.py). If any is empty this raises immediately instead of
+    silently doing nothing.
     """
     if not (config.GOOGLE_CLIENT_ID and config.GOOGLE_CLIENT_SECRET and config.GOOGLE_REFRESH_TOKEN):
         raise GoogleAuthNotConfigured(
-            "Google OAuth is not wired up yet -- GOOGLE_CLIENT_ID / GOOGLE_CLIENT_SECRET / "
-            "GOOGLE_REFRESH_TOKEN are unset. This is expected until Suraj's Basic API Access "
-            "application is approved and the one-time OAuth consent flow has been run (see "
-            "this module's docstring). Nothing to fix in code -- this is a credentials gap, "
-            "not a bug."
+            "Google OAuth credentials are not set -- GOOGLE_CLIENT_ID / GOOGLE_CLIENT_SECRET / "
+            "GOOGLE_REFRESH_TOKEN are empty. API access is approved; run the one-time "
+            "authorize.py (see this module's docstring / README.md) to create them. "
+            "Nothing to fix in code -- this is a credentials gap, not a bug."
         )
 
     response = requests.post(

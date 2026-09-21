@@ -109,6 +109,7 @@
           "settings": {
             "quote": "Absolutely loved working with the team for my wedding reception outfit! The outfit fit like a glove and many of my guests said it was their absolute favorite outfit of mine. They even made me an extra lighter skirt for my first dance. Highly recommend!",
             "reviewer_name": "Simran J.",
+            "rating": 5,
             "occasion": "Wedding Reception"
           }
         },
@@ -117,6 +118,7 @@
           "settings": {
             "quote": "I love their designs, it is so good and fits perfectly. Twinkle helped me so much to figure what would look good and they also made the lehenga customised for me. Absolutely love their corsets.",
             "reviewer_name": "Kezia D.",
+            "rating": 5,
             "occasion": "Custom Lehenga"
           }
         },
@@ -125,6 +127,7 @@
           "settings": {
             "quote": "Thank you for making perfect corset sari for my daughter's graduation ceremony. Amazing quality beautiful fit. Thank you so much!",
             "reviewer_name": "Kavita S.",
+            "rating": 5,
             "occasion": "Graduation, Corset Saree"
           }
         },
@@ -133,6 +136,7 @@
           "settings": {
             "quote": "Absolutely loved my outfit from K&A by Karishma & Ashita! 💜 The outfit was even more beautiful in person — the fit, detailing, colour and little floral embellishments were just perfect. I received so many compliments throughout the evening. Thank you, Karishma & Ashita, for creating something so stunning and making me feel absolutely gorgeous! ✨",
             "reviewer_name": "Arushi G.",
+            "rating": 5,
             "occasion": ""
           }
         },
@@ -141,6 +145,16 @@
           "settings": {
             "quote": "Good design love the outfit",
             "reviewer_name": "Sakshi K.",
+            "rating": 4,
+            "occasion": ""
+          }
+        },
+        "review-6": {
+          "type": "review",
+          "settings": {
+            "quote": "Loved the collection, really cool styles. Twinkle was really helpful.",
+            "reviewer_name": "Shivani R.",
+            "rating": 5,
             "occasion": ""
           }
         }
@@ -150,7 +164,8 @@
         "review-2",
         "review-3",
         "review-4",
-        "review-5"
+        "review-5",
+        "review-6"
       ],
       "settings": {
         "show_section": true,

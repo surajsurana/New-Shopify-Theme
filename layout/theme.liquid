@@ -121,6 +121,33 @@
     {{ 'ka-currency.css' | asset_url | stylesheet_tag }}
   {%- endif -%}
 
+  {%- comment -%}
+    Organization aggregateRating: reads the live-synced Shop metafield
+    custom.google_reviews (scripts/google-reviews-sync) when it is populated --
+    a rating_number, a rating_count and at least one synced review, the same
+    "is there real data" rule the review sections use -- otherwise the values
+    below stay exactly what they were (4.7 / 67; the count was a stale 64).
+    Per the SEO spec (Docs/specs/2026-07-22-jsonld-structured-data.md)
+    aggregateRating lives ONLY on this sitewide Organization block, never per
+    product. `json` output-encodes the values, so nothing synced can break out
+    of the JSON string.
+  {%- endcomment -%}
+  {%- liquid
+    assign gr = shop.metafields.custom.google_reviews.value
+    assign gr_quotes = 0
+    for gr_review in gr.reviews
+      if gr_review.quote != blank
+        assign gr_quotes = gr_quotes | plus: 1
+      endif
+    endfor
+    assign ld_rating_value = '4.7'
+    assign ld_review_count = '67'
+    if gr != blank and gr_quotes > 0 and gr.rating_number != blank and gr.rating_count != blank
+      assign ld_rating_value = gr.rating_number | append: ''
+      assign ld_review_count = gr.rating_count | append: ''
+    endif
+  -%}
+
   <!-- Sitewide JSON-LD: Organization + WebSite (Docs/specs/2026-07-22-jsonld-structured-data.md) -->
   <script type="application/ld+json">
   {
@@ -135,8 +162,8 @@
     ],
     "aggregateRating": {
       "@type": "AggregateRating",
-      "ratingValue": "4.7",
-      "reviewCount": "64",
+      "ratingValue": {{ ld_rating_value | json }},
+      "reviewCount": {{ ld_review_count | json }},
       "bestRating": "5"
     }
   }

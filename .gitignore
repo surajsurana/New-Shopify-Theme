@@ -23,6 +23,11 @@ __pycache__/
 *.pyc
 venv/
 
+# Google OAuth client secret JSON for the GBP reviews sync -- real credential,
+# never commit.
+Google My Business Reviews API/
+client_secret*.json
+
 # Lookbook source PDFs — large binaries, canonical copies live in the
 # K&A Lookbooks project; kept here as a local working copy only.
 Lookbooks/

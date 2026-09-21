@@ -6,25 +6,33 @@ stocktradingbot droplet, same pattern as the Petty Cash bot -- run this
 script daily (reviews don't change fast enough to need more often; Google's
 Basic API Access is also rate-limited, so don't over-poll).
 
-    python3 sync.py
+    python3 sync.py            # REAL run: writes the SHOP-level custom.google_reviews metafield
+    python3 sync.py --dry-run  # safe preview: Google half only, prints what WOULD be written
+
+WARNING -- a real run changes the LIVE homepage immediately. The metafield is
+Shop-level, not theme-level, and the published theme's ka-voice-of-bride
+section prefers it over its editor blocks, so there is no staging step for
+the first write. Always run --dry-run first and review the output.
+
+--dry-run does the token refresh, account/location discovery, fetch and
+transform_reviews(), prints the payload plus raw Google totals, and exits 0
+WITHOUT calling shopify_client and WITHOUT needing any
+Shopify credentials. It never prints tokens or secrets.
 
 Exit codes: 0 = success, 1 = expected/blocked state (e.g. Google OAuth not
-configured yet, or Shopify token missing) -- logged clearly, not a crash.
-Anything else = a real bug, logged with a traceback.
+configured, or Shopify token missing on a real run) -- logged clearly, not a
+crash. Anything else = a real bug, logged with a traceback.
 
-======================================================================
-CANNOT RUN END-TO-END YET -- see google_business_client.py's docstring.
-======================================================================
-The Google half is stubbed on purpose (no fabricated credentials). The
-Shopify half is real and independently testable today. Run this script now
-and it will fail fast and clearly at the Google OAuth step with a message
-explaining exactly why -- that is the expected, correct behavior until
-Suraj's Basic API Access is approved, not a bug to "fix."
+Google API access was approved 2026-09-14 and authorize.py (one-time) creates
+the GOOGLE_* credentials -- see README.md.
 """
 
 from __future__ import annotations
 
+import argparse
+import json
 import logging
+import re
 import sys
 from datetime import datetime, timezone
 
@@ -51,20 +59,126 @@ def star_rating_to_number(value) -> str | None:
     return f"{float(value):.1f}"
 
 
+# Google's per-review `starRating` is an enum string, NOT a number.
+STAR_RATING_MAP = {"ONE": 1, "TWO": 2, "THREE": 3, "FOUR": 4, "FIVE": 5}
+
+ANONYMOUS_NAME = "A Google Reviewer"
+
+
+def star_rating_value(review: dict) -> int:
+    """Map Google's starRating enum (ONE..FIVE) to 1-5. Unknown/missing -> 0 (never eligible)."""
+    return STAR_RATING_MAP.get(str(review.get("starRating", "")).upper(), 0)
+
+
+def _normalise_name_part(part: str) -> str:
+    """
+    Fix casing of a name token only when it is clearly wrong: ALL-lowercase or
+    ALL-CAPS ("juee", "AASHVI") -> capitalised; mixed case ("McDonald",
+    "D'Souza", "DeShawn") is left exactly as the reviewer typed it. Hyphen and
+    apostrophe segments are each capitalised ("anne-marie" -> "Anne-Marie").
+    """
+    letters = [c for c in part if c.isalpha()]
+    if not letters or not (part.islower() or part.isupper()):
+        return part
+    pieces = re.split(r"([-'’])", part)
+    return "".join(p[:1].upper() + p[1:].lower() if p and p not in "-'’" else p for p in pieces)
+
+
 def format_reviewer_name(display_name: str) -> str:
     """
-    Google gives a full display name (e.g. "Priya Sharma"). The site's
-    existing editorial convention (see the pre-existing block settings in
-    sections/ka-voice-of-bride.liquid) is "first name + last initial", e.g.
-    "Priya S." -- matches how reviews were manually curated before this sync
-    existed, and avoids publishing a reviewer's full name without consent.
+    "First L." convention (matches the hand-curated cards, and avoids
+    publishing a reviewer's full name), with casing normalised:
+      "Sakshi kachharae" -> "Sakshi K."   "AASHVI SHAH" -> "Aashvi S."
+      "juee vora" -> "Juee V."            "Karishma Abhishek Sindhu" -> "Karishma S."
+      "Kiran" -> "Kiran"                  "S Kaur" -> "S K."
+      "" / whitespace / "A Google User"   -> ANONYMOUS_NAME
+    The initial is the first alphabetic character of the LAST word, uppercased
+    (unicode-aware: "élodie ñandú" -> "Élodie Ñ."). If the last word has no
+    letters at all (e.g. an emoji), only the first name is returned.
     """
-    parts = display_name.strip().split()
-    if not parts:
-        return "A K&A Bride"
+    parts = (display_name or "").strip().split()
+    if not parts or " ".join(parts).lower() in {"a google user", "google user"}:
+        return ANONYMOUS_NAME
+    first = _normalise_name_part(parts[0])
     if len(parts) == 1:
-        return parts[0]
-    return f"{parts[0]} {parts[-1][0]}."
+        return first
+    initial = next((c for c in parts[-1] if c.isalpha()), "")
+    return f"{first} {initial.upper()[:1]}." if initial else first
+
+
+TRANSLATED_PREFIX = "(Translated by Google)"
+ORIGINAL_MARKER = "(Original)"
+
+
+def has_translation_prefix(comment) -> bool:
+    return (comment or "").strip().startswith(TRANSLATED_PREFIX)
+
+
+def review_text(comment) -> str:
+    """
+    The verbatim reviewer text to publish (the site's rule: never a translation).
+
+    Google's v4 API can return a machine-translated comment shaped like
+        "(Translated by Google) <translated text>[blank line](Original) <original text>"
+    In that case return the ORIGINAL text, with both markers removed. If the
+    "(Original)" marker (or the original text after it) is missing, fall back
+    to the text after the "(Translated by Google)" prefix so a marker string is
+    never shown. Any comment that does not start with the prefix is returned
+    unchanged (just stripped).
+    """
+    text = (comment or "").strip()
+    if not text.startswith(TRANSLATED_PREFIX):
+        return text
+    body = text[len(TRANSLATED_PREFIX):]
+    idx = body.find(ORIGINAL_MARKER)
+    if idx == -1:
+        return body.strip()
+    original = body[idx + len(ORIGINAL_MARKER):].strip()
+    return original or body[:idx].strip()
+
+
+def classify_reviews(reviews: list[dict]) -> dict:
+    """
+    Buckets every fetched review. Precedence: no text first (any rating), then
+    below-threshold-with-text, else eligible. Used by transform_reviews (to
+    select) and by --dry-run (to report exclusion counts).
+    """
+    eligible, no_text, below_min = [], [], []
+    for r in reviews:
+        if not review_text(r.get("comment")):
+            no_text.append(r)
+        elif star_rating_value(r) < config.MIN_STAR_RATING:
+            below_min.append(r)
+        else:
+            eligible.append(r)
+    return {"eligible": eligible, "no_text": no_text, "below_min_rating": below_min}
+
+
+def word_count(text: str) -> int:
+    return len((text or "").split())
+
+
+def is_preferred_length(review: dict) -> bool:
+    return config.PREFERRED_MIN_WORDS <= word_count(review_text(review.get("comment"))) <= config.PREFERRED_MAX_WORDS
+
+
+def select_reviews(eligible: list[dict], max_n: int) -> list[dict]:
+    """
+    Picks up to max_n cards from the eligible reviews (already in the API's
+    updateTime-descending order). Tie-break, exactly:
+      1. Take eligible reviews whose text is PREFERRED_MIN_WORDS..PREFERRED_MAX_WORDS
+         words (default 8-55), newest first, up to max_n.
+      2. If that yields fewer than max_n, top up with the remaining eligible
+         reviews (too short or too long), newest first.
+      3. Return the chosen set in the original newest-first order (so cards are
+         always ordered by recency, never "preferred first").
+    """
+    preferred = [i for i, r in enumerate(eligible) if is_preferred_length(r)]
+    chosen = preferred[:max_n]
+    if len(chosen) < max_n:
+        others = [i for i in range(len(eligible)) if i not in set(preferred)]
+        chosen += others[: max_n - len(chosen)]
+    return [eligible[i] for i in sorted(chosen)]
 
 
 def transform_reviews(raw: dict) -> dict:
@@ -74,19 +188,19 @@ def transform_reviews(raw: dict) -> dict:
     schema documented in sections/ka-voice-of-bride.liquid's header comment
     and in config.py).
 
+    Selection is fully automatic (Suraj's decision, 2026-09-21): reviews that
+    have text AND at least config.MIN_STAR_RATING stars are eligible; among
+    them prefer 8-55 words, newest first, up to config.MAX_REVIEWS (see
+    select_reviews for the exact tie-break). Fewer eligible reviews simply
+    yields fewer cards. Rating average / total count
+    are Google's own top-level figures, never recomputed from the filter.
+
     KNOWN LIMITATION -- "occasion" (e.g. "Bridal, 2024"): Google's Reviews
-    API has no equivalent field. It was previously hand-curated per review
-    when quotes were entered manually as section blocks. This sync leaves
-    "occasion" as an empty string for every auto-synced review. If Suraj
-    wants that detail to keep appearing, the options are: (a) drop it from
-    the card design, (b) maintain a small manual override map (e.g. keyed by
-    Google reviewId) that this script merges in before writing the
-    metafield, or (c) accept it blank. Not resolved here -- a product
-    decision, not a code gap.
+    API has no equivalent field. It is left as an empty string for every
+    auto-synced review (the theme renders that cleanly; Suraj's curated cards
+    have none either). Not a code gap.
     """
-    reviews_with_text = [r for r in raw["reviews"] if r.get("comment", "").strip()]
-    # Already ordered by updateTime desc via the API's orderBy param.
-    top_reviews = reviews_with_text[: config.MAX_REVIEWS]
+    top_reviews = select_reviews(classify_reviews(raw["reviews"])["eligible"], config.MAX_REVIEWS)
 
     rating_number = star_rating_to_number(raw.get("average_rating"))
     rating_count = raw.get("total_review_count")
@@ -101,9 +215,12 @@ def transform_reviews(raw: dict) -> dict:
         "google_url": config.GOOGLE_REVIEW_URL or None,
         "reviews": [
             {
-                "quote": r["comment"].strip(),
+                "quote": review_text(r.get("comment")),
                 "reviewer_name": format_reviewer_name(r.get("reviewer", {}).get("displayName", "")),
                 "occasion": "",  # see KNOWN LIMITATION above
+                # Numeric 1-5 star rating of THIS review (always >= MIN_STAR_RATING). Used by the
+                # product page's review cards; the homepage section ignores it.
+                "rating": star_rating_value(r),
             }
             for r in top_reviews
         ],
@@ -111,12 +228,62 @@ def transform_reviews(raw: dict) -> dict:
     }
 
 
-def run() -> int:
-    if not config.SHOPIFY_ADMIN_API_TOKEN:
+def print_dry_run(raw: dict, payload: dict) -> None:
+    """Human-readable preview. Public review text/names only -- never tokens or secrets."""
+    # Windows consoles default to cp1252 and crash on emoji/typographic characters
+    # that appear in real review text; force UTF-8 (replace, never raise) for this output.
+    try:
+        sys.stdout.reconfigure(encoding="utf-8", errors="replace")
+    except (AttributeError, ValueError):
+        pass
+    reviews = raw["reviews"]
+    buckets = classify_reviews(reviews)
+    with_text = [r for r in reviews if review_text(r.get("comment"))]
+    print("=" * 70)
+    print("DRY RUN -- nothing was written to Shopify. Raw figures from Google:")
+    print(f"  totalReviewCount (Google) : {raw['total_review_count']}")
+    print(f"  averageRating   (Google)  : {raw['average_rating']}")
+    print(f"  reviews returned by fetch : {len(reviews)}  ({len(with_text)} with text, {len(reviews) - len(with_text)} without)")
+    translated = [r for r in reviews if has_translation_prefix(r.get("comment"))]
+    print(f"  comments with a '(Translated by Google)' prefix : {len(translated)}")
+    print(f"  min star rating for cards  : {config.MIN_STAR_RATING}   max cards: {config.MAX_REVIEWS}")
+    print("  Selection breakdown (counts only):")
+    print(f"    excluded - no text (any rating)          : {len(buckets['no_text'])}")
+    print(f"    excluded - has text but rated < {config.MIN_STAR_RATING} stars   : {len(buckets['below_min_rating'])}")
+    print(f"    eligible (text and >= {config.MIN_STAR_RATING} stars)          : {len(buckets['eligible'])}")
+    preferred_n = sum(1 for r in buckets["eligible"] if is_preferred_length(r))
+    print(f"    eligible with preferred length ({config.PREFERRED_MIN_WORDS}-{config.PREFERRED_MAX_WORDS} words) : {preferred_n}")
+    print(f"    eligible but not chosen (beyond the {config.MAX_REVIEWS}-card cap)  : {max(0, len(buckets['eligible']) - config.MAX_REVIEWS)}")
+    print("-" * 70)
+    print("All fetched reviews (order the API returned = updateTime desc):")
+    for i, r in enumerate(reviews, 1):
+        has_text = "text" if review_text(r.get("comment")) else "NO TEXT"
+        name = r.get("reviewer", {}).get("displayName", "")
+        print(
+            f"  {i:>2}. {r.get('starRating', '?'):<5} {has_text:<7} "
+            f"updated {str(r.get('updateTime', ''))[:10]}  "
+            f"raw name={name!r} -> {format_reviewer_name(name)!r}"
+        )
+    print("-" * 70)
+    print("Payload that WOULD be written to shop metafield custom.google_reviews:")
+    print(f"  rating_number : {payload['rating_number']}")
+    print(f"  rating_count  : {payload['rating_count']}")
+    print(f"  rating_label  : {payload['rating_label']}")
+    print(f"  google_url    : {payload['google_url']}")
+    print(f"  synced_at     : {payload['synced_at']}")
+    print(f"  reviews ({len(payload['reviews'])}):")
+    for i, r in enumerate(payload["reviews"], 1):
+        print(f"    [{i}] reviewer_name={r['reviewer_name']!r} rating={r['rating']} words={word_count(r['quote'])} occasion={r['occasion']!r}")
+        print(f"        quote={json.dumps(r['quote'], ensure_ascii=False)}")
+    print("=" * 70)
+
+
+def run(dry_run: bool = False, json_out: str | None = None) -> int:
+    if not dry_run and not shopify_client.is_configured():
         log.error(
-            "SHOPIFY_ADMIN_API_TOKEN is not set. This half is not blocked on Google -- "
-            "create a Shopify custom app (write_metafields scope) and set this env var. "
-            "See README.md."
+            "Shopify auth is not configured. Set SHOPIFY_CLIENT_ID + SHOPIFY_CLIENT_SECRET "
+            "(Shopify Dev Dashboard app 'K&A Reviews Sync' > Settings), or the legacy "
+            "SHOPIFY_ADMIN_API_TOKEN. See README.md."
         )
         return 1
 
@@ -136,6 +303,17 @@ def run() -> int:
     )
 
     payload = transform_reviews(raw)
+
+    if dry_run:
+        print_dry_run(raw, payload)
+        if json_out:
+            with open(json_out, "w", encoding="utf-8") as fh:
+                json.dump(payload, fh, ensure_ascii=False, indent=2)
+            print(f"(payload JSON written to {json_out} -- local file only, nothing sent anywhere)")
+        if not payload["reviews"] or not payload["rating_label"]:
+            print("NOTE: a real run would REFUSE to write this payload (missing rating or review content).")
+        return 0
+
     if not payload["reviews"] or not payload["rating_label"]:
         log.error(
             "Transformed payload is missing rating or review content -- refusing to write "
@@ -150,4 +328,18 @@ def run() -> int:
 
 
 if __name__ == "__main__":
-    sys.exit(run())
+    parser = argparse.ArgumentParser(description="Sync Google reviews into the custom.google_reviews Shopify metafield.")
+    parser.add_argument(
+        "--dry-run",
+        action="store_true",
+        help="Fetch + transform from Google and print what WOULD be written; never calls Shopify, needs no Shopify token.",
+    )
+    parser.add_argument(
+        "--json-out",
+        metavar="PATH",
+        help="With --dry-run only: also save the would-be payload as JSON to this local file (e.g. to build a staging test fixture).",
+    )
+    args = parser.parse_args()
+    if args.json_out and not args.dry_run:
+        parser.error("--json-out is only allowed together with --dry-run")
+    sys.exit(run(dry_run=args.dry_run, json_out=args.json_out))
