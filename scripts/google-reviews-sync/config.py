@@ -59,13 +59,19 @@ GOOGLE_REVIEW_URL = _optional("GOOGLE_REVIEW_URL")
 # ---------------------------------------------------------------------------
 # Shopify Admin API
 # ---------------------------------------------------------------------------
-# This half is NOT blocked on anything -- a Shopify custom app scoped to the
-# write_metafields (and read_metafields) Admin API scope can be created today
-# in Shopify Admin > Settings > Apps and sales channels > Develop apps.
-# See README.md for the exact steps. Store the resulting Admin API access
-# token as SHOPIFY_ADMIN_API_TOKEN; never commit it.
+# Shopify no longer lets you create classic admin "custom apps" with a
+# reveal-once token. Auth is now an app created in the Shopify Dev Dashboard
+# ("K&A Reviews Sync"), installed on this store, using the OAuth
+# client-credentials grant: SHOPIFY_CLIENT_ID + SHOPIFY_CLIENT_SECRET (from the
+# app's Settings page) are exchanged for a short-lived (~24h) Admin API token on
+# every run (shopify_client.get_access_token; held in memory only, never
+# written to disk or logged). SHOPIFY_ADMIN_API_TOKEN is kept ONLY as an
+# optional static-token fallback (used when the client id/secret are not set).
+# See README.md. Never commit any of these values.
 SHOPIFY_STORE_DOMAIN = _optional("SHOPIFY_STORE_DOMAIN", "d21bac.myshopify.com")
-SHOPIFY_ADMIN_API_TOKEN = _optional("SHOPIFY_ADMIN_API_TOKEN")
+SHOPIFY_CLIENT_ID = _optional("SHOPIFY_CLIENT_ID")
+SHOPIFY_CLIENT_SECRET = _optional("SHOPIFY_CLIENT_SECRET")
+SHOPIFY_ADMIN_API_TOKEN = _optional("SHOPIFY_ADMIN_API_TOKEN")  # optional legacy fallback
 SHOPIFY_API_VERSION = _optional("SHOPIFY_API_VERSION", "2025-01")
 
 # Confirmed live 2026-08-29 (Admin GraphQL `shop { id }`): gid://shopify/Shop/76831129890.

@@ -2,9 +2,16 @@
 Local, offline unit checks for sync.py's pure logic (no network, no credentials,
 no Shopify). Run:   py test_sync.py
 """
+import contextlib
+import io
+import json
+import sys
 import unittest
+from unittest import mock
 
 import config
+import probe_shopify
+import shopify_client
 import sync
 
 
@@ -131,6 +138,168 @@ class TranslatedComments(unittest.TestCase):
             self.assertNotIn("Translated by Google", r["quote"])
             self.assertNotIn("(Original)", r["quote"])
         self.assertEqual(len(sync.classify_reviews(reviews)["no_text"]), 1)
+
+
+class FakeResponse:
+    def __init__(self, status=200, body=None, text=None):
+        self.status_code = status
+        self._body = body if body is not None else {}
+        self.text = text if text is not None else json.dumps(self._body)
+
+    def json(self):
+        return self._body
+
+
+class ShopifyAuth(unittest.TestCase):
+    SECRET = "shpss_SUPERSECRET"
+    TOKEN = "shpat_TOKENVALUE"
+
+    def setUp(self):
+        self._saved = (config.SHOPIFY_CLIENT_ID, config.SHOPIFY_CLIENT_SECRET, config.SHOPIFY_ADMIN_API_TOKEN, config.SHOPIFY_STORE_DOMAIN)
+        config.SHOPIFY_CLIENT_ID, config.SHOPIFY_CLIENT_SECRET, config.SHOPIFY_ADMIN_API_TOKEN = "cid", self.SECRET, ""
+        config.SHOPIFY_STORE_DOMAIN = "example.myshopify.com"
+        shopify_client._reset_token_cache()
+
+    def tearDown(self):
+        (config.SHOPIFY_CLIENT_ID, config.SHOPIFY_CLIENT_SECRET, config.SHOPIFY_ADMIN_API_TOKEN, config.SHOPIFY_STORE_DOMAIN) = self._saved
+        shopify_client._reset_token_cache()
+
+    def test_is_configured_variants(self):
+        self.assertTrue(shopify_client.is_configured())
+        config.SHOPIFY_CLIENT_SECRET = ""
+        self.assertFalse(shopify_client.is_configured())
+        config.SHOPIFY_ADMIN_API_TOKEN = "legacy"
+        self.assertTrue(shopify_client.is_configured())
+        config.SHOPIFY_ADMIN_API_TOKEN = ""
+        self.assertFalse(shopify_client.is_configured())
+
+    def test_client_credentials_request_shape_and_cache(self):
+        ok = FakeResponse(200, {"access_token": self.TOKEN, "scope": "write_products", "expires_in": 86399})
+        with mock.patch.object(shopify_client.requests, "post", return_value=ok) as post:
+            self.assertEqual(shopify_client.get_access_token(), self.TOKEN)
+            self.assertEqual(shopify_client.get_access_token(), self.TOKEN)  # cached, no second call
+            self.assertEqual(post.call_count, 1)
+            args, kwargs = post.call_args
+            self.assertEqual(args[0], "https://example.myshopify.com/admin/oauth/access_token")
+            self.assertEqual(kwargs["data"], {"grant_type": "client_credentials", "client_id": "cid", "client_secret": self.SECRET})
+        self.assertEqual(shopify_client.get_granted_scope(), "write_products")
+
+    def test_expired_token_is_refreshed(self):
+        ok = FakeResponse(200, {"access_token": self.TOKEN, "expires_in": 86399})
+        with mock.patch.object(shopify_client.requests, "post", return_value=ok) as post:
+            shopify_client.get_access_token()
+            shopify_client._token_cache["expires_at"] = 0  # force expiry
+            shopify_client.get_access_token()
+            self.assertEqual(post.call_count, 2)
+
+    def test_failure_message_never_contains_secret_or_token(self):
+        bad = FakeResponse(400, {"error": "invalid_client"}, text='{"error":"invalid_client"}')
+        with mock.patch.object(shopify_client.requests, "post", return_value=bad):
+            with self.assertRaises(shopify_client.ShopifyWriteError) as cm:
+                shopify_client.get_access_token()
+        msg = str(cm.exception)
+        self.assertIn("400", msg)
+        self.assertIn("invalid_client", msg)
+        self.assertNotIn(self.SECRET, msg)
+
+    def test_static_token_fallback_and_priority(self):
+        config.SHOPIFY_ADMIN_API_TOKEN = "legacy-static"
+        with mock.patch.object(shopify_client.requests, "post", side_effect=AssertionError("no network expected")):
+            config.SHOPIFY_CLIENT_ID = ""  # creds not set -> static token
+            self.assertEqual(shopify_client.get_access_token(), "legacy-static")
+        ok = FakeResponse(200, {"access_token": self.TOKEN, "expires_in": 86399})
+        config.SHOPIFY_CLIENT_ID = "cid"  # creds set -> preferred over static
+        with mock.patch.object(shopify_client.requests, "post", return_value=ok):
+            self.assertEqual(shopify_client.get_access_token(), self.TOKEN)
+
+    def test_not_configured_raises(self):
+        config.SHOPIFY_CLIENT_ID = config.SHOPIFY_CLIENT_SECRET = config.SHOPIFY_ADMIN_API_TOKEN = ""
+        with self.assertRaises(shopify_client.ShopifyAuthNotConfigured):
+            shopify_client.get_access_token()
+
+    def test_graphql_uses_fresh_token_header_and_surfaces_http_body(self):
+        seq = [
+            FakeResponse(200, {"access_token": self.TOKEN, "expires_in": 86399}),
+            FakeResponse(403, {}, text="Access denied: required scope"),
+        ]
+        with mock.patch.object(shopify_client.requests, "post", side_effect=seq) as post:
+            with self.assertRaises(shopify_client.ShopifyWriteError) as cm:
+                shopify_client._graphql("query { shop { id } }")
+            self.assertEqual(post.call_args_list[1].kwargs["headers"]["X-Shopify-Access-Token"], self.TOKEN)
+        self.assertIn("403", str(cm.exception))
+        self.assertIn("Access denied", str(cm.exception))
+        self.assertNotIn(self.TOKEN, str(cm.exception))
+
+
+class Probe(unittest.TestCase):
+    def setUp(self):
+        self._saved = (config.SHOPIFY_CLIENT_ID, config.SHOPIFY_CLIENT_SECRET, config.SHOPIFY_ADMIN_API_TOKEN)
+        config.SHOPIFY_CLIENT_ID, config.SHOPIFY_CLIENT_SECRET, config.SHOPIFY_ADMIN_API_TOKEN = "cid", "sec", ""
+        shopify_client._reset_token_cache()
+
+    def tearDown(self):
+        config.SHOPIFY_CLIENT_ID, config.SHOPIFY_CLIENT_SECRET, config.SHOPIFY_ADMIN_API_TOKEN = self._saved
+        shopify_client._reset_token_cache()
+
+    def test_refuses_without_yes_probe_and_makes_no_calls(self):
+        with mock.patch.object(shopify_client.requests, "post", side_effect=AssertionError("no network")), \
+             mock.patch.object(sys, "argv", ["probe_shopify.py"]), contextlib.redirect_stdout(io.StringIO()) as out:
+            self.assertEqual(probe_shopify.main(), 3)
+        self.assertIn("--yes-probe", out.getvalue())
+
+    def test_probe_key_is_never_the_real_metafield(self):
+        self.assertNotEqual((probe_shopify.PROBE_NAMESPACE, probe_shopify.PROBE_KEY), (config.METAFIELD_NAMESPACE, config.METAFIELD_KEY))
+        self.assertEqual(probe_shopify.PROBE_KEY, "sync_probe")
+
+    def _run(self, responses):
+        calls = []
+
+        def fake_graphql(query, variables=None):
+            calls.append(variables)
+            r = responses.pop(0)
+            if isinstance(r, Exception):
+                raise r
+            return r
+
+        with mock.patch.object(shopify_client, "get_access_token", return_value="tok"), \
+             mock.patch.object(shopify_client, "get_granted_scope", return_value="s1,s2"), \
+             mock.patch.object(shopify_client, "_graphql", side_effect=fake_graphql), \
+             contextlib.redirect_stdout(io.StringIO()) as out:
+            code = probe_shopify.run_probe()
+        return code, out.getvalue(), calls
+
+    def test_happy_path_set_read_delete_only_probe_key(self):
+        code, out, calls = self._run([
+            {"shop": {"id": "gid://shopify/Shop/1"}},
+            {"metafieldsSet": {"metafields": [{"key": "sync_probe"}], "userErrors": []}},
+            {"shop": {"metafield": {"id": "x", "value": "probe", "type": "single_line_text_field"}}},
+            {"metafieldsDelete": {"deletedMetafields": [{"key": "sync_probe"}], "userErrors": []}},
+        ])
+        self.assertEqual(code, 0)
+        self.assertNotIn("google_reviews", json.dumps(calls))
+        self.assertIn("sync_probe", json.dumps(calls))
+        self.assertNotIn("tok", out.replace("token", ""))  # the token value itself is never printed
+
+    def test_missing_scope_error_is_printed_verbatim_and_nothing_to_delete(self):
+        err = [{"field": ["metafields"], "message": "Access denied for metafieldsSet. Required access: write_metafields", "code": "ACCESS_DENIED"}]
+        code, out, calls = self._run([
+            {"shop": {"id": "gid://shopify/Shop/1"}},
+            {"metafieldsSet": {"metafields": [], "userErrors": err}},
+        ])
+        self.assertEqual(code, 2)
+        self.assertIn("Required access: write_metafields", out)
+        self.assertEqual(len(calls), 2)  # no read-back / delete attempted when nothing was written
+
+    def test_cleanup_still_runs_if_readback_fails(self):
+        code, out, calls = self._run([
+            {"shop": {"id": "gid://shopify/Shop/1"}},
+            {"metafieldsSet": {"metafields": [{"key": "sync_probe"}], "userErrors": []}},
+            shopify_client.ShopifyWriteError("read denied"),
+            {"metafieldsDelete": {"deletedMetafields": [{"key": "sync_probe"}], "userErrors": []}},
+        ])
+        self.assertEqual(code, 2)
+        self.assertEqual(len(calls), 4)  # delete was still attempted
+        self.assertIn("read denied", out)
 
 
 if __name__ == "__main__":

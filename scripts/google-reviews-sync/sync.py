@@ -16,8 +16,8 @@ the first write. Always run --dry-run first and review the output.
 
 --dry-run does the token refresh, account/location discovery, fetch and
 transform_reviews(), prints the payload plus raw Google totals, and exits 0
-WITHOUT calling shopify_client and WITHOUT needing
-SHOPIFY_ADMIN_API_TOKEN. It never prints tokens or secrets.
+WITHOUT calling shopify_client and WITHOUT needing any
+Shopify credentials. It never prints tokens or secrets.
 
 Exit codes: 0 = success, 1 = expected/blocked state (e.g. Google OAuth not
 configured, or Shopify token missing on a real run) -- logged clearly, not a
@@ -248,11 +248,11 @@ def print_dry_run(raw: dict, payload: dict) -> None:
 
 
 def run(dry_run: bool = False, json_out: str | None = None) -> int:
-    if not dry_run and not config.SHOPIFY_ADMIN_API_TOKEN:
+    if not dry_run and not shopify_client.is_configured():
         log.error(
-            "SHOPIFY_ADMIN_API_TOKEN is not set. This half is not blocked on Google -- "
-            "create a Shopify custom app (write_metafields scope) and set this env var. "
-            "See README.md."
+            "Shopify auth is not configured. Set SHOPIFY_CLIENT_ID + SHOPIFY_CLIENT_SECRET "
+            "(Shopify Dev Dashboard app 'K&A Reviews Sync' > Settings), or the legacy "
+            "SHOPIFY_ADMIN_API_TOKEN. See README.md."
         )
         return 1
 
