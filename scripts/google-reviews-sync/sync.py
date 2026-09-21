@@ -6,24 +6,31 @@ stocktradingbot droplet, same pattern as the Petty Cash bot -- run this
 script daily (reviews don't change fast enough to need more often; Google's
 Basic API Access is also rate-limited, so don't over-poll).
 
-    python3 sync.py
+    python3 sync.py            # REAL run: writes the SHOP-level custom.google_reviews metafield
+    python3 sync.py --dry-run  # safe preview: Google half only, prints what WOULD be written
+
+WARNING -- a real run changes the LIVE homepage immediately. The metafield is
+Shop-level, not theme-level, and the published theme's ka-voice-of-bride
+section prefers it over its editor blocks, so there is no staging step for
+the first write. Always run --dry-run first and review the output.
+
+--dry-run does the token refresh, account/location discovery, fetch and
+transform_reviews(), prints the payload plus raw Google totals, and exits 0
+WITHOUT calling shopify_client and WITHOUT needing
+SHOPIFY_ADMIN_API_TOKEN. It never prints tokens or secrets.
 
 Exit codes: 0 = success, 1 = expected/blocked state (e.g. Google OAuth not
-configured yet, or Shopify token missing) -- logged clearly, not a crash.
-Anything else = a real bug, logged with a traceback.
+configured, or Shopify token missing on a real run) -- logged clearly, not a
+crash. Anything else = a real bug, logged with a traceback.
 
-======================================================================
-CANNOT RUN END-TO-END YET -- see google_business_client.py's docstring.
-======================================================================
-The Google half is stubbed on purpose (no fabricated credentials). The
-Shopify half is real and independently testable today. Run this script now
-and it will fail fast and clearly at the Google OAuth step with a message
-explaining exactly why -- that is the expected, correct behavior until
-Suraj's Basic API Access is approved, not a bug to "fix."
+Google API access was approved 2026-09-14 and authorize.py (one-time) creates
+the GOOGLE_* credentials -- see README.md.
 """
 
 from __future__ import annotations
 
+import argparse
+import json
 import logging
 import sys
 from datetime import datetime, timezone
@@ -111,8 +118,47 @@ def transform_reviews(raw: dict) -> dict:
     }
 
 
-def run() -> int:
-    if not config.SHOPIFY_ADMIN_API_TOKEN:
+def print_dry_run(raw: dict, payload: dict) -> None:
+    """Human-readable preview. Public review text/names only -- never tokens or secrets."""
+    # Windows consoles default to cp1252 and crash on emoji/typographic characters
+    # that appear in real review text; force UTF-8 (replace, never raise) for this output.
+    try:
+        sys.stdout.reconfigure(encoding="utf-8", errors="replace")
+    except (AttributeError, ValueError):
+        pass
+    reviews = raw["reviews"]
+    with_text = [r for r in reviews if r.get("comment", "").strip()]
+    print("=" * 70)
+    print("DRY RUN -- nothing was written to Shopify. Raw figures from Google:")
+    print(f"  totalReviewCount (Google) : {raw['total_review_count']}")
+    print(f"  averageRating   (Google)  : {raw['average_rating']}")
+    print(f"  reviews returned by fetch : {len(reviews)}  ({len(with_text)} with text, {len(reviews) - len(with_text)} without)")
+    print("-" * 70)
+    print("All fetched reviews (order the API returned = updateTime desc):")
+    for i, r in enumerate(reviews, 1):
+        has_text = "text" if r.get("comment", "").strip() else "NO TEXT"
+        name = r.get("reviewer", {}).get("displayName", "")
+        print(
+            f"  {i:>2}. {r.get('starRating', '?'):<5} {has_text:<7} "
+            f"updated {str(r.get('updateTime', ''))[:10]}  "
+            f"raw name={name!r} -> {format_reviewer_name(name)!r}"
+        )
+    print("-" * 70)
+    print("Payload that WOULD be written to shop metafield custom.google_reviews:")
+    print(f"  rating_number : {payload['rating_number']}")
+    print(f"  rating_count  : {payload['rating_count']}")
+    print(f"  rating_label  : {payload['rating_label']}")
+    print(f"  google_url    : {payload['google_url']}")
+    print(f"  synced_at     : {payload['synced_at']}")
+    print(f"  reviews ({len(payload['reviews'])}):")
+    for i, r in enumerate(payload["reviews"], 1):
+        print(f"    [{i}] reviewer_name={r['reviewer_name']!r} occasion={r['occasion']!r}")
+        print(f"        quote={json.dumps(r['quote'], ensure_ascii=False)}")
+    print("=" * 70)
+
+
+def run(dry_run: bool = False) -> int:
+    if not dry_run and not config.SHOPIFY_ADMIN_API_TOKEN:
         log.error(
             "SHOPIFY_ADMIN_API_TOKEN is not set. This half is not blocked on Google -- "
             "create a Shopify custom app (write_metafields scope) and set this env var. "
@@ -136,6 +182,13 @@ def run() -> int:
     )
 
     payload = transform_reviews(raw)
+
+    if dry_run:
+        print_dry_run(raw, payload)
+        if not payload["reviews"] or not payload["rating_label"]:
+            print("NOTE: a real run would REFUSE to write this payload (missing rating or review content).")
+        return 0
+
     if not payload["reviews"] or not payload["rating_label"]:
         log.error(
             "Transformed payload is missing rating or review content -- refusing to write "
@@ -150,4 +203,11 @@ def run() -> int:
 
 
 if __name__ == "__main__":
-    sys.exit(run())
+    parser = argparse.ArgumentParser(description="Sync Google reviews into the custom.google_reviews Shopify metafield.")
+    parser.add_argument(
+        "--dry-run",
+        action="store_true",
+        help="Fetch + transform from Google and print what WOULD be written; never calls Shopify, needs no Shopify token.",
+    )
+    args = parser.parse_args()
+    sys.exit(run(dry_run=args.dry_run))
