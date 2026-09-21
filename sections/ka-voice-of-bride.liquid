@@ -1,14 +1,14 @@
 {{ 'ka-voice-of-bride.css' | asset_url | stylesheet_tag }}
 
 {%- comment -%}
-  STAGING-ONLY FIXTURE TEST COPY (temporary; real file restored right after)
+  STAGING-ONLY FIXTURE TEST COPY 2 (temporary; real file restored right after)
 {%- endcomment -%}
 
 {%- liquid
-  assign fx_cards = 'Absolutely loved my outfit from K&A by Karishma & Ashita! 💜  The outfit was even more beautiful in person — the fit, detailing, colour and little floral embellishments were just perfect. I received so many compliments throughout the evening.  Thank you, Karishma & Ashita, for creating something so stunning and making me feel absolutely gorgeous! ✨@@@Arushi G.@@@###Good design love the outfit@@@Sakshi K.@@@###Absolutely loved working with the team for my wedding reception outfit! The outfit fit like a glove and many of my guests said it was their absolute favorite outfit of mine. They even made me an extra lighter skirt for my first dance. Highly recommend!@@@Simran J.@@@###Thank you for making perfect corset sari for my daughter’s graduation ceremony. Amazing quality beautiful fit. Thank you so much❤️❤️@@@Kavita S.@@@###I love their designs, it is so good and fits perfectly. Twinkle helped me so much to figure what would look good and they also made the lehenga customised for me. Absolutely love their corsets🫶🏻@@@Kezia D.@@@' | split: '###'
+  assign fx_cards = '<b>bold</b> & "quoted" <script>alert(1)</script> <img src=x onerror=alert(2)>@@@<i>Eve</i> O.@@@###Just two eligible reviews today.@@@Ann B.@@@' | split: '###'
   assign fx_rating_number = '4.7'
   assign fx_rating_label = '4.7 · 67 Google Reviews'
-  assign fx_google_url = ''
+  assign fx_google_url = 'https://g.page/r/abc123?x=1&y=2'
 
   assign synced_quote_count = 0
   for fxc in fx_cards
@@ -40,22 +40,12 @@
   endif
 
   if has_synced_data
-    comment
-      Synced values are UNTRUSTED text (public Google reviews, written by a
-      cron job) and Liquid does not auto-escape output, so escape everything
-      that comes from the metafield. The editor-setting fallbacks below are
-      merchant-entered and left exactly as before.
-    endcomment
     assign rating_number = fx_rating_number | escape
     assign rating_label = fx_rating_label | escape
     assign synced_google_url = fx_google_url
     if synced_google_url != blank
       assign google_url = synced_google_url | escape
     else
-      comment
-        The sync's GOOGLE_REVIEW_URL env var may be unset/blank; never let
-        the CTA render an empty href -- fall back to the editor setting.
-      endcomment
       assign google_url = section.settings.google_url
     endif
   else
@@ -105,10 +95,6 @@
             <div class="ka-voice-card {{ delay_classes[forloop.index0] }}" {{ block.shopify_attributes }}>
               <div class="ka-voice-card__quote-mark">&ldquo;</div>
               <p class="ka-voice-card__quote">{{ block.settings.quote }}</p>
-              <div class="ka-voice-card__meta">
-                <span class="ka-voice-card__name">{{ block.settings.reviewer_name }}</span>
-                <span class="ka-voice-card__occasion">{{ block.settings.occasion }}</span>
-              </div>
             </div>
           {% endif %}
         {% endfor %}
