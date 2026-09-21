@@ -32,6 +32,7 @@ from __future__ import annotations
 import argparse
 import json
 import logging
+import re
 import sys
 from datetime import datetime, timezone
 
@@ -58,20 +59,68 @@ def star_rating_to_number(value) -> str | None:
     return f"{float(value):.1f}"
 
 
+# Google's per-review `starRating` is an enum string, NOT a number.
+STAR_RATING_MAP = {"ONE": 1, "TWO": 2, "THREE": 3, "FOUR": 4, "FIVE": 5}
+
+ANONYMOUS_NAME = "A Google Reviewer"
+
+
+def star_rating_value(review: dict) -> int:
+    """Map Google's starRating enum (ONE..FIVE) to 1-5. Unknown/missing -> 0 (never eligible)."""
+    return STAR_RATING_MAP.get(str(review.get("starRating", "")).upper(), 0)
+
+
+def _normalise_name_part(part: str) -> str:
+    """
+    Fix casing of a name token only when it is clearly wrong: ALL-lowercase or
+    ALL-CAPS ("juee", "AASHVI") -> capitalised; mixed case ("McDonald",
+    "D'Souza", "DeShawn") is left exactly as the reviewer typed it. Hyphen and
+    apostrophe segments are each capitalised ("anne-marie" -> "Anne-Marie").
+    """
+    letters = [c for c in part if c.isalpha()]
+    if not letters or not (part.islower() or part.isupper()):
+        return part
+    pieces = re.split(r"([-'’])", part)
+    return "".join(p[:1].upper() + p[1:].lower() if p and p not in "-'’" else p for p in pieces)
+
+
 def format_reviewer_name(display_name: str) -> str:
     """
-    Google gives a full display name (e.g. "Priya Sharma"). The site's
-    existing editorial convention (see the pre-existing block settings in
-    sections/ka-voice-of-bride.liquid) is "first name + last initial", e.g.
-    "Priya S." -- matches how reviews were manually curated before this sync
-    existed, and avoids publishing a reviewer's full name without consent.
+    "First L." convention (matches the hand-curated cards, and avoids
+    publishing a reviewer's full name), with casing normalised:
+      "Sakshi kachharae" -> "Sakshi K."   "AASHVI SHAH" -> "Aashvi S."
+      "juee vora" -> "Juee V."            "Karishma Abhishek Sindhu" -> "Karishma S."
+      "Kiran" -> "Kiran"                  "S Kaur" -> "S K."
+      "" / whitespace / "A Google User"   -> ANONYMOUS_NAME
+    The initial is the first alphabetic character of the LAST word, uppercased
+    (unicode-aware: "élodie ñandú" -> "Élodie Ñ."). If the last word has no
+    letters at all (e.g. an emoji), only the first name is returned.
     """
-    parts = display_name.strip().split()
-    if not parts:
-        return "A K&A Bride"
+    parts = (display_name or "").strip().split()
+    if not parts or " ".join(parts).lower() in {"a google user", "google user"}:
+        return ANONYMOUS_NAME
+    first = _normalise_name_part(parts[0])
     if len(parts) == 1:
-        return parts[0]
-    return f"{parts[0]} {parts[-1][0]}."
+        return first
+    initial = next((c for c in parts[-1] if c.isalpha()), "")
+    return f"{first} {initial.upper()[:1]}." if initial else first
+
+
+def classify_reviews(reviews: list[dict]) -> dict:
+    """
+    Buckets every fetched review. Precedence: no text first (any rating), then
+    below-threshold-with-text, else eligible. Used by transform_reviews (to
+    select) and by --dry-run (to report exclusion counts).
+    """
+    eligible, no_text, below_min = [], [], []
+    for r in reviews:
+        if not r.get("comment", "").strip():
+            no_text.append(r)
+        elif star_rating_value(r) < config.MIN_STAR_RATING:
+            below_min.append(r)
+        else:
+            eligible.append(r)
+    return {"eligible": eligible, "no_text": no_text, "below_min_rating": below_min}
 
 
 def transform_reviews(raw: dict) -> dict:
@@ -81,19 +130,18 @@ def transform_reviews(raw: dict) -> dict:
     schema documented in sections/ka-voice-of-bride.liquid's header comment
     and in config.py).
 
+    Selection is fully automatic (Suraj's decision, 2026-09-21): the most
+    recently updated reviews (API order = updateTime desc) that have text AND
+    at least config.MIN_STAR_RATING stars, up to config.MAX_REVIEWS. Fewer
+    eligible reviews simply yields fewer cards. Rating average / total count
+    are Google's own top-level figures, never recomputed from the filter.
+
     KNOWN LIMITATION -- "occasion" (e.g. "Bridal, 2024"): Google's Reviews
-    API has no equivalent field. It was previously hand-curated per review
-    when quotes were entered manually as section blocks. This sync leaves
-    "occasion" as an empty string for every auto-synced review. If Suraj
-    wants that detail to keep appearing, the options are: (a) drop it from
-    the card design, (b) maintain a small manual override map (e.g. keyed by
-    Google reviewId) that this script merges in before writing the
-    metafield, or (c) accept it blank. Not resolved here -- a product
-    decision, not a code gap.
+    API has no equivalent field. It is left as an empty string for every
+    auto-synced review (the theme renders that cleanly; Suraj's curated cards
+    have none either). Not a code gap.
     """
-    reviews_with_text = [r for r in raw["reviews"] if r.get("comment", "").strip()]
-    # Already ordered by updateTime desc via the API's orderBy param.
-    top_reviews = reviews_with_text[: config.MAX_REVIEWS]
+    top_reviews = classify_reviews(raw["reviews"])["eligible"][: config.MAX_REVIEWS]
 
     rating_number = star_rating_to_number(raw.get("average_rating"))
     rating_count = raw.get("total_review_count")
@@ -127,12 +175,19 @@ def print_dry_run(raw: dict, payload: dict) -> None:
     except (AttributeError, ValueError):
         pass
     reviews = raw["reviews"]
+    buckets = classify_reviews(reviews)
     with_text = [r for r in reviews if r.get("comment", "").strip()]
     print("=" * 70)
     print("DRY RUN -- nothing was written to Shopify. Raw figures from Google:")
     print(f"  totalReviewCount (Google) : {raw['total_review_count']}")
     print(f"  averageRating   (Google)  : {raw['average_rating']}")
     print(f"  reviews returned by fetch : {len(reviews)}  ({len(with_text)} with text, {len(reviews) - len(with_text)} without)")
+    print(f"  min star rating for cards  : {config.MIN_STAR_RATING}   max cards: {config.MAX_REVIEWS}")
+    print("  Selection breakdown (counts only):")
+    print(f"    excluded - no text (any rating)          : {len(buckets['no_text'])}")
+    print(f"    excluded - has text but rated < {config.MIN_STAR_RATING} stars   : {len(buckets['below_min_rating'])}")
+    print(f"    eligible (text and >= {config.MIN_STAR_RATING} stars)          : {len(buckets['eligible'])}")
+    print(f"    eligible but beyond the {config.MAX_REVIEWS}-card cap          : {max(0, len(buckets['eligible']) - config.MAX_REVIEWS)}")
     print("-" * 70)
     print("All fetched reviews (order the API returned = updateTime desc):")
     for i, r in enumerate(reviews, 1):
@@ -157,7 +212,7 @@ def print_dry_run(raw: dict, payload: dict) -> None:
     print("=" * 70)
 
 
-def run(dry_run: bool = False) -> int:
+def run(dry_run: bool = False, json_out: str | None = None) -> int:
     if not dry_run and not config.SHOPIFY_ADMIN_API_TOKEN:
         log.error(
             "SHOPIFY_ADMIN_API_TOKEN is not set. This half is not blocked on Google -- "
@@ -185,6 +240,10 @@ def run(dry_run: bool = False) -> int:
 
     if dry_run:
         print_dry_run(raw, payload)
+        if json_out:
+            with open(json_out, "w", encoding="utf-8") as fh:
+                json.dump(payload, fh, ensure_ascii=False, indent=2)
+            print(f"(payload JSON written to {json_out} -- local file only, nothing sent anywhere)")
         if not payload["reviews"] or not payload["rating_label"]:
             print("NOTE: a real run would REFUSE to write this payload (missing rating or review content).")
         return 0
@@ -209,5 +268,12 @@ if __name__ == "__main__":
         action="store_true",
         help="Fetch + transform from Google and print what WOULD be written; never calls Shopify, needs no Shopify token.",
     )
+    parser.add_argument(
+        "--json-out",
+        metavar="PATH",
+        help="With --dry-run only: also save the would-be payload as JSON to this local file (e.g. to build a staging test fixture).",
+    )
     args = parser.parse_args()
-    sys.exit(run(dry_run=args.dry_run))
+    if args.json_out and not args.dry_run:
+        parser.error("--json-out is only allowed together with --dry-run")
+    sys.exit(run(dry_run=args.dry_run, json_out=args.json_out))

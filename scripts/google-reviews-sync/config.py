@@ -81,5 +81,13 @@ METAFIELD_KEY = "google_reviews"
 METAFIELD_TYPE = "json"
 
 # How many review excerpts to keep in the synced payload. Matches the
-# section's card grid (sections/ka-voice-of-bride.liquid renders up to 3).
-MAX_REVIEWS = 3
+# section's card grid (sections/ka-voice-of-bride.liquid renders up to 5 on the
+# synced path, same as the editor-block fallback path).
+MAX_REVIEWS = int(_optional("MAX_REVIEWS", "5"))
+
+# Minimum star rating (1-5) for a review to be eligible for the homepage cards.
+# Per-review `starRating` from Google is the enum ONE..FIVE (see
+# sync.STAR_RATING_MAP). Default 4: only 4- and 5-star reviews WITH text are
+# published automatically. This does NOT affect the rating average / total
+# count, which always come from Google's top-level fields unchanged.
+MIN_STAR_RATING = int(_optional("MIN_STAR_RATING", "4"))
