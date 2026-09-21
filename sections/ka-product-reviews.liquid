@@ -7,7 +7,10 @@
   review -- the score, count and up to 6 review cards come from it; otherwise
   the section settings/blocks below are used exactly as before. Every synced
   review is 4-5 stars and carries its numeric `rating`. Synced values are
-  untrusted text (Liquid does not auto-escape), so every one is escaped.
+  untrusted text (Liquid does not auto-escape), so every one is escaped. Quotes
+  get a 70-word safety cap (truncatewords, then escape; ~60 words fits fine at
+  this card width) per Docs/google-reviews-sections-build-spec.md sec 2/3.
+  Grid layout for 6/5/4/3/2/1 cards is CSS-only (assets/ka-product-reviews.css).
 {%- endcomment -%}
 {%- liquid
   assign gr = shop.metafields.custom.google_reviews.value
@@ -55,7 +58,8 @@
       {%- if use_synced -%}
         {%- for review in gr.reviews limit: 6 -%}
           {%- if review.quote != blank -%}
-            {%- assign rating = review.rating | default: 0 -%}
+            {%- comment -%} plus: 0 coerces to a number (missing/non-numeric -> 0 -> no star row) {%- endcomment -%}
+            {%- assign rating = review.rating | plus: 0 -%}
             <div class="ka-rev">
               {%- if rating > 0 -%}
                 <div class="ka-rev__stars">
@@ -64,7 +68,7 @@
                   {%- endfor -%}
                 </div>
               {%- endif -%}
-              <p>{{ review.quote | escape }}</p>
+              <p>{{ review.quote | truncatewords: 70, '…' | escape }}</p>
               <div class="ka-rev__who">
                 <div class="ka-rev__av">{{ review.reviewer_name | slice: 0 | escape }}</div>
                 <div>

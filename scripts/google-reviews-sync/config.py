@@ -86,11 +86,10 @@ METAFIELD_NAMESPACE = "custom"
 METAFIELD_KEY = "google_reviews"
 METAFIELD_TYPE = "json"
 
-# How many review excerpts to keep in the synced payload (a CAP on the data, not
-# a layout decision). Each theme surface renders its own `limit`: the homepage
-# section (sections/ka-voice-of-bride.liquid) currently shows the first 5 and the
-# product page (sections/ka-product-reviews.liquid) up to 6, so 6 covers both.
-# Final on-page card counts/layout are a Creative Director decision.
+# How many review excerpts to keep in the synced payload. 6 = a full 3 x 2 grid on
+# both surfaces (Docs/google-reviews-sections-build-spec.md): the homepage section
+# (sections/ka-voice-of-bride.liquid) and the product page
+# (sections/ka-product-reviews.liquid) each loop `limit: 6`.
 MAX_REVIEWS = int(_optional("MAX_REVIEWS", "6"))
 
 # Minimum star rating (1-5) for a review to be eligible for the homepage cards.
@@ -99,3 +98,11 @@ MAX_REVIEWS = int(_optional("MAX_REVIEWS", "6"))
 # published automatically. This does NOT affect the rating average / total
 # count, which always come from Google's top-level fields unchanged.
 MIN_STAR_RATING = int(_optional("MIN_STAR_RATING", "4"))
+
+# Length preference for choosing the homepage/product cards (Docs/google-reviews-
+# sections-build-spec.md sec 3): among the ELIGIBLE reviews prefer ones of roughly
+# 8-55 words, so the homepage rarely truncates and no card is a one-liner beside a
+# wall of text. A preference, never a filter: if fewer than MAX_REVIEWS preferred-
+# length reviews exist, the rest are filled from the other eligible reviews.
+PREFERRED_MIN_WORDS = int(_optional("PREFERRED_MIN_WORDS", "8"))
+PREFERRED_MAX_WORDS = int(_optional("PREFERRED_MAX_WORDS", "55"))

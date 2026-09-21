@@ -119,9 +119,7 @@ def review_text(comment) -> str:
     The verbatim reviewer text to publish (the site's rule: never a translation).
 
     Google's v4 API can return a machine-translated comment shaped like
-        "(Translated by Google) <translated text>
-
-(Original) <original text>"
+        "(Translated by Google) <translated text>[blank line](Original) <original text>"
     In that case return the ORIGINAL text, with both markers removed. If the
     "(Original)" marker (or the original text after it) is missing, fall back
     to the text after the "(Translated by Google)" prefix so a marker string is
@@ -156,6 +154,33 @@ def classify_reviews(reviews: list[dict]) -> dict:
     return {"eligible": eligible, "no_text": no_text, "below_min_rating": below_min}
 
 
+def word_count(text: str) -> int:
+    return len((text or "").split())
+
+
+def is_preferred_length(review: dict) -> bool:
+    return config.PREFERRED_MIN_WORDS <= word_count(review_text(review.get("comment"))) <= config.PREFERRED_MAX_WORDS
+
+
+def select_reviews(eligible: list[dict], max_n: int) -> list[dict]:
+    """
+    Picks up to max_n cards from the eligible reviews (already in the API's
+    updateTime-descending order). Tie-break, exactly:
+      1. Take eligible reviews whose text is PREFERRED_MIN_WORDS..PREFERRED_MAX_WORDS
+         words (default 8-55), newest first, up to max_n.
+      2. If that yields fewer than max_n, top up with the remaining eligible
+         reviews (too short or too long), newest first.
+      3. Return the chosen set in the original newest-first order (so cards are
+         always ordered by recency, never "preferred first").
+    """
+    preferred = [i for i, r in enumerate(eligible) if is_preferred_length(r)]
+    chosen = preferred[:max_n]
+    if len(chosen) < max_n:
+        others = [i for i in range(len(eligible)) if i not in set(preferred)]
+        chosen += others[: max_n - len(chosen)]
+    return [eligible[i] for i in sorted(chosen)]
+
+
 def transform_reviews(raw: dict) -> dict:
     """
     Converts the raw Google Business Profile API response into the JSON
@@ -163,10 +188,11 @@ def transform_reviews(raw: dict) -> dict:
     schema documented in sections/ka-voice-of-bride.liquid's header comment
     and in config.py).
 
-    Selection is fully automatic (Suraj's decision, 2026-09-21): the most
-    recently updated reviews (API order = updateTime desc) that have text AND
-    at least config.MIN_STAR_RATING stars, up to config.MAX_REVIEWS. Fewer
-    eligible reviews simply yields fewer cards. Rating average / total count
+    Selection is fully automatic (Suraj's decision, 2026-09-21): reviews that
+    have text AND at least config.MIN_STAR_RATING stars are eligible; among
+    them prefer 8-55 words, newest first, up to config.MAX_REVIEWS (see
+    select_reviews for the exact tie-break). Fewer eligible reviews simply
+    yields fewer cards. Rating average / total count
     are Google's own top-level figures, never recomputed from the filter.
 
     KNOWN LIMITATION -- "occasion" (e.g. "Bridal, 2024"): Google's Reviews
@@ -174,7 +200,7 @@ def transform_reviews(raw: dict) -> dict:
     auto-synced review (the theme renders that cleanly; Suraj's curated cards
     have none either). Not a code gap.
     """
-    top_reviews = classify_reviews(raw["reviews"])["eligible"][: config.MAX_REVIEWS]
+    top_reviews = select_reviews(classify_reviews(raw["reviews"])["eligible"], config.MAX_REVIEWS)
 
     rating_number = star_rating_to_number(raw.get("average_rating"))
     rating_count = raw.get("total_review_count")
@@ -225,7 +251,9 @@ def print_dry_run(raw: dict, payload: dict) -> None:
     print(f"    excluded - no text (any rating)          : {len(buckets['no_text'])}")
     print(f"    excluded - has text but rated < {config.MIN_STAR_RATING} stars   : {len(buckets['below_min_rating'])}")
     print(f"    eligible (text and >= {config.MIN_STAR_RATING} stars)          : {len(buckets['eligible'])}")
-    print(f"    eligible but beyond the {config.MAX_REVIEWS}-card cap          : {max(0, len(buckets['eligible']) - config.MAX_REVIEWS)}")
+    preferred_n = sum(1 for r in buckets["eligible"] if is_preferred_length(r))
+    print(f"    eligible with preferred length ({config.PREFERRED_MIN_WORDS}-{config.PREFERRED_MAX_WORDS} words) : {preferred_n}")
+    print(f"    eligible but not chosen (beyond the {config.MAX_REVIEWS}-card cap)  : {max(0, len(buckets['eligible']) - config.MAX_REVIEWS)}")
     print("-" * 70)
     print("All fetched reviews (order the API returned = updateTime desc):")
     for i, r in enumerate(reviews, 1):
@@ -245,7 +273,7 @@ def print_dry_run(raw: dict, payload: dict) -> None:
     print(f"  synced_at     : {payload['synced_at']}")
     print(f"  reviews ({len(payload['reviews'])}):")
     for i, r in enumerate(payload["reviews"], 1):
-        print(f"    [{i}] reviewer_name={r['reviewer_name']!r} occasion={r['occasion']!r}")
+        print(f"    [{i}] reviewer_name={r['reviewer_name']!r} rating={r['rating']} words={word_count(r['quote'])} occasion={r['occasion']!r}")
         print(f"        quote={json.dumps(r['quote'], ensure_ascii=False)}")
     print("=" * 70)
 

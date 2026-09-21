@@ -22,9 +22,8 @@
       "rating_label": "4.9 · 52 Google Reviews",
       "google_url": "https://g.page/r/xxxxxxxxxxxx",
       "reviews": [
-        { "quote": "...", "reviewer_name": "Priya S.", "occasion": "Bridal, 2024" },
-        { "quote": "...", "reviewer_name": "Anika R.", "occasion": "Festive Wear, 2024" },
-        { "quote": "...", "reviewer_name": "Meera K.", "occasion": "Bridal, 2025" }
+        { "quote": "...", "reviewer_name": "Priya S.", "occasion": "", "rating": 5 },
+        { "quote": "...", "reviewer_name": "Anika R.", "occasion": "", "rating": 4 }
       ],
       "synced_at": "2026-08-29T00:00:00Z"
     }
@@ -115,24 +114,34 @@
       64->67 update) to cover up to 5 editor-block review cards without
       indexing out of bounds -- reveal-delay-3/-4 already exist in
       ka-base.css (unused elsewhere in this file until now), so this
-      needed no new CSS. The synced-data path now also loops `limit: 5`
+      needed no new CSS. The synced-data path now loops `limit: 6`
       (2026-09-21, fully automatic card selection: the sync picks up to
-      MAX_REVIEWS=5 eligible 4-5 star reviews with text) and uses the
-      same delay_classes; fewer than 5 synced reviews just renders
-      fewer cards. `occasion` is blank for synced reviews (Google has no
-      such field) -- the empty span collapses cleanly in the card meta row.
+      MAX_REVIEWS=6 eligible 4-5 star reviews with text -- a full 3 x 2
+      grid) and uses the same delay_classes (ka-base.css only defines
+      reveal-delay-1..4, so the 5th and 6th cards both reuse -4). The
+      grid layout for 6/5/4/3/2/1 cards is pure CSS quantity queries on
+      the rendered cards (assets/ka-voice-of-bride.css), so fewer than 6
+      cards never leaves an empty cell. Per Docs/google-reviews-sections-
+      build-spec.md sec 1.4: on the SYNCED path the (blank) occasion slot
+      is replaced by the real star rating of the review (each synced review
+      carries a numeric `rating`), and quotes are cut at a word boundary
+      after 40 words (truncatewords, then escape -- truncate first so the
+      count is on raw text). The editor-block path is untouched: it keeps
+      its occasion field and is never truncated.
     {% endcomment %}
-    {% assign delay_classes = 'reveal, reveal reveal-delay-1, reveal reveal-delay-2, reveal reveal-delay-3, reveal reveal-delay-4' | split: ', ' %}
+    {% assign delay_classes = 'reveal, reveal reveal-delay-1, reveal reveal-delay-2, reveal reveal-delay-3, reveal reveal-delay-4, reveal reveal-delay-4' | split: ', ' %}
     {% if has_synced_data %}
       <div class="ka-voices__grid">
-        {% for review in reviews_data.reviews limit: 5 %}
+        {% for review in reviews_data.reviews limit: 6 %}
           {% if review.quote != blank %}
             <div class="ka-voice-card {{ delay_classes[forloop.index0] }}">
               <div class="ka-voice-card__quote-mark">&ldquo;</div>
-              <p class="ka-voice-card__quote">{{ review.quote | escape }}</p>
+              <p class="ka-voice-card__quote">{{ review.quote | truncatewords: 40, '…' | escape }}</p>
               <div class="ka-voice-card__meta">
                 <span class="ka-voice-card__name">{{ review.reviewer_name | escape }}</span>
-                <span class="ka-voice-card__occasion">{{ review.occasion | escape }}</span>
+                {%- comment -%} plus: 0 coerces to a number, so a non-numeric value can never reach the aria-label {%- endcomment -%}
+                {%- assign r = review.rating | plus: 0 -%}
+                {%- if r > 0 -%}<span class="ka-voice-card__stars" aria-label="{{ r }} out of 5">{% for i in (1..5) %}{% if i <= r %}&#9733;{% else %}&#9734;{% endif %}{% endfor %}</span>{%- endif -%}
               </div>
             </div>
           {% endif %}
@@ -201,7 +210,7 @@
     {
       "type": "review",
       "name": "Review",
-      "limit": 5,
+      "limit": 6,
       "settings": [
         {
           "type": "textarea",

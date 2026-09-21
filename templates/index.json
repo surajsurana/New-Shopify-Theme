@@ -143,6 +143,14 @@
             "reviewer_name": "Sakshi K.",
             "occasion": ""
           }
+        },
+        "review-6": {
+          "type": "review",
+          "settings": {
+            "quote": "Loved the collection, really cool styles. Twinkle was really helpful.",
+            "reviewer_name": "Shivani R.",
+            "occasion": ""
+          }
         }
       },
       "block_order": [
@@ -150,7 +158,8 @@
         "review-2",
         "review-3",
         "review-4",
-        "review-5"
+        "review-5",
+        "review-6"
       ],
       "settings": {
         "show_section": true,

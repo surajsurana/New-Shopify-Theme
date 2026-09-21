@@ -309,5 +309,56 @@ class Probe(unittest.TestCase):
         self.assertIn("read denied", out)
 
 
+class LengthPreference(unittest.TestCase):
+    def setUp(self):
+        self._saved = (config.MIN_STAR_RATING, config.MAX_REVIEWS, config.PREFERRED_MIN_WORDS, config.PREFERRED_MAX_WORDS)
+        config.MIN_STAR_RATING, config.MAX_REVIEWS, config.PREFERRED_MIN_WORDS, config.PREFERRED_MAX_WORDS = 4, 3, 8, 55
+
+    def tearDown(self):
+        config.MIN_STAR_RATING, config.MAX_REVIEWS, config.PREFERRED_MIN_WORDS, config.PREFERRED_MAX_WORDS = self._saved
+
+    @staticmethod
+    def words(n):
+        return " ".join(["word"] * n)
+
+    def quotes(self, reviews):
+        return [sync.select_reviews([r for r in reviews], config.MAX_REVIEWS)]
+
+    def test_preferred_length_beats_recency_and_order_stays_newest_first(self):
+        reviews = [
+            review("FIVE", self.words(3)),    # 0 newest, too short
+            review("FIVE", self.words(10)),   # 1 preferred
+            review("FIVE", self.words(70)),   # 2 too long
+            review("FIVE", self.words(20)),   # 3 preferred
+            review("FIVE", self.words(8)),    # 4 preferred (boundary)
+            review("FIVE", self.words(30)),   # 5 preferred (older, cut by the cap)
+        ]
+        chosen = sync.select_reviews(reviews, 3)
+        self.assertEqual([sync.word_count(r["comment"]) for r in chosen], [10, 20, 8])
+
+    def test_tops_up_with_non_preferred_newest_first_when_not_enough_preferred(self):
+        reviews = [review("FIVE", self.words(3)), review("FIVE", self.words(12)), review("FIVE", self.words(70)), review("FIVE", self.words(4))]
+        chosen = sync.select_reviews(reviews, 3)
+        # preferred = only the 12-word one; top up with the 3-word and 70-word (newest first); final order = newest first
+        self.assertEqual([sync.word_count(r["comment"]) for r in chosen], [3, 12, 70])
+
+    def test_boundaries_55_included_56_not_preferred(self):
+        self.assertTrue(sync.is_preferred_length(review("FIVE", self.words(55))))
+        self.assertFalse(sync.is_preferred_length(review("FIVE", self.words(56))))
+        self.assertFalse(sync.is_preferred_length(review("FIVE", self.words(7))))
+
+    def test_translated_original_is_what_gets_counted(self):
+        c = "(Translated by Google) " + self.words(3) + "\n\n(Original) " + self.words(12)
+        self.assertTrue(sync.is_preferred_length(review("FIVE", c)))
+
+    def test_rating_number_is_one_decimal_string(self):
+        self.assertEqual(sync.star_rating_to_number(5), "5.0")
+        self.assertEqual(sync.star_rating_to_number(4), "4.0")
+        self.assertEqual(sync.star_rating_to_number(4.699999809265137), "4.7")
+        payload = sync.transform_reviews({"reviews": [review("FIVE", self.words(10))], "average_rating": 5, "total_review_count": 1})
+        self.assertEqual(payload["rating_number"], "5.0")
+        self.assertEqual(payload["rating_label"], "5.0 \u00b7 1 Google Reviews")
+
+
 if __name__ == "__main__":
     unittest.main(verbosity=2)
