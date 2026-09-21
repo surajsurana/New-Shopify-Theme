@@ -1,44 +1,11 @@
 {{ 'ka-voice-of-bride.css' | asset_url | stylesheet_tag }}
 
 {%- comment -%}
-  Voice of the Bride — conditionally hidden until real review data is present.
-
-  Data source (added 2026-08-29, pending task #3 -- live Google Reviews sync):
-  Suraj decided against a third-party embed widget (Elfsight/EmbedSocial/etc.)
-  and is instead getting Owner-level Google Business Profile API access
-  directly, so this section reads from a single JSON metafield instead --
-  `shop.metafields.custom.google_reviews` (definition created 2026-08-29,
-  gid://shopify/MetafieldDefinition/292565483810). That metafield is written
-  by a droplet cron job (scripts/google-reviews-sync/, same pattern as the
-  Petty Cash bot on the stocktradingbot droplet) once Suraj's Google API
-  access is approved -- see that script for the sync flow. Until then the
-  metafield is empty and this section falls back to the pre-existing
-  editor-block behaviour untouched below.
-
-  Expected JSON shape of shop.metafields.custom.google_reviews.value:
-    {
-      "rating_number": "4.9",
-      "rating_count": 52,
-      "rating_label": "4.9 · 52 Google Reviews",
-      "google_url": "https://g.page/r/xxxxxxxxxxxx",
-      "reviews": [
-        { "quote": "...", "reviewer_name": "Priya S.", "occasion": "Bridal, 2024" },
-        { "quote": "...", "reviewer_name": "Anika R.", "occasion": "Festive Wear, 2024" },
-        { "quote": "...", "reviewer_name": "Meera K.", "occasion": "Bridal, 2025" }
-      ],
-      "synced_at": "2026-08-29T00:00:00Z"
-    }
-
-  The section renders only when section.settings.show_section is true AND
-  there is actual content to show -- either synced metafield data (preferred)
-  or at least one editor block with non-empty quote text (fallback, e.g. for
-  manual curation before live sync is wired up). This prevents an empty or
-  broken-looking section from ever going live by accident.
-  Creative Director spec note: "Do not publish placeholder review content."
+  FIXTURE TEST COPY (staging only, temporary)
 {%- endcomment -%}
 
 {%- liquid
-  assign reviews_data = shop.metafields.custom.google_reviews.value
+  assign reviews_data = '{"rating_number":"4.7","rating_count":67,"rating_label":"4.7 · 67 Google Reviews","google_url":null,"reviews":[{"quote":"Absolutely loved my outfit from K&A by Karishma & Ashita! 💜\n\nThe outfit was even more beautiful in person — the fit, detailing, colour and little floral embellishments were just perfect. I received so many compliments throughout the evening.\n\nThank you, Karishma & Ashita, for creating something so stunning and making me feel absolutely gorgeous! ✨","reviewer_name":"Arushi G.","occasion":""},{"quote":"Good design love the outfit","reviewer_name":"Sakshi K.","occasion":""},{"quote":"Absolutely loved working with the team for my wedding reception outfit! The outfit fit like a glove and many of my guests said it was their absolute favorite outfit of mine. They even made me an extra lighter skirt for my first dance. Highly recommend!","reviewer_name":"Simran J.","occasion":""},{"quote":"Thank you for making perfect corset sari for my daughter’s graduation ceremony. Amazing quality beautiful fit. Thank you so much❤️❤️","reviewer_name":"Kavita S.","occasion":""},{"quote":"I love their designs, it is so good and fits perfectly. Twinkle helped me so much to figure what would look good and they also made the lehenga customised for me. Absolutely love their corsets🫶🏻","reviewer_name":"Kezia D.","occasion":""}],"synced_at":"2026-09-21T15:53:27Z"}' | parse_json
 
   assign synced_quote_count = 0
   for review in reviews_data.reviews
@@ -69,22 +36,12 @@
   endif
 
   if has_synced_data
-    comment
-      Synced values are UNTRUSTED text (public Google reviews, written by a
-      cron job) and Liquid does not auto-escape output, so escape everything
-      that comes from the metafield. The editor-setting fallbacks below are
-      merchant-entered and left exactly as before.
-    endcomment
     assign rating_number = reviews_data.rating_number | escape
     assign rating_label = reviews_data.rating_label | escape
     assign synced_google_url = reviews_data.google_url
     if synced_google_url != blank
       assign google_url = synced_google_url | escape
     else
-      comment
-        The sync's GOOGLE_REVIEW_URL env var may be unset/blank; never let
-        the CTA render an empty href -- fall back to the editor setting.
-      endcomment
       assign google_url = section.settings.google_url
     endif
   else
@@ -110,18 +67,6 @@
       {% endif %}
     </div>
 
-    {% comment %}
-      Extended from 3 to 5 entries (2026-09-11, Google review count
-      64->67 update) to cover up to 5 editor-block review cards without
-      indexing out of bounds -- reveal-delay-3/-4 already exist in
-      ka-base.css (unused elsewhere in this file until now), so this
-      needed no new CSS. The synced-data path now also loops `limit: 5`
-      (2026-09-21, fully automatic card selection: the sync picks up to
-      MAX_REVIEWS=5 eligible 4-5 star reviews with text) and uses the
-      same delay_classes; fewer than 5 synced reviews just renders
-      fewer cards. `occasion` is blank for synced reviews (Google has no
-      such field) -- the empty span collapses cleanly in the card meta row.
-    {% endcomment %}
     {% assign delay_classes = 'reveal, reveal reveal-delay-1, reveal reveal-delay-2, reveal reveal-delay-3, reveal reveal-delay-4' | split: ', ' %}
     {% if has_synced_data %}
       <div class="ka-voices__grid">
@@ -171,31 +116,13 @@
   "name": "Voice of the Bride",
   "tag": "section",
   "settings": [
-    {
-      "type": "paragraph",
-      "content": "Prefers live-synced data from the custom.google_reviews Shop metafield (written automatically by the droplet Google Reviews sync job) when present. The rating, review URL, and review cards below are only a manual fallback used before that sync is active."
-    },
-    {
-      "type": "checkbox",
-      "id": "show_section",
-      "label": "Show this section",
-      "default": false,
-      "info": "IMPORTANT: Only enable once real review data exists, either synced automatically or entered manually below. Do not publish with placeholder content."
-    },
-    { "type": "text", "id": "eyebrow",          "label": "Eyebrow",         "default": "What Brides Say" },
-    { "type": "text", "id": "title",             "label": "Section title",   "default": "The words of\nour brides." },
-    {
-      "type": "header",
-      "content": "Rating block (manual fallback)"
-    },
-    { "type": "text", "id": "rating_number", "label": "Rating (e.g. 4.9 or ★★★★★)",    "info": "Leave blank to hide the rating block. Ignored once live sync data exists." },
-    { "type": "text", "id": "rating_label",  "label": "Rating label (e.g. 4.9 · 52 Google Reviews)" },
-    {
-      "type": "header",
-      "content": "CTA"
-    },
+    { "type": "checkbox", "id": "show_section", "label": "Show this section", "default": false },
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "What Brides Say" },
+    { "type": "text", "id": "title", "label": "Section title", "default": "The words of\nour brides." },
+    { "type": "text", "id": "rating_number", "label": "Rating" },
+    { "type": "text", "id": "rating_label", "label": "Rating label" },
     { "type": "text", "id": "google_cta_label", "label": "Google reviews CTA label", "default": "Read all reviews on Google" },
-    { "type": "url",  "id": "google_url",        "label": "Google Maps review URL (manual fallback)",  "info": "Obtain from your Google Business Profile. Ignored once live sync data exists." }
+    { "type": "url", "id": "google_url", "label": "Google review URL" }
   ],
   "blocks": [
     {
@@ -203,19 +130,12 @@
       "name": "Review",
       "limit": 5,
       "settings": [
-        {
-          "type": "textarea",
-          "id": "quote",
-          "label": "Review quote (verbatim from Google)",
-          "info": "Must be the exact text from the reviewer's Google review. Do not paraphrase."
-        },
-        { "type": "text", "id": "reviewer_name", "label": "Reviewer first name and initial (e.g. Priya S.)" },
-        { "type": "text", "id": "occasion",       "label": "Occasion and year (e.g. Bridal, 2024)" }
+        { "type": "textarea", "id": "quote", "label": "Quote" },
+        { "type": "text", "id": "reviewer_name", "label": "Reviewer" },
+        { "type": "text", "id": "occasion", "label": "Occasion" }
       ]
     }
   ],
-  "presets": [
-    { "name": "Voice of the Bride" }
-  ]
+  "presets": [ { "name": "Voice of the Bride" } ]
 }
 {% endschema %}
