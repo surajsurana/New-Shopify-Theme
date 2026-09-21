@@ -1,222 +1,28 @@
+{%- liquid
+  assign fx_quotes = 1
+  assign fx_rating_number = '4.7"}</script><b>x'
+  assign fx_rating_count = '67'
+  assign ld_rating_value = '4.7'
+  assign ld_review_count = '67'
+  if fx_quotes > 0 and fx_rating_number != blank and fx_rating_count != blank
+    assign ld_rating_value = fx_rating_number | append: ''
+    assign ld_review_count = fx_rating_count | append: ''
+  endif
+  assign badge_score = '4.7'
+  assign badge_count = '67'
+  if fx_quotes > 0 and fx_rating_number != blank and fx_rating_count != blank
+    assign badge_score = fx_rating_number | escape
+    assign badge_count = fx_rating_count | escape
+  endif
+-%}
 <!doctype html>
-<html lang="{{ request.locale.iso_code }}"{% if settings.enable_currency_converter %} data-ka-country="{{ localization.country.iso_code }}"{% endif %}>
-<head>
-  {%- if settings.enable_currency_converter -%}
-    {%- comment -%}
-      K&A CURRENCY MODULE — anti-flash pre-paint script (Task 86, F2).
-      Must run synchronously, before first paint, so it can set
-      data-ka-currency-pending BEFORE the render-blocking ka-currency.css
-      stylesheet (loaded below) is evaluated. That CSS rule hides every
-      [data-price] element while the attribute is present; ka-currency.js
-      (loaded defer, at the end of body) removes the attribute once real
-      conversion has run, revealing prices already correct — no flash of
-      ₹ INR that then jumps to the detected/overridden currency.
-
-      Mirrors the exact same override → country-map → INR-default logic
-      ka-currency.js uses (see assets/ka-currency.js, detectCurrency()).
-      Country comes from Shopify's own `localization.country` object,
-      rendered server-side into data-ka-country above — this is available
-      sitewide via Shopify's built-in visitor geolocation and does NOT
-      require enabling Shopify Markets' multi-currency checkout (F1);
-      it is a read-only signal, never a checkout-currency change.
-
-      Defensive 2.5s fallback: if ka-currency.js never runs (blocked,
-      network failure, ad blocker on the rate-fetch host), prices reveal
-      anyway rather than staying hidden forever — they simply show the
-      server-rendered INR fallback text, which is always correct.
-    {%- endcomment -%}
-    <script>
-      (function () {
-        try {
-          var COUNTRY_MAP = { US: 'USD', GB: 'GBP', CA: 'CAD', AE: 'AED' };
-          var VALID = { USD: 1, GBP: 1, CAD: 1, AED: 1 };
-          var override = localStorage.getItem('ka_currency_override');
-          var target = 'INR';
-          if (override && VALID[override]) {
-            target = override;
-          } else {
-            var country = document.documentElement.getAttribute('data-ka-country');
-            if (country && COUNTRY_MAP[country]) target = COUNTRY_MAP[country];
-          }
-          if (target !== 'INR') {
-            document.documentElement.setAttribute('data-ka-currency-pending', target);
-            setTimeout(function () {
-              document.documentElement.removeAttribute('data-ka-currency-pending');
-            }, 2500);
-          }
-        } catch (e) { /* localStorage unavailable (private mode etc.) — no pre-hide, no harm */ }
-      })();
-    </script>
-  {%- endif -%}
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>
-    {%- if request.page_type == 'index' -%}
-      Karishma &amp; Ashita — Bridal Couture, Mumbai
-    {%- elsif request.page_type == 'cart' -%}
-      Your Bag — Karishma &amp; Ashita
-    {%- elsif page_title == shop.name or page_title == blank -%}
-      {{ shop.name }} — Bridal Couture, Mumbai
-    {%- else -%}
-      {{ page_title }} — {{ shop.name }}
-    {%- endif -%}
-  </title>
-
-  {%- if request.page_type == 'index' -%}
-    <meta name="description" content="Karishma &amp; Ashita — luxury bridal couture, handcrafted in Mumbai. Corsets, lehengas and draped sarees made to your exact measurements. Complimentary worldwide delivery." />
-  {%- elsif page_description -%}
-    <meta name="description" content="{{ page_description | escape }}" />
-  {%- endif -%}
-
-  {%- liquid
-    if request.page_type == 'index'
-      assign og_title = 'Karishma & Ashita — Bridal Couture, Mumbai'
-    elsif request.page_type == 'cart'
-      assign og_title = 'Your Bag — Karishma & Ashita'
-    elsif page_title == blank or page_title == shop.name
-      assign og_title = shop.name | append: ' — Bridal Couture, Mumbai'
-    else
-      assign og_title = page_title | append: ' — ' | append: shop.name
-    endif
-    assign og_image = page_image | default: settings.share_image
-  -%}
-  <meta property="og:title" content="{{ og_title | escape }}" />
-  <meta property="og:type" content="website" />
-  <meta property="og:url" content="{{ canonical_url }}" />
-  {%- if og_image -%}
-    <meta property="og:image" content="{{ og_image | image_url: width: 1200 }}" />
-  {%- else -%}
-    <meta property="og:image" content="{{ 'first-love-hero.jpg' | asset_url }}" />
-  {%- endif -%}
-  {%- if request.page_type == 'index' -%}
-    <meta property="og:description" content="Karishma &amp; Ashita — luxury bridal couture, handcrafted in Mumbai. Corsets, lehengas and draped sarees made to your exact measurements. Complimentary worldwide delivery." />
-  {%- elsif page_description -%}
-    <meta property="og:description" content="{{ page_description | escape }}" />
-  {%- endif -%}
-
-  <!-- Canonical -->
-  <link rel="canonical" href="{{ canonical_url }}" />
-
-  <!-- Google Fonts preconnect (required before font link) -->
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-
-  <!-- Google Fonts: Cormorant Garamond + Jost (exact weights from spec v2.0) -->
-  <link
-    href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Jost:wght@200;300;400;500&display=swap"
-    rel="stylesheet"
-  />
-
-  <!-- Global design tokens + reset -->
-  {{ 'ka-base.css' | asset_url | stylesheet_tag }}
-
-  {%- if settings.enable_currency_converter -%}
-    <!-- K&A Currency module (Task 86) — global chip/menu/bridge styling + anti-flash rule.
-         Loaded sitewide here (not per-section) because the same component appears across
-         ka-nav.liquid, ka-product-main.liquid, ka-collection-grid.liquid, ka-bestsellers.liquid,
-         ka-product-related.liquid, ka-cart-items.liquid (the merged items + order-summary
-         section, formerly split with ka-cart-summary.liquid) and ka-cart-cross-link.liquid —
-         the one genuinely cross-cutting exception to this theme's usual per-section CSS
-         scoping rule, same reasoning as ka-base.css/ka-theme.js. -->
-    {{ 'ka-currency.css' | asset_url | stylesheet_tag }}
-  {%- endif -%}
-
-  {%- comment -%}
-    Organization aggregateRating: reads the live-synced Shop metafield
-    custom.google_reviews (scripts/google-reviews-sync) when it is populated --
-    a rating_number, a rating_count and at least one synced review, the same
-    "is there real data" rule the review sections use -- otherwise the values
-    below stay exactly what they were (4.7 / 67; the count was a stale 64).
-    Per the SEO spec (Docs/specs/2026-07-22-jsonld-structured-data.md)
-    aggregateRating lives ONLY on this sitewide Organization block, never per
-    product. `json` output-encodes the values, so nothing synced can break out
-    of the JSON string.
-  {%- endcomment -%}
-  {%- liquid
-    assign gr = shop.metafields.custom.google_reviews.value
-    assign gr_quotes = 0
-    for gr_review in gr.reviews
-      if gr_review.quote != blank
-        assign gr_quotes = gr_quotes | plus: 1
-      endif
-    endfor
-    assign ld_rating_value = '4.7'
-    assign ld_review_count = '67'
-    if gr != blank and gr_quotes > 0 and gr.rating_number != blank and gr.rating_count != blank
-      assign ld_rating_value = gr.rating_number | append: ''
-      assign ld_review_count = gr.rating_count | append: ''
-    endif
-  -%}
-
-  <!-- Sitewide JSON-LD: Organization + WebSite (Docs/specs/2026-07-22-jsonld-structured-data.md) -->
-  <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@type": "Organization",
-    "name": "Karishma & Ashita",
-    "url": "{{ shop.url }}",
-    "sameAs": [
-      "https://www.instagram.com/karishmaashita",
-      "https://www.youtube.com/@KarishmaAshita",
-      "https://www.pinterest.com/karishmaashita/"
-    ],
-    "aggregateRating": {
-      "@type": "AggregateRating",
-      "ratingValue": {{ ld_rating_value | json }},
-      "reviewCount": {{ ld_review_count | json }},
-      "bestRating": "5"
-    }
-  }
-  </script>
-  <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@type": "WebSite",
-    "name": "Karishma & Ashita",
-    "url": "{{ shop.url }}"
-  }
-  </script>
-
-  {{ content_for_header }}
-</head>
-
-<body class="template-{{ request.page_type }}">
-  {{ content_for_layout }}
-
-  <!-- Global floating concierge button — renders on every page (z-index 110) -->
-  {% render 'ka-concierge-float' %}
-
-  <!-- K&A Welcome Offer (KLP3000) — Docs/welcome-offer-popup-build-spec.md.
-       Sitewide, excluded on the cart page (spec: a visitor already at
-       checkout is transacting, not browsing — see the snippet's own
-       header comment for the full reasoning). request.page_type matches
-       this same file's own convention above (line 56/74), not the
-       `template` object, for consistency within this file. The snippet
-       itself carries a second, independent eligibility gate
-       (customer.orders_count, blank-code check) — this `unless` is a
-       third, redundant-on-purpose layer, not the only one. -->
-  {%- unless request.page_type == 'cart' -%}
-    {% render 'ka-welcome-offer' %}
-  {%- endunless -%}
-
-  <!-- Global theme JS: nav scroll, reveals, parallax, mobile nav, newsletter -->
-  <script src="{{ 'ka-theme.js' | asset_url }}" defer></script>
-
-  <!-- K&A Wishlist module (Docs/account-wishlist-build-spec.md) — sitewide,
-       unconditional (not gated behind a settings toggle, unlike currency):
-       window.kaWishlist API, the ka:wishlist:change sync event, and
-       delegated heart-button/nav-badge hydration. See assets/ka-wishlist.js
-       header for the full mechanism. -->
-  <script src="{{ 'ka-wishlist.js' | asset_url }}" defer></script>
-
-  <!-- K&A Welcome Offer (KLP3000) — trigger/eligibility/interaction logic.
-       See assets/ka-welcome-offer.js header for the full mechanism. -->
-  <script src="{{ 'ka-welcome-offer.js' | asset_url }}" defer></script>
-
-  {%- if settings.enable_currency_converter -%}
-    <!-- K&A Currency module (Task 86) — display-only price conversion, sitewide.
-         See assets/ka-currency.js header comment for the full mechanism. -->
-    <script src="{{ 'ka-currency.js' | asset_url }}" defer></script>
-  {%- endif -%}
-</body>
-</html>
+<html lang="en"><head><meta charset="utf-8"><title>fixture</title>
+<script type="application/ld+json">
+{ "@type": "AggregateRating", "ratingValue": {{ ld_rating_value | json }}, "reviewCount": {{ ld_review_count | json }}, "bestRating": "5" }
+</script>
+{{ 'ka-base.css' | asset_url | stylesheet_tag }}
+{{ content_for_header }}</head>
+<body>
+<!--BADGE <b>{{ badge_score }}</b> · {{ badge_count }} reviews on -->
+{{ content_for_layout }}
+</body></html>
