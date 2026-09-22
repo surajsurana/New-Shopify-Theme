@@ -33,6 +33,18 @@ entity facts + brand-brief, relayed by the coordinator):
     regards" (the default), "Warmest regards" (especially enthusiastic
     reviews), "Kind regards" (a more measured tone, e.g. acknowledging
     constructive feedback).
+  - HOUSE STYLE (Suraj, 2026-09-22): the names line is "Karishma Ashita" --
+    NO "and" between the names. So every sign-off is exactly one of:
+        Warm regards,
+        Karishma Ashita
+    or "Warmest regards," / "Kind regards," with the same "Karishma Ashita"
+    names line (never "Karishma and Ashita"). The first batch (2026-09-22,
+    _drafts_2026_09_22.py) was authored with "Karishma and Ashita" and was
+    hand-corrected afterwards directly in pending_replies.json by the
+    coordinator -- that source module was NOT updated to match, so do not
+    re-run draft_replies.py against it as-is (it would regenerate
+    pending_replies.json and silently undo that fix). Any NEW dated drafts
+    module must use "Karishma Ashita" (no "and") from the start.
   - No discount language, no urgency/FOMO, no generic e-commerce phrasing.
   - Facts from Docs/2026-07-21-confirmed-entity-facts.md (studio location,
     founding year, price point, production timelines, video consultations,
@@ -116,6 +128,15 @@ def run() -> int:
     # Ashita manually replied to one of these), build_queue() raises rather than
     # silently mismatching -- author a fresh dated drafts module in that case
     # and point this import at it before re-running.
+    #
+    # Sign-off house style (Suraj, 2026-09-22): every new dated drafts module
+    # must sign off "Karishma Ashita" -- NO "and" -- e.g.:
+    #     Warm regards,
+    #     Karishma Ashita
+    # (see the VOICE RULES / HOUSE STYLE note in this file's module docstring).
+    # _drafts_2026_09_22.py below predates this rule (it used "Karishma and
+    # Ashita") and was hand-corrected only in the OUTPUT (pending_replies.json),
+    # not in this source module -- do not re-run this script against it as-is.
     from _drafts_2026_09_22 import DRAFTS  # noqa: E402 (see note above)
 
     queue = build_queue(unreplied, DRAFTS)
