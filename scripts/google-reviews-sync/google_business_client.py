@@ -168,6 +168,55 @@ def fetch_reviews(access_token: str, account_id: str, location_id: str) -> dict:
     }
 
 
+def post_reply(review_name: str, comment: str) -> dict:
+    """
+    Posts (or updates) the owner reply to ONE review, via Google's v4
+    Reviews API:
+        PUT https://mybusiness.googleapis.com/v4/{review_name}/reply
+        body: {"comment": comment}
+    -- confirmed against Google's live REST reference for
+    accounts.locations.reviews.updateReply (2026-09-22), not guessed. Per
+    that doc: "Updates the reply to the specified review. A reply is
+    created if one does not exist," so this same call both creates a first
+    reply and edits an existing one. Requires the business.manage scope
+    already granted to this app's OAuth consent -- no new authorization
+    needed.
+
+    review_name: the review's own `name` field exactly as returned by
+        fetch_reviews(), e.g. "accounts/123/locations/456/reviews/abc123".
+        NOT just the reviewId -- the full resource name.
+    comment: the reply text to post, plain text, max 4096 bytes per
+        Google's limit. Caller's responsibility to have this approved
+        first -- this function does no drafting, no filtering, no
+        approval logic of its own. It posts EXACTLY the comment it is
+        given, to EXACTLY the review_name it is given, and nothing else.
+
+    Deliberately NOT wired into any loop, batch helper, or "post all
+    pending" wrapper anywhere in this codebase. Every call site must pass
+    an explicit review_name + comment for ONE review. Do not add a
+    "post_all_pending_replies()" convenience wrapper around this function
+    -- that would defeat the one-at-a-time human-approval requirement this
+    was built for (Suraj, 2026-09-22: "every single reply must be
+    explicitly approved by him before it posts... no batch auto-post, no
+    'approve all', ever").
+    """
+    if not review_name or "/reviews/" not in review_name:
+        raise ValueError(
+            f"post_reply requires the review's full resource name "
+            f"(e.g. 'accounts/.../locations/.../reviews/...'), got: {review_name!r}"
+        )
+    if not comment or not comment.strip():
+        raise ValueError("post_reply requires a non-empty comment.")
+
+    access_token = get_access_token()
+    headers = {"Authorization": f"Bearer {access_token}"}
+    url = f"{REVIEWS_BASE}/{review_name}/reply"
+
+    resp = requests.put(url, headers=headers, json={"comment": comment}, timeout=30)
+    resp.raise_for_status()
+    return resp.json()
+
+
 if __name__ == "__main__":
     # Manual smoke-test entry point -- NOT run by the cron job (sync.py is).
     try:
