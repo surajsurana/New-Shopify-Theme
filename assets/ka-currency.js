@@ -100,12 +100,38 @@
   /* ---------------------------------------------------------------
      Rate fetch + daily cache
   --------------------------------------------------------------- */
+  /* BUG FIX (2026-09-22, found by Suraj on real staging, not by any of my
+     earlier scripted checks): a visitor who had used the currency chip
+     BEFORE EUR/AUD were added had a cached rates object in localStorage
+     shaped like {INR,USD,GBP,CAD,AED} -- 5 keys, no EUR/AUD. That cache is
+     still <24h old, so the code below used to accept it as-is and skip the
+     live fetch entirely. convertRupees()'s existing defensive fallback
+     (`if (!rate) return rupees`) then silently returned the RAW rupee
+     number for EUR/AUD specifically, while formatAmount() still swapped in
+     the new symbol -- producing exactly "€48,000" / "A$43,000" (unconverted
+     digits, correct-looking symbol), with no console error, because
+     nothing actually threw. My earlier "verification" always used a freshly
+     wiped browser profile (no pre-existing cache), so it could never have
+     hit this path -- it only ever exercised the live-fetch branch below,
+     never the stale-cache-reuse branch a real returning visitor takes.
+     Fix: a cached rates object is only trusted if it already contains every
+     currently-supported currency code, not just "some rates and a recent
+     timestamp" -- so adding a new currency to CURRENCIES automatically
+     invalidates old caches sitewide, for any real visitor, going forward. */
+  function cachedRatesAreComplete(rates) {
+    for (var code in CURRENCIES) {
+      if (Object.prototype.hasOwnProperty.call(CURRENCIES, code) && !(code in rates)) return false;
+    }
+    return true;
+  }
+
   function getCachedRates() {
     try {
       var raw = localStorage.getItem(RATE_CACHE_KEY);
       if (!raw) return null;
       var parsed = JSON.parse(raw);
       if (!parsed || !parsed.rates || !parsed.fetchedAt) return null;
+      if (!cachedRatesAreComplete(parsed.rates)) return null;
       /* Daily cache — a visitor with a cart open overnight won't see
          her total's currency math shift mid-session (spec F3): the
          cache only refreshes once it's >24h old, not on every visit. */
