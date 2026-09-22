@@ -6,9 +6,9 @@
     "rating": 5,
     "review_text": "",
     "review_updateTime": "2026-09-03T09:39:36.660007Z",
-    "drafted_reply": "Hi Anmol,\n\nThank you so much for the 5-star rating! We truly appreciate your support and are so glad you had a positive experience with us.\n\nWe look forward to welcoming you again soon!\n\nWarm regards,\nKarishma and Ashita",
-    "status": "drafted",
-    "skip_reason": null,
+    "drafted_reply": "Hi Anmol,\n\nThank you so much for the 5-star rating! We truly appreciate your support and are so glad you had a positive experience with us.\n\nWe look forward to welcoming you again soon!\n\nWarm regards,\nKarishma Ashita",
+    "status": "skipped",
+    "skip_reason": "Suraj reviewed 2026-09-22: decided not to reply to this one.",
     "posted": false
   },
   {
@@ -18,10 +18,10 @@
     "rating": 5,
     "review_text": "Absolutely loved my outfit from K&A by Karishma & Ashita! 💜\n\nThe outfit was even more beautiful in person — the fit, detailing, colour and little floral embellishments were just perfect. I received so many compliments throughout the evening.\n\nThank you, Karishma & Ashita, for creating something so stunning and making me feel absolutely gorgeous! ✨",
     "review_updateTime": "2026-08-25T20:00:43.187733Z",
-    "drafted_reply": "Dear Arushi,\n\nThank you so much for this gorgeous review! We're thrilled to hear the fit, detailing, colour and the little floral embellishments all came together so beautifully for you, and that you felt gorgeous wearing it all evening.\n\nMoments like these — seeing you shine in something we made with so much care — are exactly why we love what we do.\n\nWarm regards,\nKarishma and Ashita",
-    "status": "drafted",
+    "drafted_reply": "Dear Arushi,\n\nThank you so much for this gorgeous review! We're thrilled to hear the fit, detailing, colour and the little floral embellishments all came together so beautifully for you, and that you felt gorgeous wearing it all evening.\n\nMoments like these — seeing you shine in something we made with so much care — are exactly why we love what we do.\n\nWarm regards,\nKarishma Ashita",
+    "status": "posted",
     "skip_reason": null,
-    "posted": false
+    "posted": true
   },
   {
     "name": "accounts/111801481542343202239/locations/2934145919052246545/reviews/AbFvOqmMIBUDK8nHtpooSwUdM6rn8e3-kyebv49FQ0DLk5nZtutlWanuqqI9tDyw2CQOiMR-SaRdHA",
@@ -30,7 +30,7 @@
     "rating": 4,
     "review_text": "Good design love the outfit",
     "review_updateTime": "2026-07-14T06:18:18.450671Z",
-    "drafted_reply": "Hi Sakshi,\n\nThank you so much for your kind words! We're so glad you loved the design and the outfit.\n\nWe look forward to welcoming you back soon!\n\nWarm regards,\nKarishma and Ashita",
+    "drafted_reply": "Hi Sakshi,\n\nThank you so much for your kind words! We're so glad you loved the design and the outfit.\n\nWe look forward to welcoming you back soon!\n\nWarm regards,\nKarishma Ashita",
     "status": "drafted",
     "skip_reason": null,
     "posted": false
@@ -42,7 +42,7 @@
     "rating": 5,
     "review_text": "Absolutely loved working with the team for my wedding reception outfit! The outfit fit like a glove and many of my guests said it was their absolute favorite outfit of mine. They even made me an extra lighter skirt for my first dance. Highly recommend!",
     "review_updateTime": "2026-06-04T19:34:44.900189Z",
-    "drafted_reply": "Dear Simran,\n\nThank you so much for this wonderful review! We're so happy the reception outfit fit exactly right, and it means a lot that your guests loved it too. Making that extra lighter skirt for your first dance was such a joy for our team.\n\nWishing you many more beautiful moments ahead, and we'd love to dress you again!\n\nWarm regards,\nKarishma and Ashita",
+    "drafted_reply": "Dear Simran,\n\nThank you so much for this wonderful review! We're so happy the reception outfit fit exactly right, and it means a lot that your guests loved it too. Making that extra lighter skirt for your first dance was such a joy for our team.\n\nWishing you many more beautiful moments ahead, and we'd love to dress you again!\n\nWarm regards,\nKarishma Ashita",
     "status": "drafted",
     "skip_reason": null,
     "posted": false
@@ -54,7 +54,7 @@
     "rating": 5,
     "review_text": "Thank you for making perfect corset sari for my daughter’s graduation ceremony. Amazing quality beautiful fit. Thank you so much❤️❤️",
     "review_updateTime": "2026-05-30T11:54:29.418381Z",
-    "drafted_reply": "Dear Kavita,\n\nThank you so much for your lovely words! We're delighted the corset sari for your daughter's graduation ceremony turned out just right, with the quality and fit you were hoping for.\n\nIt was such a pleasure being part of that special day for your family.\n\nWarm regards,\nKarishma and Ashita",
+    "drafted_reply": "Dear Kavita,\n\nThank you so much for your lovely words! We're delighted the corset sari for your daughter's graduation ceremony turned out just right, with the quality and fit you were hoping for.\n\nIt was such a pleasure being part of that special day for your family.\n\nWarm regards,\nKarishma Ashita",
     "status": "drafted",
     "skip_reason": null,
     "posted": false
@@ -66,7 +66,7 @@
     "rating": 5,
     "review_text": "I love their designs, it is so good and fits perfectly. Twinkle helped me so much to figure what would look good and they also made the lehenga customised for me. Absolutely love their corsets🫶🏻",
     "review_updateTime": "2026-05-26T11:31:12.409848Z",
-    "drafted_reply": "Dear Kezia,\n\nThank you so much for your kind words! We're so glad Twinkle could help you figure out exactly what worked for you, and that the customised lehenga came together just as you wanted.\n\nWe're so happy you love our corsets — that's exactly the fit and feel we work hard for!\n\nWarm regards,\nKarishma and Ashita",
+    "drafted_reply": "Dear Kezia,\n\nThank you so much for your kind words! We're so glad Twinkle could help you figure out exactly what worked for you, and that the customised lehenga came together just as you wanted.\n\nWe're so happy you love our corsets — that's exactly the fit and feel we work hard for!\n\nWarm regards,\nKarishma Ashita",
     "status": "drafted",
     "skip_reason": null,
     "posted": false
@@ -78,7 +78,7 @@
     "rating": 5,
     "review_text": "Loved the collection, really cool styles. Twinkle was really helpful",
     "review_updateTime": "2026-05-26T11:13:41.979711Z",
-    "drafted_reply": "Dear Shivani,\n\nThank you so much for your kind words! We're thrilled you loved the collection and the styles, and that Twinkle could help make the experience such a smooth one.\n\nWarm regards,\nKarishma and Ashita",
+    "drafted_reply": "Dear Shivani,\n\nThank you so much for your kind words! We're thrilled you loved the collection and the styles, and that Twinkle could help make the experience such a smooth one.\n\nWarm regards,\nKarishma Ashita",
     "status": "drafted",
     "skip_reason": null,
     "posted": false
@@ -90,7 +90,7 @@
     "rating": 5,
     "review_text": "I genuinely cannot thank them enough for creating the most beautiful cocktail dress for me. From the very beginning, the entire experience felt so personal, thoughtful and special. She truly understood my vision and brought it to life even better than I could have imagined.\n\nThe moment I wore the dress, I felt like an absolute princess. The fit, detailing, craftsmanship, and effort put into every little element were just stunning. I received endless compliments throughout the event, and so many people asked me where my outfit was from.\n\nIf you’re looking for someone who can make you feel your absolute best on an important day, I cannot recommend them enough. Truly grateful for this experience and for a dress I’ll always remember so fondly. ❤️",
     "review_updateTime": "2026-05-07T10:41:22.941874Z",
-    "drafted_reply": "Dear Disha,\n\nThank you so much for this beautiful review! Reading that you felt like an absolute princess in your cocktail dress means everything to us — we always want the process to feel as personal and thoughtful as the outfit itself.\n\nWe're so glad the fit, detailing and craftsmanship all came together the way you'd imagined, and that it earned you so many compliments on the day.\n\nWarmest regards,\nKarishma and Ashita",
+    "drafted_reply": "Dear Disha,\n\nThank you so much for this beautiful review! Reading that you felt like an absolute princess in your cocktail dress means everything to us — we always want the process to feel as personal and thoughtful as the outfit itself.\n\nWe're so glad the fit, detailing and craftsmanship all came together the way you'd imagined, and that it earned you so many compliments on the day.\n\nWarmest regards,\nKarishma Ashita",
     "status": "drafted",
     "skip_reason": null,
     "posted": false
@@ -102,7 +102,7 @@
     "rating": 5,
     "review_text": "A very smooth experience! Got my outfit online and it fit like a glove! Loved it! Got so many compliments! Can’t wait to shop more!",
     "review_updateTime": "2026-04-22T08:00:31.188244Z",
-    "drafted_reply": "Dear Ragini,\n\nThank you so much for your lovely feedback! We're delighted the outfit fit perfectly and that ordering online was such a smooth experience for you.\n\nWe can't wait to have you shop with us again soon!\n\nWarm regards,\nKarishma and Ashita",
+    "drafted_reply": "Dear Ragini,\n\nThank you so much for your lovely feedback! We're delighted the outfit fit perfectly and that ordering online was such a smooth experience for you.\n\nWe can't wait to have you shop with us again soon!\n\nWarm regards,\nKarishma Ashita",
     "status": "drafted",
     "skip_reason": null,
     "posted": false
@@ -114,7 +114,7 @@
     "rating": 5,
     "review_text": "They have some amazing designs, amazing collection and amazing service as well.",
     "review_updateTime": "2026-04-09T12:52:17.503073Z",
-    "drafted_reply": "Dear Aashvi,\n\nThank you so much for your kind words! We're so glad you loved our designs, collection and service.\n\nWe look forward to welcoming you back soon!\n\nWarm regards,\nKarishma and Ashita",
+    "drafted_reply": "Dear Aashvi,\n\nThank you so much for your kind words! We're so glad you loved our designs, collection and service.\n\nWe look forward to welcoming you back soon!\n\nWarm regards,\nKarishma Ashita",
     "status": "drafted",
     "skip_reason": null,
     "posted": false
@@ -126,7 +126,7 @@
     "rating": 5,
     "review_text": "Huge shoutout to Karishma & Aashita for designing my absolute dream Sangeet outfit!\nI received endless compliments all evening, and I couldn’t have asked for a better outfit for such a special night. Thank you for making me feel so confident and special on my Sangeet. Can’t wait to wear more of your stunning creations! 💃✨",
     "review_updateTime": "2026-04-06T07:30:34.604732Z",
-    "drafted_reply": "Dear Shivani,\n\nThank you so much for this wonderful shoutout! We're absolutely delighted your Sangeet outfit turned out to be everything you dreamed of, and that you felt so confident and special on such an important night.\n\nWe can't wait to create more stunning pieces for you!\n\nWarmest regards,\nKarishma and Ashita",
+    "drafted_reply": "Dear Shivani,\n\nThank you so much for this wonderful shoutout! We're absolutely delighted your Sangeet outfit turned out to be everything you dreamed of, and that you felt so confident and special on such an important night.\n\nWe can't wait to create more stunning pieces for you!\n\nWarmest regards,\nKarishma Ashita",
     "status": "drafted",
     "skip_reason": null,
     "posted": false
@@ -138,7 +138,7 @@
     "rating": 5,
     "review_text": "Love the outfit .. no one does corset like K&A :)",
     "review_updateTime": "2026-03-30T09:08:41.082017Z",
-    "drafted_reply": "Dear Surabhi,\n\nThank you so much for your kind words! We're so glad you loved the outfit — our corsets are truly a craft we take great pride in, so this means a lot to us.\n\nWarm regards,\nKarishma and Ashita",
+    "drafted_reply": "Dear Surabhi,\n\nThank you so much for your kind words! We're so glad you loved the outfit — our corsets are truly a craft we take great pride in, so this means a lot to us.\n\nWarm regards,\nKarishma Ashita",
     "status": "drafted",
     "skip_reason": null,
     "posted": false
@@ -150,7 +150,7 @@
     "rating": 5,
     "review_text": "",
     "review_updateTime": "2026-03-24T13:02:26.498492Z",
-    "drafted_reply": "Hi Ruby,\n\nThank you so much for the 5-star rating! We truly appreciate your support and are so glad you had a positive experience with us.\n\nWe look forward to welcoming you again soon!\n\nWarm regards,\nKarishma and Ashita",
+    "drafted_reply": "Hi Ruby,\n\nThank you so much for the 5-star rating! We truly appreciate your support and are so glad you had a positive experience with us.\n\nWe look forward to welcoming you again soon!\n\nWarm regards,\nKarishma Ashita",
     "status": "drafted",
     "skip_reason": null,
     "posted": false
@@ -162,7 +162,7 @@
     "rating": 5,
     "review_text": "K&A (Ashita & team(Twinkle)), you guys are a masterclass in customer service.\n\nYour work and designs speak for itself. What i want to really commend you on is my overall experience with you guys.\nThere were several moments when things didn’t go as planned, and I’ll admit, we did get stressed and even lost our cool. But Twinkle never once lost hers. She stayed patient, kind, and constantly reassured us that everything would work out.\nAt one point, I honestly had my doubts — but she made it happen. And having Aashita personally involved and supervising gave us so much comfort.\nIt’s easy to find beautiful outfits, but it’s rare to find people who stand by you through the process. Thank you for not just delivering an outfit, but for all the handholding after that too.",
     "review_updateTime": "2026-03-24T06:46:12.800887Z",
-    "drafted_reply": "Dear Ruhi,\n\nThank you so much for such a heartfelt review. We're so touched that you took the time to share this — Twinkle's patience and calm through every twist and turn means so much to us to hear, and it was wonderful having Ashita personally involved to see it through with you.\n\nWe never want the relationship to end at delivery, so knowing the handholding afterwards made a real difference to you means everything.\n\nWarmest regards,\nKarishma and Ashita",
+    "drafted_reply": "Dear Ruhi,\n\nThank you so much for such a heartfelt review. We're so touched that you took the time to share this — Twinkle's patience and calm through every twist and turn means so much to us to hear, and it was wonderful having Ashita personally involved to see it through with you.\n\nWe never want the relationship to end at delivery, so knowing the handholding afterwards made a real difference to you means everything.\n\nWarmest regards,\nKarishma Ashita",
     "status": "drafted",
     "skip_reason": null,
     "posted": false
@@ -174,7 +174,7 @@
     "rating": 5,
     "review_text": "The outfit was beautiful and Astha was so easy to work with!",
     "review_updateTime": "2026-03-20T18:53:30.979874Z",
-    "drafted_reply": "Dear Anavi,\n\nThank you so much for your kind words! We're so glad you loved the outfit, and that Astha made the process such an easy one for you.\n\nWarm regards,\nKarishma and Ashita",
+    "drafted_reply": "Dear Anavi,\n\nThank you so much for your kind words! We're so glad you loved the outfit, and that Astha made the process such an easy one for you.\n\nWarm regards,\nKarishma Ashita",
     "status": "drafted",
     "skip_reason": null,
     "posted": false
@@ -186,7 +186,7 @@
     "rating": 5,
     "review_text": "Absolutely loved their designs, amazing customer service , Twinkle went the extra mile to deliver my dress on time for my roka and it was made perfectly without any further alterations. I am so happy with the seamless service throughout the process",
     "review_updateTime": "2026-03-20T05:39:33.290162Z",
-    "drafted_reply": "Dear Juee,\n\nThank you so much for your lovely review! We're so glad Twinkle could go the extra mile to have your dress ready in time for your roka, and that it fit perfectly without needing any further alterations.\n\nWe're thrilled the whole process felt so seamless for you.\n\nWarm regards,\nKarishma and Ashita",
+    "drafted_reply": "Dear Juee,\n\nThank you so much for your lovely review! We're so glad Twinkle could go the extra mile to have your dress ready in time for your roka, and that it fit perfectly without needing any further alterations.\n\nWe're thrilled the whole process felt so seamless for you.\n\nWarm regards,\nKarishma Ashita",
     "status": "drafted",
     "skip_reason": null,
     "posted": false
@@ -198,7 +198,7 @@
     "rating": 5,
     "review_text": "Excellent service and quality work K&A. Twinkle understood my requirements clearly and delivered exactly what I needed. The designs were creative, clean, and professional. Communication was smooth and timely. Highly recommended!",
     "review_updateTime": "2026-03-04T15:09:14.812593Z",
-    "drafted_reply": "Dear Karishma,\n\nThank you so much for your kind words! We're delighted Twinkle understood exactly what you needed and that the designs, communication and overall experience all lived up to your expectations.\n\nWarm regards,\nKarishma and Ashita",
+    "drafted_reply": "Dear Karishma,\n\nThank you so much for your kind words! We're delighted Twinkle understood exactly what you needed and that the designs, communication and overall experience all lived up to your expectations.\n\nWarm regards,\nKarishma Ashita",
     "status": "drafted",
     "skip_reason": null,
     "posted": false
@@ -210,7 +210,7 @@
     "rating": 5,
     "review_text": "I’m really glad I chose this designer. They took my last-minute order and still delivered the outfit on time with a perfect fit. Communication was great throughout the entire process. Highly recommended!",
     "review_updateTime": "2026-02-26T07:38:57.794191Z",
-    "drafted_reply": "Dear Aatmika,\n\nThank you so much for your kind words! We're so glad we could deliver your outfit on time with a perfect fit, even on a last-minute order, and that communication felt smooth throughout.\n\nWarm regards,\nKarishma and Ashita",
+    "drafted_reply": "Dear Aatmika,\n\nThank you so much for your kind words! We're so glad we could deliver your outfit on time with a perfect fit, even on a last-minute order, and that communication felt smooth throughout.\n\nWarm regards,\nKarishma Ashita",
     "status": "drafted",
     "skip_reason": null,
     "posted": false
@@ -222,7 +222,7 @@
     "rating": 5,
     "review_text": "Great designs , hustle free delivery very well made on a very short notice.",
     "review_updateTime": "2026-02-23T06:30:53.243202Z",
-    "drafted_reply": "Dear Ravneet,\n\nThank you so much for your kind words! We're so glad the outfit came together beautifully and the delivery was hassle-free, even on such short notice.\n\nWarm regards,\nKarishma and Ashita",
+    "drafted_reply": "Dear Ravneet,\n\nThank you so much for your kind words! We're so glad the outfit came together beautifully and the delivery was hassle-free, even on such short notice.\n\nWarm regards,\nKarishma Ashita",
     "status": "drafted",
     "skip_reason": null,
     "posted": false
@@ -234,7 +234,7 @@
     "rating": 5,
     "review_text": "Absolutely loved my Sangeet outfit! It turned out so beautiful and exactly how I envisioned it. There were a few small hiccups along the way, but everything was handled so professionally and smoothly. Thank you, Twinkle, for making sure it all came together so perfectly ✨💛",
     "review_updateTime": "2026-02-11T12:08:07.199679Z",
-    "drafted_reply": "Dear Diya,\n\nThank you so much for your lovely review! We're so glad your Sangeet outfit turned out exactly as you envisioned, and that Twinkle made sure any small hiccups along the way were handled smoothly and professionally.\n\nWarmest regards,\nKarishma and Ashita",
+    "drafted_reply": "Dear Diya,\n\nThank you so much for your lovely review! We're so glad your Sangeet outfit turned out exactly as you envisioned, and that Twinkle made sure any small hiccups along the way were handled smoothly and professionally.\n\nWarmest regards,\nKarishma Ashita",
     "status": "drafted",
     "skip_reason": null,
     "posted": false
@@ -246,7 +246,7 @@
     "rating": 5,
     "review_text": "Had a wonderful experience buying an outfit from them. Great designs , good quality and very nice people to attend u. Especially twinkle made my process so comfortable from choosing the outfit, to alterations to delivery.  It was all soo smooth.  N most importantly got soo many compliments for my outfit on the day. Loved every bit my experience with them",
     "review_updateTime": "2026-02-11T01:48:28.039956Z",
-    "drafted_reply": "Dear Ruchika,\n\nThank you so much for this wonderful review! We're so happy Twinkle made every step — from choosing the outfit to alterations and delivery — feel so comfortable, and that it earned you so many compliments on the day.\n\nWarm regards,\nKarishma and Ashita",
+    "drafted_reply": "Dear Ruchika,\n\nThank you so much for this wonderful review! We're so happy Twinkle made every step — from choosing the outfit to alterations and delivery — feel so comfortable, and that it earned you so many compliments on the day.\n\nWarm regards,\nKarishma Ashita",
     "status": "drafted",
     "skip_reason": null,
     "posted": false
@@ -258,7 +258,7 @@
     "rating": 5,
     "review_text": "I had a really great experience with K&A. I found a design I liked and asked for a few custom changes, and even though I’m based in the U.S., everything was handled smoothly. They took my measurements over the phone, double-checked them multiple times during production, shared progress photos, and even sent the final piece for approval before shipping so I could confirm everything myself. They were also very accommodating with any odd requests along the way! I genuinely recommend working with K&A and will definitely be ordering from them again.",
     "review_updateTime": "2026-01-30T22:33:01.623829Z",
-    "drafted_reply": "Dear Meera,\n\nThank you so much for this thoughtful review! We're so glad the process felt smooth all the way from the U.S. — from getting your measurements right and sharing progress photos, to sending the final piece for your approval before it shipped. Being able to make couture feel accessible for clients further away, with the same personal care as if you were visiting us in Santacruz, means so much to us.\n\nWe can't wait to work with you again!\n\nWarmest regards,\nKarishma and Ashita",
+    "drafted_reply": "Dear Meera,\n\nThank you so much for this thoughtful review! We're so glad the process felt smooth all the way from the U.S. — from getting your measurements right and sharing progress photos, to sending the final piece for your approval before it shipped. Being able to make couture feel accessible for clients further away, with the same personal care as if you were visiting us in Santacruz, means so much to us.\n\nWe can't wait to work with you again!\n\nWarmest regards,\nKarishma Ashita",
     "status": "drafted",
     "skip_reason": null,
     "posted": false
@@ -270,7 +270,7 @@
     "rating": 5,
     "review_text": "Twinkle was awesome . Beautiful outfit beautiful designs .",
     "review_updateTime": "2026-01-30T13:45:34.538579Z",
-    "drafted_reply": "Dear Manisha,\n\nThank you so much for your kind words! We're so glad Twinkle made the experience such a great one, and that you loved the outfit and the designs.\n\nWarm regards,\nKarishma and Ashita",
+    "drafted_reply": "Dear Manisha,\n\nThank you so much for your kind words! We're so glad Twinkle made the experience such a great one, and that you loved the outfit and the designs.\n\nWarm regards,\nKarishma Ashita",
     "status": "drafted",
     "skip_reason": null,
     "posted": false
@@ -282,7 +282,7 @@
     "rating": 4,
     "review_text": "Amazing design, good fabric, supportive staff, Perfect fit.",
     "review_updateTime": "2026-01-27T06:22:09.250409Z",
-    "drafted_reply": "Dear Kanchan,\n\nThank you so much for your kind words! We're delighted you loved the design, fabric and fit, and that our team could support you well throughout.\n\nWarm regards,\nKarishma and Ashita",
+    "drafted_reply": "Dear Kanchan,\n\nThank you so much for your kind words! We're delighted you loved the design, fabric and fit, and that our team could support you well throughout.\n\nWarm regards,\nKarishma Ashita",
     "status": "drafted",
     "skip_reason": null,
     "posted": false
@@ -294,7 +294,7 @@
     "rating": 4,
     "review_text": "It was good experience. Excellent service. Fitting was good but  the corset lace could have end knots for better locking",
     "review_updateTime": "2026-01-26T21:15:19.757864Z",
-    "drafted_reply": "Dear Rekha,\n\nThank you so much for your kind words, and especially for taking the time to share that note about the corset lace — feedback like this genuinely helps us keep improving our finishing. We're so glad the overall fit and service felt excellent to you.\n\nWe'll be sure to pass this along to our team.\n\nKind regards,\nKarishma and Ashita",
+    "drafted_reply": "Dear Rekha,\n\nThank you so much for your kind words, and especially for taking the time to share that note about the corset lace — feedback like this genuinely helps us keep improving our finishing. We're so glad the overall fit and service felt excellent to you.\n\nWe'll be sure to pass this along to our team.\n\nKind regards,\nKarishma Ashita",
     "status": "drafted",
     "skip_reason": null,
     "posted": false
@@ -306,7 +306,7 @@
     "rating": 5,
     "review_text": "The outfit fit so well and it made me look stunning.On time delivery and quick response from Astha Dube, her service was excellent 👌 The best I've had with a designer yet.",
     "review_updateTime": "2026-01-24T11:46:45.387802Z",
-    "drafted_reply": "Dear Midushi,\n\nThank you so much for such kind words! We're thrilled the fit made you feel stunning, and that Astha's prompt, excellent service made this your best experience with a designer yet — that truly means a lot to us.\n\nWarmest regards,\nKarishma and Ashita",
+    "drafted_reply": "Dear Midushi,\n\nThank you so much for such kind words! We're thrilled the fit made you feel stunning, and that Astha's prompt, excellent service made this your best experience with a designer yet — that truly means a lot to us.\n\nWarmest regards,\nKarishma Ashita",
     "status": "drafted",
     "skip_reason": null,
     "posted": false
@@ -318,7 +318,7 @@
     "rating": 5,
     "review_text": "",
     "review_updateTime": "2026-01-23T07:14:25.643564Z",
-    "drafted_reply": "Hi Ayesha,\n\nThank you so much for the 5-star rating! We truly appreciate your support and are so glad you had a positive experience with us.\n\nWe look forward to welcoming you again soon!\n\nWarm regards,\nKarishma and Ashita",
+    "drafted_reply": "Hi Ayesha,\n\nThank you so much for the 5-star rating! We truly appreciate your support and are so glad you had a positive experience with us.\n\nWe look forward to welcoming you again soon!\n\nWarm regards,\nKarishma Ashita",
     "status": "drafted",
     "skip_reason": null,
     "posted": false
@@ -330,7 +330,7 @@
     "rating": 5,
     "review_text": "Hi there … I really like your work n I am so happy to shop with u guys … I am looking forward with u guys n also I like one lady work there hir name is Twinkal she so help fool n so nice .. I am very appreciate to hir work",
     "review_updateTime": "2026-01-16T00:31:15.260254Z",
-    "drafted_reply": "Dear Jaydeep,\n\nThank you so much for your kind words! We're so happy to hear you love our work and had such a good experience shopping with us. Twinkle will be delighted to know her help meant so much to you.\n\nLooking forward to having you shop with us again soon!\n\nWarm regards,\nKarishma and Ashita",
+    "drafted_reply": "Dear Jaydeep,\n\nThank you so much for your kind words! We're so happy to hear you love our work and had such a good experience shopping with us. Twinkle will be delighted to know her help meant so much to you.\n\nLooking forward to having you shop with us again soon!\n\nWarm regards,\nKarishma Ashita",
     "status": "drafted",
     "skip_reason": null,
     "posted": false
@@ -342,7 +342,7 @@
     "rating": 5,
     "review_text": "I absolutely loved the outfit I got for my sangeet from Karishma Aashita. The craftsmanship is beautiful, the quality feels excellent, and it is extremely comfortable to wear.\n\nTwinkle assisted me throughout the process and she was absolutely amazing — she really listened to what I wanted and brought my vision to life perfectly. One of the best things about the team is their reliability. If they commit to a date, they deliver exactly on time, which makes the entire experience completely stress-free.\n\nThank you, Twinkle and the entire team, for making me feel so excited and confident about my sangeet outfit. 💖",
     "review_updateTime": "2026-01-09T09:32:58.138736Z",
-    "drafted_reply": "Dear Ritu,\n\nThank you so much for this beautiful review! We're so glad the craftsmanship, quality and comfort all came together for your sangeet outfit, and that Twinkle truly brought your vision to life. Keeping our word on delivery dates is something we take seriously, so it means a lot that it made the process stress-free for you.\n\nWarmest regards,\nKarishma and Ashita",
+    "drafted_reply": "Dear Ritu,\n\nThank you so much for this beautiful review! We're so glad the craftsmanship, quality and comfort all came together for your sangeet outfit, and that Twinkle truly brought your vision to life. Keeping our word on delivery dates is something we take seriously, so it means a lot that it made the process stress-free for you.\n\nWarmest regards,\nKarishma Ashita",
     "status": "drafted",
     "skip_reason": null,
     "posted": false
@@ -354,7 +354,7 @@
     "rating": 4,
     "review_text": "A very good designer and has an amazing collection! Must visit for a bride 😊",
     "review_updateTime": "2026-01-08T07:48:42.509917Z",
-    "drafted_reply": "Dear Saachi,\n\nThank you so much for your kind words! We're so glad you loved the collection, and we truly appreciate you recommending us to brides.\n\nWarm regards,\nKarishma and Ashita",
+    "drafted_reply": "Dear Saachi,\n\nThank you so much for your kind words! We're so glad you loved the collection, and we truly appreciate you recommending us to brides.\n\nWarm regards,\nKarishma Ashita",
     "status": "drafted",
     "skip_reason": null,
     "posted": false
@@ -366,7 +366,7 @@
     "rating": 5,
     "review_text": "",
     "review_updateTime": "2025-12-31T07:25:40.947741Z",
-    "drafted_reply": "Hi Vidusshi,\n\nThank you so much for the 5-star rating! We truly appreciate your support and are so glad you had a positive experience with us.\n\nWe look forward to welcoming you again soon!\n\nWarm regards,\nKarishma and Ashita",
+    "drafted_reply": "Hi Vidusshi,\n\nThank you so much for the 5-star rating! We truly appreciate your support and are so glad you had a positive experience with us.\n\nWe look forward to welcoming you again soon!\n\nWarm regards,\nKarishma Ashita",
     "status": "drafted",
     "skip_reason": null,
     "posted": false
@@ -378,7 +378,7 @@
     "rating": 5,
     "review_text": "Team is really helpful. Very good quality and fine work.",
     "review_updateTime": "2025-12-27T12:40:08.562790Z",
-    "drafted_reply": "Dear Simran,\n\nThank you so much for your kind words! We're so glad our team could be helpful, and that you loved the quality and craftsmanship.\n\nWarm regards,\nKarishma and Ashita",
+    "drafted_reply": "Dear Simran,\n\nThank you so much for your kind words! We're so glad our team could be helpful, and that you loved the quality and craftsmanship.\n\nWarm regards,\nKarishma Ashita",
     "status": "drafted",
     "skip_reason": null,
     "posted": false
@@ -390,7 +390,7 @@
     "rating": 5,
     "review_text": "Loved Ashita’s collection…very modern silhouettes,fitting was great 😍😍",
     "review_updateTime": "2025-12-25T13:28:03.462149Z",
-    "drafted_reply": "Dear Tanushka,\n\nThank you so much for your kind words! We're so glad you loved Ashita's collection, the modern silhouettes and the fit.\n\nWarm regards,\nKarishma and Ashita",
+    "drafted_reply": "Dear Tanushka,\n\nThank you so much for your kind words! We're so glad you loved Ashita's collection, the modern silhouettes and the fit.\n\nWarm regards,\nKarishma Ashita",
     "status": "drafted",
     "skip_reason": null,
     "posted": false
@@ -402,7 +402,7 @@
     "rating": 5,
     "review_text": "",
     "review_updateTime": "2025-12-25T11:21:14.952839Z",
-    "drafted_reply": "Hi Simi,\n\nThank you so much for the 5-star rating! We truly appreciate your support and are so glad you had a positive experience with us.\n\nWe look forward to welcoming you again soon!\n\nWarm regards,\nKarishma and Ashita",
+    "drafted_reply": "Hi Simi,\n\nThank you so much for the 5-star rating! We truly appreciate your support and are so glad you had a positive experience with us.\n\nWe look forward to welcoming you again soon!\n\nWarm regards,\nKarishma Ashita",
     "status": "drafted",
     "skip_reason": null,
     "posted": false
@@ -414,7 +414,7 @@
     "rating": 5,
     "review_text": "This place is just amazing, anyone looking for a unique outfit this place is perfect!\nI loved the collection in here 😍 can't wait to shop more from their collection . Also the service was so good",
     "review_updateTime": "2025-12-20T09:40:44.222240Z",
-    "drafted_reply": "Dear Vaidehi,\n\nThank you so much for your lovely words! We're so glad you loved the collection and found something truly unique, and that the service felt just as good.\n\nWe can't wait to have you shop with us again!\n\nWarm regards,\nKarishma and Ashita",
+    "drafted_reply": "Dear Vaidehi,\n\nThank you so much for your lovely words! We're so glad you loved the collection and found something truly unique, and that the service felt just as good.\n\nWe can't wait to have you shop with us again!\n\nWarm regards,\nKarishma Ashita",
     "status": "drafted",
     "skip_reason": null,
     "posted": false
@@ -426,7 +426,7 @@
     "rating": 5,
     "review_text": "The outfit I ordered came well before the delivery timeline and fit like a glove. At the store, Twinkle was super helpful and responsive and understood all my required customisations. Excellent customer service and the outfit is extremely flattering and well tailored!",
     "review_updateTime": "2025-12-18T05:50:15.981628Z",
-    "drafted_reply": "Dear Aashna,\n\nThank you so much for your kind words! We're so glad the outfit arrived ahead of schedule and fit like a glove, and that Twinkle could take care of all your customisations so smoothly.\n\nWarm regards,\nKarishma and Ashita",
+    "drafted_reply": "Dear Aashna,\n\nThank you so much for your kind words! We're so glad the outfit arrived ahead of schedule and fit like a glove, and that Twinkle could take care of all your customisations so smoothly.\n\nWarm regards,\nKarishma Ashita",
     "status": "drafted",
     "skip_reason": null,
     "posted": false
@@ -438,7 +438,7 @@
     "rating": 5,
     "review_text": "Loved the work. Astha was really helpful and cooperative. Thank you so much.",
     "review_updateTime": "2025-12-18T05:38:20.839273Z",
-    "drafted_reply": "Dear Anahita,\n\nThank you so much for your kind words! We're so glad you loved the work, and that Astha could be so helpful and cooperative throughout.\n\nWarm regards,\nKarishma and Ashita",
+    "drafted_reply": "Dear Anahita,\n\nThank you so much for your kind words! We're so glad you loved the work, and that Astha could be so helpful and cooperative throughout.\n\nWarm regards,\nKarishma Ashita",
     "status": "drafted",
     "skip_reason": null,
     "posted": false
@@ -450,7 +450,7 @@
     "rating": 5,
     "review_text": "Loved the fit & the whole team is really gud in guidance 💝💝",
     "review_updateTime": "2025-11-08T09:35:52.087747Z",
-    "drafted_reply": "Dear Tanisha,\n\nThank you so much for your kind words! We're so glad you loved the fit, and that our team's guidance made the process a good one for you.\n\nWarm regards,\nKarishma and Ashita",
+    "drafted_reply": "Dear Tanisha,\n\nThank you so much for your kind words! We're so glad you loved the fit, and that our team's guidance made the process a good one for you.\n\nWarm regards,\nKarishma Ashita",
     "status": "drafted",
     "skip_reason": null,
     "posted": false
@@ -462,7 +462,7 @@
     "rating": 5,
     "review_text": "No one in India can do Corset as they do,beautiful outfits",
     "review_updateTime": "2025-10-14T06:12:11.458996Z",
-    "drafted_reply": "Dear Priyanka,\n\nThank you so much for your kind words! Our corsets are something we take great pride in, so this truly means a lot to us.\n\nWarm regards,\nKarishma and Ashita",
+    "drafted_reply": "Dear Priyanka,\n\nThank you so much for your kind words! Our corsets are something we take great pride in, so this truly means a lot to us.\n\nWarm regards,\nKarishma Ashita",
     "status": "drafted",
     "skip_reason": null,
     "posted": false
@@ -474,7 +474,7 @@
     "rating": 5,
     "review_text": "",
     "review_updateTime": "2025-07-26T11:32:34.888894Z",
-    "drafted_reply": "Hi Kashish,\n\nThank you so much for the 5-star rating! We truly appreciate your support and are so glad you had a positive experience with us.\n\nWe look forward to welcoming you again soon!\n\nWarm regards,\nKarishma and Ashita",
+    "drafted_reply": "Hi Kashish,\n\nThank you so much for the 5-star rating! We truly appreciate your support and are so glad you had a positive experience with us.\n\nWe look forward to welcoming you again soon!\n\nWarm regards,\nKarishma Ashita",
     "status": "drafted",
     "skip_reason": null,
     "posted": false
@@ -486,7 +486,7 @@
     "rating": 5,
     "review_text": "",
     "review_updateTime": "2025-07-17T07:55:41.355974Z",
-    "drafted_reply": "Hi Sim,\n\nThank you so much for the 5-star rating! We truly appreciate your support and are so glad you had a positive experience with us.\n\nWe look forward to welcoming you again soon!\n\nWarm regards,\nKarishma and Ashita",
+    "drafted_reply": "Hi Sim,\n\nThank you so much for the 5-star rating! We truly appreciate your support and are so glad you had a positive experience with us.\n\nWe look forward to welcoming you again soon!\n\nWarm regards,\nKarishma Ashita",
     "status": "drafted",
     "skip_reason": null,
     "posted": false
@@ -510,7 +510,7 @@
     "rating": 5,
     "review_text": "",
     "review_updateTime": "2021-01-10T05:52:26.081579Z",
-    "drafted_reply": "Hi Vinay,\n\nThank you so much for the 5-star rating! We truly appreciate your support and are so glad you had a positive experience with us.\n\nWe look forward to welcoming you again soon!\n\nWarm regards,\nKarishma and Ashita",
+    "drafted_reply": "Hi Vinay,\n\nThank you so much for the 5-star rating! We truly appreciate your support and are so glad you had a positive experience with us.\n\nWe look forward to welcoming you again soon!\n\nWarm regards,\nKarishma Ashita",
     "status": "drafted",
     "skip_reason": null,
     "posted": false
@@ -534,7 +534,7 @@
     "rating": 4,
     "review_text": "",
     "review_updateTime": "2020-12-18T11:01:48.431655Z",
-    "drafted_reply": "Hi Amit,\n\nThank you so much for your 4-star rating! We're glad you had a positive experience with us. If there's anything we could do to make your next visit even better, we'd love to hear your thoughts -- feel free to reach out to us anytime.\n\nWarm regards,\nKarishma and Ashita",
+    "drafted_reply": "Hi Amit,\n\nThank you so much for your 4-star rating! We're glad you had a positive experience with us. If there's anything we could do to make your next visit even better, we'd love to hear your thoughts -- feel free to reach out to us anytime.\n\nWarm regards,\nKarishma Ashita",
     "status": "drafted",
     "skip_reason": null,
     "posted": false
@@ -546,7 +546,7 @@
     "rating": 5,
     "review_text": "Hettlch\nHazel\nEnough",
     "review_updateTime": "2020-12-03T10:17:04.786712Z",
-    "drafted_reply": "Hi Firoj,\n\nThank you so much for the 5-star rating! We truly appreciate your support and are so glad you had a positive experience with us.\n\nWe look forward to welcoming you again soon!\n\nWarm regards,\nKarishma and Ashita",
+    "drafted_reply": "Hi Firoj,\n\nThank you so much for the 5-star rating! We truly appreciate your support and are so glad you had a positive experience with us.\n\nWe look forward to welcoming you again soon!\n\nWarm regards,\nKarishma Ashita",
     "status": "drafted",
     "skip_reason": null,
     "posted": false
@@ -558,7 +558,7 @@
     "rating": 5,
     "review_text": "",
     "review_updateTime": "2019-07-24T10:29:46.179437Z",
-    "drafted_reply": "Hi Nameri,\n\nThank you so much for the 5-star rating! We truly appreciate your support and are so glad you had a positive experience with us.\n\nWe look forward to welcoming you again soon!\n\nWarm regards,\nKarishma and Ashita",
+    "drafted_reply": "Hi Nameri,\n\nThank you so much for the 5-star rating! We truly appreciate your support and are so glad you had a positive experience with us.\n\nWe look forward to welcoming you again soon!\n\nWarm regards,\nKarishma Ashita",
     "status": "drafted",
     "skip_reason": null,
     "posted": false
@@ -570,7 +570,7 @@
     "rating": 5,
     "review_text": "",
     "review_updateTime": "2019-06-18T14:11:57.396353Z",
-    "drafted_reply": "Hi Jigar,\n\nThank you so much for the 5-star rating! We truly appreciate your support and are so glad you had a positive experience with us.\n\nWe look forward to welcoming you again soon!\n\nWarm regards,\nKarishma and Ashita",
+    "drafted_reply": "Hi Jigar,\n\nThank you so much for the 5-star rating! We truly appreciate your support and are so glad you had a positive experience with us.\n\nWe look forward to welcoming you again soon!\n\nWarm regards,\nKarishma Ashita",
     "status": "drafted",
     "skip_reason": null,
     "posted": false
