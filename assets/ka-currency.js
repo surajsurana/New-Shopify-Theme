@@ -40,11 +40,33 @@
     INR: { code: 'INR', name: 'Indian Rupee',    symbol: '₹',  symbolIsCode: false, round: 100 },
     USD: { code: 'USD', name: 'US Dollar',       symbol: '$',  symbolIsCode: false, round: 5   },
     GBP: { code: 'GBP', name: 'British Pound',   symbol: '£',  symbolIsCode: false, round: 5   },
+    EUR: { code: 'EUR', name: 'Euro',            symbol: '€',  symbolIsCode: false, round: 5   },
     CAD: { code: 'CAD', name: 'Canadian Dollar', symbol: 'C$', symbolIsCode: false, round: 5   },
+    AUD: { code: 'AUD', name: 'Australian Dollar', symbol: 'A$', symbolIsCode: false, round: 5 },
     AED: { code: 'AED', name: 'UAE Dirham',      symbol: 'AED', symbolIsCode: true, round: 25  }
   };
-  var CURRENCY_ORDER = ['INR', 'USD', 'GBP', 'CAD', 'AED'];
-  var COUNTRY_CURRENCY_MAP = { US: 'USD', GB: 'GBP', CA: 'CAD', AE: 'AED' };
+  /* round: 5 vs round: 25 tracks each currency's INR-per-unit rate, not
+     which "world region" it's from -- USD/GBP/EUR sit around ₹90-130 per
+     unit and CAD/AUD sit around ₹65-70 per unit (all close enough that a
+     converted price still looks natural rounded to the nearest 5); AED
+     sits far lower per unit (~₹24-26), so the same INR price converts to
+     a much larger raw AUD-style number and needs the coarser ₹25 rounding
+     step to still read as a "nice" price (2026-09-22 rates checked live
+     via open.er-api.com/v6/latest/INR: EUR ≈ ₹110/unit, AUD ≈ ₹68/unit --
+     both confirmed in the round: 5 band, same reasoning as GBP and CAD). */
+  var CURRENCY_ORDER = ['INR', 'USD', 'GBP', 'EUR', 'CAD', 'AUD', 'AED'];
+  var COUNTRY_CURRENCY_MAP = {
+    US: 'USD', GB: 'GBP', CA: 'CAD', AE: 'AED', AU: 'AUD',
+    /* Eurozone -- all 20 members using the euro as of 2026, ISO 3166-1
+       alpha-2 codes (matches Shopify's localization.country.iso_code):
+       Germany, France, Italy, Spain, Netherlands, Ireland, Portugal,
+       Belgium, Austria, Greece, Finland, Luxembourg, Slovenia, Slovakia,
+       Estonia, Latvia, Lithuania, Cyprus, Malta, Croatia. */
+    DE: 'EUR', FR: 'EUR', IT: 'EUR', ES: 'EUR', NL: 'EUR',
+    IE: 'EUR', PT: 'EUR', BE: 'EUR', AT: 'EUR', GR: 'EUR',
+    FI: 'EUR', LU: 'EUR', SI: 'EUR', SK: 'EUR', EE: 'EUR',
+    LV: 'EUR', LT: 'EUR', CY: 'EUR', MT: 'EUR', HR: 'EUR'
+  };
 
   var OVERRIDE_KEY = 'ka_currency_override';
   var RATE_CACHE_KEY = 'ka_currency_rates_v1';
@@ -53,7 +75,7 @@
   /* Static fallback rates (approx, mid-2026) — used only if the live
      fetch fails AND no cached rate exists yet (e.g. first visit, API
      down). Keeps the module functional rather than silently INR-only. */
-  var FALLBACK_RATES = { INR: 1, USD: 1 / 87, GBP: 1 / 110, CAD: 1 / 63, AED: 1 / 24 };
+  var FALLBACK_RATES = { INR: 1, USD: 1 / 87, GBP: 1 / 110, EUR: 1 / 110, CAD: 1 / 63, AUD: 1 / 68, AED: 1 / 24 };
 
   var activeCode = 'INR';
   var currentRates = null;
@@ -78,12 +100,38 @@
   /* ---------------------------------------------------------------
      Rate fetch + daily cache
   --------------------------------------------------------------- */
+  /* BUG FIX (2026-09-22, found by Suraj on real staging, not by any of my
+     earlier scripted checks): a visitor who had used the currency chip
+     BEFORE EUR/AUD were added had a cached rates object in localStorage
+     shaped like {INR,USD,GBP,CAD,AED} -- 5 keys, no EUR/AUD. That cache is
+     still <24h old, so the code below used to accept it as-is and skip the
+     live fetch entirely. convertRupees()'s existing defensive fallback
+     (`if (!rate) return rupees`) then silently returned the RAW rupee
+     number for EUR/AUD specifically, while formatAmount() still swapped in
+     the new symbol -- producing exactly "€48,000" / "A$43,000" (unconverted
+     digits, correct-looking symbol), with no console error, because
+     nothing actually threw. My earlier "verification" always used a freshly
+     wiped browser profile (no pre-existing cache), so it could never have
+     hit this path -- it only ever exercised the live-fetch branch below,
+     never the stale-cache-reuse branch a real returning visitor takes.
+     Fix: a cached rates object is only trusted if it already contains every
+     currently-supported currency code, not just "some rates and a recent
+     timestamp" -- so adding a new currency to CURRENCIES automatically
+     invalidates old caches sitewide, for any real visitor, going forward. */
+  function cachedRatesAreComplete(rates) {
+    for (var code in CURRENCIES) {
+      if (Object.prototype.hasOwnProperty.call(CURRENCIES, code) && !(code in rates)) return false;
+    }
+    return true;
+  }
+
   function getCachedRates() {
     try {
       var raw = localStorage.getItem(RATE_CACHE_KEY);
       if (!raw) return null;
       var parsed = JSON.parse(raw);
       if (!parsed || !parsed.rates || !parsed.fetchedAt) return null;
+      if (!cachedRatesAreComplete(parsed.rates)) return null;
       /* Daily cache — a visitor with a cart open overnight won't see
          her total's currency math shift mid-session (spec F3): the
          cache only refreshes once it's >24h old, not on every visit. */
@@ -115,7 +163,9 @@
           INR: 1,
           USD: data.rates.USD,
           GBP: data.rates.GBP,
+          EUR: data.rates.EUR,
           CAD: data.rates.CAD,
+          AUD: data.rates.AUD,
           AED: data.rates.AED
         };
         setCachedRates(rates);
