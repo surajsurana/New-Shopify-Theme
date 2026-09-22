@@ -40,11 +40,33 @@
     INR: { code: 'INR', name: 'Indian Rupee',    symbol: '₹',  symbolIsCode: false, round: 100 },
     USD: { code: 'USD', name: 'US Dollar',       symbol: '$',  symbolIsCode: false, round: 5   },
     GBP: { code: 'GBP', name: 'British Pound',   symbol: '£',  symbolIsCode: false, round: 5   },
+    EUR: { code: 'EUR', name: 'Euro',            symbol: '€',  symbolIsCode: false, round: 5   },
     CAD: { code: 'CAD', name: 'Canadian Dollar', symbol: 'C$', symbolIsCode: false, round: 5   },
+    AUD: { code: 'AUD', name: 'Australian Dollar', symbol: 'A$', symbolIsCode: false, round: 5 },
     AED: { code: 'AED', name: 'UAE Dirham',      symbol: 'AED', symbolIsCode: true, round: 25  }
   };
-  var CURRENCY_ORDER = ['INR', 'USD', 'GBP', 'CAD', 'AED'];
-  var COUNTRY_CURRENCY_MAP = { US: 'USD', GB: 'GBP', CA: 'CAD', AE: 'AED' };
+  /* round: 5 vs round: 25 tracks each currency's INR-per-unit rate, not
+     which "world region" it's from -- USD/GBP/EUR sit around ₹90-130 per
+     unit and CAD/AUD sit around ₹65-70 per unit (all close enough that a
+     converted price still looks natural rounded to the nearest 5); AED
+     sits far lower per unit (~₹24-26), so the same INR price converts to
+     a much larger raw AUD-style number and needs the coarser ₹25 rounding
+     step to still read as a "nice" price (2026-09-22 rates checked live
+     via open.er-api.com/v6/latest/INR: EUR ≈ ₹110/unit, AUD ≈ ₹68/unit --
+     both confirmed in the round: 5 band, same reasoning as GBP and CAD). */
+  var CURRENCY_ORDER = ['INR', 'USD', 'GBP', 'EUR', 'CAD', 'AUD', 'AED'];
+  var COUNTRY_CURRENCY_MAP = {
+    US: 'USD', GB: 'GBP', CA: 'CAD', AE: 'AED', AU: 'AUD',
+    /* Eurozone -- all 20 members using the euro as of 2026, ISO 3166-1
+       alpha-2 codes (matches Shopify's localization.country.iso_code):
+       Germany, France, Italy, Spain, Netherlands, Ireland, Portugal,
+       Belgium, Austria, Greece, Finland, Luxembourg, Slovenia, Slovakia,
+       Estonia, Latvia, Lithuania, Cyprus, Malta, Croatia. */
+    DE: 'EUR', FR: 'EUR', IT: 'EUR', ES: 'EUR', NL: 'EUR',
+    IE: 'EUR', PT: 'EUR', BE: 'EUR', AT: 'EUR', GR: 'EUR',
+    FI: 'EUR', LU: 'EUR', SI: 'EUR', SK: 'EUR', EE: 'EUR',
+    LV: 'EUR', LT: 'EUR', CY: 'EUR', MT: 'EUR', HR: 'EUR'
+  };
 
   var OVERRIDE_KEY = 'ka_currency_override';
   var RATE_CACHE_KEY = 'ka_currency_rates_v1';
@@ -53,7 +75,7 @@
   /* Static fallback rates (approx, mid-2026) — used only if the live
      fetch fails AND no cached rate exists yet (e.g. first visit, API
      down). Keeps the module functional rather than silently INR-only. */
-  var FALLBACK_RATES = { INR: 1, USD: 1 / 87, GBP: 1 / 110, CAD: 1 / 63, AED: 1 / 24 };
+  var FALLBACK_RATES = { INR: 1, USD: 1 / 87, GBP: 1 / 110, EUR: 1 / 110, CAD: 1 / 63, AUD: 1 / 68, AED: 1 / 24 };
 
   var activeCode = 'INR';
   var currentRates = null;
@@ -115,7 +137,9 @@
           INR: 1,
           USD: data.rates.USD,
           GBP: data.rates.GBP,
+          EUR: data.rates.EUR,
           CAD: data.rates.CAD,
+          AUD: data.rates.AUD,
           AED: data.rates.AED
         };
         setCachedRates(rates);
