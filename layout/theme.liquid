@@ -28,8 +28,14 @@
     <script>
       (function () {
         try {
-          var COUNTRY_MAP = { US: 'USD', GB: 'GBP', CA: 'CAD', AE: 'AED' };
-          var VALID = { USD: 1, GBP: 1, CAD: 1, AED: 1 };
+          var COUNTRY_MAP = {
+            US: 'USD', GB: 'GBP', CA: 'CAD', AE: 'AED', AU: 'AUD',
+            DE: 'EUR', FR: 'EUR', IT: 'EUR', ES: 'EUR', NL: 'EUR',
+            IE: 'EUR', PT: 'EUR', BE: 'EUR', AT: 'EUR', GR: 'EUR',
+            FI: 'EUR', LU: 'EUR', SI: 'EUR', SK: 'EUR', EE: 'EUR',
+            LV: 'EUR', LT: 'EUR', CY: 'EUR', MT: 'EUR', HR: 'EUR'
+          };
+          var VALID = { USD: 1, GBP: 1, EUR: 1, CAD: 1, AUD: 1, AED: 1 };
           var override = localStorage.getItem('ka_currency_override');
           var target = 'INR';
           if (override && VALID[override]) {
