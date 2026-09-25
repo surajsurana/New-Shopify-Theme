@@ -149,14 +149,19 @@
             endfor
             assign lead_time = item.product.metafields.custom.lead_time | default: '20–25 days'
             # "working days" wording (Suraj, 2026-09-25) — same idempotent normaliser as
-            # sections/ka-product-main.liquid (see the comment there for the reasoning).
+            # sections/ka-product-main.liquid (see the comment there for the reasoning and the digit guard).
             assign lead_time = lead_time | append: ''
             assign lead_time_lc = lead_time | downcase
-            unless lead_time_lc contains 'working' or lead_time_lc contains 'business'
-              if lead_time_lc contains 'day'
-                assign lead_time = lead_time | replace: ' Days', ' days' | replace: ' days', ' working days'
+            if lead_time_lc contains 'day'
+              assign lead_time = lead_time | split: ' ' | join: ' '
+              assign lt_first = lead_time | slice: 0
+              if '0123456789' contains lt_first
+                assign lead_time = lead_time | replace: ' - ', '–' | replace: ' – ', '–'
               endif
-            endunless
+              unless lead_time_lc contains 'working' or lead_time_lc contains 'business'
+                assign lead_time = lead_time | replace: ' Days', ' days' | replace: ' days', ' working days'
+              endunless
+            endif
             # MTM fallback path: ka-product.js adds "Size: Made to my measurements"
             # as a line-item property when no dedicated MTM variant exists.
             # Check for it here so the cart renders correctly regardless of approach.
@@ -279,7 +284,7 @@
 
       <div class="ka-reassure">
         <div class="row"><span class="mk">✦</span><span>Each piece is cut, draped and hand-embroidered to order by our karigars — never machine-made.</span></div>
-        <div class="row"><span class="mk">✦</span><span>Crafted to order in 20–25 days. A personal advisor will confirm fit and measurements after you check out.</span></div>
+        <div class="row"><span class="mk">✦</span><span>Crafted to order. A personal advisor will confirm fit and measurements after you check out.</span></div>
         <div class="row"><span class="mk">✦</span><span>Delivered worldwide, complimentary, by DHL Express, beautifully packaged.</span></div>
       </div>
 
