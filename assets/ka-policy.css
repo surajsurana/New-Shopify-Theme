@@ -5,6 +5,20 @@
    .shopify-policy__container > .shopify-policy__title > h1
                               > .shopify-policy__body  > .rte
 ===================================================================== */
+/* ---------------------------------------------------------------------
+   ADDITION TO THE SPEC'S CSS (found on staging, 2026-09-25): Shopify injects its OWN default
+   policy stylesheet (policy-*.css) on every /policies/* page, and it loads AFTER this file:
+     .shopify-policy__container { max-width: 65ch; margin: 0 auto; padding-left: 20px; padding-right: 20px }
+     .shopify-policy__title     { text-align: center }
+   The CD prototype was built without it, so on the real site the specced 720px, left-aligned,
+   gutter-padded column lost to it (column 603px, title centred). These three rules restore the
+   SPECCED geometry only; body.template-policy raises specificity so load order cannot matter.
+   Vertical padding and everything else stay exactly as specced below.
+--------------------------------------------------------------------- */
+body.template-policy .shopify-policy__container{max-width:none;margin:0;padding-left:var(--gutter);padding-right:var(--gutter)}
+body.template-policy .shopify-policy__title{text-align:left}
+@media (max-width:600px){ body.template-policy .shopify-policy__container{padding-left:20px;padding-right:20px} }   /* spec §3.6: 20px gutter on mobile (5vw would be 30px at 600px) */
+
 .shopify-policy__container{background:var(--c-paper);padding:150px var(--gutter) var(--s-xl)}
 .shopify-policy__title,
 .shopify-policy__body{max-width:var(--max-text);margin-left:auto;margin-right:auto}
