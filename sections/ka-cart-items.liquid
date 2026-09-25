@@ -148,6 +148,15 @@
               endif
             endfor
             assign lead_time = item.product.metafields.custom.lead_time | default: '20–25 days'
+            # "working days" wording (Suraj, 2026-09-25) — same idempotent normaliser as
+            # sections/ka-product-main.liquid (see the comment there for the reasoning).
+            assign lead_time = lead_time | append: ''
+            assign lead_time_lc = lead_time | downcase
+            unless lead_time_lc contains 'working' or lead_time_lc contains 'business'
+              if lead_time_lc contains 'day'
+                assign lead_time = lead_time | replace: ' Days', ' days' | replace: ' days', ' working days'
+              endif
+            endunless
             # MTM fallback path: ka-product.js adds "Size: Made to my measurements"
             # as a line-item property when no dedicated MTM variant exists.
             # Check for it here so the cart renders correctly regardless of approach.

@@ -1,0 +1,27 @@
+{
+  "type": "header",
+  "name": "Policy pages header",
+  "sections": {
+    "ka-nav": {
+      "type": "ka-nav",
+      "settings": {
+        "utility_1": "Complimentary Worldwide Delivery",
+        "utility_2": "Hand-Embroidered to Order",
+        "utility_3": "Private & Virtual Appointments",
+        "logo_text": "Karishma Ashita",
+        "logo_subline": "Bridal Couture · Mumbai",
+        "label_bestsellers": "Signature",
+        "link_bestsellers": "/collections/signature-top-sellers",
+        "label_collections": "Collections",
+        "link_collections": "/collections",
+        "label_diaries": "Client Diaries",
+        "link_diaries": "/pages/client-diaries",
+        "link_about": "/pages/about-us",
+        "link_appointment": "/pages/appointments"
+      }
+    }
+  },
+  "order": [
+    "ka-nav"
+  ]
+}
