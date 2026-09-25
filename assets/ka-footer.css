@@ -6,6 +6,18 @@
   color: #C9BFAE;
   padding: var(--s-2xl) var(--gutter) var(--s-lg);
 }
+/* Keep the legal row clear of the floating Concierge chip when scrolled to the very bottom.
+   Docs/concierge-footer-clearance-spec.md. Reserve = float offset + float height + 24px,
+   defined once in assets/ka-concierge-float.css (--ka-float-reserve, ~100.5px); the 100px
+   fallback covers the float stylesheet being absent. max() never goes below the old 64px.
+   Not needed <=600px (smaller, nearer-the-edge float already clears the 64px padding). */
+@media (min-width: 601px) {
+  .ka-footer { padding-bottom: max(var(--s-lg), var(--ka-float-reserve, 100px)); }
+}
+/* Product pages hide the float below 900px (mobile action bar), so no extra room there. */
+@media (max-width: 900px) {
+  .template-product .ka-footer { padding-bottom: var(--s-lg); }
+}
 .ka-footer__top {
   display: grid;
   grid-template-columns: minmax(0, 1.2fr) minmax(0, 0.8fr) minmax(0, 0.8fr) minmax(0, 0.8fr) minmax(0, 1.2fr);

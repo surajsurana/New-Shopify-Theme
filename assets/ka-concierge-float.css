@@ -2,10 +2,25 @@
    KA-CONCIERGE-FLOAT — global floating WhatsApp concierge chip
    z-index 110 (above utility bar 101, nav 100, product minibar 70)
 ================================================================ */
+/* Clearance tokens — Docs/concierge-footer-clearance-spec.md.
+   Defined here, next to the float's own values, so the footer can reserve exactly
+   the space the float occupies at the bottom of the page (see assets/ka-footer.css).
+   The rendered float is identical to before: 26px offset, 15px vertical padding. */
+:root {
+  --ka-float-bottom: 26px;
+  --ka-float-pad-y: 15px;
+  /* 2 x vertical padding + 2px border + one line (.66rem x body line-height 1.75).
+     Known coupling: the 1.75 is the body line-height; if the float's font-size or
+     the body line-height changes, update it here. */
+  --ka-float-h: calc(2 * var(--ka-float-pad-y) + 2px + 1.75 * 0.66rem);
+  /* space the footer must keep clear at the bottom of the page:
+     float offset + float height + 24px breathing room  (~100.5px) */
+  --ka-float-reserve: calc(var(--ka-float-bottom) + var(--ka-float-h) + 24px);
+}
 .ka-concierge-float {
   position: fixed;
   right: 26px;
-  bottom: 26px;
+  bottom: var(--ka-float-bottom);
   z-index: 110;
   display: flex;
   align-items: center;
@@ -13,7 +28,7 @@
   background: var(--c-charcoal);
   color: var(--c-rosegold-pale);
   border: 1px solid rgba(154,123,79,0.45);
-  padding: 15px 22px;
+  padding: var(--ka-float-pad-y) 22px;
   font-family: var(--f-sans);
   font-size: 0.66rem;
   font-weight: 400;
