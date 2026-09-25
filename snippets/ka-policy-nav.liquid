@@ -1,0 +1,59 @@
+{%- comment -%}
+  "Also in Our Policies" — related-policies row, rendered from layout/theme.liquid
+  on policy pages only (request.page_type == 'policy'), after the policy body and
+  before the footer group. Spec: Docs/policy-pages-build-spec.md §5. CSS: the
+  .ka-policy-nav block of assets/ka-policy.css.
+
+  Order leads with the one customers look for: Returns & Refunds (Shopify's own
+  title for it is the less obvious "Refund policy"), then Shipping, Privacy, Terms.
+  Contact information is deliberately excluded (a contact page, not a policy to
+  compare; already in the footer). A policy with a blank body is skipped, so the
+  grid degrades to 3 or fewer items rather than linking to an empty page.
+
+  The current policy is a non-link span (aria-current="page") with "You are here".
+  It is detected by comparing the LAST path segment of request.path with the last
+  segment of each policy's url, so a locale/market prefix on either side
+  (e.g. /en-in/policies/refund-policy) cannot break the match.
+
+  Labels/descriptions are hard-coded (four short strings, per spec). Output is not
+  auto-escaped by Liquid, so the strings below carry &amp; explicitly.
+{%- endcomment -%}
+{%- assign kp_keys = 'refund,shipping,privacy,terms' | split: ',' -%}
+{%- assign kp_current = request.path | split: '/' | last -%}
+<nav class="ka-policy-nav" aria-label="Store policies">
+  <div class="ka-policy-nav__inner">
+    <span class="eyebrow eyebrow--muted ka-policy-nav__label">Also in Our Policies</span>
+    <ul class="ka-policy-nav__grid">
+      {%- for kp_key in kp_keys -%}
+        {%- case kp_key -%}
+          {%- when 'refund' -%}
+            {%- assign kp_policy = shop.refund_policy -%}
+            {%- assign kp_label = 'Returns &amp; Refunds' -%}
+            {%- assign kp_desc = 'Exchanges, cancellations and our made-to-order terms' -%}
+          {%- when 'shipping' -%}
+            {%- assign kp_policy = shop.shipping_policy -%}
+            {%- assign kp_label = 'Shipping' -%}
+            {%- assign kp_desc = 'Delivery times, duties and tracking' -%}
+          {%- when 'privacy' -%}
+            {%- assign kp_policy = shop.privacy_policy -%}
+            {%- assign kp_label = 'Privacy' -%}
+            {%- assign kp_desc = 'How we care for your information' -%}
+          {%- when 'terms' -%}
+            {%- assign kp_policy = shop.terms_of_service -%}
+            {%- assign kp_label = 'Terms of Service' -%}
+            {%- assign kp_desc = 'The terms of using our site' -%}
+        {%- endcase -%}
+        {%- if kp_policy != blank and kp_policy.body != blank -%}
+          {%- assign kp_slug = kp_policy.url | split: '/' | last -%}
+          <li class="ka-policy-nav__item">
+            {%- if kp_slug == kp_current -%}
+              <span class="is-current" aria-current="page"><span class="ka-policy-nav__title">{{ kp_label }}</span><span class="ka-policy-nav__desc">You are here</span></span>
+            {%- else -%}
+              <a href="{{ kp_policy.url }}"><span class="ka-policy-nav__title">{{ kp_label }}</span><span class="ka-policy-nav__desc">{{ kp_desc }}</span></a>
+            {%- endif -%}
+          </li>
+        {%- endif -%}
+      {%- endfor -%}
+    </ul>
+  </div>
+</nav>

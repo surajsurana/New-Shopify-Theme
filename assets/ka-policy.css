@@ -1,0 +1,124 @@
+/* =====================================================================
+   ka-policy.css  — PRODUCTION CSS (spec §4). Production version of the prototype CSS
+   (prototype uses @container at the same breakpoints).
+   Selectors target ONLY the markup Shopify emits:
+   .shopify-policy__container > .shopify-policy__title > h1
+                              > .shopify-policy__body  > .rte
+===================================================================== */
+/* ---------------------------------------------------------------------
+   ADDITION TO THE SPEC'S CSS (found on staging, 2026-09-25): Shopify injects its OWN default
+   policy stylesheet (policy-*.css) on every /policies/* page, and it loads AFTER this file:
+     .shopify-policy__container { max-width: 65ch; margin: 0 auto; padding-left: 20px; padding-right: 20px }
+     .shopify-policy__title     { text-align: center }
+   The CD prototype was built without it, so on the real site the specced 720px, left-aligned,
+   gutter-padded column lost to it (column 603px, title centred). These three rules restore the
+   SPECCED geometry only; body.template-policy raises specificity so load order cannot matter.
+   Vertical padding and everything else stay exactly as specced below.
+--------------------------------------------------------------------- */
+body.template-policy .shopify-policy__container{max-width:none;margin:0;padding-left:var(--gutter);padding-right:var(--gutter)}
+body.template-policy .shopify-policy__title{text-align:left}
+@media (max-width:600px){ body.template-policy .shopify-policy__container{padding-left:20px;padding-right:20px} }   /* spec §3.6: 20px gutter on mobile (5vw would be 30px at 600px) */
+
+.shopify-policy__container{background:var(--c-paper);padding:150px var(--gutter) var(--s-xl)}
+.shopify-policy__title,
+.shopify-policy__body{max-width:var(--max-text);margin-left:auto;margin-right:auto}
+.shopify-policy__title::before{content:'Our Policies';display:block;margin-bottom:18px;font-family:var(--f-sans);font-size:var(--t-eyebrow);font-weight:400;letter-spacing:.24em;text-transform:uppercase;color:var(--c-rosegold-2)}
+.shopify-policy__title h1{font-family:var(--f-display);font-size:var(--t-h2);font-weight:400;font-style:italic;color:var(--c-charcoal);line-height:1.08}
+.shopify-policy__title::after{content:'';display:block;width:40px;height:1px;background:var(--c-rosegold-pale);margin:28px 0 var(--s-lg)}
+
+.shopify-policy__body .rte{font-family:var(--f-sans);font-size:var(--t-body);font-weight:300;line-height:1.85;color:var(--c-ink);overflow-wrap:break-word}
+.shopify-policy__body .rte > * + *{margin-top:20px}
+.shopify-policy__body .rte > ul + *,
+.shopify-policy__body .rte > ol + *,
+.shopify-policy__body .rte > table + *{margin-top:var(--s-md)}
+.shopify-policy__body .rte strong,
+.shopify-policy__body .rte b{font-weight:500}
+.shopify-policy__body .rte u{text-decoration:none;font-weight:500;color:var(--c-charcoal)}
+.shopify-policy__body .rte p:empty,
+.shopify-policy__body .rte p:has(> br:only-child){display:none}
+
+/* Heading map. Shopify policy bodies use <h1> for every SECTION and <h2> for sub-sections
+   (the page title is a separate h1 above). Visual tiers, not semantic ones: */
+.shopify-policy__body .rte > h1{font-family:var(--f-display);font-style:italic;font-weight:400;font-size:clamp(1.55rem,2.4vw,1.95rem);line-height:1.2;color:var(--c-charcoal);margin-top:var(--s-xl);padding-top:var(--s-md);border-top:1px solid var(--line)}
+.shopify-policy__body .rte > h1,
+.shopify-policy__body .rte > h2{font-variant-numeric:lining-nums}   /* "Section 1", "Article 12": Cormorant defaults to old-style figures (same cause as the welcome-popup code baseline bug) */
+.shopify-policy__body .rte > h1:first-child{margin-top:0;padding-top:0;border-top:0}
+.shopify-policy__body .rte > h2{font-family:var(--f-display);font-style:normal;font-weight:500;font-size:1.3rem;line-height:1.25;color:var(--c-charcoal);margin-top:var(--s-lg)}
+.shopify-policy__body .rte > h3{font-family:var(--f-sans);font-size:.68rem;font-weight:400;letter-spacing:.2em;text-transform:uppercase;color:var(--c-rosegold-2);margin-top:var(--s-md)}
+.shopify-policy__body .rte > h1 + *,
+.shopify-policy__body .rte > h2 + *,
+.shopify-policy__body .rte > h3 + *{margin-top:12px}
+
+/* CSS bridge for policies written with fake headings (Refund, Shipping) — progressive enhancement;
+   the durable fix is to make them real headings in Admin (spec §6). */
+.shopify-policy__body .rte > p:has(> span[style*="underline"] > strong:only-child){margin-top:var(--s-lg)}
+.shopify-policy__body .rte > p:has(> span[style*="underline"] > strong:only-child) span{text-decoration:none !important}
+.shopify-policy__body .rte > p:has(> span[style*="underline"] > strong:only-child) strong{font-family:var(--f-display);font-weight:500;font-size:1.3rem;line-height:1.25;color:var(--c-charcoal)}
+.shopify-policy__body .rte > p:has(> span[style*="underline"] > strong:only-child) + p{margin-top:12px}
+.shopify-policy__body .rte p > em:first-child:has(+ br){display:block;font-style:normal;font-family:var(--f-sans);font-size:.68rem;font-weight:400;letter-spacing:.2em;text-transform:uppercase;color:var(--c-rosegold-2);margin-bottom:6px}
+.shopify-policy__body .rte p > em:first-child + br{display:none}
+.shopify-policy__body .rte > p:has(> em:first-child + br){margin-top:var(--s-md)}
+.shopify-policy__body .rte > p:first-child:has(> em:first-child + br){margin-top:0}
+
+/* Links, lists */
+.shopify-policy__body .rte a{color:var(--c-rosegold-2);text-decoration:underline;text-decoration-color:var(--line-light);text-underline-offset:3px;transition:color var(--dur-fast);overflow-wrap:anywhere}
+.shopify-policy__body .rte a:hover{color:var(--c-rosegold)}
+.shopify-policy__body .rte ul,
+.shopify-policy__body .rte ol{padding-left:1.3em}
+.shopify-policy__body .rte li + li{margin-top:.6em}
+.shopify-policy__body .rte li::marker{color:var(--c-rosegold-pale)}
+.shopify-policy__body .rte ul ul,
+.shopify-policy__body .rte ul > ul{margin-top:.6em}          /* Shopify's privacy template puts <ul> directly inside <ul> */
+
+/* Tables (cookie tables) */
+.shopify-policy__body .rte table{width:100%;border-collapse:collapse;table-layout:fixed;font-size:.9rem;line-height:1.55;margin-top:var(--s-sm)}
+.shopify-policy__body .rte th{text-align:left;padding:0 16px 12px 0;font-family:var(--f-sans);font-size:.62rem;font-weight:400;letter-spacing:.18em;text-transform:uppercase;color:var(--c-ink-muted);border-bottom:1px solid var(--line-strong)}
+.shopify-policy__body .rte th strong{font-weight:400}
+.shopify-policy__body .rte th:nth-child(1){width:30%}
+.shopify-policy__body .rte th:nth-child(2){width:54%}
+.shopify-policy__body .rte th:nth-child(3){width:16%}
+.shopify-policy__body .rte td{padding:14px 16px 14px 0;vertical-align:top;border-bottom:1px solid var(--line);color:var(--c-ink-mid);overflow-wrap:anywhere}
+.shopify-policy__body .rte td:first-child{color:var(--c-charcoal)}
+
+/* Images (Contact information page carries the atelier photo) */
+.shopify-policy__body .rte img{width:100%;height:auto;aspect-ratio:3 / 2;object-fit:cover;filter:sepia(.10) saturate(.90) brightness(.96);margin-bottom:var(--s-sm)}
+
+@media (max-width:900px){ .shopify-policy__container{padding-top:130px} }
+@media (max-width:640px){
+  /* Cookie tables -> stacked rows: name, then function, then duration */
+  .shopify-policy__body .rte table,
+  .shopify-policy__body .rte tbody,
+  .shopify-policy__body .rte tr,
+  .shopify-policy__body .rte td{display:block;width:100%}
+  .shopify-policy__body .rte thead{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+  .shopify-policy__body .rte table{table-layout:auto}
+  .shopify-policy__body .rte tr{padding:16px 0;border-bottom:1px solid var(--line)}
+  .shopify-policy__body .rte td{padding:0;border:0}
+  .shopify-policy__body .rte td:nth-child(1){font-weight:500;color:var(--c-charcoal)}
+  .shopify-policy__body .rte td:nth-child(2){margin-top:4px}
+  .shopify-policy__body .rte td:nth-child(3){margin-top:8px;font-size:.82rem;color:var(--c-rosegold-2)}
+  .shopify-policy__body .rte td:nth-child(3)::before{content:'Duration \00B7  ';font-size:.62rem;letter-spacing:.16em;text-transform:uppercase;color:var(--c-ink-muted)}
+}
+@media (max-width:600px){
+  .shopify-policy__container{padding:110px 20px var(--s-lg)}
+  .shopify-policy__title::after{margin-bottom:var(--s-md)}
+  .shopify-policy__body .rte > h1{margin-top:var(--s-lg);padding-top:var(--s-sm)}
+}
+
+/* =====================================================================
+   .ka-policy-nav — "Related policies" row (spec §5), rendered by a snippet
+===================================================================== */
+.ka-policy-nav{background:var(--c-paper);padding:0 var(--gutter) var(--s-xl)}
+.ka-policy-nav__inner{max-width:var(--max-text);margin:0 auto;border-top:1px solid var(--line);padding-top:var(--s-md)}
+.ka-policy-nav__label{display:block;margin-bottom:28px}
+.ka-policy-nav__grid{display:grid;grid-template-columns:repeat(2,1fr);gap:32px 40px;list-style:none}
+.ka-policy-nav__item a,
+.ka-policy-nav__item span.is-current{display:block}
+.ka-policy-nav__title{display:block;white-space:nowrap;font-family:var(--f-display);font-style:italic;font-size:1.25rem;line-height:1.2;color:var(--c-charcoal);transition:color var(--dur-fast)}
+.ka-policy-nav__item a:hover .ka-policy-nav__title{color:var(--c-rosegold-2)}
+.ka-policy-nav__title::after{content:' \2192';font-family:var(--f-sans);font-style:normal;font-size:.8em;color:var(--c-rosegold-pale)}
+.ka-policy-nav__desc{display:block;margin-top:6px;font-family:var(--f-sans);font-size:.76rem;font-weight:300;line-height:1.55;color:var(--c-ink-mid)}
+.ka-policy-nav__item .is-current .ka-policy-nav__title{color:var(--c-ink-muted)}
+.ka-policy-nav__item .is-current .ka-policy-nav__title::after{content:''}
+.ka-policy-nav__item .is-current .ka-policy-nav__desc{font-size:.6rem;letter-spacing:.2em;text-transform:uppercase;color:var(--c-rosegold-2)}
+@media (max-width:600px){ .ka-policy-nav{padding-bottom:var(--s-lg)} .ka-policy-nav__grid{gap:28px 20px} .ka-policy-nav__title{font-size:1.1rem} }

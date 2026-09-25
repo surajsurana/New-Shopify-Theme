@@ -128,6 +128,17 @@
   {%- endif -%}
 
   {%- comment -%}
+    Policy pages (/policies/*) only — Docs/policy-pages-build-spec.md §2/§4. Shopify
+    renders these pages itself (there is no themeable policy template), so the CSS
+    styles the .shopify-policy__* markup it emits. Loaded ONLY when
+    request.page_type == 'policy'; every selector in it is scoped to that markup or
+    to .ka-policy-nav, so nothing can leak to other pages.
+  {%- endcomment -%}
+  {%- if request.page_type == 'policy' -%}
+    {{ 'ka-policy.css' | asset_url | stylesheet_tag }}
+  {%- endif -%}
+
+  {%- comment -%}
     Organization aggregateRating: reads the live-synced Shop metafield
     custom.google_reviews (scripts/google-reviews-sync) when it is populated --
     a rating_number, a rating_count and at least one synced review, the same
@@ -187,7 +198,17 @@
 </head>
 
 <body class="template-{{ request.page_type }}">
+  {%- comment -%}
+    Policy pages have no template JSON (Shopify renders them itself), so ka-nav and
+    ka-footer — which every other page declares inside its own template JSON — are
+    supplied here, from two section groups seeded with the same settings as the other
+    pages, and ONLY on policy pages (rendering them everywhere would double the
+    header/footer). The related-policies row sits between the policy body and the
+    footer. Spec: Docs/policy-pages-build-spec.md §2/§5.
+  {%- endcomment -%}
+  {%- if request.page_type == 'policy' -%}{% sections 'ka-policy-header-group' %}{%- endif -%}
   {{ content_for_layout }}
+  {%- if request.page_type == 'policy' -%}{% render 'ka-policy-nav' %}{% sections 'ka-policy-footer-group' %}{%- endif -%}
 
   <!-- Global floating concierge button — renders on every page (z-index 110) -->
   {% render 'ka-concierge-float' %}
@@ -195,13 +216,16 @@
   <!-- K&A Welcome Offer (KLP3000) — Docs/welcome-offer-popup-build-spec.md.
        Sitewide, excluded on the cart page (spec: a visitor already at
        checkout is transacting, not browsing — see the snippet's own
-       header comment for the full reasoning). request.page_type matches
+       header comment for the full reasoning) and, since 2026-09-25 (Suraj),
+       on policy pages (/policies/*): those are reading pages (returns,
+       shipping, privacy, terms) and should stay clean, with no offer card
+       over legal text. request.page_type matches
        this same file's own convention above (line 56/74), not the
        `template` object, for consistency within this file. The snippet
        itself carries a second, independent eligibility gate
        (customer.orders_count, blank-code check) — this `unless` is a
        third, redundant-on-purpose layer, not the only one. -->
-  {%- unless request.page_type == 'cart' -%}
+  {%- unless request.page_type == 'cart' or request.page_type == 'policy' -%}
     {% render 'ka-welcome-offer' %}
   {%- endunless -%}
 

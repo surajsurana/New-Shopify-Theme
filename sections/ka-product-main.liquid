@@ -40,6 +40,28 @@
   # Per-product metafields (custom namespace) with graceful fallbacks
   assign poem = product.metafields.custom.poem_tagline
   assign lead_time = product.metafields.custom.lead_time | default: section.settings.default_lead_time
+  # "working days" wording (Suraj, 2026-09-25): the stored values read "20–25 days" etc. but the
+  # promise is WORKING days. Idempotent normaliser: only day-count values (containing "day") are
+  # touched, week-based text ("6–8 Weeks") never is. (1) whitespace is collapsed (split/join, which
+  # also trims); (2) when the value STARTS WITH A DIGIT, a spaced hyphen/en dash between the numbers
+  # becomes a plain en dash, so "45 - 50 Days" reads "45–50" like the 20–25 / 30–35 / 40–45 tiers
+  # (the digit guard stops it mangling prose such as "Ready to ship - 2 days"); (3) "working" is
+  # appended only when neither "working" nor "business" is present. " Days" is lowercased first so
+  # exactly ONE " days" -> " working days" replace runs (two chained replaces that both emit
+  # " working days" would double-word it). Singular "day" is deliberately not handled: no value uses
+  # it, and " day" would also match inside " working days".
+  assign lead_time = lead_time | append: ''
+  assign lead_time_lc = lead_time | downcase
+  if lead_time_lc contains 'day'
+    assign lead_time = lead_time | split: ' ' | join: ' '
+    assign lt_first = lead_time | slice: 0
+    if '0123456789' contains lt_first
+      assign lead_time = lead_time | replace: ' - ', '–' | replace: ' – ', '–'
+    endif
+    unless lead_time_lc contains 'working' or lead_time_lc contains 'business'
+      assign lead_time = lead_time | replace: ' Days', ' days' | replace: ' days', ' working days'
+    endunless
+  endif
   assign mf_atelier = product.metafields.custom.atelier_process
   # custom.fabric is a single_line_text_field (e.g. "Georgette") — shown as a label in the accordion
   assign mf_fabric = product.metafields.custom.fabric
