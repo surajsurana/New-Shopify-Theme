@@ -218,7 +218,7 @@
     <ul class="ka-footer__legal">
       <li><a href="{{ section.settings.privacy_url | default: '/policies/privacy-policy' }}">Privacy Policy</a></li>
       <li><a href="{{ section.settings.terms_url | default: '/policies/terms-of-service' }}">Terms of Service</a></li>
-      <li><a href="{{ section.settings.shipping_url | default: '/policies/shipping-policy' }}">Shipping &amp; Returns</a></li>
+      <li><a href="{{ section.settings.shipping_url | default: '/policies/shipping-policy' }}">Shipping</a></li>
       {%- comment -%}
         Returns & Refunds (2026-09-25, Suraj): customers could not find the returns policy.
         Same Liquid `default:` pattern as the three links above (url-type schema settings
@@ -270,7 +270,7 @@
     { "type": "text", "id": "legal_entity_name", "label": "Legal entity name", "default": "Peekay International Ltd.", "info": "Appended to the bottom-bar copyright line: \"© {year} [Brand name], a brand of [Legal entity name]. All rights reserved.\"" },
     { "type": "url", "id": "privacy_url",  "label": "Privacy Policy URL",       "info": "Defaults to Shopify's /policies/privacy-policy" },
     { "type": "url", "id": "terms_url",    "label": "Terms of Service URL",      "info": "Defaults to /policies/terms-of-service" },
-    { "type": "url", "id": "shipping_url", "label": "Shipping & Returns URL",    "info": "Defaults to /policies/shipping-policy" },
+    { "type": "url", "id": "shipping_url", "label": "Shipping URL",              "info": "Defaults to /policies/shipping-policy" },
     { "type": "url", "id": "refund_url",   "label": "Returns & Refunds URL",     "info": "Defaults to /policies/refund-policy" }
   ],
   "presets": [

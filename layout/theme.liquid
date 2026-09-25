@@ -216,13 +216,16 @@
   <!-- K&A Welcome Offer (KLP3000) — Docs/welcome-offer-popup-build-spec.md.
        Sitewide, excluded on the cart page (spec: a visitor already at
        checkout is transacting, not browsing — see the snippet's own
-       header comment for the full reasoning). request.page_type matches
+       header comment for the full reasoning) and, since 2026-09-25 (Suraj),
+       on policy pages (/policies/*): those are reading pages (returns,
+       shipping, privacy, terms) and should stay clean, with no offer card
+       over legal text. request.page_type matches
        this same file's own convention above (line 56/74), not the
        `template` object, for consistency within this file. The snippet
        itself carries a second, independent eligibility gate
        (customer.orders_count, blank-code check) — this `unless` is a
        third, redundant-on-purpose layer, not the only one. -->
-  {%- unless request.page_type == 'cart' -%}
+  {%- unless request.page_type == 'cart' or request.page_type == 'policy' -%}
     {% render 'ka-welcome-offer' %}
   {%- endunless -%}
 
