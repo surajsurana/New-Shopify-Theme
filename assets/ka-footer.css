@@ -127,11 +127,17 @@
   font-size: 0.63rem; font-weight: 300;
   color: #7E7567; letter-spacing: 0.1em;
 }
-.ka-footer__legal { display: flex; gap: 24px; list-style: none; }
+/* 2026-09-25: a fourth link (Returns & Refunds) was added. This row used to be a non-wrapping
+   flex row, so at ~390px the four items shrank and each LINK wrapped onto two lines
+   ("Privacy / Policy"). flex-wrap lets whole links drop to a second row instead, and
+   nowrap keeps every link on a single line. Where the links already fit on one row
+   (desktop, and the old 3-link row at 390px) nothing changes. */
+.ka-footer__legal { display: flex; flex-wrap: wrap; gap: 8px 24px; list-style: none; }
 .ka-footer__legal a {
   font-family: var(--f-sans);
   font-size: 0.63rem; font-weight: 300;
   color: #7E7567; letter-spacing: 0.1em;
+  white-space: nowrap;
   transition: color var(--dur-fast);
 }
 .ka-footer__legal a:hover { color: var(--c-rosegold-pale); }
