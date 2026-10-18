@@ -36,7 +36,7 @@ param(
 
 $ErrorActionPreference = 'Stop'
 $repoRoot = Split-Path -Parent $PSScriptRoot
-$expectedPath = Join-Path $repoRoot '.staging-verify\expected.json'
+$expectedPath = Join-Path $repoRoot '.staging-verify/expected.json'
 
 if (-not (Test-Path $expectedPath)) {
     Write-Output "FAIL: $expectedPath not found -- run scripts/get-staging-verification-query.ps1 first."
