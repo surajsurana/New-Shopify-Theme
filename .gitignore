@@ -31,3 +31,13 @@ client_secret*.json
 # Lookbook source PDFs — large binaries, canonical copies live in the
 # K&A Lookbooks project; kept here as a local working copy only.
 Lookbooks/
+
+# Raw source material (client docx, WhatsApp photos) -- local/Drive only;
+# the finished content lives in Shopify and the build specs in Docs/.
+Client Diaries/
+Content/
+
+# Old Codex copies of CLAUDE.md and the agents (Aug 2026, since drifted from
+# CLAUDE.md, the source of truth) -- kept on disk/Drive, not in git.
+AGENTS.md
+.codex/
