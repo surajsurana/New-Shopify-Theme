@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>K&amp;A — Google Reviews Sections (Homepage + Product) — Prototype v1</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Jost:wght@200;300;400;500&display=swap" rel="stylesheet" />
+<style>
+/* Tokens verbatim from assets/ka-base.css — nothing new. */
+:root {
+  --c-paper:#F7F3EC; --c-paper-deep:#EFE8DD; --c-charcoal:#2A2420; --c-ink:#2A2420;
+  --c-rosegold:#9A7B4F; --c-rosegold-2:#7E6440; --c-rosegold-pale:#B99B6E;
+  --line-on-dark: rgba(154,123,79,0.22);
+  --f-display:'Cormorant Garamond',Georgia,serif; --f-sans:'Jost','Helvetica Neue',Arial,sans-serif;
+  --t-eyebrow:0.66rem; --t-h2:clamp(2rem,3.5vw,3.2rem);
+  --s-lg:64px; --s-xl:96px; --s-2xl:140px; --gutter:clamp(20px,5vw,80px);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{background:#dfe3e6;font-family:var(--f-sans);font-weight:300;line-height:1.75;-webkit-font-smoothing:antialiased;color:var(--c-ink)}
+button{border:none;background:none;cursor:pointer;font-family:inherit}
+a{text-decoration:none;color:inherit}
+.eyebrow{font-size:var(--t-eyebrow);font-weight:400;letter-spacing:.24em;text-transform:uppercase;color:var(--c-rosegold)}
+.btn-outline-rose{font-size:.66rem;font-weight:400;letter-spacing:.2em;text-transform:uppercase;color:var(--c-rosegold);border:1px solid rgba(196,168,130,.4);padding:14px 36px;display:inline-block}
+
+/* ---------- presentation chrome (not part of the site) ---------- */
+.proto-ribbon{position:sticky;top:0;z-index:900;background:#14212B;color:#cfe0ea;font:12.5px -apple-system,Segoe UI,Arial,sans-serif;padding:10px 20px;display:flex;gap:16px;flex-wrap:wrap;justify-content:space-between}
+.proto-ribbon strong{color:#fff}
+.proto-label{font-family:-apple-system,Segoe UI,Arial,sans-serif;background:#EDEFF1;color:#445;padding:22px 24px 14px;border-top:6px solid #14212B}
+.proto-label b{display:block;font-size:19px;color:#14212B;margin-bottom:6px}
+.proto-label p{font-size:13.5px;line-height:1.6;max-width:940px;color:#556;margin-bottom:8px}
+.proto-bar{position:sticky;top:41px;z-index:800;display:flex;gap:8px;align-items:center;flex-wrap:wrap;padding:10px 24px;background:#EDEFF1;border-bottom:1px solid #cbd0d4;font-family:-apple-system,Segoe UI,Arial,sans-serif}
+.proto-bar .lbl{font-size:12px;color:#667;margin-right:2px}
+.proto-bar button{font-size:12px;padding:6px 12px;border:1px solid #99a;color:#334;background:#fff}
+.proto-bar button.is-on{background:#14212B;color:#fff;border-color:#14212B}
+.proto-bar .sep{width:1px;height:20px;background:#cbd0d4;margin:0 6px}
+.proto-wrap{padding:24px;display:flex;justify-content:center}
+.proto-frame{width:100%;max-width:1440px;background:var(--c-paper);box-shadow:0 10px 40px rgba(0,0,0,.18);container-type:inline-size;transition:max-width .3s}
+.proto-frame.is-mobile{max-width:390px}
+.proto-note{font:12.5px/1.6 -apple-system,Segoe UI,Arial,sans-serif;color:#556;background:#fff;border:1px dashed #ccd;padding:12px 16px;margin:0 24px 24px;max-width:940px}
+
+/* =====================================================================
+   1 — HOMEPAGE  .ka-voices  (production-ready CSS; see spec §1.3)
+   Prototype uses @container where production uses @media (min-width:901px).
+===================================================================== */
+.ka-voices{background:var(--c-charcoal);padding:var(--s-2xl) var(--gutter);overflow:hidden;position:relative}
+.ka-voices::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:var(--line-on-dark)}
+.ka-voices__inner{max-width:1100px;margin:0 auto}
+.ka-voices__header{display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:var(--s-xl);gap:24px}
+.ka-voices__title{font-family:var(--f-display);font-size:var(--t-h2);font-weight:400;font-style:italic;color:#fff;line-height:1.05}
+.ka-voices__rating-block{text-align:right;flex-shrink:0}
+.ka-voices__rating-number{font-family:var(--f-display);font-size:clamp(2rem,4vw,3.6rem);color:#fff;line-height:1;display:block}
+.ka-voices__rating-label{font-size:.62rem;letter-spacing:.2em;text-transform:uppercase;color:var(--c-rosegold);display:block;margin-top:6px}
+
+.ka-voices__grid{display:grid;grid-template-columns:1fr;gap:0;margin:-1px 0 0 -1px;clip-path:inset(1px -100vw -200px 1px)}
+.ka-voice-card{padding:28px 24px 32px;background:var(--c-charcoal);border-top:1px solid var(--line-on-dark);border-left:1px solid var(--line-on-dark);display:flex;flex-direction:column}
+.ka-voice-card__quote-mark{font-family:var(--f-display);font-size:3.5rem;color:var(--c-rosegold);line-height:.8;margin-bottom:20px;opacity:.6}
+.ka-voice-card__quote{font-family:var(--f-display);font-size:clamp(1rem,1.4vw,1.25rem);font-style:italic;color:rgba(255,255,255,.88);line-height:1.65;flex:1;margin-bottom:28px;overflow-wrap:anywhere}
+.ka-voice-card__meta{border-top:1px solid var(--line-on-dark);padding-top:20px;display:flex;align-items:center;justify-content:space-between;gap:12px}
+.ka-voice-card__name{font-size:.66rem;letter-spacing:.18em;text-transform:uppercase;color:rgba(255,255,255,.5)}
+/* NEW: star row replaces the (now empty) occasion slot */
+.ka-voice-card__stars{font-size:.62rem;letter-spacing:.22em;color:var(--c-rosegold);white-space:nowrap}
+.ka-voices__cta{margin-top:var(--s-lg);display:flex;justify-content:center}
+
+@container (min-width: 901px){
+  .ka-voices__grid{grid-template-columns:repeat(6,1fr)}
+  .ka-voice-card{grid-column:span 2;min-height:280px;padding:40px 36px 44px}
+  /* 5 -> 3 + 2 (last two span half the row: no empty cell) */
+  .ka-voice-card:nth-child(4):nth-last-child(2),
+  .ka-voice-card:nth-child(5):last-child{grid-column:span 3}
+  /* 4 and 2 -> 2 columns */
+  .ka-voice-card:first-child:nth-last-child(4),
+  .ka-voice-card:first-child:nth-last-child(4) ~ .ka-voice-card,
+  .ka-voice-card:first-child:nth-last-child(2),
+  .ka-voice-card:first-child:nth-last-child(2) ~ .ka-voice-card{grid-column:span 3}
+  /* 1 -> featured single quote, no card frame */
+  .ka-voice-card:only-child{grid-column:1 / -1;max-width:720px;margin:0 auto;border:0;align-items:center;text-align:center;min-height:0}
+  .ka-voice-card:only-child .ka-voice-card__quote{font-size:clamp(1.25rem,2vw,1.7rem)}
+  .ka-voice-card:only-child .ka-voice-card__meta{width:100%;justify-content:center;gap:24px}
+}
+@container (max-width: 900px){
+  .ka-voices__header{flex-direction:column;align-items:flex-start;gap:20px}
+  .ka-voices__rating-block{text-align:left}
+}
+
+/* =====================================================================
+   2 — PRODUCT PAGE  .ka-voice / .ka-rev  (production-ready CSS; spec §2.3)
+===================================================================== */
+.ka-voice{padding:var(--s-xl) 20px;text-align:center;background:var(--c-charcoal);color:#EFE6D7}
+.ka-voice__glogo{font-weight:500;font-size:1.2rem;margin-bottom:14px}
+.ka-voice__summary{display:flex;align-items:center;justify-content:center;gap:16px;margin-bottom:8px}
+.ka-voice__score{font-family:var(--f-display);font-size:1.9rem;font-weight:300;color:#F4ECDE;line-height:1}
+.ka-voice__stars{color:var(--c-rosegold-pale);letter-spacing:.3em;font-size:1.05rem}
+.ka-voice__cnt{font-size:.66rem;letter-spacing:.14em;text-transform:uppercase;color:#A89E8E;text-align:left;line-height:1.5}
+.ka-voice__head{font-family:var(--f-display);font-size:1.5rem;font-weight:300;color:#F4ECDE;margin:24px 0 38px;line-height:1.2}
+.ka-rev-grid{max-width:460px;margin:0 auto;display:grid;grid-template-columns:1fr;gap:16px;text-align:left}
+.ka-rev{border:1px solid rgba(201,191,174,.2);padding:34px 30px;display:flex;flex-direction:column;background:rgba(255,255,255,.02)}
+.ka-rev__stars{color:var(--c-rosegold-pale);letter-spacing:.2em;font-size:.76rem;margin-bottom:18px}
+.ka-rev p{font-family:var(--f-display);font-size:1.05rem;font-style:italic;font-weight:300;line-height:1.6;color:#E4DACB;margin-bottom:24px;flex:1;overflow-wrap:anywhere}
+.ka-rev__who{display:flex;align-items:center;gap:13px}
+.ka-rev__av{width:40px;height:40px;border-radius:50%;background:var(--c-rosegold);color:var(--c-charcoal);display:flex;align-items:center;justify-content:center;font-family:var(--f-display);font-size:1.05rem;flex:0 0 auto;text-transform:uppercase}
+.ka-rev__nm{font-size:.7rem;letter-spacing:.04em;color:#F4ECDE}
+.ka-rev__src{font-size:.6rem;letter-spacing:.06em;color:#9A9082;margin-top:2px}
+.ka-voice__more{margin-top:50px}
+.ka-voice__more a{font-size:.66rem;letter-spacing:.16em;text-transform:uppercase;color:#C9BFAE;border-bottom:1px solid rgba(201,191,174,.4);padding-bottom:4px}
+
+@container (min-width: 901px){
+  .ka-voice{padding:var(--s-2xl) var(--gutter)}
+  .ka-voice__score{font-size:2.4rem}
+  .ka-voice__head{font-size:2rem;margin:30px 0 56px}
+  .ka-rev-grid{max-width:1240px;grid-template-columns:repeat(6,1fr);gap:26px}
+  .ka-rev{grid-column:span 2;min-height:220px}
+  /* incomplete rows are CENTRED at the same card width (separate boxed cards, not a hairline grid) */
+  .ka-rev:nth-child(4):nth-last-child(2),                       /* 5: card 4 */
+  .ka-rev:first-child:nth-last-child(4),                        /* 4: card 1 */
+  .ka-rev:nth-child(3):nth-last-child(2),                       /* 4: card 3 */
+  .ka-rev:first-child:nth-last-child(2){grid-column:2 / span 2} /* 2: card 1 */
+  .ka-rev:nth-child(5):last-child,                              /* 5: card 5 */
+  .ka-rev:nth-child(2):nth-last-child(3),                       /* 4: card 2 */
+  .ka-rev:nth-child(4):last-child,                              /* 4: card 4 */
+  .ka-rev:nth-child(2):last-child{grid-column:4 / span 2}       /* 2: card 2 */
+  .ka-rev:only-child,
+  .ka-rev:nth-child(7):last-child{grid-column:3 / span 2}       /* 1, and 7-card manual fallback */
+}
+
+/* prototype scaffolding */
+.demo-nav{padding:14px 32px;background:rgba(247,243,236,.96);border-bottom:1px solid rgba(42,36,32,.12);font-family:var(--f-display);letter-spacing:.08em;font-size:1.2rem;color:var(--c-charcoal)}
+.demo-pad{height:120px;background:var(--c-paper)}
+.badge-row{padding:28px 32px;background:var(--c-paper)}
+.ka-grating{display:inline-flex;align-items:center;gap:10px;font-size:.78rem;color:var(--c-ink)}
+.ka-grating__stars{color:var(--c-rosegold);letter-spacing:.15em}
+.ka-grating__tx b{font-weight:500}
+</style>
+</head>
+<body>
+<div class="proto-ribbon"><div><strong>K&amp;A — Google Reviews sections</strong> · Prototype v1 · homepage “words of our brides” + product page badge &amp; review cards</div><div>Sample copy only — real text arrives from the Google sync</div></div>
+
+<div class="proto-label">
+  <b>How to use this page</b>
+  <p>Pick a card count (6 → 1), a quote mix and a viewport. Both sections below re-render live with the exact CSS proposed in <code>Docs/google-reviews-sections-build-spec.md</code>. Desktop rules apply above 900px of frame width (this page uses container queries so the mobile frame really switches; production uses <code>@media (min-width:901px)</code> at the same breakpoint). All reviewer text below is invented sample copy in the length ranges seen in real Google reviews.</p>
+</div>
+<div class="proto-bar">
+  <span class="lbl">Cards:</span>
+  <button data-n="6" class="is-on">6</button><button data-n="5">5</button><button data-n="4">4</button><button data-n="3">3</button><button data-n="2">2</button><button data-n="1">1</button>
+  <span class="sep"></span>
+  <span class="lbl">Quotes:</span>
+  <button data-mix="mixed" class="is-on">Mixed lengths</button><button data-mix="short">All short</button><button data-mix="long">All long (~60 words)</button>
+  <span class="sep"></span>
+  <span class="lbl">Viewport:</span>
+  <button data-vp="d" class="is-on">Desktop</button><button data-vp="m">Mobile 390</button>
+</div>
+
+<div class="proto-label"><b>1 — Homepage: “The words of our brides”</b>
+<p>Hairline grid on a 6-track base so every row is always full: 3 = one row of thirds; 6 = 3 × 2; 5 = 3 + 2 (the two lower cards each take half the row, so there is no empty cell to paint); 4 and 2 = two columns; 1 = a single featured quote, unframed. Occasion is gone; the freed right-hand slot of the card footer now carries the reviewer’s real star rating. Long quotes are cut at 40 words on this section only.</p></div>
+<div class="proto-wrap"><div class="proto-frame" id="frameH">
+  <div class="demo-nav">Karishma Ashita</div>
+  <section class="ka-voices"><div class="ka-voices__inner">
+    <div class="ka-voices__header">
+      <div><p class="eyebrow" style="margin-bottom:16px">What Brides Say</p><h2 class="ka-voices__title">The words of<br>our brides.</h2></div>
+      <div class="ka-voices__rating-block"><span class="ka-voices__rating-number">4.7</span><span class="ka-voices__rating-label">4.7 · 67 Google Reviews</span></div>
+    </div>
+    <div class="ka-voices__grid" id="gridH"></div>
+    <div class="ka-voices__cta"><a href="#" class="btn-outline-rose">Read all reviews on Google</a></div>
+  </div></section>
+</div></div>
+
+<div class="proto-label"><b>2 — Product page: rating badge + “Loved by brides &amp; their families”</b>
+<p><b style="display:inline;font-size:inherit">Badge:</b> no change (below). <b style="display:inline;font-size:inherit">Cards:</b> the existing boxed-card look, unchanged per card; only the grid gains a 6-track base so an incomplete last row is <i>centred at the same card width</i> rather than left-stranded (these are separate boxed cards, not a hairline grid, so centring reads intentional). No truncation up to ~70 words; cards get a 220px floor so a five-word review still sits as a considered card.</p></div>
+<div class="proto-wrap"><div class="proto-frame" id="frameP">
+  <div class="badge-row">
+    <div style="font-family:var(--f-display);font-size:2rem;font-weight:400;margin-bottom:6px">Sample Product Title</div>
+    <button type="button" class="ka-grating"><span class="ka-grating__stars">&#9733;&#9733;&#9733;&#9733;&#9733;</span><span class="ka-grating__tx"><b>4.7</b> · 67 reviews on</span><span style="font-weight:500"><span style="color:#4285F4">G</span><span style="color:#EA4335">o</span><span style="color:#FBBC05">o</span><span style="color:#4285F4">g</span><span style="color:#34A853">l</span><span style="color:#EA4335">e</span></span></button>
+  </div>
+  <section class="ka-voice">
+    <div class="ka-voice__glogo">Google Reviews</div>
+    <div class="ka-voice__summary"><div class="ka-voice__score">4.7</div><div><div class="ka-voice__summary" style="margin:0"><span class="ka-voice__stars">&#9733;&#9733;&#9733;&#9733;&#9733;</span></div><div class="ka-voice__cnt">Based on 67 reviews</div></div></div>
+    <div class="ka-voice__head">Loved by brides &amp; their families, across the world.</div>
+    <div class="ka-rev-grid" id="gridP"></div>
+    <div class="ka-voice__more"><a href="#">Read all 67 reviews on Google &rarr;</a></div>
+  </section>
+</div></div>
+<div class="proto-note"><b>Nothing in the badge changes.</b> Same markup, same star glyph run, same “4.7 · 67 reviews on Google”. Only requirement on the data side: the sync must write <code>rating_number</code> as a one-decimal string (“4.7”, and “5.0” not “5”).</div>
+
+<script>
+var LONG="We ordered a lehenga for my sister's wedding and I cannot say enough about the experience. The team guided us through fabric, fit and finishing over several video calls, the embroidery was far finer in person than in any photograph, and it arrived exactly when promised. Every relative asked who made it. We will absolutely be back for the next celebration.";
+var MID="The fit was flawless and the fabric moves beautifully. Wore it to my reception and received compliments all evening.";
+var SHORT="Good design, love the outfit.";
+var NAMES=["Priya S.","Anika R.","Meera K.","Kavya N.","Isha M.","Tara D."];
+var RATINGS=[5,5,4,5,5,4];
+var POOL={
+  mixed:[LONG,SHORT,MID,MID,LONG,SHORT],
+  short:[SHORT,"Beautiful work, very happy.","Lovely fit and finish.","Stunning. Thank you!","Perfect for the occasion.",SHORT],
+  long:[LONG,LONG,LONG,LONG,LONG,LONG]
+};
+var st={n:6,mix:"mixed",vp:"d"};
+function stars(r,filled,empty){var s="";for(var i=1;i<=5;i++)s+=i<=r?filled:empty;return s}
+function trunc(t,w){var a=t.split(/\s+/);return a.length>w?a.slice(0,w).join(" ")+"…":t}
+function render(){
+  var q=POOL[st.mix].slice(0,st.n), h="", p="";
+  q.forEach(function(t,i){
+    h+='<div class="ka-voice-card"><div class="ka-voice-card__quote-mark">&ldquo;</div><p class="ka-voice-card__quote">'+trunc(t,40)+'</p><div class="ka-voice-card__meta"><span class="ka-voice-card__name">'+NAMES[i]+'</span><span class="ka-voice-card__stars" aria-label="'+RATINGS[i]+' out of 5">'+stars(RATINGS[i],"★","☆")+'</span></div></div>';
+    p+='<div class="ka-rev"><div class="ka-rev__stars">'+stars(RATINGS[i],"★","☆")+'</div><p>'+trunc(t,70)+'</p><div class="ka-rev__who"><div class="ka-rev__av">'+NAMES[i][0]+'</div><div><div class="ka-rev__nm">'+NAMES[i]+'</div><div class="ka-rev__src">via Google</div></div></div></div>';
+  });
+  document.getElementById("gridH").innerHTML=h; document.getElementById("gridP").innerHTML=p;
+  ["frameH","frameP"].forEach(function(id){document.getElementById(id).classList.toggle("is-mobile",st.vp==="m")});
+}
+document.querySelectorAll(".proto-bar button").forEach(function(b){b.addEventListener("click",function(){
+  if(b.dataset.n)st.n=+b.dataset.n; if(b.dataset.mix)st.mix=b.dataset.mix; if(b.dataset.vp)st.vp=b.dataset.vp;
+  var grp=b.dataset.n?"n":b.dataset.mix?"mix":"vp";
+  document.querySelectorAll(".proto-bar button[data-"+grp+"]").forEach(function(x){x.classList.remove("is-on")});
+  b.classList.add("is-on"); render();
+})});
+render();
+</script>
+</body>
+</html>

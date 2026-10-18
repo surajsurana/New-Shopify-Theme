@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>K&amp;A — Welcome Offer (KLP3000) — Prototype v2 (Revised)</title>
+<meta name="description" content="First-purchase welcome offer, revised per Suraj's staged-build review: no email capture, amount + code as the clear visual focus, minimal copy." />
+
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,500&family=Jost:wght@200;300;400;500&display=swap" rel="stylesheet" />
+
+<style>
+/* ═══════════════════════════════════════════════════════════════
+   DESIGN TOKENS — verbatim from assets/ka-base.css. No new tokens
+   introduced anywhere in this prototype.
+═══════════════════════════════════════════════════════════════ */
+:root {
+  --c-paper:      #F7F3EC;
+  --c-paper-deep: #EFE8DD;
+  --c-smoke:      #E9E1D2;
+  --c-charcoal:   #2A2420;
+  --c-charcoal-2: #1D1916;
+  --c-ink:        #2A2420;
+  --c-ink-mid:    #6E655B;
+  --c-ink-muted:  #9C9389;
+  --c-rosegold:      #9A7B4F;
+  --c-rosegold-2:    #7E6440;
+  --c-rosegold-pale: #B99B6E;
+  --line:        rgba(42,36,32,0.12);
+  --line-strong: rgba(42,36,32,0.20);
+  --f-display: 'Cormorant Garamond', Georgia, 'Times New Roman', serif;
+  --f-sans:    'Jost', 'Helvetica Neue', Arial, sans-serif;
+  --t-eyebrow: 0.66rem;
+  --s-xs: 8px; --s-sm: 16px; --s-md: 32px; --s-lg: 64px; --s-xl: 96px;
+  --gutter: clamp(20px, 5vw, 80px);
+  --ease-luxury: cubic-bezier(0.16, 0.84, 0.44, 1);
+  --ease-soft:   cubic-bezier(0.22, 0.61, 0.36, 1);
+  --dur-slow: 1s; --dur-med: 0.65s; --dur-fast: 0.35s;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { font-size: 16px; scroll-behavior: smooth; }
+body {
+  background: var(--c-paper); color: var(--c-ink);
+  font-family: var(--f-sans); font-weight: 300; line-height: 1.75;
+  -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale;
+}
+img { display: block; width: 100%; height: 100%; object-fit: cover; }
+a { text-decoration: none; color: inherit; }
+button { border: none; background: none; cursor: pointer; font-family: inherit; }
+.eyebrow { font-family: var(--f-sans); font-size: var(--t-eyebrow); font-weight: 400; letter-spacing: 0.24em; text-transform: uppercase; color: var(--c-rosegold-2); }
+
+/* ═══════════════════════════════════════════════════════════════
+   PRESENTATION CHROME — not part of the site
+═══════════════════════════════════════════════════════════════ */
+.proto-ribbon {
+  position: sticky; top: 0; z-index: 900; background: #14212B; color: #cfe0ea;
+  font-family: -apple-system, Segoe UI, Arial, sans-serif; font-size: 12.5px; letter-spacing: 0.02em;
+  padding: 10px 20px; display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap;
+}
+.proto-ribbon strong { color: #fff; font-weight: 600; }
+.proto-ribbon nav { display: flex; gap: 14px; flex-wrap: wrap; }
+.proto-ribbon a { color: #9fd0e6; border-bottom: 1px dotted rgba(159,208,230,0.5); }
+.proto-ribbon a:hover { color: #fff; }
+.proto-section-label {
+  font-family: -apple-system, Segoe UI, Arial, sans-serif;
+  background: #EDEFF1; color: #445; padding: 26px var(--gutter) 18px; border-top: 6px solid #14212B;
+}
+.proto-section-label b { display: block; font-size: 20px; color: #14212B; margin-bottom: 6px; }
+.proto-section-label p { font-size: 13.5px; line-height: 1.6; max-width: 920px; color: #556; margin-bottom: 8px; }
+.proto-section-label ul { margin: 6px 0 8px 18px; max-width: 900px; }
+.proto-section-label li { font-size: 13.5px; line-height: 1.6; color: #556; margin-bottom: 4px; }
+.proto-note {
+  font-family: -apple-system, Segoe UI, Arial, sans-serif; font-size: 12.5px; color: #556; line-height: 1.6;
+  background: #fff; border: 1px dashed #ccd; padding: 12px 16px; margin: 14px var(--gutter) 0; max-width: 920px;
+}
+.proto-note b { color: #14212B; }
+.proto-controlbar {
+  display: flex; gap: 10px; align-items: center; flex-wrap: wrap; padding: 14px var(--gutter);
+  background: #EDEFF1; font-family: -apple-system, Segoe UI, Arial, sans-serif;
+}
+.proto-controlbar span.lbl { font-size: 12px; color: #667; margin-right: 4px; }
+.proto-controlbar button { font-size: 12px; padding: 7px 14px; border: 1px solid #99a; color: #334; background: #fff; }
+.proto-controlbar button.is-on { background: #14212B; color: #fff; border-color: #14212B; }
+.proto-controlbar .sep { width: 1px; height: 20px; background: #cbd0d4; margin: 0 6px; }
+.proto-hud {
+  position: fixed; left: 16px; bottom: 16px; z-index: 850;
+  background: #14212B; color: #cfe0ea; font-family: -apple-system, Segoe UI, Arial, sans-serif;
+  font-size: 11.5px; line-height: 1.7; padding: 10px 14px; border-radius: 4px; opacity: 0.94;
+  max-width: 260px;
+}
+.proto-hud b { color: #fff; }
+.proto-framewrap { background: #dfe3e6; padding: 30px var(--gutter); display: flex; justify-content: center; }
+.proto-frame { width: 100%; max-width: 1440px; margin: 0 auto; background: var(--c-paper); box-shadow: 0 10px 40px rgba(0,0,0,0.18); overflow: hidden; position: relative; min-height: 120px; }
+.proto-frame.is-mobile { max-width: 390px; }
+.proto-frame-inner { position: relative; min-height: 560px; }
+
+/* ═══════════════════════════════════════════════════════════════
+   DEMO BACKDROP — a stand-in "homepage" so the popup can be judged
+   in real context. Not the deliverable — the popup component below is.
+═══════════════════════════════════════════════════════════════ */
+.demo-nav {
+  position: relative; z-index: 20; padding: 14px var(--gutter);
+  display: flex; align-items: center; justify-content: space-between;
+  background: rgba(247,243,236,0.96); backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--line);
+}
+.demo-nav__logo { font-family: var(--f-display); font-size: 1.3rem; letter-spacing: 0.08em; color: var(--c-charcoal); }
+.demo-nav__links { display: flex; gap: 28px; list-style: none; font-size: 0.64rem; letter-spacing: 0.16em; text-transform: uppercase; color: var(--c-ink-mid); }
+.demo-utility {
+  background: var(--c-charcoal); color: rgba(233,224,210,0.78); font-size: 0.6rem;
+  letter-spacing: 0.18em; text-transform: uppercase; text-align: center; padding: 8px;
+}
+.demo-utility b { font-weight: 400; opacity: 0.95; } .demo-utility span { opacity: 0.5; margin: 0 10px; }
+.demo-hero {
+  height: 62vh; min-height: 420px; background: linear-gradient(180deg, #EFE8DD 0%, #E9E1D2 100%);
+  display: flex; align-items: center; justify-content: center; text-align: center; flex-direction: column; gap: 18px; padding: 40px;
+}
+.demo-hero h1 { font-family: var(--f-display); font-style: italic; font-weight: 400; font-size: clamp(2.4rem, 6vw, 4.4rem); color: var(--c-charcoal); }
+.demo-hero p { font-size: 0.8rem; letter-spacing: 0.06em; color: var(--c-ink-mid); max-width: 420px; }
+.demo-block { padding: var(--s-xl) var(--gutter); border-top: 1px solid var(--line); text-align: center; }
+.demo-block h2 { font-family: var(--f-display); font-weight: 400; font-size: clamp(1.6rem,3vw,2.4rem); margin-bottom: 14px; color: var(--c-charcoal); }
+.demo-block p { max-width: 520px; margin: 0 auto; color: var(--c-ink-mid); font-size: 0.9rem; }
+.demo-block--tall { min-height: 60vh; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+
+/* ═══════════════════════════════════════════════════════════════
+   THE ACTUAL DELIVERABLE — .ka-welcome (v2)
+   Revised per Suraj's review of the staged v1 build:
+   1. No email capture anywhere in this component.
+   2. The amount (₹3,000) and code (KLP3000) are now the clear
+      visual anchors — largest type in the card, high-contrast ink,
+      not rosegold-on-paper (too low-contrast to be "unmistakable").
+   3. Copy cut to the minimum: no long explanatory paragraph, fine
+      print reduced to one line.
+   Still built entirely from existing ka-base.css tokens — nothing
+   about this being "bolder" required a new color, weight, or font.
+═══════════════════════════════════════════════════════════════ */
+.ka-welcome-scrim {
+  position: fixed; inset: 0; z-index: 400;
+  background: rgba(29,25,22,0.42); backdrop-filter: blur(3px);
+  display: flex; align-items: center; justify-content: center; padding: 24px;
+  opacity: 0; pointer-events: none; transition: opacity var(--dur-med) var(--ease-luxury);
+}
+.ka-welcome-scrim.is-open { opacity: 1; pointer-events: auto; }
+
+.ka-welcome {
+  position: relative; width: 100%; max-width: 440px;
+  background: var(--c-paper); border: 1px solid var(--line-strong);
+  box-shadow: 0 28px 70px rgba(0,0,0,0.22);
+  padding: 44px 40px 30px; text-align: center;
+  opacity: 0; transform: translateY(18px) scale(0.98);
+  transition: opacity var(--dur-med) var(--ease-luxury), transform var(--dur-med) var(--ease-luxury);
+}
+.ka-welcome-scrim.is-open .ka-welcome { opacity: 1; transform: translateY(0) scale(1); }
+@media (prefers-reduced-motion: reduce) {
+  .ka-welcome-scrim, .ka-welcome { transition: opacity var(--dur-fast) linear; transform: none !important; }
+}
+
+.ka-welcome__close {
+  position: absolute; top: 16px; right: 16px; width: 30px; height: 30px;
+  display: flex; align-items: center; justify-content: center;
+  color: var(--c-ink-muted); font-size: 1.1rem; font-weight: 300; line-height: 1;
+  transition: color var(--dur-fast);
+}
+.ka-welcome__close:hover { color: var(--c-charcoal); }
+
+.ka-welcome__eyebrow { display: block; margin-bottom: 20px; }
+
+/* The amount — now the largest, highest-contrast element in the
+   card by a wide margin. Charcoal, not rosegold: rosegold-on-paper
+   reads soft/low-contrast at this weight, and "unmistakable at a
+   glance" is a legibility requirement, not just a size one. */
+.ka-welcome__amount {
+  font-family: var(--f-display); font-weight: 500; font-style: normal;
+  font-size: clamp(3.2rem, 9vw, 4.8rem); line-height: 1; letter-spacing: -0.01em;
+  color: var(--c-charcoal); margin-bottom: 10px;
+}
+.ka-welcome__amount-sub {
+  font-family: var(--f-sans); font-size: 0.74rem; letter-spacing: 0.03em;
+  color: var(--c-ink-mid); margin-bottom: 26px;
+}
+
+/* The code — second-largest anchor, framed as a distinct plate so
+   the eye lands on amount, then code, in that order. */
+.ka-welcome__code {
+  display: flex; align-items: center; justify-content: center; gap: 16px;
+  border: 1.5px solid var(--c-rosegold-pale); padding: 14px 22px; margin-bottom: 22px;
+  background: var(--c-paper-deep);
+}
+.ka-welcome__code-label { font-family: var(--f-sans); font-size: 0.6rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--c-ink-muted); }
+/* font-family fixed to --f-sans (Jost), not --f-display (Cormorant
+   Garamond) — diagnosed cause of the "KLP" vs "3000" baseline
+   mismatch Suraj flagged: Cormorant Garamond draws its digits as
+   old-style (text) figures, designed to blend with lowercase text,
+   not to sit flush with capital letters — so digits and caps sit at
+   genuinely different heights within the same string, not an
+   optical illusion. Jost is a geometric sans with uniform lining
+   figures at cap height, the "boring, reliable metrics" this
+   context needs. font-variant-numeric is added explicitly as a
+   second, defensive guarantee rather than relying on assuming any
+   font's unstated default digit style. */
+.ka-welcome__code-value {
+  font-family: var(--f-sans);
+  font-variant-numeric: lining-nums tabular-nums;
+  font-weight: 500;
+  font-size: 1.5rem;
+  letter-spacing: 0.08em;
+  color: var(--c-charcoal);
+}
+.ka-welcome__copy {
+  font-family: var(--f-sans); font-size: 0.62rem; letter-spacing: 0.16em; text-transform: uppercase;
+  color: var(--c-rosegold-2); border-bottom: 1px solid var(--c-rosegold-pale); padding-bottom: 2px;
+  white-space: nowrap; transition: color var(--dur-fast), border-color var(--dur-fast);
+}
+.ka-welcome__copy:hover { color: var(--c-charcoal); border-color: var(--c-charcoal); }
+.ka-welcome__copy.is-copied { color: var(--c-rosegold); border-color: var(--c-rosegold); }
+
+.ka-welcome__cta {
+  display: block; width: 100%; text-align: center;
+  font-family: var(--f-sans); font-size: 0.68rem; font-weight: 400; letter-spacing: 0.2em; text-transform: uppercase;
+  color: var(--c-paper); background: var(--c-charcoal); padding: 16px 20px;
+  transition: background var(--dur-fast); margin-bottom: 18px;
+}
+.ka-welcome__cta:hover { background: var(--c-rosegold-2); }
+
+.ka-welcome__fine { font-size: 0.64rem; color: var(--c-ink-muted); line-height: 1.6; margin-bottom: 16px; }
+.ka-welcome__dismiss {
+  display: block; width: 100%; text-align: center;
+  font-family: var(--f-sans); font-size: 0.64rem; letter-spacing: 0.12em; color: var(--c-ink-muted);
+  border-top: 1px solid var(--line); padding-top: 14px; transition: color var(--dur-fast);
+}
+.ka-welcome__dismiss:hover { color: var(--c-charcoal); }
+
+/* Mobile — bottom sheet, unchanged approach from v1. */
+@media (max-width: 640px) {
+  .ka-welcome-scrim { align-items: flex-end; padding: 0; }
+  .ka-welcome {
+    max-width: 100%; border-radius: 18px 18px 0 0; border-bottom: none;
+    padding: 14px 26px 26px; max-height: 88vh; overflow-y: auto;
+    transform: translateY(100%);
+  }
+  .ka-welcome-scrim.is-open .ka-welcome { transform: translateY(0); }
+  .ka-welcome__handle { width: 36px; height: 4px; border-radius: 2px; background: var(--line-strong); margin: 0 auto 18px; }
+  .ka-welcome__close { top: 14px; right: 14px; }
+  .ka-welcome__amount { font-size: 3rem; }
+}
+.ka-welcome__handle { display: none; }
+@media (max-width: 640px) { .ka-welcome__handle { display: block; } }
+
+/* Mini state cards (Section D) */
+.state-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; padding: 0 var(--gutter) var(--s-xl); }
+.state-card { background: #fff; border: 1px solid #dde; padding: 20px; font-family: -apple-system, Segoe UI, Arial, sans-serif; }
+.state-card h4 { font-size: 13.5px; color: #14212B; margin-bottom: 8px; }
+.state-card p { font-size: 12.5px; color: #556; line-height: 1.6; }
+.state-card .tag { display: inline-block; font-size: 10.5px; letter-spacing: 0.06em; text-transform: uppercase; padding: 3px 8px; border-radius: 3px; margin-bottom: 10px; }
+.tag--go { background: #dff3e4; color: #1e7a3f; }
+.tag--wait { background: #fdf1d6; color: #92650a; }
+.tag--stop { background: #fbe0e0; color: #a32626; }
+@media (max-width: 900px) { .state-grid { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+
+<div class="proto-ribbon">
+  <div><strong>K&amp;A — Welcome Offer (KLP3000)</strong> · Prototype v2 — revised per Suraj's review of the staged build</div>
+  <nav>
+    <a href="#live">The Trigger, Live</a>
+    <a href="#desktop">Desktop</a>
+    <a href="#mobile">Mobile</a>
+    <a href="#states">Frequency Rules</a>
+  </nav>
+</div>
+
+<div class="proto-section-label">
+  <b>What changed from v1</b>
+  <p>Suraj reviewed the built-and-staged v1 version and asked for three specific changes, all reflected below. Everything else — the engagement trigger, the suppression/eligibility rules, the mutual-exclusion behaviour with search/drawer, the mobile bottom-sheet approach, and the overall restrained tone — carries over unchanged from v1.</p>
+  <ul>
+    <li><b>1. Email capture removed entirely.</b> No "email this to yourself" field, no form, no tie-in to the footer's Inner Circle signup. The card is offer + code + CTA, nothing else.</li>
+    <li><b>2. Amount and code are now the visual focus.</b> "₹3,000" is now the largest, highest-contrast element in the card (charcoal, not the softer rosegold used in v1 — rosegold-on-paper tested too low-contrast to read as "unmistakable at a glance"). The code plate is enlarged and given a firmer rosegold border so it reads as the second clear anchor, immediately under the amount.</li>
+    <li><b>3. Copy cut to the essentials.</b> The long "every piece begins with a conversation…" paragraph is gone, replaced by one seven-word line. Fine print is now a single compact line instead of a full sentence with three clauses.</li>
+  </ul>
+  <p>v1 is kept at <code>Prototypes/welcome-offer-popup-v1.html</code> for reference/history only — this file is the current, authoritative version.</p>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════
+     SECTION A — THE TRIGGER, LIVE (unchanged from v1)
+═══════════════════════════════════════════════════════════════ -->
+<a id="live"></a>
+<div class="proto-controlbar">
+  <span class="lbl">Demo controls:</span>
+  <button id="ctrlReset">Reset device (clear saved state)</button>
+  <button id="ctrlForce">Force-trigger now</button>
+  <span class="sep"></span>
+  <button id="ctrlSimDismissed">Simulate: dismissed 5 days ago (suppressed)</button>
+  <button id="ctrlSimClaimed">Simulate: already claimed (never shows again)</button>
+  <button id="ctrlSimCustomer">Simulate: returning customer (never eligible)</button>
+</div>
+<div class="proto-hud" id="protoHud">Scroll %: 0 · Dwell: 0s<br>Eligible: checking…</div>
+
+<div class="demo-utility"><b>Complimentary Worldwide Delivery</b><span>·</span><b>Hand-Embroidered to Order</b><span>·</span><b>Private &amp; Virtual Appointments</b></div>
+<nav class="demo-nav">
+  <div class="demo-nav__logo">Karishma Ashita</div>
+  <ul class="demo-nav__links"><li>Signature</li><li>Collections</li><li>Client Diaries</li><li>About</li></ul>
+</nav>
+<div class="demo-hero">
+  <h1>Scroll to Experience the Trigger</h1>
+  <p>This stands in for any real page — homepage, a collection, a product page. Keep scrolling; the invitation below arrives once you've actually looked, never the instant this loads.</p>
+</div>
+<div class="demo-block"><h2>Signature Pieces</h2><p>Placeholder content standing in for a real product grid — the popup logic doesn't care what page it's on, only how long / how far you've engaged with it.</p></div>
+<div class="demo-block demo-block--tall"><h2>The Festive Edit</h2><p>Keep scrolling — past roughly 60% of this demo page's height, the welcome card arrives on its own.</p></div>
+<div class="demo-block"><h2>Client Diaries</h2><p>By now the popup should have appeared once (per browsing session) unless you've simulated a suppressed state above.</p></div>
+<div class="demo-block" style="padding-bottom: 140px;"><h2>Footer would follow here</h2><p>End of the scroll demo.</p></div>
+
+<!-- ═══════════════════════════════════════════════════════════════
+     THE COMPONENT (v2)
+═══════════════════════════════════════════════════════════════ -->
+<div class="ka-welcome-scrim" id="kaWelcomeScrim" role="presentation">
+  <div class="ka-welcome" id="kaWelcome" role="dialog" aria-modal="true" aria-labelledby="kaWelcomeAmount">
+    <div class="ka-welcome__handle" aria-hidden="true"></div>
+    <button type="button" class="ka-welcome__close" id="kaWelcomeClose" aria-label="Close">&times;</button>
+
+    <span class="eyebrow ka-welcome__eyebrow">A Welcome, From Us</span>
+
+    <p class="ka-welcome__amount" id="kaWelcomeAmount">&#8377;3,000</p>
+    <p class="ka-welcome__amount-sub">toward your first piece, with our compliments</p>
+
+    <div class="ka-welcome__code">
+      <span class="ka-welcome__code-label">Code</span>
+      <span class="ka-welcome__code-value" id="kaWelcomeCodeValue">KLP3000</span>
+      <button type="button" class="ka-welcome__copy" id="kaWelcomeCopy">Copy</button>
+    </div>
+
+    <a href="#" class="ka-welcome__cta" id="kaWelcomeCta">Begin Shopping</a>
+
+    <p class="ka-welcome__fine">First order only &middot; One use per customer &middot; Not combinable</p>
+    <button type="button" class="ka-welcome__dismiss" id="kaWelcomeDismiss">Not today</button>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════
+     SECTION B — DESKTOP, AT REST (static reference frame)
+═══════════════════════════════════════════════════════════════ -->
+<a id="desktop"></a>
+<div class="proto-section-label">
+  <b>B — Desktop, at rest</b>
+  <p>Same 42%-charcoal / 3px-blur scrim as v1 — that part of the tone wasn't the problem, so it's unchanged. What's different: the eye now lands on ₹3,000 first, KLP3000 second, both unmissable without reading a paragraph first. Card is narrower and shorter than v1 (440px vs 460px, less vertical content) as a direct result of cutting the copy.</p>
+</div>
+<div class="proto-framewrap">
+  <div class="proto-frame">
+    <div class="proto-frame-inner" style="display:flex; align-items:center; justify-content:center; background:rgba(29,25,22,0.42); backdrop-filter:blur(3px); padding:40px;">
+      <div class="ka-welcome" style="opacity:1; transform:none; position:static;">
+        <button type="button" class="ka-welcome__close" aria-label="Close">&times;</button>
+        <span class="eyebrow ka-welcome__eyebrow">A Welcome, From Us</span>
+        <p class="ka-welcome__amount">&#8377;3,000</p>
+        <p class="ka-welcome__amount-sub">toward your first piece, with our compliments</p>
+        <div class="ka-welcome__code">
+          <span class="ka-welcome__code-label">Code</span>
+          <span class="ka-welcome__code-value">KLP3000</span>
+          <button type="button" class="ka-welcome__copy">Copy</button>
+        </div>
+        <a href="#" class="ka-welcome__cta">Begin Shopping</a>
+        <p class="ka-welcome__fine">First order only &middot; One use per customer &middot; Not combinable</p>
+        <button type="button" class="ka-welcome__dismiss">Not today</button>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="proto-note"><b>On dropping the title line:</b> v1 had a separate italic headline ("Consider This Our Welcome.") above the amount. Removed in v2 — with the amount now this large, a headline above it competed for the same "first thing you read" position instead of reinforcing it. The eyebrow alone ("A Welcome, From Us") still carries the "this is a gesture, not a sale" framing in three words.</div>
+<div class="proto-note"><b>Typography fix — the code plate's baseline (post-review):</b> Suraj flagged "KLP" sitting visibly higher than "3000" in the code plate — a real bug, not a style note. Cause: the code was set in <code>--f-display</code> (Cormorant Garamond), whose digits are drawn as old-style figures — designed to blend with lowercase text, so they genuinely don't share a cap-height baseline with capital letters. Fixed by switching the code specifically to <code>--f-sans</code> (Jost) — already in this project's font stack, a geometric sans with uniform lining figures — plus an explicit <code>font-variant-numeric: lining-nums tabular-nums</code> as a defensive guarantee rather than relying on an unstated font default. Font-size trimmed 1.7rem → 1.5rem and letter-spacing 0.1em → 0.08em only to compensate for Jost's caps reading visually larger/bolder than the serif did at the same size — the code plate's prominence relative to the amount above it is otherwise unchanged. The oversized amount stays in <code>--f-display</code>; only the code switched.</div>
+
+<!-- ═══════════════════════════════════════════════════════════════
+     SECTION C — MOBILE, BOTTOM SHEET
+═══════════════════════════════════════════════════════════════ -->
+<a id="mobile"></a>
+<div class="proto-section-label">
+  <b>C — Mobile, bottom sheet</b>
+  <p>Bottom-sheet mechanics unchanged from v1 (slide-up, rounded top corners, drag handle, swipe/tap/×/"Not today" all still work). The shorter v2 content means the sheet is now noticeably more compact on mobile — less likely to need internal scrolling even on shorter viewports.</p>
+</div>
+<div class="proto-framewrap">
+  <div class="proto-frame is-mobile">
+    <div class="proto-frame-inner" style="display:flex; align-items:flex-end; justify-content:center; background:rgba(29,25,22,0.42); backdrop-filter:blur(3px); min-height:620px;">
+      <div class="ka-welcome" style="opacity:1; transform:none; position:static; max-width:100%; border-radius:18px 18px 0 0; border-bottom:none; padding:14px 24px 26px;">
+        <div class="ka-welcome__handle" style="display:block;" aria-hidden="true"></div>
+        <button type="button" class="ka-welcome__close" aria-label="Close">&times;</button>
+        <span class="eyebrow ka-welcome__eyebrow">A Welcome, From Us</span>
+        <p class="ka-welcome__amount" style="font-size:3rem;">&#8377;3,000</p>
+        <p class="ka-welcome__amount-sub">toward your first piece, with our compliments</p>
+        <div class="ka-welcome__code">
+          <span class="ka-welcome__code-label">Code</span>
+          <span class="ka-welcome__code-value">KLP3000</span>
+          <button type="button" class="ka-welcome__copy">Copy</button>
+        </div>
+        <a href="#" class="ka-welcome__cta">Begin Shopping</a>
+        <p class="ka-welcome__fine">First order only &middot; One use per customer</p>
+        <button type="button" class="ka-welcome__dismiss">Not today</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════
+     SECTION D — FREQUENCY / SUPPRESSION STATES (unchanged from v1)
+═══════════════════════════════════════════════════════════════ -->
+<a id="states"></a>
+<div class="proto-section-label">
+  <b>D — Who sees it, and how often</b>
+  <p>Unchanged from v1 — none of the three requested changes touch trigger or suppression logic. Use the demo controls above (top of page) to flip your browser into each state and re-scroll the live section to confirm.</p>
+</div>
+<div class="state-grid">
+  <div class="state-card">
+    <span class="tag tag--go">Shows</span>
+    <h4>First-time visitor, genuinely engaged</h4>
+    <p>No prior dismiss/claim on this device, not a returning signed-in customer, and has scrolled ~60% of the current page or spent ~25s on site. Shown once for the session.</p>
+  </div>
+  <div class="state-card">
+    <span class="tag tag--wait">Suppressed 30 days</span>
+    <h4>Dismissed ("Not today" / × / tap-outside)</h4>
+    <p>One graceful re-invitation is fine; nagging isn't. Resurfaces after 30 days of no further action.</p>
+  </div>
+  <div class="state-card">
+    <span class="tag tag--stop">Never again</span>
+    <h4>Claimed (copied code, or clicked "Begin Shopping")</h4>
+    <p>Permanent suppression on that device. (v1 also counted "sent by email" as a claim — removed along with the email field itself.)</p>
+  </div>
+  <div class="state-card">
+    <span class="tag tag--stop">Never eligible</span>
+    <h4>Signed-in customer with an existing order</h4>
+    <p><code>customer.orders_count &gt; 0</code> — checked server-side in Liquid before any JS trigger logic runs.</p>
+  </div>
+  <div class="state-card">
+    <span class="tag tag--stop">Excluded pages</span>
+    <h4>Cart page</h4>
+    <p>A visitor already at the cart is transacting, not browsing.</p>
+  </div>
+  <div class="state-card">
+    <span class="tag tag--wait">Deferred, not shown</span>
+    <h4>Search overlay / mobile drawer already open</h4>
+    <p>Mutually exclusive with other overlays — waits and re-checks after they close, rather than stacking.</p>
+  </div>
+</div>
+
+<script>
+(function () {
+  var KEY = 'ka_welcome_offer';
+  var SESSION_KEY = 'ka_welcome_shown_session';
+
+  var scrim = document.getElementById('kaWelcomeScrim');
+  var hud = document.getElementById('protoHud');
+  var isSimCustomer = false;
+
+  function getState() {
+    try { return JSON.parse(localStorage.getItem(KEY) || 'null'); } catch (e) { return null; }
+  }
+  function setState(state) {
+    try { localStorage.setItem(KEY, JSON.stringify({ state: state, ts: Date.now() })); } catch (e) {}
+  }
+  function clearState() {
+    try { localStorage.removeItem(KEY); sessionStorage.removeItem(SESSION_KEY); } catch (e) {}
+  }
+
+  function isEligible() {
+    if (isSimCustomer) return false;
+    try { if (sessionStorage.getItem(SESSION_KEY)) return false; } catch (e) {}
+    var s = getState();
+    if (!s) return true;
+    if (s.state === 'claimed') return false;
+    if (s.state === 'dismissed') {
+      var days = (Date.now() - s.ts) / 86400000;
+      return days >= 30;
+    }
+    return true;
+  }
+
+  function openCard() {
+    if (!isEligible()) return;
+    scrim.classList.add('is-open');
+    document.body.style.overflow = 'hidden';
+    try { sessionStorage.setItem(SESSION_KEY, '1'); } catch (e) {}
+    var closeBtn = document.getElementById('kaWelcomeClose');
+    if (closeBtn) closeBtn.focus();
+  }
+  function closeCard(reason) {
+    scrim.classList.remove('is-open');
+    document.body.style.overflow = '';
+    if (reason === 'dismiss') setState('dismissed');
+    if (reason === 'claim') setState('claimed');
+  }
+
+  document.getElementById('kaWelcomeClose').addEventListener('click', function () { closeCard('dismiss'); });
+  document.getElementById('kaWelcomeDismiss').addEventListener('click', function () { closeCard('dismiss'); });
+  scrim.addEventListener('click', function (e) { if (e.target === scrim) closeCard('dismiss'); });
+  document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && scrim.classList.contains('is-open')) closeCard('dismiss'); });
+
+  document.getElementById('kaWelcomeCta').addEventListener('click', function (e) {
+    e.preventDefault();
+    // Real build: href = "/discount/KLP3000?redirect=/collections/all" —
+    // Shopify's native discount deep-link, auto-applies the code to the
+    // session and redirects. No app required. See build spec §5.
+    alert('Prototype: would navigate to /discount/KLP3000?redirect=/collections/all — auto-applying the code, then landing on Collections.');
+    closeCard('claim');
+  });
+
+  var copyBtn = document.getElementById('kaWelcomeCopy');
+  copyBtn.addEventListener('click', function () {
+    var code = document.getElementById('kaWelcomeCodeValue').textContent.trim();
+    if (navigator.clipboard) { navigator.clipboard.writeText(code).catch(function(){}); }
+    copyBtn.textContent = 'Copied';
+    copyBtn.classList.add('is-copied');
+    setState('claimed');
+    setTimeout(function () { copyBtn.textContent = 'Copy'; copyBtn.classList.remove('is-copied'); }, 2200);
+  });
+
+  // ---- Real trigger logic: scroll depth OR dwell time, whichever first (unchanged from v1) ----
+  var startTime = Date.now();
+  var fired = false;
+  function scrollPct() {
+    var doc = document.documentElement;
+    var max = doc.scrollHeight - doc.clientHeight;
+    return max > 0 ? Math.min(100, Math.round((window.scrollY / max) * 100)) : 0;
+  }
+  function tick() {
+    var pct = scrollPct();
+    var dwell = Math.round((Date.now() - startTime) / 1000);
+    hud.innerHTML = 'Scroll %: ' + pct + ' · Dwell: ' + dwell + 's<br>Eligible: ' + (isEligible() ? '<b style="color:#8fe0a8">yes</b>' : '<b style="color:#f2a4a4">no (suppressed)</b>');
+    if (!fired && (pct >= 60 || dwell >= 25)) {
+      fired = true;
+      openCard();
+    }
+  }
+  window.addEventListener('scroll', tick, { passive: true });
+  setInterval(tick, 1000);
+  tick();
+
+  // ---- Demo controls ----
+  document.getElementById('ctrlReset').addEventListener('click', function () {
+    clearState(); isSimCustomer = false; fired = false; location.hash = '#live'; tick();
+    alert('Device reset — scroll or wait to see the trigger fire again.');
+  });
+  document.getElementById('ctrlForce').addEventListener('click', function () {
+    fired = false; isSimCustomer = false; clearState();
+    location.hash = '#live'; openCard(); fired = true;
+  });
+  document.getElementById('ctrlSimDismissed').addEventListener('click', function () {
+    try { localStorage.setItem(KEY, JSON.stringify({ state: 'dismissed', ts: Date.now() - 5 * 86400000 })); sessionStorage.removeItem(SESSION_KEY); } catch (e) {}
+    fired = false; tick();
+    alert('Simulated: dismissed 5 days ago. Trigger will now stay silent (30-day cooldown) — scroll to confirm.');
+  });
+  document.getElementById('ctrlSimClaimed').addEventListener('click', function () {
+    setState('claimed'); try { sessionStorage.removeItem(SESSION_KEY); } catch (e) {}
+    fired = false; tick();
+    alert('Simulated: already claimed. Trigger will now never fire again on this device.');
+  });
+  document.getElementById('ctrlSimCustomer').addEventListener('click', function () {
+    isSimCustomer = true; fired = false; tick();
+    alert('Simulated: signed-in returning customer (orders_count > 0). Real build checks this server-side in Liquid before JS ever runs.');
+  });
+})();
+</script>
+</body>
+</html>

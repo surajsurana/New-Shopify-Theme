@@ -6,7 +6,7 @@ it's fixed and QA-verified; don't just mark it done inline -- move it to a "done
 note in the relevant build spec instead, so this file stays a live backlog, not a
 changelog.
 
-Last reconciled against actual project state: 2026-09-04.
+Last reconciled against actual project state: 2026-10-18.
 
 ---
 
@@ -138,7 +138,7 @@ doc, just not yet pasted in. Also still open: applying the same Custom
 Liquid design treatment to the separate native "Abandoned cart" automation
 (true pre-checkout recovery) -- not started.
 
-### 3. Google Reviews live-sync -- IN PROGRESS (2026-08-29)
+### 3. Google Reviews live-sync -- RESOLVED and LIVE 2026-09-22
 **Source:** Suraj said "not syncing automatically -- needs investigation" (originally
 just static placeholder data, per `sections/ka-voice-of-bride.liquid` / homepage
 Section 8). On 2026-08-29 Suraj decided explicitly: real live-sync, direct via
@@ -168,6 +168,82 @@ Elfsight/EmbedSocial/etc. -- doesn't want a permanent external-app dependency).
   work. Worth confirming with Suraj what's actually showing on Live right now
   before assuming it's still placeholder content.
 
+**RESOLVED 2026-09-22.** Google approved API access 2026-09-14 (case
+`2-4183000041674`, project `250716548984`). Suraj ran the one-time OAuth
+authorization; Technical Director generalized the reviews sections
+(homepage 6-card grid, product-page badge + cards, JSON-LD `aggregateRating`)
+to read `shop.metafields.custom.google_reviews` with the old static content
+as fallback -- Creative-Director-reviewed, staging-QA'd, then promoted to
+Live (`4a0974f`). A new Shopify Dev Dashboard app ("K&A Reviews Sync",
+client-credentials auth) and a daily systemd timer on the stocktradingbot
+droplet (isolated `kareviews` Linux user, separate from Petty Cash/trading
+bot) were set up with real user approval in that droplet's own session --
+verified end-to-end via `--dry-run`. First real sync ran 2026-09-22,
+confirmed independently against both the Shopify metafield and the live
+rendered pages. Now fully automated: runs daily at 4:30 AM IST with no
+further action needed. See memory `ka_google_reviews_livesync_status` for
+full detail.
+
+### 29. Google review REPLIES -- IN PROGRESS, paused mid-batch 2026-09-22
+**Source:** Suraj, 2026-09-22, after the reviews-sync (#3) went live -- separate
+feature, replying to reviews on the Business Profile itself (not the website
+display). SEO & Discoverability session (cross-session) supplied the source
+docs (confirmed entity facts + brand voice) used for drafting.
+
+**Hard requirement, non-negotiable:** every single reply requires Suraj's
+explicit approval before it posts. No batch auto-post, ever. Drafting and
+posting are two structurally separate code paths -- `post_reply()` in
+`scripts/google-reviews-sync/google_business_client.py` is never called
+automatically by anything, only ever invoked one review at a time after
+Suraj says yes to that exact text.
+
+**Discovered during recon:** Ashita has been replying to reviews personally
+(warm, personal tone, signed "Karishma Ashita") -- 19 of 67 reviews already
+had a reply before this work started; inconsistent coverage is why Suraj
+wants this. The 2 lowest-rated reviews with real complaint text already have
+thoughtful individual replies from her; nothing for this tool to redo there.
+
+**Status as of 2026-09-22, paused by Suraj ("wait now"):**
+- `scripts/google-reviews-sync/draft_replies.py` fetches all reviews, drafts
+  a reply for every one with no existing `reviewReply`, and writes the
+  queue to `scripts/google-reviews-sync/pending_replies.json` (this is the
+  durable state -- read it to see exactly what's drafted/posted/skipped).
+- 48 reviews had no reply at the time of the first run. 46 drafted, 2
+  flagged skip (bare star rating, zero review text -- nothing to reference).
+- Reviewed one at a time with Suraj so far: **Anmol Y. -- skipped** (his
+  choice, no reply wanted). **Arushi G. -- posted and live**, verified
+  independently against a fresh Google fetch. **Sakshi K. -- posted and
+  live**, same verification. Paused before review 4 of 48 (Simran J., drafted
+  and shown, not yet approved).
+- House style fix applied to all 46 drafts: sign-off is "Warm regards,\nKarishma Ashita"
+  (or Warmest/Kind regards per tone) -- no "and" between the names. Documented
+  in `draft_replies.py` for any future batch.
+- 44 reviews remain undecided in the queue (drafted, awaiting Suraj's
+  one-by-one review) -- see `pending_replies.json` for the full list and
+  exact drafted text, or resume by showing Suraj the next `"status": "drafted"`
+  entry after Simran J.
+- Posting mechanism (Google v4 API `PUT .../reviews/{id}/reply`) confirmed
+  working end-to-end, real posts verified live on Google both by the API's
+  own response and an independent fresh re-fetch.
+
+**To resume:** pick up from `pending_replies.json`, show Suraj the next
+undecided drafted reply, get his explicit per-review approval, post via
+`post_reply()`, verify independently, mark `posted: true`. Nothing else
+needed -- no new build work, the tool is fully working.
+
+**GOOGLE APPROVED ACCESS 2026-09-14.** Two emails from
+`googlebusinessprofile-support@google.com` (to `suraj.surana@gmail.com`, on
+cases `2-4183000041674` and `6-4354000041396`): project `250716548984` is
+approved for the Google Business Profile API with a default quota of 300
+QPM. Found unread in the inbox on 2026-09-21 -- it sat a week unnoticed.
+Status is no longer "Blocked (external)". **Remaining (needs Suraj in his
+Google account):** enable the reviews-serving API in Cloud Console project
+`project-da1a7b04-6eee-443f-bb8`, create OAuth client + consent screen, run
+the one-time consent as Owner to get a refresh token (steps in
+`scripts/google-reviews-sync/google_business_client.py`); then TD wires env
+vars, runs `sync.py`, QA, systemd timer, release approval. Shop metafield
+`custom.google_reviews` still null as of 2026-09-21 (sync not yet run).
+
 **Follow-up filed 2026-09-13.** Original case `2-4183000041674` ran past
 Google's stated 7-10 business day window with no response (confirmed no
 approval/decision email in `suraj.surana@gmail.com`, and confirmed directly
@@ -187,13 +263,13 @@ either case number.
 See memory `ka_google_reviews_livesync_status` for full detail if resuming
 this in a future session.
 
-### 5. Footer legal-entity line has a double period ("Ltd..")
+### 5. Footer legal-entity line has a double period ("Ltd..") -- RESOLVED and LIVE (fixed 2026-08-29, `22f6c4a`; confirmed on staging and main 2026-10-18)
 **Source:** QA Reviewer, 2026-08-11. Sitewide (`sections/ka-footer.liquid`), now
 on both staging and Live. Root cause: the `legal_entity_name` schema default
 already ends in a period and the template appends its own. **Deferred by Suraj**
 -- small Technical Director fix, no Creative Director needed.
 
-### 6. Client Diaries entry template naming is stale in docs
+### 6. Client Diaries entry template naming is stale in docs -- RESOLVED (fixed 2026-08-29, `22f6c4a`; `templates/article.json` says "diaryentry", confirmed 2026-10-18)
 **Source:** Technical Director, drift check, 2026-08-11. `templates/article.json`'s
 header comment and `Docs/client-diaries-handoff-2026-08-11.md` still say the
 alternate template is "diary" (`article.diary.json`); the real, correctly-deployed

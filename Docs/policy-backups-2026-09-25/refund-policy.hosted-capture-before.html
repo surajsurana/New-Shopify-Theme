@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Refund policy</title>
+    <meta charset="UTF-8">
+    <script nonce="CUONl3wzgMZ536r7JeohHFZ/qm7lOITXEVMdjXd3pNM=">
+      const debounce = function(func, wait, immediate) {
+        var timeout;
+        return function() {
+          var context = this, args = arguments;
+          clearTimeout(timeout);
+          timeout = setTimeout(function() {
+            timeout = null;
+            if (!immediate) func.apply(context, args);
+          }, wait);
+          if (immediate && !timeout) func.apply(context, args);
+        };
+      };
+
+      const sendMessage = function() {
+        parent.postMessage({ action: 'checkoutModalIframeResized', height: document.body.scrollHeight + 'px'}, '*');
+      };
+
+      document.addEventListener('DOMContentLoaded', sendMessage, false);
+      window.addEventListener('resize', debounce(sendMessage, 200), false);
+
+      window.addEventListener('keydown', (event) => {
+        if (event.key === 'Escape' || event.key === 'Esc') {
+          window.parent.postMessage('closeCheckoutPolicyModal', '*')
+        }
+      })
+    </script>
+
+
+    <link rel="stylesheet" crossorigin="anonymous" href="//cdn.shopify.com/shopifycloud/shopify/assets/checkout/standalone-dfb65dca3b130340ce121985031c6a5511d52eb90543c2a728b7f48667ab05ca.css" integrity="sha256-37ZdyjsTA0DOEhmFAxxqVRHVLrkFQ8KnKLf0hmerBco=" />
+  </head>
+  <body class="page-policies default-background text-container">
+      <p>All our Products are made with utmost care &amp; precision.</p>
+<p><span style="text-decoration:underline;"><strong>Returns</strong></span></p>
+<p>Since we make all the outfits as per you order, we are unable to offer returns on any of our product. However if there is any genuine defect detected, then at our discretion we may exchange the product. At no condition can the amount be refunded.</p>
+<p><span style="text-decoration:underline;"><strong>Cancellations</strong></span></p>
+<p>Once the order is placed, it cannot be cancelled.</p>
+<p>For further details, kindly get in touch with us.</p>
+<p><span style="text-decoration:underline;"><strong>Disclaimer: </strong></span></p>
+<p><span>Each piece is meticulously handcrafted and made to order. Color variations may occur due to lighting and screen settings.</span></p>
+
+
+    <div class="hidden">
+  <span class="visually-hidden" id="forwarding-external-new-window-message">
+    Opens external website in a new window.
+  </span>
+
+  <span class="visually-hidden" id="forwarding-new-window-message">
+    Opens in a new window.
+  </span>
+
+  <span class="visually-hidden" id="forwarding-external-message">
+    Opens external website.
+  </span>
+
+  <span class="visually-hidden" id="checkout-context-step-one">
+    Contact - Karishma and Ashita - Checkout
+  </span>
+</div>
+
+  </body>
+</html>
