@@ -11,7 +11,7 @@
 ================================================================ */
 .a-hero { position: relative; height: 84vh; height: 84svh; min-height: 560px; overflow: hidden; }
 .a-hero__bg { position: absolute; inset: 0; }
-.a-hero__bg img { object-position: center 8%; }
+.a-hero__bg img { object-position: center var(--hero-y, 2%); }
 .a-hero__overlay {
   position: absolute;
   inset: 0;

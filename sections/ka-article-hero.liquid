@@ -66,7 +66,12 @@
 <a href="{{ blog.url }}" class="article-return" id="articleReturn">&larr; Back to the Journal</a>
 
 <header class="a-hero" id="articleHero" aria-label="{{ article.title | escape }}">
-  <div class="a-hero__bg reveal-img" id="articleHeroBg">
+  {%- assign hero_y = article.metafields.custom.hero_focus_y.value -%}
+  {%- assign hero_y_style = '' -%}
+  {%- if hero_y != blank and hero_y >= 0 and hero_y <= 100 -%}
+    {%- assign hero_y_style = hero_y | round | prepend: 'style="--hero-y: ' | append: '%"' -%}
+  {%- endif -%}
+  <div class="a-hero__bg reveal-img" id="articleHeroBg" {{ hero_y_style }}>
     {%- if section.settings.hero_image != blank -%}
       <img
         src="{{ section.settings.hero_image | image_url: width: 1800 }}"
