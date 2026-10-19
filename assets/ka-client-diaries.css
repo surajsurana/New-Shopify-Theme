@@ -1,7 +1,10 @@
-﻿/* ================================================================
-   KA-CLIENT-DIARIES (Lookbook)
+/* ================================================================
+   KA-CLIENT-DIARIES (homepage, living shuffle)
+   Spec: Docs/client-diaries-homepage-shuffle-spec.md
+   Prototype: Prototypes/homepage-client-diaries-shuffle-v1.html
 ================================================================ */
 .ka-lookbook {
+  --dissolve: 1.8s;
   padding: var(--s-2xl) 0;
   overflow: hidden;
 }
@@ -14,66 +17,93 @@
   line-height: 1.05;
   margin-top: 8px;
 }
+
+/* Four tracks: lead tile | text | tile | tile. Row height comes from the lead tile's
+   aspect-ratio (never vh), so portrait photographs are never forced into a landscape slot. */
 .ka-lookbook__grid {
   display: grid;
-  grid-template-columns: 1.2fr 0.6fr 1fr;
+  grid-template-columns: 1.15fr 0.8fr 1fr 1fr;
   gap: 3px;
-  min-height: 70vh;
+  align-items: stretch;
 }
-.ka-lookbook__item {
+.ka-tile {
   position: relative;
   overflow: hidden;
+  display: block;
+  min-height: 0;
+  background: var(--c-paper-deep);
+  color: inherit;
+  text-decoration: none;
 }
-.ka-lookbook__item--tall { min-height: 600px; }
-.ka-lookbook__item--mid {
-  display: grid;
-  grid-template-rows: 1fr 1fr;
-  gap: 3px;
-}
-.ka-lookbook__item-inner {
-  overflow: hidden;
-  height: 100%;
-  position: relative;
-}
-.ka-lookbook__item img,
-.ka-lookbook__item-inner img {
-  transition: transform 1.2s var(--ease-luxury);
-}
-.ka-lookbook__item:hover img,
-.ka-lookbook__item-inner:hover img { transform: scale(1.03); }
+.ka-tile--b, .ka-tile--c { height: 100%; }
+/* Tile heights come from an in-flow ::before spacer (padding-top ratio), NOT the aspect-ratio
+   property: WebKit/Safari collapses a stretched grid item with `aspect-ratio` and no in-flow
+   content to 0px height (confirmed in Safari 26), which hid every tile. The spacer works in all engines. */
+.ka-tile--lead::before { content: ''; display: block; padding-top: 125%; }   /* 4 / 5 */
 
-.ka-lookbook__overlay {
+.ka-tile__layer {
   position: absolute; inset: 0;
-  background: linear-gradient(to top, rgba(15,12,10,0.65) 0%, transparent 50%);
+  opacity: 0;
+  transition: opacity var(--dissolve) ease-in-out;
+}
+.ka-tile__layer.is-on { opacity: 1; }
+.ka-tile__layer img {
+  width: 100%; height: 100%;
+  object-fit: cover;
+  display: block;
+  transform: scale(1);
+  transition: transform 1.4s var(--ease-luxury);
+}
+.ka-tile:hover .ka-tile__layer img { transform: scale(1.03); }
+
+.ka-tile__veil {
+  position: absolute; inset: 0;
+  background: linear-gradient(to top, rgba(15,12,10,0.62) 0%, transparent 48%);
   opacity: 0;
   transition: opacity var(--dur-med);
+  pointer-events: none;
 }
-.ka-lookbook__item:hover .ka-lookbook__overlay,
-.ka-lookbook__item-inner:hover .ka-lookbook__overlay { opacity: 1; }
+.ka-tile:hover .ka-tile__veil,
+.ka-tile:focus-visible .ka-tile__veil { opacity: 1; }
 
-.ka-lookbook__caption {
-  position: absolute;
-  bottom: 24px; left: 24px; right: 24px;
+.ka-tile__cap {
+  position: absolute; left: 24px; right: 24px; bottom: 22px;
   opacity: 0; transform: translateY(8px);
   transition: opacity var(--dur-med), transform var(--dur-med) var(--ease-luxury);
+  color: #fff;
+  pointer-events: none;
 }
-.ka-lookbook__item:hover .ka-lookbook__caption,
-.ka-lookbook__item-inner:hover .ka-lookbook__caption { opacity: 1; transform: translateY(0); }
-
-.ka-lookbook__caption-name {
+.ka-tile:hover .ka-tile__cap,
+.ka-tile:focus-visible .ka-tile__cap { opacity: 1; transform: none; }
+.ka-tile__name {
+  display: block;
   font-family: var(--f-display);
-  font-size: 1.1rem; font-weight: 400; font-style: italic;
-  color: white; display: block;
+  font-style: italic; font-weight: 400;
+  font-size: 1.25rem; line-height: 1.2;
 }
-.ka-lookbook__caption-garment {
+.ka-tile__occ {
+  display: block;
   font-family: var(--f-sans);
-  font-size: 0.63rem; font-weight: 300;
-  letter-spacing: 0.14em; text-transform: uppercase;
-  color: rgba(255,255,255,0.7);
+  font-size: 0.62rem; font-weight: 300;
+  letter-spacing: 0.16em; text-transform: uppercase;
+  color: rgba(255,255,255,0.75);
+  margin-top: 2px;
 }
+.ka-tile__read {
+  display: block;
+  font-family: var(--f-sans);
+  font-size: 0.6rem; font-weight: 300;
+  letter-spacing: 0.2em; text-transform: uppercase;
+  color: rgba(255,255,255,0.9);
+  margin-top: 10px; padding-top: 8px;
+  border-top: 1px solid rgba(255,255,255,0.3);
+  width: max-content;
+}
+.ka-tile:focus-visible { outline: 1px solid var(--c-rosegold); outline-offset: -6px; }
+
 .ka-lookbook__text-col {
   display: flex; flex-direction: column; justify-content: center;
-  padding: clamp(32px, 5vw, 64px);
+  padding: clamp(24px, 3.2vw, 52px);
   background: var(--c-paper-deep);
 }
 .ka-lookbook__cta-title {
@@ -82,15 +112,43 @@
   color: var(--c-charcoal); line-height: 1.3; margin-bottom: 20px;
 }
 .ka-lookbook__cta-body {
-  font-size: 0.88rem; font-weight: 300;
-  line-height: 1.9; color: var(--c-ink-mid); margin-bottom: 32px;
+  font-size: 0.86rem; font-weight: 300;
+  line-height: 1.9; color: var(--c-ink-mid); margin-bottom: 30px;
+}
+.ka-lookbook__text-col .btn-dark { align-self: flex-start; }
+
+/* Laptop band (901-1279px): the lead tile's 4/5 aspect-ratio keeps setting the row height, so
+   the tracks must not be inflated by the text column's min-content (minmax(0,...)). Text column
+   is given a wider track and slightly smaller type so it stays readable and fits the row.
+   Small tiles hold ~0.656 (spec 2.4: ~0.70, native 2:3 = 0.667). >=1280 and <=900 unchanged. */
+@media (min-width: 901px) and (max-width: 1279px) {
+  .ka-lookbook__grid { grid-template-columns: minmax(0, 1fr) minmax(0, 0.95fr) minmax(0, 0.82fr) minmax(0, 0.82fr); }
+  .ka-lookbook__text-col { min-height: 0; padding: clamp(14px, 2.2vw, 28px); }
+  .ka-lookbook__cta-title { font-size: clamp(1.15rem, 2vw, 1.6rem); margin-bottom: 10px; }
+  .ka-lookbook__cta-body { font-size: 0.78rem; line-height: 1.65; margin-bottom: 12px; }
 }
 
+/* Tablet / phone: lead full width (3/4), text, then two tiles (2/3) */
 @media (max-width: 900px) {
-  .ka-lookbook__grid { grid-template-columns: 1fr 1fr; grid-template-rows: auto; }
-  .ka-lookbook__item--tall { min-height: 320px; }
-  .ka-lookbook__text-col { grid-column: 1 / -1; min-height: 240px; }
+  .ka-lookbook { padding: 90px 0; }
+  .ka-lookbook__grid { grid-template-columns: 1fr 1fr; }
+  .ka-tile--lead { grid-column: 1 / -1; }
+  .ka-tile--lead::before { padding-top: 133.3334%; }   /* 3 / 4 */
+  .ka-lookbook__text-col { grid-column: 1 / -1; order: 2; padding: 40px 28px; }
+  .ka-tile--b, .ka-tile--c { order: 3; height: auto; }
+  .ka-tile--b::before, .ka-tile--c::before { content: ''; display: block; padding-top: 150%; }   /* 2 / 3 */
+}
+/* Touch (no hover): caption always present, quietly */
+@media (max-width: 900px), (hover: none) {
+  .ka-tile__veil { opacity: 1; background: linear-gradient(to top, rgba(15,12,10,0.5) 0%, transparent 38%); }
+  .ka-tile__cap { opacity: 1; transform: none; left: 14px; right: 14px; bottom: 12px; }
+  .ka-tile__name { font-size: 1rem; }
+  .ka-tile__occ { font-size: 0.55rem; }
+  .ka-tile__read { display: none; }
 }
 @media (max-width: 600px) {
-  .ka-lookbook__grid { grid-template-columns: 1fr; }
+  .ka-lookbook__text-col { padding: 40px 20px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .ka-tile__layer, .ka-tile__layer img { transition: none; }
 }
