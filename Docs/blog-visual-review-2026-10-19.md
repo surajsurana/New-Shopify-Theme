@@ -152,3 +152,32 @@ At the default 2% (no metafield) it shows face, hand at the collarbone, the yell
 - festive-season-structured-navratri-diwali: needs its own value, 30 (as approved); at 2% only the top of a small head shows.
 - scheduled sangeet post: face plus red bodice and net drape. Pass.
 Conclusion: no other article needs its own value. Festive = 30 remains the only override.
+
+---
+
+## Dressing post breakout (dressing-for-every-wedding-event, LIVE)
+
+**Verdict: replace breakout `files/27.png` (tight yellow close-up, empty alt) with the Natasha velvet corset seated shot. No theme change.**
+
+### Why
+Headline is now the lime-yellow full-length look; the old breakout was a second yellow look showing little beyond the face. The article's cocktail/evening section features "Natasha in Our Velvet Textured Corset and Rhinestone Skirt" (Rs 60,000, maroon), so the breakout illustrates a look the text actually discusses, in a different colour family (deep maroon against warm ivory/amber, vs lime-yellow).
+
+### Image
+- URL: https://cdn.shopify.com/s/files/1/0768/3112/9890/files/Untitleddesign_12_6e8d32b4-c8c5-45c5-8233-b5366b433fd8.png?v=1743510652 (1875x2500 portrait; product image 3 of `natasha-is-our-velvet-textured-corset-and-rhinestone-skirt`; MediaImage gid not looked up, upload by file URL or find in Files by name Untitleddesign_12)
+- Alt: `Model seated on a cream sofa in an off-shoulder maroon quilted velvet corset and rhinestone skirt, with a layered pearl choker, smiling to camera`
+- Not used as hero/breakout in any of the other 8 live posts (checked page HTML). Not one of the "As Worn" cards on this post (those are Plum, Electric Blue, Snow Veil). Natasha's primary image (Untitleddesign_10) stays free for her product card.
+
+### Evidence (real CSS math: frame width = min(vw,1180) - 2*clamp(20px,5vw,80px), height 62vh clamp 380-640, mobile 46vh min 300, `object-position: center 10%`; header does not overlap a mid-page breakout)
+| Viewport | Frame | Source band | What shows |
+|---|---|---|---|
+| 1470x771 | 1033x478 (2.16:1) | 6.5-41% | Full face, pearl choker, shoulders, upper corset bodice; lamp/sofa. Bust-length, outfit clearly velvet corset. PASS |
+| 1440x900 | 1036x558 (1.86:1) | 6-46% | Face, choker, corset bodice to waist. PASS |
+| 1920x1080 | 1020x640 (1.59:1) | 5-52% | Face, full corset to waist, hand and bracelet, sofa. Best crop. PASS |
+| 390x844 | 358x388 (0.92:1) | 2-83% | Whole seated look: face, corset, skirt, pillow. PASS |
+
+Face sits ~8-27% down the source, inside the 0-30% breakout rule at every viewport. Contact sheet (also shows the standing alternative Untitleddesign_10, rejected: face sits at the top-right and the rhinestone skirt is cut at desktop widths, background is busier): `Docs/review-assets/dressing-breakout.png`.
+
+Rejected: Avantika black lehenga (only 720x1080, would be upscaled ~1.4x and soft, and face is tiny at night); Untitleddesign_11 back view (no face); Untitleddesign_13 (torso close-up, no face).
+Caveat: the image is a hotel-room lifestyle photo, warmer and less cinematic than the studio shots; it is still the strongest face+outfit option in the article's own catalogue. Only the top-of-hair is trimmed by ~1-2% on desktop.
+
+Who: SEO sets `custom.breakout_image` and alt on the article.
