@@ -81,6 +81,12 @@
   endcomment
   assign breakout_alt = breakout_image.alt
   if breakout_alt == blank
+    assign breakout_alt = breakout_image.preview_image.alt
+  endif
+  if breakout_alt == blank
+    assign breakout_alt = breakout_image.image.alt
+  endif
+  if breakout_alt == blank
     assign breakout_alt = breakout_caption
   endif
   if breakout_alt == blank
