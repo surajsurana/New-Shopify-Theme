@@ -1,0 +1,131 @@
+{%- comment -%} Inline controller for sections/ka-client-diaries.liquid (must run right after the grid markup, before the lazy images are fetched). {%- endcomment -%}
+<script>
+(function () {
+  var root = document.getElementById('ka-cd-{{ sid }}');
+  var grid = document.getElementById('ka-cd-grid-{{ sid }}');
+  var pool;
+  try { pool = JSON.parse(document.getElementById('ka-cd-pool-{{ sid }}').textContent); } catch (e) { return; }
+  if (!root || !grid || pool.length < 3) return;
+  var LEAD = {{ lead | json }};
+  var DISSOLVE = {{ dissolve | json }};
+  var LS = 'ka.cd.seen', SS = 'ka.cd.set';
+  var tiles = [].slice.call(grid.querySelectorAll('.ka-tile'));
+  if (tiles.length !== 3) return;
+  var reduced = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var byId = {}; pool.forEach(function (p) { byId[p.id] = p; });
+  var diaries = {}; pool.forEach(function (p) { diaries[p.d] = 1; });
+  var limit = Object.keys(diaries).length === 1 ? 3 : 2;
+
+  function seenSet() { try { return JSON.parse(localStorage.getItem(LS) || '[]'); } catch (e) { return []; } }
+  function remember(items) {
+    try { var s = seenSet(); items.forEach(function (i) { if (s.indexOf(i.id) < 0) s.push(i.id); }); localStorage.setItem(LS, JSON.stringify(s)); } catch (e) {}
+  }
+  function countD(list, d) { return list.filter(function (x) { return x.d === d; }).length; }
+
+  function pick() {
+    var seen = seenSet();
+    if (pool.every(function (i) { return seen.indexOf(i.id) > -1; })) { seen = []; try { localStorage.removeItem(LS); } catch (e) {} }
+    var order = pool.map(function (i) { return { i: i, r: Math.random() + (seen.indexOf(i.id) > -1 ? 1 : 0) }; })
+      .sort(function (a, b) { return a.r - b.r; }).map(function (x) { return x.i; });
+    var chosen = [];
+    if (LEAD) {
+      var lead = pool.filter(function (p) { return p.d === LEAD; })[0];
+      if (lead) chosen.push(lead);
+    }
+    for (var k = 0; k < order.length && chosen.length < 3; k++) {
+      var c = order[k];
+      if (chosen.indexOf(c) > -1 || countD(chosen, c.d) >= limit) continue;
+      var dupLook = chosen.some(function (x) { return x.d === c.d && x.look === c.look; });
+      if (dupLook && order.some(function (o) { return chosen.indexOf(o) < 0 && o.d === c.d && o.look !== c.look && countD(chosen, o.d) < limit; })) continue;
+      chosen.push(c);
+    }
+    if (Object.keys(diaries).length > 1 && chosen.length === 3 && countD(chosen, chosen[0].d) === 3) {
+      var other = order.filter(function (i) { return i.d !== chosen[0].d; })[0];
+      if (other) chosen[2] = other;
+    }
+    for (k = 0; chosen.length < 3 && k < order.length; k++) if (chosen.indexOf(order[k]) < 0) chosen.push(order[k]);
+    if (!(LEAD && chosen[0] && chosen[0].d === LEAD)) {
+      chosen.sort(function (a, b) { return b.hero - a.hero; });   // featured (full-length) frame to the large tile
+    }
+    return chosen;
+  }
+
+  function srcFor(it, slot) { return slot === 0 ? it.src : it.src.replace('width=900', 'width=720'); }
+  function altFor(it) { return it.first + ' wearing Karishma & Ashita — ' + it.occ; }
+  function setText(t, it) {
+    t.setAttribute('data-id', it.id);
+    t.setAttribute('href', it.url);
+    t.setAttribute('aria-label', 'Read ' + it.first + "'s Client Diary — " + it.occ);
+    t.querySelector('.ka-tile__name').textContent = it.first;
+    t.querySelector('.ka-tile__occ').textContent = it.occ;
+  }
+  // Initial swap: replace the server-rendered attributes in place, before the lazy image is fetched.
+  function setNow(t, it, slot) {
+    var im = t.querySelector('.ka-tile__layer img');
+    im.removeAttribute('sizes');
+    im.src = srcFor(it, slot); im.alt = altFor(it);
+    im.width = it.w; im.height = it.h; im.style.objectPosition = it.fp;
+    setText(t, it);
+  }
+  function fadeTo(t, it, slot) {
+    var layer = document.createElement('div'); layer.className = 'ka-tile__layer';
+    var im = new Image(); im.className = 'img-filter-lookbook'; im.alt = altFor(it); im.decoding = 'async';
+    im.width = it.w; im.height = it.h; im.style.objectPosition = it.fp; im.src = srcFor(it, slot);
+    layer.appendChild(im);
+    var go = function () {
+      var old = [].slice.call(t.querySelectorAll('.ka-tile__layer'));
+      t.insertBefore(layer, t.querySelector('.ka-tile__veil'));
+      setText(t, it);
+      requestAnimationFrame(function () { requestAnimationFrame(function () {
+        layer.classList.add('is-on');
+        old.forEach(function (o) { o.classList.remove('is-on'); });
+        setTimeout(function () { old.forEach(function (o) { if (o.parentNode) o.parentNode.removeChild(o); }); }, 2100);
+      }); });
+    };
+    (im.decode ? im.decode() : Promise.resolve()).then(go, go);
+  }
+
+  var current = null;
+  try {
+    var stored = JSON.parse(sessionStorage.getItem(SS) || 'null');
+    if (stored && stored.length === 3) {
+      var s = stored.map(function (id) { return byId[id]; });
+      if (s.every(Boolean) && (!LEAD || (byId[stored[0]] && byId[stored[0]].d === LEAD))) current = s;
+    }
+  } catch (e) {}
+  if (!current) {
+    current = pick();
+    try { sessionStorage.setItem(SS, JSON.stringify(current.map(function (i) { return i.id; }))); } catch (e) {}
+    remember(current);
+  }
+  current.forEach(function (it, i) { setNow(tiles[i], it, i); });
+  root.setAttribute('data-ready', '');
+
+  // Layer 3: slow dissolve, one tile at a time, max 4 per page view
+  if (!DISSOLVE || reduced || pool.length <= 3) return;
+  var inView = false, swaps = 0;
+  if ('IntersectionObserver' in window) {
+    new IntersectionObserver(function (e) { inView = e[0].isIntersecting; }, { threshold: 0.35 }).observe(grid);
+  } else { return; }
+  function tick() {
+    if (swaps >= 4) return;
+    setTimeout(function () {
+      if (document.hidden || !inView) return tick();
+      var slot = Math.floor(Math.random() * 3), t = tiles[slot];
+      if (t.matches(':hover, :focus-within')) return tick();
+      var used = current.map(function (i) { return i.id; });
+      var others = current.filter(function (c, k) { return k !== slot; });
+      if (LEAD && slot === 0) return tick();
+      var cand = pool.filter(function (i) { return used.indexOf(i.id) < 0 && countD(others, i.d) < limit; });
+      if (!cand.length) return tick();
+      var seen = seenSet();
+      var fresh = cand.filter(function (i) { return seen.indexOf(i.id) < 0; });
+      var it = (fresh.length ? fresh : cand)[Math.floor(Math.random() * (fresh.length ? fresh : cand).length)];
+      current[slot] = it; swaps++; remember([it]);
+      fadeTo(t, it, slot);
+      tick();
+    }, 8000 + Math.random() * 4000);
+  }
+  tick();
+})();
+</script>
