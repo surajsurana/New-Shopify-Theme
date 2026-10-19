@@ -51,6 +51,9 @@
   }
 
   function srcFor(it, slot) { return slot === 0 ? it.src : it.src.replace('width=900', 'width=720'); }
+  // Declare the dimensions of the file actually requested (small tiles request 720 wide).
+  function wFor(it, slot) { return slot === 0 ? it.w : Math.min(it.w, 720); }
+  function hFor(it, slot) { return Math.round(wFor(it, slot) * it.h / it.w); }
   function altFor(it) { return it.first + ' wearing Karishma & Ashita — ' + it.occ; }
   function setText(t, it) {
     t.setAttribute('data-id', it.id);
@@ -64,13 +67,13 @@
     var im = t.querySelector('.ka-tile__layer img');
     im.removeAttribute('sizes');
     im.src = srcFor(it, slot); im.alt = altFor(it);
-    im.width = it.w; im.height = it.h; im.style.objectPosition = it.fp;
+    im.width = wFor(it, slot); im.height = hFor(it, slot); im.style.objectPosition = it.fp;
     setText(t, it);
   }
   function fadeTo(t, it, slot) {
     var layer = document.createElement('div'); layer.className = 'ka-tile__layer';
     var im = new Image(); im.className = 'img-filter-lookbook'; im.alt = altFor(it); im.decoding = 'async';
-    im.width = it.w; im.height = it.h; im.style.objectPosition = it.fp; im.src = srcFor(it, slot);
+    im.width = wFor(it, slot); im.height = hFor(it, slot); im.style.objectPosition = it.fp; im.src = srcFor(it, slot);
     layer.appendChild(im);
     var go = function () {
       var old = [].slice.call(t.querySelectorAll('.ka-tile__layer'));
