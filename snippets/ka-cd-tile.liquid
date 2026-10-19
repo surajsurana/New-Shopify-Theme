@@ -1,0 +1,29 @@
+{%- comment -%}
+  One Client Diaries tile. Parameters:
+  slot (0|1|2), kind ('pool' = linked diary image, 'manual' = fallback image from section settings),
+  src, w, h, alt, fp (object-position), url, first, occ, id (pool only), name, sub (manual captions only)
+{%- endcomment -%}
+{%- if kind == 'pool' -%}
+  <a class="ka-tile {% if slot == 0 %}ka-tile--lead{% elsif slot == 1 %}ka-tile--b{% else %}ka-tile--c{% endif %}" data-slot="{{ slot }}" data-id="{{ id | escape }}" href="{{ url }}" aria-label="Read {{ first | escape }}&#39;s Client Diary &mdash; {{ occ | escape }}">
+{%- else -%}
+  <div class="ka-tile {% if slot == 0 %}ka-tile--lead{% elsif slot == 1 %}ka-tile--b{% else %}ka-tile--c{% endif %}" data-slot="{{ slot }}">
+{%- endif -%}
+    <div class="ka-tile__layer is-on">
+      <img class="img-filter-lookbook" src="{{ src }}" alt="{{ alt | escape }}" width="{{ w }}" height="{{ h }}" loading="lazy" decoding="async" style="object-position: {{ fp }}">
+    </div>
+    <div class="ka-tile__veil"></div>
+    <div class="ka-tile__cap">
+      {%- if kind == 'pool' -%}
+        <span class="ka-tile__name">{{ first }}</span>
+        <span class="ka-tile__occ">{{ occ }}</span>
+        <span class="ka-tile__read">Read her diary</span>
+      {%- else -%}
+        <span class="ka-tile__name">{{ name }}</span>
+        <span class="ka-tile__occ">{{ sub }}</span>
+      {%- endif -%}
+    </div>
+{%- if kind == 'pool' -%}
+  </a>
+{%- else -%}
+  </div>
+{%- endif -%}

@@ -1,104 +1,350 @@
 {{ 'ka-client-diaries.css' | asset_url | stylesheet_tag }}
 
-<section class="ka-lookbook" aria-label="Client Diaries lookbook">
+{%- comment -%}
+  Homepage Client Diaries -- living shuffle. Spec: Docs/client-diaries-homepage-shuffle-spec.md
+  Pool = look images of the newest 12 consented, published entries in the "client-diaries" blog
+  (portrait only, optional home_images curation, featured image first, max 4 per entry, max 36).
+  List metafields need .value (see Docs/client-diaries-handoff-2026-08-11.md).
+  Pool values are kept as parallel '^^'-delimited strings (Liquid has no array of hashes).
+{%- endcomment -%}
+{%- capture nl %}
+{% endcapture -%}
+{%- assign blog = blogs['client-diaries'] -%}
+{%- assign p_id = '' -%}{%- assign p_d = '' -%}{%- assign p_first = '' -%}{%- assign p_occ = '' -%}
+{%- assign p_url = '' -%}{%- assign p_look = '' -%}{%- assign p_src = '' -%}{%- assign p_w = '' -%}
+{%- assign p_h = '' -%}{%- assign p_fp = '' -%}{%- assign p_hero = '' -%}
+{%- assign total = 0 -%}
+{%- if blog != blank -%}
+  {%- for article in blog.articles limit: 12 -%}
+    {%- if article.metafields.custom.client_diary_consent.value != true -%}{%- continue -%}{%- endif -%}
+    {%- assign looks = article.metafields.custom.client_diary_looks.value -%}
+    {%- if looks == blank -%}{%- continue -%}{%- endif -%}
+    {%- assign a_first = article.title | split: ' ' | first -%}
+    {%- assign a_occ = article.tags | first | default: 'Client Diary' -%}
+    {%- assign feat_name = '' -%}
+    {%- if article.image -%}{%- assign feat_name = article.image.src | split: '?' | first | split: '/' | last -%}{%- endif -%}
+    {%- assign a_count = 0 -%}
+    {%- for pass in (1..2) -%}
+      {%- for look in looks -%}
+        {%- assign imgs = look.look_images.value -%}
+        {%- assign home_ids = '' -%}
+        {%- assign hv = look.home_images.value -%}
+        {%- if hv != blank -%}
+          {%- for h in hv -%}{%- assign home_ids = home_ids | append: '|' | append: h.id | append: '|' -%}{%- endfor -%}
+        {%- endif -%}
+        {%- assign focal_lines = look.home_focal.value | split: nl -%}
+        {%- for img in imgs -%}
+          {%- if a_count >= 4 or total >= 36 -%}{%- break -%}{%- endif -%}
+          {%- assign fname = img.src | split: '?' | first | split: '/' | last -%}
+          {%- assign is_hero = false -%}
+          {%- if feat_name != '' and fname == feat_name -%}{%- assign is_hero = true -%}{%- endif -%}
+          {%- if pass == 1 and is_hero == false -%}{%- continue -%}{%- endif -%}
+          {%- if pass == 2 and is_hero -%}{%- continue -%}{%- endif -%}
+          {%- if home_ids != '' -%}
+            {%- assign needle = '|' | append: img.id | append: '|' -%}
+            {%- unless home_ids contains needle -%}{%- continue -%}{%- endunless -%}
+          {%- endif -%}
+          {%- assign ar = img.aspect_ratio -%}
+          {%- if ar == blank -%}{%- assign ar = img.width | times: 1.0 | divided_by: img.height -%}{%- endif -%}
+          {%- if ar > 0.85 -%}{%- continue -%}{%- endif -%}
+          {%- assign fp = focal_lines[forloop.index0] | strip -%}
+          {%- if fp == blank -%}
+            {%- assign native = img.presentation.focal_point -%}
+            {%- if native != blank and native != '50.0% 50.0%' and native != '50% 50%' -%}{%- assign fp = native -%}{%- else -%}{%- assign fp = '50% 40%' -%}{%- endif -%}
+          {%- endif -%}
+          {%- assign p_id = p_id | append: article.id | append: ':' | append: img.id | append: '^^' -%}
+          {%- assign p_d = p_d | append: article.handle | append: '^^' -%}
+          {%- assign p_first = p_first | append: a_first | append: '^^' -%}
+          {%- assign p_occ = p_occ | append: a_occ | append: '^^' -%}
+          {%- assign p_url = p_url | append: article.url | append: '^^' -%}
+          {%- assign p_look = p_look | append: look.system.handle | append: '^^' -%}
+          {%- assign img_url = img | image_url: width: 900 -%}
+          {%- assign img_h = 900 | divided_by: ar | round -%}
+          {%- assign p_src = p_src | append: img_url | append: '^^' -%}
+          {%- assign p_w = p_w | append: '900^^' -%}
+          {%- assign p_h = p_h | append: img_h | append: '^^' -%}
+          {%- assign p_fp = p_fp | append: fp | append: '^^' -%}
+          {%- if is_hero -%}{%- assign p_hero = p_hero | append: '1^^' -%}{%- else -%}{%- assign p_hero = p_hero | append: '0^^' -%}{%- endif -%}
+          {%- assign a_count = a_count | plus: 1 -%}
+          {%- assign total = total | plus: 1 -%}
+        {%- endfor -%}
+      {%- endfor -%}
+    {%- endfor -%}
+  {%- endfor -%}
+{%- endif -%}
+
+{%- assign a_id = p_id | split: '^^' -%}
+{%- assign a_d = p_d | split: '^^' -%}
+{%- assign a_first_arr = p_first | split: '^^' -%}
+{%- assign a_occ_arr = p_occ | split: '^^' -%}
+{%- assign a_url = p_url | split: '^^' -%}
+{%- assign a_look = p_look | split: '^^' -%}
+{%- assign a_src = p_src | split: '^^' -%}
+{%- assign a_w = p_w | split: '^^' -%}
+{%- assign a_h = p_h | split: '^^' -%}
+{%- assign a_fp = p_fp | split: '^^' -%}
+{%- assign a_hero = p_hero | split: '^^' -%}
+{%- assign n = a_id.size -%}
+
+{%- comment -%} Layer 1: date-rotated first paint (stride coprime to pool size, max 2 per diary, 3 if only one diary) {%- endcomment -%}
+{%- assign picks = '' -%}
+{%- assign pick_d = '' -%}
+{%- assign pick_cnt = 0 -%}
+{%- if n >= 3 -%}
+  {%- assign distinct = a_d | uniq | size -%}
+  {%- assign limit = 2 -%}
+  {%- if distinct == 1 -%}{%- assign limit = 3 -%}{%- endif -%}
+  {%- assign seed = 'now' | date: '%s' | divided_by: 86400 -%}
+  {%- assign start = seed | modulo: n -%}
+  {%- assign stride = 1 -%}
+  {%- assign strides = '3,5,7,11,13' | split: ',' -%}
+  {%- for s in strides -%}
+    {%- assign sm = n | modulo: s -%}
+    {%- if sm != 0 -%}{%- assign stride = s | plus: 0 -%}{%- break -%}{%- endif -%}
+  {%- endfor -%}
+  {%- assign lead_handle = section.settings.lead_article.handle -%}
+  {%- if lead_handle != blank -%}
+    {%- for d in a_d -%}
+      {%- if d == lead_handle -%}
+        {%- assign picks = forloop.index0 | append: ',' -%}
+        {%- assign pick_d = d | append: ',' -%}
+        {%- assign pick_cnt = 1 -%}
+        {%- break -%}
+      {%- endif -%}
+    {%- endfor -%}
+  {%- endif -%}
+  {%- for k in (0..35) -%}
+    {%- if pick_cnt >= 3 or k >= n -%}{%- break -%}{%- endif -%}
+    {%- assign idx = k | times: stride | plus: start | modulo: n -%}
+    {%- assign idx_s = idx | append: ',' -%}
+    {%- assign idx_str = idx | append: '' -%}
+    {%- assign pick_list = picks | split: ',' -%}
+    {%- assign pick_d_list = pick_d | split: ',' -%}
+    {%- assign taken = false -%}
+    {%- for pk in pick_list -%}{%- if pk == idx_str -%}{%- assign taken = true -%}{%- endif -%}{%- endfor -%}
+    {%- if taken -%}{%- continue -%}{%- endif -%}
+    {%- assign same = 0 -%}
+    {%- for pd in pick_d_list -%}{%- if pd == a_d[idx] -%}{%- assign same = same | plus: 1 -%}{%- endif -%}{%- endfor -%}
+    {%- if same >= limit -%}{%- continue -%}{%- endif -%}
+    {%- assign picks = picks | append: idx_s -%}
+    {%- assign pick_d = pick_d | append: a_d[idx] | append: ',' -%}
+    {%- assign pick_cnt = pick_cnt | plus: 1 -%}
+  {%- endfor -%}
+  {%- comment -%} relaxed fill if the diversity rule left a slot empty {%- endcomment -%}
+  {%- for k in (0..35) -%}
+    {%- if pick_cnt >= 3 or k >= n -%}{%- break -%}{%- endif -%}
+    {%- assign idx = k | times: stride | plus: start | modulo: n -%}
+    {%- assign idx_str = idx | append: '' -%}
+    {%- assign pick_list = picks | split: ',' -%}
+    {%- assign pick_d_list = pick_d | split: ',' -%}
+    {%- assign taken = false -%}
+    {%- for pk in pick_list -%}{%- if pk == idx_str -%}{%- assign taken = true -%}{%- endif -%}{%- endfor -%}
+    {%- if taken -%}{%- continue -%}{%- endif -%}
+    {%- assign picks = picks | append: idx | append: ',' -%}
+    {%- assign pick_cnt = pick_cnt | plus: 1 -%}
+  {%- endfor -%}
+{%- else -%}
+  {%- for k in (0..2) -%}
+    {%- if k < n -%}{%- assign picks = picks | append: k | append: ',' -%}{%- assign pick_cnt = pick_cnt | plus: 1 -%}{%- endif -%}
+  {%- endfor -%}
+{%- endif -%}
+{%- assign pick_arr = picks | split: ',' -%}
+{%- assign js_on = false -%}
+{%- if n >= 3 and section.settings.enable_shuffle and request.design_mode != true -%}{%- assign js_on = true -%}{%- endif -%}
+
+<section class="ka-lookbook" id="ka-cd-{{ section.id }}" aria-label="Client Diaries lookbook">
   <div class="ka-lookbook__header">
     <p class="eyebrow eyebrow--muted reveal">{{ section.settings.eyebrow }}</p>
     <h2 class="ka-lookbook__header-title reveal reveal-delay-1">{{ section.settings.title }}</h2>
   </div>
 
-  <div class="ka-lookbook__grid">
-    <!-- Column 1: tall image -->
-    <div class="ka-lookbook__item ka-lookbook__item--tall reveal-img">
-      {% if section.settings.image_tall != blank %}
-        <img
-          src="{{ section.settings.image_tall | image_url: width: 900 }}"
-          alt="{{ section.settings.image_tall.alt | escape | default: 'Client Diaries — real K&A bride' }}"
-          loading="lazy"
-          width="900"
-          height="1200"
-          class="img-filter-lookbook"
-        />
-      {% else %}
-        <img
-          src="{{ 'client-diaries-1.jpg' | asset_url }}"
-          alt="Client Diaries — real K&A bride"
-          loading="lazy"
-          width="900"
-          height="1200"
-          class="img-filter-lookbook"
-        />
-      {% endif %}
-      <div class="ka-lookbook__overlay"></div>
-      <div class="ka-lookbook__caption">
-        <span class="ka-lookbook__caption-name">{{ section.settings.caption_1_name }}</span>
-        <span class="ka-lookbook__caption-garment">{{ section.settings.caption_1_garment }}</span>
-      </div>
-    </div>
-
-    <!-- Column 2: text CTA -->
+  <div class="ka-lookbook__grid" id="ka-cd-grid-{{ section.id }}">
+    {%- for slot in (0..2) -%}
+      {%- if slot == 1 -%}
     <div class="ka-lookbook__text-col">
       <p class="eyebrow eyebrow--muted reveal" style="margin-bottom: 16px;">{{ section.settings.text_eyebrow }}</p>
       <h3 class="ka-lookbook__cta-title reveal reveal-delay-1">{{ section.settings.text_title }}</h3>
       <p class="ka-lookbook__cta-body reveal reveal-delay-2">{{ section.settings.text_body }}</p>
       <a href="{{ section.settings.text_cta_url }}" class="btn-dark reveal reveal-delay-3">{{ section.settings.text_cta_label }}</a>
     </div>
-
-    <!-- Column 3: stacked two images -->
-    <div class="ka-lookbook__item ka-lookbook__item--mid">
-      <div class="ka-lookbook__item-inner reveal-img">
-        {% if section.settings.image_mid_1 != blank %}
-          <img
-            src="{{ section.settings.image_mid_1 | image_url: width: 700 }}"
-            alt="{{ section.settings.image_mid_1.alt | escape | default: 'Client Diaries — K&A bride' }}"
-            loading="lazy"
-            width="700"
-            height="500"
-            class="img-filter-lookbook"
-          />
-        {% else %}
-          <img
-            src="{{ 'client-diaries-2.jpg' | asset_url }}"
-            alt="Client Diaries — K&A bride"
-            loading="lazy"
-            width="700"
-            height="500"
-            class="img-filter-lookbook"
-          />
-        {% endif %}
-        <div class="ka-lookbook__overlay"></div>
-        <div class="ka-lookbook__caption">
-          <span class="ka-lookbook__caption-name">{{ section.settings.caption_2_name }}</span>
-          <span class="ka-lookbook__caption-garment">{{ section.settings.caption_2_garment }}</span>
-        </div>
-      </div>
-      <div class="ka-lookbook__item-inner reveal-img">
-        {% if section.settings.image_mid_2 != blank %}
-          <img
-            src="{{ section.settings.image_mid_2 | image_url: width: 700 }}"
-            alt="{{ section.settings.image_mid_2.alt | escape | default: 'Client Diaries — K&A bride' }}"
-            loading="lazy"
-            width="700"
-            height="500"
-            class="img-filter-lookbook"
-          />
-        {% else %}
-          <img
-            src="{{ 'client-diaries-3.jpg' | asset_url }}"
-            alt="Client Diaries — K&A bride"
-            loading="lazy"
-            width="700"
-            height="500"
-            class="img-filter-lookbook"
-          />
-        {% endif %}
-        <div class="ka-lookbook__overlay"></div>
-        <div class="ka-lookbook__caption">
-          <span class="ka-lookbook__caption-name">{{ section.settings.caption_3_name }}</span>
-          <span class="ka-lookbook__caption-garment">{{ section.settings.caption_3_garment }}</span>
-        </div>
-      </div>
-    </div>
+      {%- endif -%}
+      {%- if slot < pick_arr.size -%}
+        {%- assign i = pick_arr[slot] | plus: 0 -%}
+        {%- assign tile_alt = a_first_arr[i] | append: ' wearing Karishma & Ashita — ' | append: a_occ_arr[i] -%}
+        {%- render 'ka-cd-tile',
+          slot: slot,
+          kind: 'pool',
+          src: a_src[i],
+          w: a_w[i],
+          h: a_h[i],
+          alt: tile_alt,
+          fp: a_fp[i],
+          url: a_url[i],
+          first: a_first_arr[i],
+          occ: a_occ_arr[i],
+          id: a_id[i]
+        -%}
+      {%- else -%}
+        {%- if slot == 0 -%}
+          {%- assign mi = section.settings.image_tall -%}{%- assign mname = section.settings.caption_1_name -%}{%- assign msub = section.settings.caption_1_garment -%}{%- assign mfile = 'client-diaries-1.jpg' -%}
+        {%- elsif slot == 1 -%}
+          {%- assign mi = section.settings.image_mid_1 -%}{%- assign mname = section.settings.caption_2_name -%}{%- assign msub = section.settings.caption_2_garment -%}{%- assign mfile = 'client-diaries-2.jpg' -%}
+        {%- else -%}
+          {%- assign mi = section.settings.image_mid_2 -%}{%- assign mname = section.settings.caption_3_name -%}{%- assign msub = section.settings.caption_3_garment -%}{%- assign mfile = 'client-diaries-3.jpg' -%}
+        {%- endif -%}
+        {%- if mi != blank -%}
+          {%- assign mfp = mi.presentation.focal_point | default: '50% 40%' -%}
+          {%- assign msrc = mi | image_url: width: 900 -%}
+          {%- assign malt = mi.alt | default: 'Client Diaries — K&A bride' -%}
+          {%- render 'ka-cd-tile', slot: slot, kind: 'manual', src: msrc, w: 900, h: 1200, alt: malt, fp: mfp, name: mname, sub: msub -%}
+        {%- else -%}
+          {%- assign msrc = mfile | asset_url -%}
+          {%- render 'ka-cd-tile', slot: slot, kind: 'manual', src: msrc, w: 900, h: 1200, alt: 'Client Diaries — K&A bride', fp: '50% 40%', name: mname, sub: msub -%}
+        {%- endif -%}
+      {%- endif -%}
+    {%- endfor -%}
   </div>
+
+  {%- if js_on -%}
+  <script type="application/json" id="ka-cd-pool-{{ section.id }}">
+  [
+    {%- for idv in a_id -%}
+      {%- assign i = forloop.index0 -%}
+      {"id":{{ a_id[i] | json }},"d":{{ a_d[i] | json }},"first":{{ a_first_arr[i] | json }},"occ":{{ a_occ_arr[i] | json }},"url":{{ a_url[i] | json }},"look":{{ a_look[i] | json }},"src":{{ a_src[i] | json }},"w":{{ a_w[i] }},"h":{{ a_h[i] }},"fp":{{ a_fp[i] | json }},"hero":{{ a_hero[i] }}}{% unless forloop.last %},{% endunless %}
+    {%- endfor -%}
+  ]
+  </script>
+  <script>
+  (function () {
+    var root = document.getElementById('ka-cd-{{ section.id }}');
+    var grid = document.getElementById('ka-cd-grid-{{ section.id }}');
+    var pool;
+    try { pool = JSON.parse(document.getElementById('ka-cd-pool-{{ section.id }}').textContent); } catch (e) { return; }
+    if (!root || !grid || pool.length < 3) return;
+    var LEAD = {{ section.settings.lead_article.handle | json }};
+    var DISSOLVE = {{ section.settings.enable_dissolve | json }};
+    var LS = 'ka.cd.seen', SS = 'ka.cd.set';
+    var tiles = [].slice.call(grid.querySelectorAll('.ka-tile'));
+    if (tiles.length !== 3) return;
+    var reduced = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+    var byId = {}; pool.forEach(function (p) { byId[p.id] = p; });
+    var diaries = {}; pool.forEach(function (p) { diaries[p.d] = 1; });
+    var limit = Object.keys(diaries).length === 1 ? 3 : 2;
+
+    function seenSet() { try { return JSON.parse(localStorage.getItem(LS) || '[]'); } catch (e) { return []; } }
+    function remember(items) {
+      try { var s = seenSet(); items.forEach(function (i) { if (s.indexOf(i.id) < 0) s.push(i.id); }); localStorage.setItem(LS, JSON.stringify(s)); } catch (e) {}
+    }
+    function countD(list, d) { return list.filter(function (x) { return x.d === d; }).length; }
+
+    function pick() {
+      var seen = seenSet();
+      if (pool.every(function (i) { return seen.indexOf(i.id) > -1; })) { seen = []; try { localStorage.removeItem(LS); } catch (e) {} }
+      var order = pool.map(function (i) { return { i: i, r: Math.random() + (seen.indexOf(i.id) > -1 ? 1 : 0) }; })
+        .sort(function (a, b) { return a.r - b.r; }).map(function (x) { return x.i; });
+      var chosen = [];
+      if (LEAD) {
+        var lead = pool.filter(function (p) { return p.d === LEAD; })[0];
+        if (lead) chosen.push(lead);
+      }
+      for (var k = 0; k < order.length && chosen.length < 3; k++) {
+        var c = order[k];
+        if (chosen.indexOf(c) > -1 || countD(chosen, c.d) >= limit) continue;
+        var dupLook = chosen.some(function (x) { return x.d === c.d && x.look === c.look; });
+        if (dupLook && order.some(function (o) { return chosen.indexOf(o) < 0 && o.d === c.d && o.look !== c.look && countD(chosen, o.d) < limit; })) continue;
+        chosen.push(c);
+      }
+      if (Object.keys(diaries).length > 1 && chosen.length === 3 && countD(chosen, chosen[0].d) === 3) {
+        var other = order.filter(function (i) { return i.d !== chosen[0].d; })[0];
+        if (other) chosen[2] = other;
+      }
+      for (k = 0; chosen.length < 3 && k < order.length; k++) if (chosen.indexOf(order[k]) < 0) chosen.push(order[k]);
+      if (!(LEAD && chosen[0] && chosen[0].d === LEAD)) {
+        chosen.sort(function (a, b) { return b.hero - a.hero; });   // featured (full-length) frame to the large tile
+      }
+      return chosen;
+    }
+
+    function srcFor(it, slot) { return slot === 0 ? it.src : it.src.replace('width=900', 'width=720'); }
+    function altFor(it) { return it.first + ' wearing Karishma & Ashita — ' + it.occ; }
+    function setText(t, it) {
+      t.setAttribute('data-id', it.id);
+      t.setAttribute('href', it.url);
+      t.setAttribute('aria-label', 'Read ' + it.first + "'s Client Diary — " + it.occ);
+      t.querySelector('.ka-tile__name').textContent = it.first;
+      t.querySelector('.ka-tile__occ').textContent = it.occ;
+    }
+    // Initial swap: replace the server-rendered attributes in place, before the lazy image is fetched.
+    function setNow(t, it, slot) {
+      var im = t.querySelector('.ka-tile__layer img');
+      im.removeAttribute('sizes');
+      im.src = srcFor(it, slot); im.alt = altFor(it);
+      im.width = it.w; im.height = it.h; im.style.objectPosition = it.fp;
+      setText(t, it);
+    }
+    function fadeTo(t, it, slot) {
+      var layer = document.createElement('div'); layer.className = 'ka-tile__layer';
+      var im = new Image(); im.className = 'img-filter-lookbook'; im.alt = altFor(it); im.decoding = 'async';
+      im.width = it.w; im.height = it.h; im.style.objectPosition = it.fp; im.src = srcFor(it, slot);
+      layer.appendChild(im);
+      var go = function () {
+        var old = [].slice.call(t.querySelectorAll('.ka-tile__layer'));
+        t.insertBefore(layer, t.querySelector('.ka-tile__veil'));
+        setText(t, it);
+        requestAnimationFrame(function () { requestAnimationFrame(function () {
+          layer.classList.add('is-on');
+          old.forEach(function (o) { o.classList.remove('is-on'); });
+          setTimeout(function () { old.forEach(function (o) { if (o.parentNode) o.parentNode.removeChild(o); }); }, 2100);
+        }); });
+      };
+      (im.decode ? im.decode() : Promise.resolve()).then(go, go);
+    }
+
+    var current = null;
+    try {
+      var stored = JSON.parse(sessionStorage.getItem(SS) || 'null');
+      if (stored && stored.length === 3) {
+        var s = stored.map(function (id) { return byId[id]; });
+        if (s.every(Boolean) && (!LEAD || (byId[stored[0]] && byId[stored[0]].d === LEAD))) current = s;
+      }
+    } catch (e) {}
+    if (!current) {
+      current = pick();
+      try { sessionStorage.setItem(SS, JSON.stringify(current.map(function (i) { return i.id; }))); } catch (e) {}
+      remember(current);
+    }
+    current.forEach(function (it, i) { setNow(tiles[i], it, i); });
+    root.setAttribute('data-ready', '');
+
+    // Layer 3: slow dissolve, one tile at a time, max 4 per page view
+    if (!DISSOLVE || reduced || pool.length <= 3) return;
+    var inView = false, swaps = 0;
+    if ('IntersectionObserver' in window) {
+      new IntersectionObserver(function (e) { inView = e[0].isIntersecting; }, { threshold: 0.35 }).observe(grid);
+    } else { return; }
+    function tick() {
+      if (swaps >= 4) return;
+      setTimeout(function () {
+        if (document.hidden || !inView) return tick();
+        var slot = Math.floor(Math.random() * 3), t = tiles[slot];
+        if (t.matches(':hover, :focus-within')) return tick();
+        var used = current.map(function (i) { return i.id; });
+        var others = current.filter(function (c, k) { return k !== slot; });
+        if (LEAD && slot === 0) return tick();
+        var cand = pool.filter(function (i) { return used.indexOf(i.id) < 0 && countD(others, i.d) < limit; });
+        if (!cand.length) return tick();
+        var seen = seenSet();
+        var fresh = cand.filter(function (i) { return seen.indexOf(i.id) < 0; });
+        var it = (fresh.length ? fresh : cand)[Math.floor(Math.random() * (fresh.length ? fresh : cand).length)];
+        current[slot] = it; swaps++; remember([it]);
+        fadeTo(t, it, slot);
+        tick();
+      }, 8000 + Math.random() * 4000);
+    }
+    tick();
+  })();
+  </script>
+  {%- endif -%}
 </section>
 
 {% schema %}
@@ -110,14 +356,22 @@
     { "type": "text", "id": "title",   "label": "Section title", "default": "Client Diaries" },
     {
       "type": "header",
-      "content": "Images"
+      "content": "Living shuffle"
     },
-    { "type": "image_picker", "id": "image_tall",  "label": "Tall image (column 1)" },
-    { "type": "image_picker", "id": "image_mid_1", "label": "Stacked image 1 (column 3, top)" },
-    { "type": "image_picker", "id": "image_mid_2", "label": "Stacked image 2 (column 3, bottom)" },
+    { "type": "paragraph", "content": "Images come automatically from the Client Diaries blog (consented, published entries). Each visit shows a fresh set of three." },
+    { "type": "checkbox", "id": "enable_shuffle", "label": "Fresh set on every visit", "default": true },
+    { "type": "checkbox", "id": "enable_dissolve", "label": "Slow image dissolve while on the page", "default": true },
+    { "type": "article", "id": "lead_article", "label": "Lead diary (optional)", "info": "This diary's best image always takes the large tile." },
     {
       "type": "header",
-      "content": "Image captions (hover)"
+      "content": "Fallback images (used only if fewer than 3 diary images exist)"
+    },
+    { "type": "image_picker", "id": "image_tall",  "label": "Fallback image 1 (large tile)" },
+    { "type": "image_picker", "id": "image_mid_1", "label": "Fallback image 2 (right, first)" },
+    { "type": "image_picker", "id": "image_mid_2", "label": "Fallback image 3 (right, second)" },
+    {
+      "type": "header",
+      "content": "Fallback captions"
     },
     { "type": "text", "id": "caption_1_name",    "label": "Image 1 — garment name",    "default": "The Bloom Soirée Lehenga" },
     { "type": "text", "id": "caption_1_garment", "label": "Image 1 — garment detail",  "default": "Blush & Gold — Made to Order" },
@@ -127,7 +381,7 @@
     { "type": "text", "id": "caption_3_garment", "label": "Image 3 — garment detail",  "default": "White & Ivory — Made to Order" },
     {
       "type": "header",
-      "content": "Text column (centre)"
+      "content": "Text column"
     },
     { "type": "text",     "id": "text_eyebrow",   "label": "Text column eyebrow",  "default": "Stories" },
     { "type": "text",     "id": "text_title",      "label": "Text column title",    "default": "Every bride becomes\npart of our diary." },
