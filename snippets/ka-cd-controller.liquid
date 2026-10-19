@@ -65,6 +65,12 @@
   // Initial swap: replace the server-rendered attributes in place, before the lazy image is fetched.
   function setNow(t, it, slot) {
     var im = t.querySelector('.ka-tile__layer img');
+    // Never leave a tile blank: if the swapped-in image fails, restore the server-rendered first-paint image.
+    var orig = { src: im.getAttribute('src'), alt: im.alt, w: im.getAttribute('width'), h: im.getAttribute('height'), fp: im.style.objectPosition };
+    im.addEventListener('error', function () {
+      if (im.getAttribute('src') === orig.src) return;
+      im.setAttribute('src', orig.src); im.alt = orig.alt; im.setAttribute('width', orig.w); im.setAttribute('height', orig.h); im.style.objectPosition = orig.fp;
+    }, { once: true });
     im.removeAttribute('sizes');
     im.src = srcFor(it, slot); im.alt = altFor(it);
     im.width = wFor(it, slot); im.height = hFor(it, slot); im.style.objectPosition = it.fp;
@@ -85,7 +91,10 @@
         setTimeout(function () { old.forEach(function (o) { if (o.parentNode) o.parentNode.removeChild(o); }); }, 2100);
       }); });
     };
-    (im.decode ? im.decode() : Promise.resolve()).then(go, go);
+    // Only fade in an image that actually loaded; on failure keep the current layer (never swap in a blank).
+    var ok = function () { if (im.naturalWidth > 0) go(); };
+    if (im.decode) { im.decode().then(ok, function () { if (im.complete && im.naturalWidth > 0) go(); }); }
+    else if (im.complete) { ok(); } else { im.onload = ok; }
   }
 
   var current = null;

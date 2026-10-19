@@ -35,8 +35,11 @@
   color: inherit;
   text-decoration: none;
 }
-.ka-tile--lead { aspect-ratio: 4 / 5; }
 .ka-tile--b, .ka-tile--c { height: 100%; }
+/* Tile heights come from an in-flow ::before spacer (padding-top ratio), NOT the aspect-ratio
+   property: WebKit/Safari collapses a stretched grid item with `aspect-ratio` and no in-flow
+   content to 0px height (confirmed in Safari 26), which hid every tile. The spacer works in all engines. */
+.ka-tile--lead::before { content: ''; display: block; padding-top: 125%; }   /* 4 / 5 */
 
 .ka-tile__layer {
   position: absolute; inset: 0;
@@ -129,9 +132,11 @@
 @media (max-width: 900px) {
   .ka-lookbook { padding: 90px 0; }
   .ka-lookbook__grid { grid-template-columns: 1fr 1fr; }
-  .ka-tile--lead { grid-column: 1 / -1; aspect-ratio: 3 / 4; }
+  .ka-tile--lead { grid-column: 1 / -1; }
+  .ka-tile--lead::before { padding-top: 133.3334%; }   /* 3 / 4 */
   .ka-lookbook__text-col { grid-column: 1 / -1; order: 2; padding: 40px 28px; }
-  .ka-tile--b, .ka-tile--c { order: 3; height: auto; aspect-ratio: 2 / 3; }
+  .ka-tile--b, .ka-tile--c { order: 3; height: auto; }
+  .ka-tile--b::before, .ka-tile--c::before { content: ''; display: block; padding-top: 150%; }   /* 2 / 3 */
 }
 /* Touch (no hover): caption always present, quietly */
 @media (max-width: 900px), (hover: none) {
