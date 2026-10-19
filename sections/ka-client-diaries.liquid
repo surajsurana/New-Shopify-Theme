@@ -58,10 +58,13 @@
           {%- assign p_occ = p_occ | append: a_occ | append: '^^' -%}
           {%- assign p_url = p_url | append: article.url | append: '^^' -%}
           {%- assign p_look = p_look | append: look.system.handle | append: '^^' -%}
-          {%- assign img_url = img | image_url: width: 900 -%}
-          {%- assign img_h = 900 | divided_by: ar | round -%}
+          {%- comment -%} Request no wider than the source file; declare the dimensions actually delivered. {%- endcomment -%}
+          {%- assign img_w = img.width | default: 900 -%}
+          {%- if img_w > 900 or img_w < 1 -%}{%- assign img_w = 900 -%}{%- endif -%}
+          {%- assign img_url = img | image_url: width: img_w -%}
+          {%- assign img_h = img_w | divided_by: ar | round -%}
           {%- assign p_src = p_src | append: img_url | append: '^^' -%}
-          {%- assign p_w = p_w | append: '900^^' -%}
+          {%- assign p_w = p_w | append: img_w | append: '^^' -%}
           {%- assign p_h = p_h | append: img_h | append: '^^' -%}
           {%- assign p_fp = p_fp | append: fp | append: '^^' -%}
           {%- if is_hero -%}{%- assign p_hero = p_hero | append: '1^^' -%}{%- else -%}{%- assign p_hero = p_hero | append: '0^^' -%}{%- endif -%}
@@ -194,12 +197,16 @@
         {%- endif -%}
         {%- if mi != blank -%}
           {%- assign mfp = mi.presentation.focal_point | default: '50% 40%' -%}
-          {%- assign msrc = mi | image_url: width: 900 -%}
+          {%- assign mw = mi.width | default: 900 -%}
+          {%- if mw > 900 or mw < 1 -%}{%- assign mw = 900 -%}{%- endif -%}
+          {%- assign mh = mi.height | default: 1200 -%}
+          {%- assign mh = mw | times: mh | times: 1.0 | divided_by: mi.width | round -%}
+          {%- assign msrc = mi | image_url: width: mw -%}
           {%- assign malt = mi.alt | default: 'Client Diaries — K&A bride' -%}
-          {%- render 'ka-cd-tile', slot: slot, kind: 'manual', src: msrc, w: 900, h: 1200, alt: malt, fp: mfp, name: mname, sub: msub -%}
+          {%- render 'ka-cd-tile', slot: slot, kind: 'manual', src: msrc, w: mw, h: mh, alt: malt, fp: mfp, name: mname, sub: msub -%}
         {%- else -%}
           {%- assign msrc = mfile | asset_url -%}
-          {%- render 'ka-cd-tile', slot: slot, kind: 'manual', src: msrc, w: 900, h: 1200, alt: 'Client Diaries — K&A bride', fp: '50% 40%', name: mname, sub: msub -%}
+          {%- render 'ka-cd-tile', slot: slot, kind: 'manual', src: msrc, w: 800, h: 1200, alt: 'Client Diaries — K&A bride', fp: '50% 40%', name: mname, sub: msub -%}
         {%- endif -%}
       {%- endif -%}
     {%- endfor -%}

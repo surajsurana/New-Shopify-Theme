@@ -114,6 +114,17 @@
 }
 .ka-lookbook__text-col .btn-dark { align-self: flex-start; }
 
+/* Laptop band (901-1279px): the lead tile's 4/5 aspect-ratio keeps setting the row height, so
+   the tracks must not be inflated by the text column's min-content (minmax(0,...)). Text column
+   is given a wider track and slightly smaller type so it stays readable and fits the row.
+   Small tiles hold ~0.656 (spec 2.4: ~0.70, native 2:3 = 0.667). >=1280 and <=900 unchanged. */
+@media (min-width: 901px) and (max-width: 1279px) {
+  .ka-lookbook__grid { grid-template-columns: minmax(0, 1fr) minmax(0, 0.95fr) minmax(0, 0.82fr) minmax(0, 0.82fr); }
+  .ka-lookbook__text-col { min-height: 0; padding: clamp(14px, 2.2vw, 28px); }
+  .ka-lookbook__cta-title { font-size: clamp(1.15rem, 2vw, 1.6rem); margin-bottom: 10px; }
+  .ka-lookbook__cta-body { font-size: 0.78rem; line-height: 1.65; margin-bottom: 12px; }
+}
+
 /* Tablet / phone: lead full width (3/4), text, then two tiles (2/3) */
 @media (max-width: 900px) {
   .ka-lookbook { padding: 90px 0; }
