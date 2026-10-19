@@ -60,7 +60,7 @@
 
   assign breakout_image = section.settings.breakout_image
   if breakout_image == blank
-    assign breakout_image = article.metafields.custom.breakout_image
+    assign breakout_image = article.metafields.custom.breakout_image.value
   endif
   assign breakout_is_placeholder = false
   if breakout_image == blank
