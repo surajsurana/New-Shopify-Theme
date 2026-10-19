@@ -296,8 +296,21 @@ image file's own alt text never reaches the page. Use the image's alt,
 falling back to the article title.
 **Deadline:** live by 2026-10-27, or SEO holds post 8 (publishes 2026-10-28
 09:00 UTC). Confirm status to SEO by 2026-10-26.
+**Release STOPPED by Suraj, 2026-10-19 (before anything reached Live):**
+looking at Live in Safari, he judged the festive post's current hero (30%)
+already right, and wants every hero to show the face AND the outfit, not just
+the face. A global 8% shows faces but loses outfit on some posts. Back to
+Creative Director to rethink with that criterion. The alt-text fix (Fix 2) is
+unaffected and still wanted.
 **Done already (no theme change):** post 7's breakout image replaced by SEO to
 CD's exact choice, confirmed on the live page 2026-10-19.
+
+### 32. Homepage Client Diaries: images change and shuffle automatically -- IN PROGRESS (approved 2026-10-19)
+**Source:** Suraj, 2026-10-19. `sections/ka-client-diaries.liquid` (homepage)
+holds 3 hand-picked image_picker slots with hand-typed captions, so new
+Client Diaries entries never reach the homepage. Suraj wants the images to
+keep changing and shuffling on their own, even when no new diary has been
+added for a while, drawing on the real Client Diaries entries.
 
 ### 5. Footer legal-entity line has a double period ("Ltd..") -- RESOLVED and LIVE (fixed 2026-08-29, `22f6c4a`; confirmed on staging and main 2026-10-18)
 **Source:** QA Reviewer, 2026-08-11. Sitewide (`sections/ka-footer.liquid`), now

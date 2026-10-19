@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>K&A — Homepage Client Diaries (shuffle) — Prototype v1</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;1,400&family=Jost:wght@300;400&display=swap" rel="stylesheet">
+<style>
+/* Tokens identical to assets/ka-base.css */
+:root{
+  --c-paper:#F7F3EC;--c-paper-deep:#EFE8DD;--c-charcoal:#2A2420;--c-ink:#2A2420;--c-ink-mid:#6E655B;--c-ink-muted:#9C9389;
+  --c-rosegold:#9A7B4F;--line:rgba(42,36,32,.12);
+  --f-display:'Cormorant Garamond',Georgia,serif;--f-sans:'Jost','Helvetica Neue',Arial,sans-serif;
+  --t-h2:clamp(2rem,3.5vw,3.2rem);--t-h3:clamp(1.4rem,2.2vw,2rem);--t-eyebrow:.66rem;
+  --s-lg:64px;--s-2xl:140px;--gutter:clamp(20px,5vw,80px);
+  --ease-luxury:cubic-bezier(.16,.84,.44,1);--dur-med:.65s;
+  --dissolve:1.8s;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{font-size:16px}
+body{background:#d9d2c6;font-family:var(--f-sans);font-weight:300;line-height:1.75;color:var(--c-ink);-webkit-font-smoothing:antialiased}
+a{color:inherit;text-decoration:none}button{border:0;background:none;font:inherit;cursor:pointer}
+
+/* ---------- Presentation chrome (NOT part of the section) ---------- */
+.deck{position:sticky;top:0;z-index:50;background:#1D1916;color:#EFE8DD;display:flex;gap:18px;align-items:center;flex-wrap:wrap;padding:12px 20px;font-size:.72rem;letter-spacing:.14em;text-transform:uppercase}
+.deck b{font-weight:400;color:#B99B6E}
+.deck button{border:1px solid rgba(185,155,110,.5);color:#EFE8DD;padding:8px 16px;letter-spacing:.16em;font-size:.68rem;text-transform:uppercase;transition:background .3s}
+.deck button:hover,.deck button.on{background:#B99B6E;color:#1D1916}
+.deck .sp{flex:1}
+.deck label{display:flex;gap:8px;align-items:center;cursor:pointer}
+.stage{display:flex;justify-content:center;padding:28px 0 60px}
+.frame{background:var(--c-paper);width:1440px;max-width:100%;transition:width .5s var(--ease-luxury);box-shadow:0 20px 60px rgba(0,0,0,.18)}
+.frame.mobile{width:390px}
+.ctx{padding:56px var(--gutter);text-align:center;color:var(--c-ink-muted);font-size:.7rem;letter-spacing:.24em;text-transform:uppercase}
+.panel{max-width:1440px;margin:0 auto;background:#1D1916;color:#cfc6b8;font-size:.78rem;padding:18px 24px;line-height:1.7}
+.panel h4{font-weight:400;color:#B99B6E;letter-spacing:.16em;text-transform:uppercase;font-size:.68rem;margin-bottom:6px}
+.panel code{color:#EFE8DD}
+.panel .row{display:flex;gap:28px;flex-wrap:wrap}.panel .row>div{flex:1;min-width:260px}
+.panel .ex{opacity:.55}
+
+/* ---------- THE SECTION ---------- */
+.eyebrow{font-size:var(--t-eyebrow);letter-spacing:.24em;text-transform:uppercase;color:var(--c-ink-muted);font-weight:400}
+.btn-dark{display:inline-block;align-self:flex-start;background:var(--c-charcoal);color:var(--c-paper);padding:15px 30px;font-size:.68rem;letter-spacing:.2em;text-transform:uppercase;font-weight:400;transition:background .4s}
+.btn-dark:hover{background:var(--c-rosegold)}
+
+.ka-lookbook{padding:var(--s-2xl) 0;overflow:hidden}
+.ka-lookbook__header{padding:0 var(--gutter) var(--s-lg)}
+.ka-lookbook__header-title{font-family:var(--f-display);font-size:var(--t-h2);font-weight:400;line-height:1.05;margin-top:8px;color:var(--c-charcoal)}
+
+/* Four tracks: tile | text | tile | tile. Row height is driven by the tile aspect-ratio, never by vh,
+   so portrait photographs are never forced into a landscape slot. */
+.ka-lookbook__grid{display:grid;grid-template-columns:1.15fr .8fr 1fr 1fr;gap:3px;align-items:stretch}
+.ka-tile{position:relative;overflow:hidden;background:var(--c-paper-deep);display:block;min-height:0}
+.ka-tile--lead{aspect-ratio:4/5}
+.ka-tile--b,.ka-tile--c{height:100%}
+.ka-tile--b{}
+.ka-tile__layer{position:absolute;inset:0;opacity:0;transition:opacity var(--dissolve) ease-in-out}
+.ka-tile__layer.is-on{opacity:1}
+.ka-tile__layer img{width:100%;height:100%;object-fit:cover;display:block;filter:sepia(.12) saturate(.88) brightness(.96);transform:scale(1.0);transition:transform 1.4s var(--ease-luxury)}
+.ka-tile:hover .ka-tile__layer img{transform:scale(1.03)}
+.ka-tile__veil{position:absolute;inset:0;background:linear-gradient(to top,rgba(15,12,10,.62) 0%,transparent 48%);opacity:0;transition:opacity var(--dur-med);pointer-events:none}
+.ka-tile:hover .ka-tile__veil,.ka-tile:focus-visible .ka-tile__veil{opacity:1}
+.ka-tile__cap{position:absolute;left:24px;right:24px;bottom:22px;opacity:0;transform:translateY(8px);transition:opacity var(--dur-med),transform var(--dur-med) var(--ease-luxury);color:#fff;pointer-events:none}
+.ka-tile:hover .ka-tile__cap,.ka-tile:focus-visible .ka-tile__cap{opacity:1;transform:none}
+.ka-tile__name{display:block;font-family:var(--f-display);font-style:italic;font-size:1.25rem;line-height:1.2;transition:opacity .6s}
+.ka-tile__occ{display:block;font-size:.62rem;letter-spacing:.16em;text-transform:uppercase;color:rgba(255,255,255,.75);margin-top:2px}
+.ka-tile__read{display:block;font-size:.6rem;letter-spacing:.2em;text-transform:uppercase;color:rgba(255,255,255,.9);margin-top:10px;border-top:1px solid rgba(255,255,255,.3);padding-top:8px;width:max-content}
+.ka-tile:focus-visible{outline:1px solid var(--c-rosegold);outline-offset:-6px}
+
+.ka-lookbook__text-col{display:flex;flex-direction:column;justify-content:center;padding:clamp(24px,3.2vw,52px);background:var(--c-paper-deep)}
+.ka-lookbook__cta-title{font-family:var(--f-display);font-size:var(--t-h3);font-weight:400;font-style:italic;line-height:1.3;margin-bottom:20px;color:var(--c-charcoal)}
+.ka-lookbook__cta-body{font-size:.86rem;line-height:1.9;color:var(--c-ink-mid);margin-bottom:30px}
+
+/* Soft reveal on first paint of the chosen set (CSS only, no layout change) */
+.ka-lookbook[data-ready] .ka-tile__layer.is-on{opacity:1}
+
+/* Mobile (container-width driven so the switcher works) */
+.frame.mobile .ka-lookbook{padding:90px 0}
+.frame.mobile .ka-lookbook__grid{grid-template-columns:1fr 1fr}
+.frame.mobile .ka-tile--lead{grid-column:1/-1;aspect-ratio:3/4}
+.frame.mobile .ka-lookbook__text-col{grid-column:1/-1;order:2;padding:40px 28px}
+.frame.mobile .ka-tile--b,.frame.mobile .ka-tile--c{order:3;height:auto;aspect-ratio:2/3}
+/* touch: no hover, so the caption is always present, quietly */
+.frame.mobile .ka-tile__veil{opacity:1;background:linear-gradient(to top,rgba(15,12,10,.5) 0%,transparent 38%)}
+.frame.mobile .ka-tile__cap{opacity:1;transform:none;left:14px;right:14px;bottom:12px}
+.frame.mobile .ka-tile__name{font-size:1rem}
+.frame.mobile .ka-tile__occ{font-size:.55rem}
+.frame.mobile .ka-tile__read{display:none}
+/* Real theme: put the above under @media (max-width:900px) and (hover:none); the prototype uses .frame.mobile */
+
+@media (prefers-reduced-motion:reduce){
+  .ka-tile__layer{transition:none}.ka-tile__layer img{transition:none}
+}
+.reduced .ka-tile__layer{transition:none}
+</style>
+</head>
+<body>
+
+<div class="deck">
+  <b>Prototype</b><span>Homepage — Client Diaries (live shuffle)</span>
+  <span class="sp"></span>
+  <button id="btnDesk" class="on">Desktop</button>
+  <button id="btnMob">Mobile</button>
+  <button id="btnRevisit" title="Simulates closing the site and coming back another day">Shuffle / revisit</button>
+  <label><input type="checkbox" id="chkLive" checked> On-page dissolve</label>
+  <label><input type="checkbox" id="chkRM"> Reduced motion</label>
+</div>
+
+<div class="stage">
+  <div class="frame" id="frame">
+    <div class="ctx">— Homepage above: Celebrity / Bestsellers —</div>
+
+    <section class="ka-lookbook" id="kaLookbook" aria-label="Client Diaries lookbook">
+      <div class="ka-lookbook__header">
+        <p class="eyebrow">Real Brides</p>
+        <h2 class="ka-lookbook__header-title">Client Diaries</h2>
+      </div>
+
+      <div class="ka-lookbook__grid" id="grid">
+        <!-- Server-rendered first paint (date-rotated set). Real <img>, correct box, so no CLS, SEO and no-JS safe. -->
+        <a class="ka-tile ka-tile--lead" data-slot="0" href="#"></a>
+        <div class="ka-lookbook__text-col">
+          <p class="eyebrow" style="margin-bottom:16px">Stories</p>
+          <h3 class="ka-lookbook__cta-title">Every bride becomes<br>part of our diary.</h3>
+          <p class="ka-lookbook__cta-body">From the first conversation to the last pin, we document the journey of every K&amp;A bride. Each diary entry is a story of craft, emotion, and the precise moment a woman becomes a bride.</p>
+          <a href="https://karishmaashita.com/blogs/client-diaries" class="btn-dark">Read the diaries</a>
+        </div>
+        <a class="ka-tile ka-tile--b" data-slot="1" href="#"></a>
+        <a class="ka-tile ka-tile--c" data-slot="2" href="#"></a>
+      </div>
+    </section>
+
+    <div class="ctx">— Homepage below: Voice of the Bride —</div>
+  </div>
+</div>
+
+<div class="panel">
+  <div class="row">
+    <div><h4>This view</h4><div id="dbgView"></div></div>
+    <div><h4>Pool (what the section outputs as JSON)</h4><div id="dbgPool"></div></div>
+    <div><h4>Selection rules applied</h4>
+      1. Eligible = portrait (aspect &le; 0.85), from consented, published diaries, not curated out.<br>
+      2. Unseen-first: images this browser has not been shown yet rank first (localStorage); when all seen, reset.<br>
+      3. Max 2 images from one diary; at least 2 diaries when available; avoid two from the same look.<br>
+      4. Pinned/lead diary (if set) always takes the large tile.<br>
+      5. Stable for the session (sessionStorage); new set on next visit.<br>
+      6. Dissolve: one tile at a time, ~9s apart, only while visible, max 4 times, then rest.</div>
+  </div>
+</div>
+
+<script>
+/* ---------------- POOL (in production: emitted by Liquid as <script type="application/json">) ---------------- */
+const CDN='https://karishmaashita.com/cdn/shop/files/';
+const D=[ // diary entries
+ {id:'simran',first:'Simran',occasion:'Sangeet & Cocktail',url:'https://karishmaashita.com/blogs/client-diaries/simran-bandukwalla'},
+ {id:'jinali',first:'Jinali',occasion:'Welcome Event',url:'https://karishmaashita.com/blogs/client-diaries/jinali-shah'}];
+const IMG=[
+ // diary, look, file, aspect, focal (Shopify native focal point), tag, curated
+ {d:'simran',look:'maroon', f:'cd-simran-maroon-1', a:.667,fp:'55% 42%',note:'couple, outfit full length'},
+ {d:'simran',look:'maroon', f:'cd-simran-maroon-2', a:1.5, fp:'60% 40%',note:'landscape'},
+ {d:'simran',look:'maroon', f:'cd-simran-maroon-3', a:.667,fp:'55% 55%',note:'aisle, full length (article hero)'},
+ {d:'simran',look:'pink',   f:'cd-simran-pink',     a:.667,fp:'50% 45%',note:'twirl, face + full skirt'},
+ {d:'simran',look:'gold',   f:'cd-simran-gold',     a:.667,fp:'50% 40%',note:'night, full length'},
+ {d:'jinali',look:'sage',   f:'cd-jinali-sagegreen-1',a:.667,fp:'38% 42%',note:'couple'},
+ {d:'jinali',look:'sage',   f:'cd-jinali-sagegreen-2',a:.667,fp:'50% 38%',note:'portrait to hip, outfit visible'},
+ {d:'jinali',look:'sage',   f:'cd-jinali-sagegreen-3',a:.667,fp:'50% 70%',note:'garden, figure too small',curatedOut:true},
+ {d:'jinali',look:'sage',   f:'cd-jinali-sagegreen-4',a:.667,fp:'45% 62%',note:'steps, seated (article hero)'}
+].map(i=>({...i,id:i.d+':'+i.f,src:CDN+i.f+'.jpg?width=900',diary:D.find(x=>x.id===i.d)}));
+const eligible=IMG.filter(i=>i.a<=.85 && !i.curatedOut);
+
+/* ---------------- SELECTION ---------------- */
+const LS='ka.cd.seen', SS='ka.cd.set';
+const rnd=a=>a[Math.floor(Math.random()*a.length)];
+function seenSet(){try{return new Set(JSON.parse(localStorage.getItem(LS)||'[]'))}catch(e){return new Set()}}
+function pick(n=3,{fresh=true}={}){
+  let seen=seenSet(); let pool=eligible.slice();
+  if(pool.every(i=>seen.has(i.id))){seen=new Set();localStorage.removeItem(LS)}
+  const chosen=[];
+  const shuffled=pool.map(i=>({i,r:Math.random()+(seen.has(i.id)?1:0)})).sort((a,b)=>a.r-b.r).map(x=>x.i); // unseen first
+  const diaries=new Set(pool.map(i=>i.d));
+  for(const c of shuffled){
+    if(chosen.length===n)break;
+    const sameD=chosen.filter(x=>x.d===c.d).length;
+    if(sameD>=2)continue;
+    if(chosen.some(x=>x.d===c.d&&x.look===c.look)&&shuffled.some(o=>!chosen.includes(o)&&o.d===c.d&&o.look!==c.look&&chosen.filter(x=>x.d===o.d).length<2))continue;
+    chosen.push(c);
+  }
+  // require >=2 diaries if available
+  if(diaries.size>1 && new Set(chosen.map(i=>i.d)).size<2){
+    const other=shuffled.find(i=>!chosen.some(c=>c.d===i.d));
+    if(other)chosen[chosen.length-1]=other;
+  }
+  // best candidate for the big tile: prefer a full-length single-subject frame
+  chosen.sort((a,b)=>(b.note.includes('full length')|0)-(a.note.includes('full length')|0));
+  while(chosen.length<n){const x=shuffled.find(i=>!chosen.includes(i));if(!x)break;chosen.push(x)}
+  return chosen;
+}
+function remember(set){try{const s=seenSet();set.forEach(i=>s.add(i.id));localStorage.setItem(LS,JSON.stringify([...s]))}catch(e){}}
+
+/* ---------------- TILE RENDERING ---------------- */
+const tiles=[...document.querySelectorAll('.ka-tile')];
+function layerFor(it){
+  const l=document.createElement('div');l.className='ka-tile__layer';
+  const im=new Image();im.alt=it.diary.first+' wearing Karishma & Ashita — '+it.diary.occasion;im.src=it.src;
+  im.style.objectPosition=it.fp;im.decoding='async';l.appendChild(im);return l;
+}
+function capFor(it){
+  return `<span class="ka-tile__name">${it.diary.first}</span><span class="ka-tile__occ">${it.diary.occasion}</span><span class="ka-tile__read">Read her diary</span>`;
+}
+function ensureChrome(t){
+  if(!t.querySelector('.ka-tile__veil')){
+    t.insertAdjacentHTML('beforeend','<div class="ka-tile__veil"></div><div class="ka-tile__cap"></div>');
+  }
+}
+function setTile(t,it,{fade=false}={}){
+  ensureChrome(t);
+  t.dataset.id=it.id;t.href=it.diary.url;
+  t.setAttribute('aria-label','Read '+it.diary.first+"'s Client Diary — "+it.diary.occasion);
+  const next=layerFor(it);
+  const old=[...t.querySelectorAll('.ka-tile__layer')];
+  const cap=t.querySelector('.ka-tile__cap');
+  const go=()=>{
+    t.insertBefore(next,t.querySelector('.ka-tile__veil'));
+    cap.innerHTML=capFor(it);
+    if(!fade||document.documentElement.classList.contains('reduced')||matchMedia('(prefers-reduced-motion:reduce)').matches){
+      old.forEach(o=>o.remove());next.classList.add('is-on');
+    }else{
+      requestAnimationFrame(()=>requestAnimationFrame(()=>{next.classList.add('is-on');old.forEach(o=>o.classList.remove('is-on'));
+        setTimeout(()=>old.forEach(o=>o.remove()),2100);}));
+    }
+  };
+  // never reveal until decoded: no half-loaded flash
+  const im=next.firstChild; (im.decode?im.decode():Promise.resolve()).then(go,go);
+}
+function render(set,opts){set.forEach((it,i)=>setTile(tiles[i],it,opts));debug(set)}
+
+/* ---------------- LIFECYCLE ---------------- */
+let current=[],liveTimer=null,swaps=0;
+function boot(newVisit){
+  let set;
+  const stored=!newVisit&&sessionStorage.getItem(SS);
+  if(stored){set=JSON.parse(stored).map(id=>IMG.find(i=>i.id===id)).filter(Boolean)}
+  if(!set||set.length<3){set=pick();sessionStorage.setItem(SS,JSON.stringify(set.map(i=>i.id)));remember(set)}
+  current=set;render(set,{fade:newVisit});swaps=0;startLive();
+}
+function startLive(){
+  stopLive();
+  if(!document.getElementById('chkLive').checked||matchMedia('(prefers-reduced-motion:reduce)').matches||document.documentElement.classList.contains('reduced'))return;
+  if(eligible.length<=3)return; // nothing spare to dissolve to
+  liveTimer=setInterval(()=>{
+    if(document.hidden||!inView||swaps>=4)return;
+    const t=Math.floor(Math.random()*3);const t_el=tiles[t];
+    if(t_el.matches(':hover,:focus-visible'))return;
+    const used=new Set(current.map(i=>i.id));
+    const cand=eligible.filter(i=>!used.has(i.id)&&current.filter((c,k)=>k!==t&&c.d===i.d).length<2);
+    if(!cand.length)return;
+    const it=rnd(cand);current[t]=it;swaps++;remember([it]);setTile(t_el,it,{fade:true});debug(current);
+  },DEMO_INTERVAL);
+}
+function stopLive(){clearInterval(liveTimer)}
+let inView=true;const DEMO_INTERVAL=9000;
+new IntersectionObserver(e=>{inView=e[0].isIntersecting},{threshold:.35}).observe(document.getElementById('grid'));
+
+function debug(set){
+  document.getElementById('dbgView').innerHTML=set.map((i,k)=>`${['Large','Mid','Right'][k]}: <code>${i.diary.first}</code> &middot; ${i.look} &middot; focal ${i.fp}`).join('<br>')+`<br><span class="ex">dissolves used: ${swaps}/4 &nbsp; session-stable, new set next visit</span>`;
+  document.getElementById('dbgPool').innerHTML=IMG.map(i=>{
+    const out=i.a>.85?'excluded: landscape':i.curatedOut?'excluded: curated out':'';
+    const on=set.some(s=>s.id===i.id)?' <code>[showing]</code>':'';
+    return `<div class="${out?'ex':''}">${i.diary.first} / ${i.f.replace('cd-','')}${out?' &mdash; '+out:on}</div>`}).join('');
+}
+
+/* ---------------- CONTROLS ---------------- */
+const frame=document.getElementById('frame');
+btnDesk.onclick=()=>{frame.classList.remove('mobile');btnDesk.classList.add('on');btnMob.classList.remove('on')};
+btnMob.onclick=()=>{frame.classList.add('mobile');btnMob.classList.add('on');btnDesk.classList.remove('on')};
+btnRevisit.onclick=()=>{sessionStorage.removeItem(SS);boot(true)};
+chkLive.onchange=startLive;
+chkRM.onchange=()=>{document.documentElement.classList.toggle('reduced',chkRM.checked);startLive()};
+
+/* Production note: this runs as an inline script directly after the grid markup (before first paint of that
+   region), so the server-rendered date-rotated <img>s are replaced before the browser has fetched them
+   (they are loading="lazy" and below the fold). Here, for the demo, the first boot has no fade. */
+boot(false);
+</script>
+</body>
+</html>
