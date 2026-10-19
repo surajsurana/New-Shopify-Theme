@@ -263,6 +263,42 @@ either case number.
 See memory `ka_google_reviews_livesync_status` for full detail if resuming
 this in a future session.
 
+### 30. Loomière festive collection launch -- IN PROGRESS (started 2026-10-19)
+**Source:** Suraj, 2026-10-19. New festive collection, photoshoot done, launch
+"this or next week latest", not tied to a specific festival.
+**Plan:** `Docs/loomiere-launch-creative-brief.md` (Creative Director, 2026-10-19).
+**Suraj's decisions (2026-10-19):** build and iterate on staging until he is
+satisfied, then push to Live; FirstLove stays as the homepage collection-story
+highlight (not replaced); Loomière goes into the homepage main hero, which
+becomes a slider (new code -- `ka-hero` is currently a single image).
+**Waiting on Suraj:** shoot photos and product uploads (piece list, prices and
+lead times will come with them); confirm the name's meaning ("loom" + "light"
+is a guess); homepage Collections Directory 6th card (3x2 grid recommended).
+**Store-data caveat:** the `loomiere` collection is store data, shared by every
+theme. It is published on all 5 sales channels (Online Store, POS, Facebook &
+Instagram, Google & YouTube, Shop), so anything added to it while products are
+active shows on Live and in the ad catalogs immediately -- staging only hides
+the theme design, not the products.
+
+### 31. Article hero crop + breakout alt text -- IN PROGRESS (approved 2026-10-19)
+**Source:** SEO & Discoverability, 2026-10-19, under Suraj's new rule that
+Creative Director signs off every blog post visually (desktop + mobile).
+Full review: `Docs/blog-visual-review-2026-10-19.md`.
+**Fix 1 -- hero crop (theme-wide):** `.a-hero__bg img` in
+`assets/ka-article-hero.css` is anchored at `object-position: center 30%`,
+which cuts faces off on desktop for most article heroes (CD: 6 of 7 checked)
+and for scheduled post 8 (`corset-jumpsuits-bustier-sets-sangeet`). CD
+rendered 8%; Technical Director to verify ~10% vs 8% on staging. Mobile is
+unaffected.
+**Fix 2 -- breakout alt text:** `sections/ka-article-body.liquid` has a render
+path using `breakout_caption | default: article.title` as the alt, so the
+image file's own alt text never reaches the page. Use the image's alt,
+falling back to the article title.
+**Deadline:** live by 2026-10-27, or SEO holds post 8 (publishes 2026-10-28
+09:00 UTC). Confirm status to SEO by 2026-10-26.
+**Done already (no theme change):** post 7's breakout image replaced by SEO to
+CD's exact choice, confirmed on the live page 2026-10-19.
+
 ### 5. Footer legal-entity line has a double period ("Ltd..") -- RESOLVED and LIVE (fixed 2026-08-29, `22f6c4a`; confirmed on staging and main 2026-10-18)
 **Source:** QA Reviewer, 2026-08-11. Sitewide (`sections/ka-footer.liquid`), now
 on both staging and Live. Root cause: the `legal_entity_name` schema default

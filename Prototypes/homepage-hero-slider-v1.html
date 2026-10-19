@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>K&amp;A — Homepage hero slider — prototype v1</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Jost:wght@200;300;400;500&display=swap" rel="stylesheet" />
+
+<style>
+/* =================================================================
+   PART 1 — EXISTING TOKENS + BASE (verbatim from assets/ka-base.css
+   and assets/ka-animations.css, trimmed to what the hero uses).
+   Nothing in this part is changed by the slider.
+================================================================= */
+:root {
+  --c-paper:#F7F3EC; --c-paper-deep:#EFE8DD; --c-charcoal:#2A2420; --c-charcoal-2:#1D1916;
+  --c-ink:#2A2420; --c-ink-mid:#6E655B; --c-rosegold:#9A7B4F; --c-rosegold-2:#7E6440;
+  --f-display:'Cormorant Garamond', Georgia, 'Times New Roman', serif;
+  --f-sans:'Jost', 'Helvetica Neue', Arial, sans-serif;
+  --t-hero:clamp(3.6rem, 8vw, 8rem);
+  --s-xs:8px; --s-sm:16px; --s-md:32px; --s-lg:64px; --s-xl:96px; --s-2xl:140px;
+  --gutter:clamp(20px, 5vw, 80px);
+  --ease-luxury:cubic-bezier(0.16, 0.84, 0.44, 1);
+  --ease-soft:cubic-bezier(0.22, 0.61, 0.36, 1);
+  --dur-fast:0.35s; --dur-med:0.65s;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{font-size:16px}
+body{background:var(--c-paper);color:var(--c-ink);font-family:var(--f-sans);font-weight:300;line-height:1.75;
+  -webkit-font-smoothing:antialiased;overflow-x:hidden}
+img{display:block;width:100%;height:100%;object-fit:cover}
+a{text-decoration:none;color:inherit}
+button{border:none;background:none;cursor:pointer;font-family:inherit;color:inherit}
+.img-filter-hero{filter:sepia(0.10) saturate(0.90) brightness(0.96)}
+.btn-ghost{font-family:var(--f-sans);font-size:0.68rem;font-weight:400;letter-spacing:0.2em;text-transform:uppercase;color:#fff;
+  border:1px solid rgba(255,255,255,0.55);padding:14px 36px;display:inline-block;
+  transition:background var(--dur-fast),color var(--dur-fast),border-color var(--dur-fast)}
+.btn-ghost:hover{background:#fff;color:var(--c-charcoal);border-color:#fff}
+.btn-text{font-family:var(--f-sans);font-size:0.68rem;font-weight:400;letter-spacing:0.18em;text-transform:uppercase;
+  color:rgba(255,255,255,0.75);display:inline-flex;align-items:center;gap:12px;transition:color var(--dur-fast)}
+.btn-text::after{content:'';display:block;width:32px;height:1px;background:rgba(255,255,255,0.5);
+  transition:width var(--dur-med) var(--ease-luxury),background var(--dur-fast)}
+.btn-text:hover{color:#fff}.btn-text:hover::after{width:52px;background:#fff}
+@keyframes fadeUp{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+@keyframes scrollDrop{0%{top:-100%}100%{top:100%}}
+
+/* =================================================================
+   PART 2 — PROPOSED PRODUCTION CSS: assets/ka-hero.css (revised)
+   Lines marked "unchanged" are the current live rules, kept as is.
+================================================================= */
+.ka-hero{position:relative;height:100vh;height:100svh;min-height:600px;overflow:hidden;
+  background:var(--c-charcoal-2)} /* unchanged, plus a dark ground so a cross-fade never flashes white */
+
+/* Slides wrapper: carries the desktop parallax (was on .ka-hero__bg) */
+.ka-hero__slides{position:absolute;inset:0;will-change:transform}
+
+/* One slide = image + overlay + content. All slides stacked, one visible. */
+.ka-hero__slide{position:absolute;inset:0;opacity:0;visibility:hidden;z-index:0;
+  transition:opacity 1.4s var(--ease-soft),visibility 0s linear 1.4s}
+.ka-hero__slide.is-prev{opacity:1;visibility:visible;z-index:1;
+  transition:opacity .6s var(--ease-soft) .8s,visibility 0s linear 1.4s}      /* outgoing: holds, then dissolves under the incoming */
+.ka-hero__slide.is-active{opacity:1;visibility:visible;z-index:2;
+  transition:opacity 1.4s var(--ease-soft),visibility 0s}
+.ka-hero__slide:only-child{opacity:1;visibility:visible;z-index:2}              /* one-slide degrade = today's hero */
+
+.ka-hero__bg{position:absolute;inset:0;transform:scale(1.05);transition:transform 2.2s var(--ease-luxury)} /* unchanged */
+.ka-hero__bg.loaded{transform:scale(1)}                                           /* unchanged */
+.ka-hero__bg img{object-position:var(--focal, center 20%)}                        /* focal point from the image picker; falls back to today's value */
+
+/* Overlay — "standard" is the current gradient, byte for byte */
+.ka-hero__overlay{position:absolute;inset:0;
+  background:linear-gradient(to bottom,rgba(15,12,10,0.22) 0%,rgba(15,12,10,0.05) 40%,rgba(15,12,10,0.62) 100%)}
+.ka-hero__slide[data-overlay="soft"] .ka-hero__overlay{
+  background:linear-gradient(to bottom,rgba(15,12,10,0.18) 0%,rgba(15,12,10,0.03) 40%,rgba(15,12,10,0.46) 100%)}
+.ka-hero__slide[data-overlay="deep"] .ka-hero__overlay{
+  background:
+    linear-gradient(to right,rgba(15,12,10,0.38) 0%,rgba(15,12,10,0) 62%),
+    linear-gradient(to bottom,rgba(15,12,10,0.26) 0%,rgba(15,12,10,0.08) 38%,rgba(15,12,10,0.74) 100%)}
+
+.ka-hero__content{position:absolute;bottom:var(--s-2xl);left:var(--gutter);right:var(--gutter);max-width:900px;
+  transition:opacity .5s var(--ease-soft)}                                         /* unchanged position; fade added for outgoing slide */
+.ka-hero__slide.is-prev .ka-hero__content{opacity:0}
+
+/* Text entrance. Slide 1 on first paint = today's timings exactly.
+   Later activations start sooner, because the image is already dissolving in. */
+.ka-hero__eyebrow,.ka-hero__title,.ka-hero__sub,.ka-hero__ctas{opacity:0}
+.ka-hero__slide.is-active .ka-hero__eyebrow{animation:fadeUp 1s   var(--ease-luxury) .6s  forwards}
+.ka-hero__slide.is-active .ka-hero__title  {animation:fadeUp 1.2s var(--ease-luxury) .9s  forwards}
+.ka-hero__slide.is-active .ka-hero__sub    {animation:fadeUp 1s   var(--ease-luxury) 1.3s forwards}
+.ka-hero__slide.is-active .ka-hero__ctas   {animation:fadeUp 1s   var(--ease-luxury) 1.6s forwards}
+.ka-hero.is-cycled .ka-hero__slide.is-active .ka-hero__eyebrow{animation-delay:.5s}
+.ka-hero.is-cycled .ka-hero__slide.is-active .ka-hero__title  {animation-delay:.7s}
+.ka-hero.is-cycled .ka-hero__slide.is-active .ka-hero__sub    {animation-delay:.95s}
+.ka-hero.is-cycled .ka-hero__slide.is-active .ka-hero__ctas   {animation-delay:1.2s}
+.ka-hero__slide.is-prev .ka-hero__eyebrow,.ka-hero__slide.is-prev .ka-hero__title,
+.ka-hero__slide.is-prev .ka-hero__sub,.ka-hero__slide.is-prev .ka-hero__ctas{opacity:1;animation:none}
+
+.ka-hero__eyebrow{font-family:var(--f-sans);font-size:0.63rem;font-weight:400;letter-spacing:0.28em;text-transform:uppercase;
+  color:rgba(255,255,255,0.65);margin-bottom:20px}
+.ka-hero__title{font-family:var(--f-display);font-size:var(--t-hero);font-weight:400;font-style:italic;line-height:0.94;
+  color:#fff;letter-spacing:-0.01em}
+.ka-hero__title strong{font-style:normal;font-weight:400;display:block;font-size:0.6em;letter-spacing:0.1em}
+.ka-hero__sub{margin-top:32px;font-family:var(--f-sans);font-size:0.78rem;font-weight:300;letter-spacing:0.1em;
+  color:rgba(255,255,255,0.7);max-width:420px;line-height:1.9}
+.ka-hero__ctas{margin-top:44px;display:flex;align-items:center;gap:32px;flex-wrap:wrap}   /* flex-wrap added: two CTAs must not overflow a 390px screen */
+
+.ka-hero__scroll{position:absolute;bottom:36px;right:var(--gutter);z-index:3;display:flex;flex-direction:column;align-items:center;gap:10px;
+  opacity:0;animation:fadeIn 1s var(--ease-luxury) 2.2s forwards}                      /* unchanged, now above the slides */
+.ka-hero__scroll span{font-family:var(--f-sans);font-size:0.55rem;letter-spacing:0.22em;text-transform:uppercase;
+  color:rgba(255,255,255,0.45);writing-mode:vertical-rl}
+.ka-hero__scroll-line{width:1px;height:48px;background:rgba(255,255,255,0.2);position:relative;overflow:hidden}
+.ka-hero__scroll-line::after{content:'';position:absolute;top:-100%;left:0;width:100%;height:100%;
+  background:rgba(255,255,255,0.65);animation:scrollDrop 1.8s ease-in-out infinite}
+
+/* ---------- Slider controls (rendered only when slides > 1) ---------- */
+.ka-hero__ctrl{position:absolute;left:var(--gutter);bottom:36px;z-index:3;display:flex;align-items:center;gap:22px;
+  opacity:0;animation:fadeIn 1s var(--ease-luxury) 2.2s forwards}
+.ka-hero__count{font-family:var(--f-sans);font-size:0.6rem;font-weight:400;letter-spacing:0.22em;color:rgba(255,255,255,0.7);
+  font-variant-numeric:tabular-nums;min-width:5.2em}
+.ka-hero__count b{font-weight:400;color:#fff}
+.ka-hero__ticks{display:flex;gap:10px}
+.ka-hero__tick{position:relative;width:44px;height:30px;display:block}               /* 30px hit area, 1px visible line */
+.ka-hero__tick::before{content:'';position:absolute;left:0;right:0;top:50%;height:1px;background:rgba(255,255,255,0.3)}
+.ka-hero__fill{position:absolute;left:0;right:0;top:50%;height:1px;background:#fff;transform:scaleX(0);transform-origin:left}
+.ka-hero__tick.is-current .ka-hero__fill{transform:scaleX(1)}                        /* resting/static position marker */
+.ka-hero__tick.is-running .ka-hero__fill{animation:kaHeroProgress var(--dwell,8s) linear forwards}
+.ka-hero.is-paused .ka-hero__tick.is-running .ka-hero__fill{animation-play-state:paused}
+@keyframes kaHeroProgress{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+.ka-hero__pp{font-family:var(--f-sans);font-size:0.55rem;letter-spacing:0.22em;text-transform:uppercase;color:rgba(255,255,255,0.55);
+  padding:10px 0;transition:color var(--dur-fast)}
+.ka-hero__pp:hover{color:#fff}
+.ka-hero__tick:focus-visible,.ka-hero__pp:focus-visible,.ka-hero__arrow:focus-visible{outline:1px solid #fff;outline-offset:4px}
+
+.ka-hero__arrow{position:absolute;top:50%;z-index:3;width:56px;height:56px;margin-top:-28px;display:flex;align-items:center;justify-content:center;
+  color:#fff;opacity:0;transition:opacity var(--dur-med) var(--ease-soft)}
+.ka-hero__arrow--prev{left:calc(var(--gutter) - 18px)}
+.ka-hero__arrow--next{right:calc(var(--gutter) - 18px)}
+.ka-hero__arrow svg{width:22px;height:44px;stroke:currentColor;stroke-width:1;fill:none}
+.ka-hero:hover .ka-hero__arrow,.ka-hero__arrow:focus-visible{opacity:.7}
+.ka-hero__arrow:hover{opacity:1 !important}
+@media (max-width:899px){ .ka-hero__arrow{display:none} }                              /* mobile = swipe */
+
+.ka-hero__slides{touch-action:pan-y}                                                   /* vertical scroll stays native; horizontal is ours */
+.ka-hero__live{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+
+@media (max-width:899px){
+  .ka-hero__ctrl{gap:16px;bottom:34px}
+  .ka-hero__tick{width:34px}
+  .ka-hero__count{min-width:4.4em}
+}
+@media (prefers-reduced-motion:reduce){
+  .ka-hero__slide,.ka-hero__slide.is-prev,.ka-hero__slide.is-active{transition-duration:.01s}
+  .ka-hero__bg{transform:none;transition:none}
+  .ka-hero__eyebrow,.ka-hero__title,.ka-hero__sub,.ka-hero__ctas{opacity:1 !important;animation:none !important}
+  .ka-hero__scroll-line::after{animation:none}
+  .ka-hero__tick.is-running .ka-hero__fill{animation:none}
+}
+
+/* =================================================================
+   PART 3 — PROTOTYPE-ONLY (labelled placeholder, nav stand-in,
+   page stub below hero, presentation shell). Not for production.
+================================================================= */
+.ph{position:absolute;inset:0;background:linear-gradient(160deg,#3b332d 0%,#2a2420 55%,#1d1916 100%)}
+.ph__label{position:absolute;top:50%;left:50%;transform:translate(-50%,-62%);width:min(560px,78%);text-align:center;
+  border:1px dashed rgba(255,255,255,0.28);padding:26px 22px;color:rgba(255,255,255,0.62);
+  font-size:0.62rem;letter-spacing:0.24em;text-transform:uppercase;line-height:2.1}
+.ph__label em{display:block;font-family:var(--f-display);font-style:italic;text-transform:none;letter-spacing:.02em;font-size:1.05rem;
+  color:rgba(255,255,255,0.8);margin-top:6px;line-height:1.5}
+.proto-nav{position:absolute;top:0;left:0;right:0;z-index:10;display:flex;align-items:center;justify-content:space-between;
+  padding:28px var(--gutter);color:#fff;font-size:0.62rem;letter-spacing:0.22em;text-transform:uppercase}
+.proto-nav b{font-family:var(--f-display);font-weight:400;font-style:italic;font-size:1.35rem;letter-spacing:0.04em;text-transform:none}
+.proto-nav span{display:flex;gap:34px}
+@media (max-width:899px){.proto-nav span{display:none}}
+.stub{background:var(--c-paper);padding:var(--s-xl) var(--gutter);text-align:center;min-height:60vh;display:flex;align-items:center;justify-content:center}
+.stub p{font-family:var(--f-display);font-style:italic;font-size:clamp(1.5rem,2.6vw,2.4rem);line-height:1.5;max-width:900px;color:var(--c-ink)}
+.stub small{display:block;margin-top:28px;font-family:var(--f-sans);font-style:normal;font-size:.62rem;letter-spacing:.24em;text-transform:uppercase;color:var(--c-ink-mid)}
+
+body.shell{background:#161311;color:#d9d0c4;height:100vh;overflow:hidden;display:flex;flex-direction:column}
+.bar{display:flex;flex-wrap:wrap;gap:14px 28px;align-items:center;padding:14px 24px;border-bottom:1px solid rgba(255,255,255,.1);
+  font-size:.64rem;letter-spacing:.16em;text-transform:uppercase}
+.bar h1{font-family:var(--f-display);font-style:italic;font-weight:400;font-size:1.2rem;letter-spacing:.02em;text-transform:none;margin-right:auto;color:#fff}
+.bar .grp{display:flex;gap:6px;align-items:center}.bar .grp>i{font-style:normal;opacity:.5;margin-right:6px}
+.bar button{padding:8px 14px;border:1px solid rgba(255,255,255,.22);color:#d9d0c4;letter-spacing:.16em;font-size:.6rem;text-transform:uppercase}
+.bar button.on{background:#f7f3ec;color:#1d1916;border-color:#f7f3ec}
+.stage{flex:1;min-height:0;display:flex;align-items:center;justify-content:center;padding:18px;background:#0f0d0c}
+.frame{background:#000;border:0;transition:width .5s var(--ease-luxury),height .5s var(--ease-luxury),border-radius .5s}
+.frame.desktop{width:100%;height:100%}
+.frame.mobile{width:390px;height:min(844px,100%);border:9px solid #2b2622;border-radius:38px}
+.notes{padding:10px 24px;font-size:.62rem;letter-spacing:.08em;line-height:1.7;color:#8f857a;border-top:1px solid rgba(255,255,255,.08)}
+</style>
+</head>
+
+<body id="body">
+
+<!-- ================= PRESENTATION SHELL (only when not embedded) ================= -->
+<script>
+(function(){
+  var q = new URLSearchParams(location.search);
+  if (q.get('embed')) { document.body.className = 'embed'; return; }
+  document.body.className = 'shell';
+  document.body.innerHTML =
+   '<div class="bar">'+
+     '<h1>Karishma &amp; Ashita — homepage hero slider, prototype v1</h1>'+
+     '<div class="grp"><i>Viewport</i><button data-vp="desktop" class="on">Desktop</button><button data-vp="mobile">Mobile</button></div>'+
+     '<div class="grp"><i>Slides</i><button data-sl="2" class="on">Two</button><button data-sl="1">One (degrade)</button></div>'+
+     '<div class="grp"><i>Slide 2 overlay</i><button data-ov="soft">Soft</button><button data-ov="standard" class="on">Standard</button><button data-ov="deep">Deep</button></div>'+
+     '<div class="grp"><button id="replay">Replay</button></div>'+
+   '</div>'+
+   '<div class="stage"><iframe id="f" class="frame desktop" title="Hero prototype"></iframe></div>'+
+   '<div class="notes">Slide 1 is the live hero (image, copy, CTAs as published). Slide 2 is a labelled placeholder with drafted Loomière copy; no real photograph yet. '+
+   'Autoplay: 8 s per slide, one pass, then rests on slide 1; ends on any manual action; pauses on hover over text/controls, focus, hidden tab, hero off-screen. Reduced-motion: no autoplay, no motion. '+
+   'Try: arrows (desktop hover), 1/2 ticks, left/right keys, swipe (Mobile + touch or mouse-drag), Pause.</div>';
+  var f = document.getElementById('f'), st = {sl:'2', ov:'standard'};
+  function load(){ f.src = location.pathname + '?embed=1&slides=' + st.sl + '&ov=' + st.ov; }
+  load();
+  document.querySelectorAll('[data-vp]').forEach(function(b){ b.onclick=function(){
+    f.className='frame '+b.dataset.vp; mark('vp',b); }; });
+  document.querySelectorAll('[data-sl]').forEach(function(b){ b.onclick=function(){ st.sl=b.dataset.sl; mark('sl',b); load(); }; });
+  document.querySelectorAll('[data-ov]').forEach(function(b){ b.onclick=function(){ st.ov=b.dataset.ov; mark('ov',b); load(); }; });
+  document.getElementById('replay').onclick = load;
+  function mark(k,b){ document.querySelectorAll('[data-'+k+']').forEach(function(x){x.classList.remove('on')}); b.classList.add('on'); }
+})();
+</script>
+
+<!-- ================= EMBEDDED PAGE: nav stand-in + hero + stub ================= -->
+<template id="page">
+  <div class="proto-nav"><b>Karishma &amp; Ashita</b><span><a href="#">Collections</a><a href="#">Client Diaries</a><a href="#">About</a><a href="#">Appointments</a></span></div>
+
+  <!--
+    PROPOSED MARKUP for sections/ka-hero.liquid output (one <li>-less div per slide).
+    Slide 1 = the live hero: same image URL, alt, copy, CTAs as published today.
+  -->
+  <section class="ka-hero" id="ka-hero" aria-label="Opening editorial"
+           data-autoplay="true" style="--dwell:8s">
+    <div class="ka-hero__slides" id="ka-hero-slides" role="region" aria-roledescription="carousel" aria-label="Opening editorial">
+
+      <!-- SLIDE 1 — current live hero, exactly as published -->
+      <div class="ka-hero__slide is-active" role="group" aria-roledescription="slide" aria-label="1 of 2" data-overlay="standard">
+        <div class="ka-hero__bg" >
+          <!-- LCP image. eager + fetchpriority=high. Production: srcset 1200/1800/2400 + separate mobile <source>. -->
+          <img src="images/hero-live-current.jpg"
+               alt="K&amp;A Bridal Couture — opening editorial"
+               loading="eager" fetchpriority="high" width="1800" height="1276" class="img-filter-hero" />
+        </div>
+        <div class="ka-hero__overlay"></div>
+        <div class="ka-hero__content">
+          <p class="ka-hero__eyebrow">Mumbai — Est. in Craft</p>
+          <h1 class="ka-hero__title">Bridal<br><strong>Couture</strong></h1>
+          <p class="ka-hero__sub">Made-to-order bridal wear — corsets, lehengas, Indo-Western — conceived in Mumbai and worn across the world.</p>
+          <div class="ka-hero__ctas">
+            <a href="#" class="btn-ghost">Explore Collection</a>
+            <a href="#" class="btn-text">Book a Styling Appointment</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- SLIDE 2 — Loomière. PLACEHOLDER FRAME: no photograph yet. -->
+      <div class="ka-hero__slide" role="group" aria-roledescription="slide" aria-label="2 of 2" data-overlay="standard" inert aria-hidden="true">
+        <div class="ka-hero__bg">
+          <!-- Production: real <img data-srcset> hydrated after window load (see spec). Never loads before slide 1 has painted. -->
+          <div class="ph" role="img" aria-label="Placeholder for the Loomière hero photograph">
+            <div class="ph__label">Placeholder frame — not a photograph
+              <em>Loomi&egrave;re hero image goes here</em>
+              Desktop 2400 &times; 1500 &nbsp;&middot;&nbsp; Mobile 1080 &times; 1620
+            </div>
+          </div>
+        </div>
+        <div class="ka-hero__overlay"></div>
+        <div class="ka-hero__content">
+          <p class="ka-hero__eyebrow">Introducing</p>
+          <h2 class="ka-hero__title">Loomi&egrave;re<br><strong>The Festive Collection</strong></h2>
+          <p class="ka-hero__sub">Rich textures, fluid drapes and a little shimmer. Handwoven brocades, sculpted corsets and draped skirts, made to order in Mumbai.</p>
+          <div class="ka-hero__ctas">
+            <a href="#" class="btn-ghost">Explore Loomi&egrave;re</a>
+            <a href="#" class="btn-text">Book a Styling Appointment</a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Controls: omitted from the markup entirely when there is one slide -->
+    <button class="ka-hero__arrow ka-hero__arrow--prev" type="button" aria-label="Previous slide" data-dir="-1">
+      <svg viewBox="0 0 22 44" aria-hidden="true"><path d="M17 4 5 22l12 18"/></svg></button>
+    <button class="ka-hero__arrow ka-hero__arrow--next" type="button" aria-label="Next slide" data-dir="1">
+      <svg viewBox="0 0 22 44" aria-hidden="true"><path d="M5 4l12 18L5 40"/></svg></button>
+
+    <div class="ka-hero__ctrl">
+      <span class="ka-hero__count" aria-hidden="true"><b data-cur>01</b> &nbsp;/&nbsp; <span data-tot>02</span></span>
+      <span class="ka-hero__ticks">
+        <button class="ka-hero__tick is-current is-running" type="button" aria-label="Show slide 1: Bridal Couture" data-i="0"><span class="ka-hero__fill"></span></button>
+        <button class="ka-hero__tick" type="button" aria-label="Show slide 2: Loomi&egrave;re" data-i="1"><span class="ka-hero__fill"></span></button>
+      </span>
+      <button class="ka-hero__pp" type="button" aria-label="Pause slideshow" data-pp>Pause</button>
+    </div>
+    <div class="ka-hero__live" aria-live="off" id="ka-hero-live"></div>
+
+    <div class="ka-hero__scroll" aria-hidden="true"><span>Scroll</span><div class="ka-hero__scroll-line"></div></div>
+  </section>
+
+  <div class="stub"><p>&ldquo;Every lehenga, every corset, every draped silhouette — handcrafted for the woman who wants her wedding to begin the moment she dresses.&rdquo;
+    <small>Existing manifesto section, shown only so the hero can scroll away</small></p></div>
+</template>
+
+<script>
+/* =================================================================
+   PART 4 — PROPOSED PRODUCTION JS (assets/ka-hero.js), plus tiny
+   prototype bootstrap at the bottom.
+================================================================= */
+function kaHeroInit(hero) {
+  var slides = Array.prototype.slice.call(hero.querySelectorAll('.ka-hero__slide'));
+  var ticks  = Array.prototype.slice.call(hero.querySelectorAll('.ka-hero__tick'));
+  var cur    = hero.querySelector('[data-cur]');
+  var pp     = hero.querySelector('[data-pp]');
+  var live   = hero.querySelector('#ka-hero-live');
+  var wrap   = hero.querySelector('.ka-hero__slides');
+  var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var FADE = 1500;
+
+  /* initial entry zoom on slide 1, same double-rAF as ka-theme.js today */
+  function settle(slide){ var bg = slide.querySelector('.ka-hero__bg');
+    requestAnimationFrame(function(){ requestAnimationFrame(function(){ bg.classList.add('loaded'); }); }); }
+  settle(slides[0]);
+
+  if (slides.length < 2) return;                /* one slide: no controls, no timers, no listeners */
+
+  var i = 0, reasons = {}, autoplay = !reduced && hero.dataset.autoplay === 'true', rested = false, started = false, timer;
+  if (reduced && pp) pp.hidden = true;
+
+  function paused(){ for (var k in reasons) if (reasons[k]) return true; return false; }
+  function sync(){
+    hero.classList.toggle('is-paused', paused());
+  }
+  function setRun(){
+    ticks.forEach(function(t, n){
+      t.classList.toggle('is-current', n === i);
+      t.classList.remove('is-running');
+      t.removeAttribute('aria-current');
+    });
+    ticks[i].setAttribute('aria-current', 'true');
+    if (autoplay && started && !rested) {
+      void ticks[i].offsetWidth;                /* restart the progress animation */
+      ticks[i].classList.add('is-running');
+    }
+    if (pp) { var playing = autoplay && !rested; pp.textContent = playing ? 'Pause' : 'Play';
+      pp.setAttribute('aria-label', playing ? 'Pause slideshow' : 'Play slideshow'); }
+    live.setAttribute('aria-live', autoplay && !rested ? 'off' : 'polite');
+  }
+  function go(n, user){
+    n = (n + slides.length) % slides.length;
+    if (n === i) return;
+    var prev = slides[i], next = slides[n];
+    prev.classList.remove('is-active'); prev.classList.add('is-prev');
+    prev.inert = true; prev.setAttribute('aria-hidden', 'true');
+    next.classList.add('is-active'); next.inert = false; next.removeAttribute('aria-hidden');
+    hero.classList.add('is-cycled');
+    settle(next);
+    setTimeout(function(){ prev.classList.remove('is-prev'); if (prev !== slides[i]) prev.querySelector('.ka-hero__bg').classList.remove('loaded'); }, FADE);
+    i = n;
+    if (cur) cur.textContent = '0' + (i + 1);
+    if (user) { autoplay = false; }              /* the visitor has taken the wheel: autoplay ends for good */
+    setRun();
+    live.textContent = next.getAttribute('aria-label') + ': ' + (next.querySelector('.ka-hero__title') || {}).textContent.replace(/\s+/g, ' ').trim();
+  }
+
+  /* autoplay advances when the active progress line completes (so pause/hover stop it for free) */
+  hero.addEventListener('animationend', function(e){
+    if (!e.target.classList.contains('ka-hero__fill')) return;
+    if (i === slides.length - 1) { go(0); autoplay = true; rested = true; setRun(); }   /* one pass, then rest on slide 1 */
+    else go(i + 1);
+  });
+
+  hero.querySelectorAll('[data-dir]').forEach(function(b){ b.addEventListener('click', function(){ go(i + parseInt(b.dataset.dir, 10), true); }); });
+  ticks.forEach(function(t, n){ t.addEventListener('click', function(){ go(n, true); }); });
+  if (pp) pp.addEventListener('click', function(){
+    if (autoplay && !rested) { autoplay = false; setRun(); }
+    else { autoplay = true; rested = false; started = true; setRun(); }
+  });
+
+  /* keyboard */
+  hero.setAttribute('tabindex', '-1');
+  hero.addEventListener('keydown', function(e){
+    if (e.key === 'ArrowRight') go(i + 1, true);
+    if (e.key === 'ArrowLeft')  go(i - 1, true);
+  });
+
+  /* swipe: crossfade is not drag-linked, a clean flick just advances */
+  var x0 = null, y0 = 0;
+  wrap.addEventListener('pointerdown', function(e){ if (e.target.closest('a,button')) return; x0 = e.clientX; y0 = e.clientY; });
+  window.addEventListener('pointerup', function(e){
+    if (x0 === null) return;
+    var dx = e.clientX - x0, dy = e.clientY - y0; x0 = null;
+    if (Math.abs(dx) > 48 && Math.abs(dx) > Math.abs(dy) * 1.5) go(i + (dx < 0 ? 1 : -1), true);
+  });
+
+  /* pause reasons */
+  ['.ka-hero__content', '.ka-hero__ctrl'].forEach(function(s){ var el = hero.querySelector(s);
+    el.addEventListener('pointerenter', function(e){ if (e.pointerType === 'mouse') { reasons.hover = true; sync(); } });
+    el.addEventListener('pointerleave', function(){ reasons.hover = false; sync(); }); });
+  hero.addEventListener('focusin',  function(){ reasons.focus = true;  sync(); });
+  hero.addEventListener('focusout', function(){ reasons.focus = false; sync(); });
+  document.addEventListener('visibilitychange', function(){ reasons.hidden = document.hidden; sync(); });
+  if ('IntersectionObserver' in window) new IntersectionObserver(function(en){
+    reasons.offscreen = en[0].intersectionRatio < 0.4; sync(); }, { threshold: [0, 0.4, 1] }).observe(hero);
+
+  /* start only after the window has loaded, so autoplay never competes with the LCP image or slide 2's hydration */
+  function start(){ started = true; setRun(); }
+  if (document.readyState === 'complete') start(); else window.addEventListener('load', start);
+  setRun();
+}
+
+/* desktop parallax, moved from .ka-hero__bg to the slides wrapper (same maths, same 900px gate) */
+function kaHeroParallax(hero){
+  var w = hero.querySelector('.ka-hero__slides');
+  if (!window.matchMedia('(min-width: 900px)').matches || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  window.addEventListener('scroll', function(){
+    var y = window.scrollY; if (y < hero.offsetHeight) w.style.transform = 'translateY(' + (y * 0.22) + 'px)';
+  }, { passive: true });
+}
+
+/* ---------------- prototype bootstrap (not for production) ---------------- */
+(function(){
+  var q = new URLSearchParams(location.search);
+  if (!q.get('embed')) return;
+  document.body.appendChild(document.getElementById('page').content.cloneNode(true));
+  var hero = document.getElementById('ka-hero');
+  if (q.get('slides') === '1') {                       /* single-slide degrade: strip slide 2 + all controls, as Liquid would */
+    hero.querySelectorAll('.ka-hero__slide')[1].remove();
+    hero.querySelectorAll('.ka-hero__arrow,.ka-hero__ctrl,.ka-hero__live').forEach(function(n){ n.remove(); });
+    hero.querySelector('.ka-hero__slides').removeAttribute('role');
+    hero.querySelector('.ka-hero__slides').removeAttribute('aria-roledescription');
+    hero.querySelector('.ka-hero__slide').removeAttribute('role');
+    hero.querySelector('.ka-hero__slide').removeAttribute('aria-roledescription');
+    hero.querySelector('.ka-hero__slide').removeAttribute('aria-label');
+  } else if (q.get('ov')) {
+    hero.querySelectorAll('.ka-hero__slide')[1].dataset.overlay = q.get('ov');
+  }
+  kaHeroInit(hero);
+  kaHeroParallax(hero);
+})();
+</script>
+</body>
+</html>
