@@ -280,7 +280,14 @@ Instagram, Google & YouTube, Shop), so anything added to it while products are
 active shows on Live and in the ad catalogs immediately -- staging only hides
 the theme design, not the products.
 
-### 31. Article hero crop + breakout alt text -- IN PROGRESS (approved 2026-10-19)
+### 31. Article hero crop + breakout alt text -- RESOLVED and LIVE 2026-10-19
+**Live 2026-10-19 (`05b277e` on main), post-live verified.** Final design after
+Suraj stopped the first (8%) release: hero `object-position: center
+var(--hero-y, 2%)` + optional Article metafield `custom.hero_focus_y` (0-100;
+festive post = 30), breakout alt uses the image's own alt. Same day, via SEO
+(article data, CD's choice): dressing-for-every-wedding-event hero -> lime-yellow
+product photo 25_b30aa8e7; its breakout -> Natasha velvet corset
+(Untitleddesign_12). Post 8 cleared for 28 Oct. History below.
 **Source:** SEO & Discoverability, 2026-10-19, under Suraj's new rule that
 Creative Director signs off every blog post visually (desktop + mobile).
 Full review: `Docs/blog-visual-review-2026-10-19.md`.
@@ -305,7 +312,14 @@ unaffected and still wanted.
 **Done already (no theme change):** post 7's breakout image replaced by SEO to
 CD's exact choice, confirmed on the live page 2026-10-19.
 
-### 32. Homepage Client Diaries: images change and shuffle automatically -- IN PROGRESS (approved 2026-10-19)
+### 32. Homepage Client Diaries: images change and shuffle automatically -- RESOLVED and LIVE 2026-10-19
+**Live 2026-10-19 (`d59c519` on main), post-live verified.** Pool of real diary
+look images (home_images / home_focal fields on client_diary_look), date-rotated
+first paint, per-visit unseen-first selection, slow dissolve (max 4), first name +
+occasion captions, all-portrait layout. A Safari-only bug (aspect-ratio grid
+tiles collapsing to 0 height) was found by Suraj and fixed before release.
+Known minor Safari quirk: tile heights can go stale after a live window resize
+within one breakpoint until reload. Heading typo "becomespart" fixed.
 **Source:** Suraj, 2026-10-19. `sections/ka-client-diaries.liquid` (homepage)
 holds 3 hand-picked image_picker slots with hand-typed captions, so new
 Client Diaries entries never reach the homepage. Suraj wants the images to
