@@ -60,7 +60,7 @@
 
   assign breakout_image = section.settings.breakout_image
   if breakout_image == blank
-    assign breakout_image = article.metafields.custom.breakout_image
+    assign breakout_image = article.metafields.custom.breakout_image.value
   endif
   assign breakout_is_placeholder = false
   if breakout_image == blank
@@ -70,6 +70,27 @@
   assign breakout_caption = section.settings.breakout_caption
   if breakout_caption == blank
     assign breakout_caption = article.metafields.custom.breakout_caption
+  endif
+
+  comment
+    Breakout alt text, single source for both render paths below:
+    the image file's own alt (set in Shopify Files/SEO) wins, then the
+    caption, then the article title. A placeholder has no file alt, so
+    it naturally falls through to caption, then title. Escaped once, at
+    output, in the img tag.
+  endcomment
+  assign breakout_alt = breakout_image.alt
+  if breakout_alt == blank
+    assign breakout_alt = breakout_image.preview_image.alt
+  endif
+  if breakout_alt == blank
+    assign breakout_alt = breakout_image.image.alt
+  endif
+  if breakout_alt == blank
+    assign breakout_alt = breakout_caption
+  endif
+  if breakout_alt == blank
+    assign breakout_alt = article.title
   endif
 -%}
 
@@ -84,7 +105,7 @@
       {%- if breakout_is_placeholder -%}
         <img
           src="{{ 'about-craft-detail-2.jpg' | asset_url }}"
-          alt="{{ breakout_caption | default: article.title | escape }}"
+          alt="{{ breakout_alt | escape }}"
           loading="lazy"
           width="1600"
           height="1000"
@@ -93,7 +114,7 @@
       {%- else -%}
         <img
           src="{{ breakout_image | image_url: width: 1600 }}"
-          alt="{{ breakout_image.alt | escape | default: article.title | escape }}"
+          alt="{{ breakout_alt | escape }}"
           loading="lazy"
           width="1600"
           height="1000"
@@ -117,7 +138,7 @@
       {%- if breakout_is_placeholder -%}
         <img
           src="{{ 'about-craft-detail-2.jpg' | asset_url }}"
-          alt="{{ breakout_caption | default: article.title | escape }}"
+          alt="{{ breakout_alt | escape }}"
           loading="lazy"
           width="1600"
           height="1000"
@@ -126,7 +147,7 @@
       {%- else -%}
         <img
           src="{{ breakout_image | image_url: width: 1600 }}"
-          alt="{{ breakout_image.alt | escape | default: article.title | escape }}"
+          alt="{{ breakout_alt | escape }}"
           loading="lazy"
           width="1600"
           height="1000"
