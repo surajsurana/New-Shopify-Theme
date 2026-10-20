@@ -86,6 +86,75 @@
     if (e.key === 'Escape') closeNav();
   });
 
+  /* --- Mobile drawer: Collections accordion (header-by-silhouette spec).
+     `inert` keeps collapsed links out of the tab order; CSS also hides
+     the collapsed block (visibility), so browsers without `inert` are
+     still correct, and an open block never has inert set. ---------- */
+  var mCollToggle = document.getElementById('ka-m-coll-toggle');
+  var mCollSub    = document.getElementById('ka-m-coll-sub');
+  if (mCollToggle && mCollSub) {
+    var mCollInner = mCollSub.querySelector('.ka-mobile-nav__sub-inner');
+    mCollToggle.addEventListener('click', function () {
+      var open = mCollToggle.getAttribute('aria-expanded') !== 'true';
+      mCollToggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+      mCollSub.classList.toggle('is-open', open);
+      if (mCollInner) {
+        if (open) mCollInner.removeAttribute('inert'); else mCollInner.setAttribute('inert', '');
+      }
+    });
+  }
+
+  /* --- Desktop Collections panel (header-by-silhouette spec). Hover only
+     on fine pointers (140ms intent delay); chevron button click / Enter /
+     Space toggles; Esc closes and returns focus to the chevron; focus
+     leaving item+panel or a scrim click closes. ---------------------- */
+  var collItem   = document.getElementById('ka-coll-item');
+  var collToggle = document.getElementById('ka-coll-toggle');
+  var collPanel  = document.getElementById('ka-coll-panel');
+  var collScrim  = document.getElementById('ka-nav-scrim');
+  if (nav && collItem && collToggle && collPanel && collScrim) {
+    var collTimer = null;
+    var canHover = window.matchMedia('(hover: hover) and (pointer: fine)');
+    var openPanel = function () {
+      clearTimeout(collTimer);
+      collPanel.classList.add('is-open');
+      collScrim.classList.add('is-open');
+      nav.classList.add('is-panel-open');
+      collToggle.setAttribute('aria-expanded', 'true');
+    };
+    var closePanel = function (returnFocus) {
+      clearTimeout(collTimer);
+      collPanel.classList.remove('is-open');
+      collScrim.classList.remove('is-open');
+      nav.classList.remove('is-panel-open');
+      collToggle.setAttribute('aria-expanded', 'false');
+      if (returnFocus) collToggle.focus();
+    };
+    collToggle.addEventListener('click', function () {
+      if (collToggle.getAttribute('aria-expanded') === 'true') closePanel(false); else openPanel();
+    });
+    [collItem, collPanel].forEach(function (el) {
+      el.addEventListener('mouseenter', function () {
+        if (!canHover.matches) return;
+        clearTimeout(collTimer);
+        if (!collPanel.classList.contains('is-open')) collTimer = setTimeout(openPanel, 140);
+      });
+      el.addEventListener('mouseleave', function () {
+        if (!canHover.matches) return;
+        clearTimeout(collTimer);
+        collTimer = setTimeout(function () { closePanel(false); }, 140);
+      });
+    });
+    document.addEventListener('focusin', function (e) {
+      if (!collPanel.classList.contains('is-open')) return;
+      if (!collItem.contains(e.target) && !collPanel.contains(e.target)) closePanel(false);
+    });
+    collScrim.addEventListener('click', function () { closePanel(false); });
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape' && collPanel.classList.contains('is-open')) closePanel(true);
+    });
+  }
+
   /* --- Parallax on hero (desktop only, F8/spec) ----------------- */
   /* Only applies when min-width 900px — disabled on mobile to prevent jank */
   var heroBgEl = document.querySelector('.ka-hero__bg');

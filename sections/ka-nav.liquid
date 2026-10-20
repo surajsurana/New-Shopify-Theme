@@ -106,6 +106,50 @@
   {%- endif -%}
 </div>
 
+{%- comment -%}
+  Collections panel + drawer accordion (Docs/header-by-silhouette-2026-10-20.md).
+  Source: Admin menu `header-collections` (fixed handle, no section picker, so
+  every template shows the same menu). Top-level items without children form
+  the first column ("The Collections"); the first top-level item WITH children
+  supplies the second column (its title + children = "By Silhouette"). When the
+  menu is missing or empty the hardcoded fallback below (identical to the
+  approved prototype) renders instead. LOOMIERE: not launched -- when it is,
+  add it as the first Admin menu item AND the first fallback link.
+{%- endcomment -%}
+{%- assign hc = linklists['header-collections'] -%}
+{%- assign hc_has = false -%}
+{%- if hc.links.size > 0 -%}{%- assign hc_has = true -%}{%- endif -%}
+{%- assign hc_all_url = section.settings.link_collections | default: '/collections' -%}
+{%- capture hc_col1 -%}
+  {%- if hc_has -%}
+    {%- for link in hc.links -%}{%- if link.links.size == 0 -%}<li><a href="{{ link.url }}">{{ link.title }}</a></li>{%- endif -%}{%- endfor -%}
+  {%- else -%}
+    <li><a href="/collections/first-love">First Love</a></li>
+    <li><a href="/collections/the-festive-edit">The Festive Edit</a></li>
+    <li><a href="/collections/the-bloom-soiree">The Bloom Soirée</a></li>
+    <li><a href="/collections/chamak">Chamakk</a></li>
+    <li><a href="/collections/barre-oblique">Barre Oblique</a></li>
+  {%- endif -%}
+{%- endcapture -%}
+{%- assign hc_col2_title = 'By Silhouette' -%}
+{%- capture hc_col2 -%}
+  {%- if hc_has -%}
+    {%- assign hc_found = false -%}
+    {%- for link in hc.links -%}
+      {%- if link.links.size > 0 and hc_found == false -%}
+        {%- assign hc_found = true -%}
+        {%- assign hc_col2_title = link.title -%}
+        {%- for child in link.links -%}<li><a href="{{ child.url }}">{{ child.title }}</a></li>{%- endfor -%}
+      {%- endif -%}
+    {%- endfor -%}
+  {%- else -%}
+    <li><a href="/collections/lehengas">Lehengas</a></li>
+    <li><a href="/collections/drapes">Drape Sarees</a></li>
+    <li><a href="/collections/indo-western">Indo-Western</a></li>
+    <li><a href="/collections/corsets">Corsets</a></li>
+  {%- endif -%}
+{%- endcapture -%}
+
 <nav class="ka-nav{% unless is_home %} ka-nav--settled{% endunless %}" id="ka-nav" role="navigation" aria-label="Main navigation">
   {%- comment -%}
     Toggle moved OUT of .ka-nav__actions and given its own grid-column:1
@@ -121,7 +165,12 @@
   </button>
   <ul class="ka-nav__links">
     <li><a href="{{ section.settings.link_bestsellers }}">{{ section.settings.label_bestsellers }}</a></li>
-    <li><a href="{{ section.settings.link_collections }}"{% if template contains 'collection' %} class="is-active"{% endif %}>{{ section.settings.label_collections }}</a></li>
+    <li class="ka-nav__item" id="ka-coll-item">
+      <a href="{{ section.settings.link_collections }}"{% if template contains 'collection' %} class="is-active"{% endif %}>{{ section.settings.label_collections }}</a>
+      <button type="button" class="ka-nav__panel-toggle" id="ka-coll-toggle" aria-expanded="false" aria-controls="ka-coll-panel" aria-label="Show collections and silhouettes">
+        <svg viewBox="0 0 10 10" aria-hidden="true"><path d="M1 3l4 4 4-4"/></svg>
+      </button>
+    </li>
     <li><a href="{{ section.settings.link_diaries }}">{{ section.settings.label_diaries }}</a></li>
   </ul>
 
@@ -186,13 +235,44 @@
       <span class="ka-nav__bag__count" data-ka-bag-count data-count="{{ cart.item_count }}">{% if cart.item_count > 0 %}{{ cart.item_count }}{% endif %}</span>
     </a>
   </div>
+
+  <div class="ka-nav__panel" id="ka-coll-panel" role="region" aria-label="Collections">
+    <div class="ka-nav__panel-inner">
+      <div>
+        <p class="ka-nav__panel-title">The Collections</p>
+        <ul>{{ hc_col1 }}</ul>
+      </div>
+      <div>
+        <p class="ka-nav__panel-title">{{ hc_col2_title }}</p>
+        <ul>{{ hc_col2 }}</ul>
+      </div>
+      <p class="ka-nav__panel-all"><a href="{{ hc_all_url }}">View all collections</a></p>
+    </div>
+  </div>
 </nav>
+<div class="ka-nav-scrim" id="ka-nav-scrim"></div>
 
 <nav class="ka-mobile-nav" id="ka-mobile-nav" aria-hidden="true" aria-label="Mobile navigation">
   <button class="ka-mobile-nav__close" id="ka-nav-close" aria-label="Close menu">Close</button>
   <ul class="ka-mobile-nav__links">
     <li><a href="{{ section.settings.link_bestsellers }}">{{ section.settings.label_bestsellers }}</a></li>
-    <li><a href="{{ section.settings.link_collections }}">{{ section.settings.label_collections }}</a></li>
+    <li>
+      <div class="ka-mobile-nav__row">
+        <a href="{{ section.settings.link_collections }}">{{ section.settings.label_collections }}</a>
+        <button type="button" class="ka-mobile-nav__sub-toggle" id="ka-m-coll-toggle" aria-expanded="false" aria-controls="ka-m-coll-sub" aria-label="Show collections and silhouettes">
+          <svg viewBox="0 0 14 14" aria-hidden="true"><path d="M7 1v12M1 7h12"/></svg>
+        </button>
+      </div>
+      <div class="ka-mobile-nav__sub" id="ka-m-coll-sub">
+        <div class="ka-mobile-nav__sub-inner" inert>
+          <p class="ka-mobile-nav__sub-title">The Collections</p>
+          <ul>{{ hc_col1 }}</ul>
+          <p class="ka-mobile-nav__sub-title">{{ hc_col2_title }}</p>
+          <ul>{{ hc_col2 }}</ul>
+          <a href="{{ hc_all_url }}" class="ka-mobile-nav__sub-all">View all collections</a>
+        </div>
+      </div>
+    </li>
     <li><a href="{{ section.settings.link_diaries }}">{{ section.settings.label_diaries }}</a></li>
     <li><a href="{{ section.settings.link_about }}"{% if is_about_us %} class="is-current"{% endif %}>About</a></li>
     <li><a href="{{ section.settings.link_visit | default: '/pages/visit-the-atelier' }}"{% if is_visit %} class="is-current"{% endif %}>Visit Us</a></li>
