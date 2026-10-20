@@ -21,10 +21,10 @@
   position: absolute;
   inset: 0;
   background: linear-gradient(to top,
-    rgba(15,12,10,.78) 0%,
-    rgba(15,12,10,.52) 34%,
-    rgba(15,12,10,.16) 60%,
-    rgba(15,12,10,.18) 100%);
+    rgba(15,12,10,.20) 0%,
+    rgba(15,12,10,.08) 25%,
+    rgba(15,12,10,.03) 45%,
+    rgba(15,12,10,.05) 100%);
 }
 .ka-coll-hero__content {
   position: absolute;
@@ -37,21 +37,32 @@
   gap: 40px;
   flex-wrap: wrap;
 }
-/* Soft dark pool behind eyebrow + title. Photo-independent contrast. */
-.ka-coll-hero__content > div:first-child {
-  position: relative;
+.ka-coll-hero__content {
   isolation: isolate;
 }
-.ka-coll-hero__content > div:first-child::before {
+/* Text-anchored scrim (R2.3): travels with the title block, so the eyebrow always
+   sits at the same depth inside it whatever the photo or title length. Eased
+   ramp, full-bleed edge to edge, so no visible box. */
+.ka-coll-hero__content::before {
   content: "";
   position: absolute;
   z-index: -1;
-  top: -64px;
-  right: -72px;
-  bottom: -32px;
+  top: -120px;
+  right: calc(-1 * clamp(24px, 4vw, 64px));
+  bottom: calc(-1 * clamp(28px, 5vw, 56px));
   left: calc(-1 * clamp(24px, 4vw, 64px));
-  background: rgba(15,12,10,.5);
-  filter: blur(28px);
+  background: linear-gradient(to bottom,
+    rgba(15,12,10,0) 0,
+    rgba(15,12,10,.02) 20px,
+    rgba(15,12,10,.08) 40px,
+    rgba(15,12,10,.19) 60px,
+    rgba(15,12,10,.35) 80px,
+    rgba(15,12,10,.54) 100px,
+    rgba(15,12,10,.70) 120px,
+    rgba(15,12,10,.75) 140px,
+    rgba(15,12,10,.76) 100%);
+  -webkit-mask-image: linear-gradient(to right, #000 0%, #000 45%, rgba(0,0,0,.4) 80%, rgba(0,0,0,.3) 100%);
+  mask-image: linear-gradient(to right, #000 0%, #000 45%, rgba(0,0,0,.4) 80%, rgba(0,0,0,.3) 100%);
   pointer-events: none;
 }
 .ka-coll-hero .ka-coll-hero__eyebrow {
@@ -98,5 +109,5 @@
   .ka-coll-hero__frame { height: 58vh; min-height: 420px; }
   .ka-coll-hero__content { flex-direction: column; align-items: flex-start; gap: 18px; }
   .ka-coll-hero__meta { text-align: left; }
-  .ka-coll-hero__content > div:first-child::before { right: -24px; top: -56px; }
+  .ka-coll-hero__content::before { -webkit-mask-image: none; mask-image: none; }
 }
