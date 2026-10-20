@@ -34,8 +34,8 @@
   "By Silhouette" (heading_level h2, "Second chapter" checked so the top
   clearance under the nav is not doubled). show_numbers controls the 01/02
   card numerals (off in the template: numerals dropped, D2). Card image
-  lookup is collection.image, then the collection metafield custom.hero_image
-  (the silhouette pages), then the per-handle placeholder assets.
+  lookup is the collection metafield custom.hero_image (the silhouette pages),
+  then collection.image, then the per-handle placeholder assets.
 {%- endcomment -%}
 {%- assign heading_tag = section.settings.heading_level | default: 'h1' -%}
 <section class="ka-collections-list{% if section.settings.is_second_chapter %} ka-collections-list--chapter-2{% endif %}" aria-label="{{ section.settings.title | escape }}">
@@ -64,19 +64,19 @@
             <a href="{{ coll.url }}" class="ka-coll-card" {{ block.shopify_attributes }}>
               <div class="ka-coll-card__image">
                 {%- assign coll_mf_image = coll.metafields.custom.hero_image.value -%}
-                {% if coll.image != blank %}
+                {% if coll_mf_image != blank %}
                   <img
-                    src="{{ coll.image | image_url: width: 700 }}"
-                    alt="{{ coll.image.alt | escape | default: coll.title | escape }}"
+                    src="{{ coll_mf_image | image_url: width: 700 }}"
+                    alt="{{ coll_mf_image.alt | default: coll.title | escape }}"
                     loading="lazy"
                     width="700"
                     height="1050"
                     class="img-filter-collection"
                   />
-                {% elsif coll_mf_image != blank %}
+                {% elsif coll.image != blank %}
                   <img
-                    src="{{ coll_mf_image | image_url: width: 700 }}"
-                    alt="{{ coll_mf_image.alt | default: coll.title | escape }}"
+                    src="{{ coll.image | image_url: width: 700 }}"
+                    alt="{{ coll.image.alt | escape | default: coll.title | escape }}"
                     loading="lazy"
                     width="700"
                     height="1050"

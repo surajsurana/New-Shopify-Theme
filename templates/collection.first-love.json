@@ -39,10 +39,7 @@
     },
     "ka-collection-intro": {
       "type": "ka-collection-intro",
-      "settings": {
-        "lead_time": "40–45 working days",
-        "price_range_display": "₹1,70,000 – ₹4,80,000+"
-      }
+      "settings": {}
     },
     "ka-collection-refine-bar": {
       "type": "ka-collection-refine-bar",

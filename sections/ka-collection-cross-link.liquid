@@ -42,7 +42,7 @@
   line links back to /collections. Capsule pages get the closing line
   linking to the four silhouettes instead.
 
-  Images: collection.image, then collection metafield custom.hero_image,
+  Images: collection metafield custom.hero_image, then collection.image,
   then per-handle placeholder assets.
 {%- endcomment -%}
 
@@ -94,16 +94,7 @@
           {%- assign cl_mf_image = cl_collection.metafields.custom.hero_image.value -%}
           <a href="{{ cl_collection.url }}" class="ka-cl-card reveal-img{% if delay > 1 %} reveal-delay-{{ delay | minus: 1 }}{% endif %}">
             <div class="ka-cl-card__image">
-              {% if cl_collection.image != blank %}
-                <img
-                  src="{{ cl_collection.image | image_url: width: 900 }}"
-                  alt="{{ cl_collection.title }}"
-                  loading="lazy"
-                  width="900"
-                  height="675"
-                  class="img-filter-coll-page-dark"
-                />
-              {% elsif cl_mf_image != blank %}
+              {% if cl_mf_image != blank %}
                 {%- assign cl_mf_focus = cl_collection.metafields.custom.hero_focus.value | strip | escape -%}
                 <img
                   src="{{ cl_mf_image | image_url: width: 900 }}"
@@ -113,6 +104,15 @@
                   height="675"
                   class="img-filter-coll-page-dark"
                   {% if cl_mf_focus != blank %}style="object-position: {{ cl_mf_focus }};"{% endif %}
+                />
+              {% elsif cl_collection.image != blank %}
+                <img
+                  src="{{ cl_collection.image | image_url: width: 900 }}"
+                  alt="{{ cl_collection.title }}"
+                  loading="lazy"
+                  width="900"
+                  height="675"
+                  class="img-filter-coll-page-dark"
                 />
               {% else %}
                 {%- assign cl_handle_lower = cl_collection.handle | downcase -%}
