@@ -105,6 +105,8 @@
                   class="img-filter-coll-page-dark"
                   {% if cl_mf_focus != blank %}style="object-position: {{ cl_mf_focus }};"{% endif %}
                 />
+              {% elsif cl_collection.handle == 'the-festive-edit' %}
+                <img src="{{ 'festive-edit-hero.jpg' | asset_url }}" alt="{{ cl_collection.title }}" loading="lazy" width="900" height="675" class="img-filter-coll-page-dark" style="object-position: 50% 12%;" />
               {% elsif cl_collection.image != blank %}
                 <img
                   src="{{ cl_collection.image | image_url: width: 900 }}"

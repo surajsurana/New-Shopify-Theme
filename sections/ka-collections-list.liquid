@@ -73,6 +73,8 @@
                     height="1050"
                     class="img-filter-collection"
                   />
+                {% elsif coll.handle == 'the-festive-edit' %}
+                  <img src="{{ 'festive-edit-hero.jpg' | asset_url }}" alt="{{ coll.title }}" loading="lazy" width="700" height="1050" class="img-filter-collection" />
                 {% elsif coll.image != blank %}
                   <img
                     src="{{ coll.image | image_url: width: 700 }}"

@@ -21,9 +21,9 @@
   position: absolute;
   inset: 0;
   background: linear-gradient(to top,
-    rgba(15,12,10,.72) 0%,
-    rgba(15,12,10,.42) 30%,
-    rgba(15,12,10,.12) 55%,
+    rgba(15,12,10,.78) 0%,
+    rgba(15,12,10,.52) 34%,
+    rgba(15,12,10,.16) 60%,
     rgba(15,12,10,.18) 100%);
 }
 .ka-coll-hero__content {
@@ -37,12 +37,28 @@
   gap: 40px;
   flex-wrap: wrap;
 }
+/* Soft dark pool behind eyebrow + title. Photo-independent contrast. */
+.ka-coll-hero__content > div:first-child {
+  position: relative;
+  isolation: isolate;
+}
+.ka-coll-hero__content > div:first-child::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  top: -64px;
+  right: -72px;
+  bottom: -32px;
+  left: calc(-1 * clamp(24px, 4vw, 64px));
+  background: rgba(15,12,10,.5);
+  filter: blur(28px);
+  pointer-events: none;
+}
 .ka-coll-hero .ka-coll-hero__eyebrow {
   margin-bottom: 18px;
   color: #F4ECDE;
-  opacity: .94;
+  opacity: 1;
   font-weight: 500;
-  text-shadow: 0 1px 14px rgba(15,12,10,.45);
 }
 .ka-coll-hero__title {
   font-family: var(--f-display);
@@ -82,4 +98,5 @@
   .ka-coll-hero__frame { height: 58vh; min-height: 420px; }
   .ka-coll-hero__content { flex-direction: column; align-items: flex-start; gap: 18px; }
   .ka-coll-hero__meta { text-align: left; }
+  .ka-coll-hero__content > div:first-child::before { right: -24px; top: -56px; }
 }
