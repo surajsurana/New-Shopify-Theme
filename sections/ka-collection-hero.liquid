@@ -18,11 +18,12 @@
   Barre Oblique 04) per CD Note 5. Set manually per collection.json instance.
 
   2026-10-20 (category pages): image lookup order is now
-    1. section setting hero_image
-    2. collection metafield custom.hero_image (file_reference) -- the four
+    1. collection metafield custom.hero_image (file_reference) -- the four
        silhouette pages (Lehengas, Drapes, Indo-Western, Corsets) use this
-    3. the known-capsule handle images below
-    4. collection.image (Admin collection image)
+    2. the known-capsule handle images below
+    3. collection.image (Admin collection image)
+    4. section setting hero_image (template default: maroon_raw_silk, the
+       generic fallback -- restored 2026-10-20 after QA regression)
     5. charcoal
   Eyebrow: collection metafield custom.hero_eyebrow when set, else
   "The Collections", plus " -- {position}" only when the position setting is
@@ -44,18 +45,7 @@
 
 <section class="ka-coll-hero">
   <div class="ka-coll-hero__frame reveal-img">
-    {% if section.settings.hero_image != blank %}
-      <img
-        src="{{ section.settings.hero_image | image_url: width: 1800 }}"
-        alt="{{ section.settings.hero_image.alt | escape | default: collection.title }}"
-        loading="eager"
-        fetchpriority="high"
-        width="1800"
-        height="1100"
-        class="img-filter-coll-page-dark"
-        {% if hero_focus_style != blank %}style="{{ hero_focus_style }}"{% endif %}
-      />
-    {% elsif hero_mf_image != blank %}
+    {% if hero_mf_image != blank %}
       <img
         src="{{ hero_mf_image | image_url: width: 1800 }}"
         alt="{{ hero_mf_image.alt | default: collection.title | escape }}"
@@ -87,6 +77,8 @@
         {%- else -%}
           {%- if collection.image != blank -%}
             <img src="{{ collection.image | image_url: width: 1800 }}" alt="{{ collection.image.alt | default: collection.title | escape }}" loading="eager" fetchpriority="high" width="1800" height="1100" class="img-filter-coll-page-dark"{% if hero_focus_style != blank %} style="{{ hero_focus_style }}"{% endif %} />
+          {%- elsif section.settings.hero_image != blank -%}
+            <img src="{{ section.settings.hero_image | image_url: width: 1800 }}" alt="{{ section.settings.hero_image.alt | escape | default: collection.title }}" loading="eager" fetchpriority="high" width="1800" height="1100" class="img-filter-coll-page-dark"{% if hero_focus_style != blank %} style="{{ hero_focus_style }}"{% endif %} />
           {%- else -%}
             <div style="background: var(--c-charcoal-2); width:100%; height:100%;"></div>
           {%- endif -%}
@@ -116,7 +108,7 @@
       "type": "image_picker",
       "id": "hero_image",
       "label": "Collection hero image",
-      "info": "Pre-populate with the placeholder assigned in Docs/collection-build-spec.md Section 5 until real capsule photography exists. Swap any time — no code change needed."
+      "info": "Generic fallback only: used when a collection has no hero metafield, capsule image or Admin image."
     },
     {
       "type": "text",

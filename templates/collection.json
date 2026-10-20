@@ -34,6 +34,7 @@
     "ka-collection-hero": {
       "type": "ka-collection-hero",
       "settings": {
+        "hero_image": "shopify://shop_images/maroon_raw_silk.jpg",
         "position": ""
       }
     },
