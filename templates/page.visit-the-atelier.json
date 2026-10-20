@@ -48,7 +48,7 @@
     "ka-visit-arrival": {
       "type": "ka-visit-arrival",
       "settings": {
-        "eyebrow": "Santacruz West, Mumbai",
+        "eyebrow": "Mumbai, India",
         "title_line1": "The Atelier",
         "title_line2": "Mumbai",
         "subtitle": "A real address, a fitting mirror, and the quiet particular to a house where every piece is made once, for one person. Walk in, or write ahead — either way, we're glad to have you.",
@@ -84,7 +84,7 @@
       "type": "ka-visit-photo",
       "settings": {
         "caption_name": "The Atelier",
-        "caption_sub": "Santacruz West, Mumbai"
+        "caption_sub": "Mumbai, India"
       }
     },
     "ka-visit-assurance": {
@@ -143,7 +143,7 @@
         "pinterest_url": "https://www.pinterest.com/karishmaashita/",
         "email": "info@karishmaashita.com",
         "collections_menu": "footer-collections-2026",
-        "address": "Santacruz, Mumbai, India\nComplimentary worldwide shipping via DHL Express",
+        "address": "Mumbai, India\nComplimentary worldwide shipping via DHL Express",
         "news_title": "The Inner Circle",
         "news_body": "Collection previews, styling notes and private trunk show invitations — delivered quietly to your inbox.",
         "news_placeholder": "Your email address",
