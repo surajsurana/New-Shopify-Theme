@@ -181,3 +181,44 @@ Rejected: Avantika black lehenga (only 720x1080, would be upscaled ~1.4x and sof
 Caveat: the image is a hotel-room lifestyle photo, warmer and less cinematic than the studio shots; it is still the strongest face+outfit option in the article's own catalogue. Only the top-of-hair is trimmed by ~1-2% on desktop.
 
 Who: SEO sets `custom.breakout_image` and alt on the article.
+
+
+---
+
+# Post #9 -- corset-saree-vs-corset-lehenga (hidden; SEO schedules 11 Nov) (2026-10-20)
+
+Contact sheet: Docs/review-assets/post9-review.png (hero at 1470x771 / 1440x900 / 1920x1080 / 390x844 with the 105px header band; breakout at the same four; table raw vs fixed at 390 and desktop). Rendered with the real ka-base / ka-article-hero / ka-article-body CSS in headless Chrome.
+
+## Verdict: SIGN-OFF with the images below and the inline-styled table. No theme change needed; post does not wait for TD.
+
+## Hero: Rubi front (saree) -- default 2%, no hero_focus_y
+- MediaImage gid://shopify/MediaImage/38758494601506 (MUNJALGANDHI_2024_IMG4048.jpg, 1875x2500). Alt (SEO's is good, keep): "Red cutwork corset and bustier with Japanese cut-bead embroidered drape saree".
+- Desktop (all three viewports): head with bun, eyes, emerald-drop earring, choker, full red bodice and the drape over the shoulder, hands on hips. Face + outfit, warm amber chandelier set. PASS at 2%. 0% and 8% were also tested: 2% is best (8% starts to lose the headroom, 0% adds nothing).
+- 390x844: the image is a full-length portrait; the hero is 78svh so there is no vertical slack and focus_y has no effect. The whole silhouette shows (bodice, knotted waist, long pallu) but the face sits under the 105px header band. This is the same for every portrait hero on the site, so it is accepted; if the real mobile nav is shorter than 105px the face is partly visible. Title block sits over the drape at lower left, legible.
+- Not used by any other live post (checked page HTML of all 8 live posts; reconsidered uses IMG2265, a different file).
+
+## Breakout: Red raw-silk close-up (lehenga) -- no marker, renders after the body
+- MediaImage gid://shopify/MediaImage/55289814778146 (redrawsilkcloseup.jpg, 3750x4425, currently no alt). Alt to set: "Model seated in a hand-embellished corset and red raw silk lehenga, wearing a layered ruby necklace, looking to camera".
+- Pairing: hero = saree, breakout = lehenga, matching the post's comparison. Since no [breakout] marker is present, it sits after the whole body (after the Q&A) -- acceptable; if SEO prefers it mid-article, put the literal text [breakout] on its own line after the "At a glance" table section.
+- 1470x771: full face, earrings, necklace, corset bodice, curtain backdrop (2.2:1 frame). 1440x900 and 1920x1080: same, a little more of the arm and the first of the skirt. 390x844: whole seated look, face, corset and the red skirt spread out. PASS everywhere. At desktop the red lehenga itself is not visible (the frame is a bust-length crop); the mobile crop and the hero-adjacent text carry it.
+- Rejected: Redrawsilkfront as hero (face turned down, cut at the brow at desktop; on mobile it is a full-length lehenga with the face under the header); Redrawsilkback as breakout (no face; fails the rule); the same front shot as breakout (head crowds the top edge). Raw-silk front remains the best in-article/product-card image.
+- Not used as hero/breakout in any other post (Sagegreencloseup is a different file).
+
+## TABLE decision
+Raw <table> with current CSS: FAIL. ka-base.css has `*{margin:0;padding:0}` and no table rule, so cells have no padding or rules, headers fall back to bold Jost black (off-brand), the first column crowds and collides with column two ("What completes it", "drape itself" butting against "Usually a dupatta"), and rows read as loose text. It does fit the width at 390 (no horizontal scroll) but looks unfinished at both sizes.
+
+Fix (a) -- CONTENT-ONLY, ready now: replace the table with the inline-styled version in Docs/post9-table-inline.html (same 3 columns x 6 rows, same text, same semantic <table>/<thead>/<th> so the SEO/answer-engine value is kept). It uses only brand colours/fonts already loaded sitewide (Cormorant italic column heads, small-caps gold row labels, hairline rules), table-layout:fixed, 100% width. Rendered: clean at 390 (first column 28%, no overflow, rows wrap to 2-4 lines) and at desktop (720px column). Caveat: SEO must paste via the Shopify article HTML view and confirm the style attributes survive save (Shopify keeps inline styles in article HTML; the visual editor can strip them if the post is later edited there -- edit in HTML view only).
+
+Fix (b) -- OPTIONAL follow-up for TD, not blocking: a 10-line `.a-body table` rule in assets/ka-article-body.css (width:100%; border-collapse:collapse; table-layout:fixed; font-size:.88rem; line-height:1.5; thead th Cormorant italic 1.05rem weight 400, left-aligned, bottom border var(--line-light); td padding 14px 10px 14px 0, bottom border var(--line); first column 28%, 0.7rem uppercase, letter-spacing .14em, colour var(--c-rosegold-2)); at max-width 600px keep the same. After that, SEO could drop the inline styles. Simple, goes through staging/QA/release; do it before the next post that uses a table so editors need not hand-style.
+
+## Other body checks
+- Q&A block (<p><strong>Q</strong><br>A</p>): renders as a dark Jost 400 question over a light answer, 16px between pairs. Reads cleanly at both sizes; no change needed.
+- Bullet list: fine at both sizes (gold-less discs, 1.4em indent, comfortable spacing).
+- H3 product sub-sections: Cormorant italic 1.2rem, tight to the paragraph below, consistent with other posts.
+- H2 directly followed by a paragraph sits tight (house pattern, the `.a-body p{margin:0}` rule beats the stack spacing); unchanged across all posts.
+
+## Instructions to SEO
+1. Set article image (hero) = MediaImage 38758494601506 with the alt above; leave hero_focus_y empty.
+2. Set custom.breakout_image = MediaImage 55289814778146 and set its file alt as above.
+3. Replace the table with Docs/post9-table-inline.html (via HTML view).
+4. Scheduling for 11 Nov may proceed on that basis; nothing waits for theme work.
