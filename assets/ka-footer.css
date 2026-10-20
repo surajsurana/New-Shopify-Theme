@@ -72,6 +72,14 @@
   transition: color var(--dur-fast); letter-spacing: 0.04em;
 }
 .ka-footer__links a:hover { color: var(--c-rosegold-pale); }
+/* Non-clickable sub-label inside the Collections column ("By Silhouette") */
+.ka-footer__sublabel {
+  margin-top: 14px;
+  font-family: var(--f-sans);
+  font-size: 0.62rem; font-weight: 400;
+  letter-spacing: 0.16em; text-transform: uppercase;
+  color: var(--c-ink-muted);
+}
 /* Current-page state (Docs/about-us-build-spec.md Section 6 H3) — matches the existing hover colour */
 .ka-footer__links a.is-current { color: var(--c-rosegold-pale); }
 

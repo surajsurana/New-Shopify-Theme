@@ -67,16 +67,46 @@
     <!-- Column 2: Collections -->
     <div class="ka-footer__collections">
       <p class="ka-footer__col-title">Collections</p>
+      {%- comment -%}
+        2026-10-20 (category pages): the menu is chosen by the "Collections
+        menu" section setting (link_list picker). When the setting is blank the
+        column reads the legacy `footer-collections` menu exactly as before,
+        and when that is empty/missing it falls back to the hardcoded list
+        below -- so a theme whose templates do not set the picker behaves
+        exactly as it always did. A menu item that has children renders as a
+        small non-clickable sub-label with its children as the list beneath
+        it ("By Silhouette").
+        LOOMIERE: not launched -- when it is, add it as the first fallback
+        link and the first item of the Admin menu.
+      {%- endcomment -%}
+      {%- liquid
+        assign footer_coll_menu = section.settings.collections_menu
+        if footer_coll_menu == blank
+          assign footer_coll_menu = linklists['footer-collections']
+        endif
+      -%}
       <ul class="ka-footer__links">
-        {% for link in linklists['footer-collections'].links %}
-          <li><a href="{{ link.url }}">{{ link.title }}</a></li>
+        {% for link in footer_coll_menu.links %}
+          {%- if link.links.size > 0 -%}
+            <li class="ka-footer__sublabel" role="presentation">{{ link.title }}</li>
+            {%- for child in link.links -%}
+              <li><a href="{{ child.url }}">{{ child.title }}</a></li>
+            {%- endfor -%}
+          {%- else -%}
+            <li><a href="{{ link.url }}">{{ link.title }}</a></li>
+          {%- endif -%}
         {% endfor %}
-        {% if linklists['footer-collections'].links.size == 0 %}
+        {% if footer_coll_menu.links.size == 0 %}
+          <li><a href="/collections/first-love">First Love</a></li>
           <li><a href="/collections/the-festive-edit">The Festive Edit</a></li>
           <li><a href="/collections/the-bloom-soiree">The Bloom Soirée</a></li>
           <li><a href="/collections/chamak">Chamakk</a></li>
           <li><a href="/collections/barre-oblique">Barre Oblique</a></li>
-          <li><a href="/collections/signature-top-sellers">Signature</a></li>
+          <li class="ka-footer__sublabel" role="presentation">By Silhouette</li>
+          <li><a href="/collections/lehengas">Lehengas</a></li>
+          <li><a href="/collections/drapes">Drape Sarees</a></li>
+          <li><a href="/collections/indo-western">Indo-Western</a></li>
+          <li><a href="/collections/corsets">Corsets</a></li>
         {% endif %}
       </ul>
     </div>
@@ -239,6 +269,11 @@
     { "type": "textarea", "id": "tagline",        "label": "Tagline",     "default": "Bridal couture, handcrafted\nin Mumbai." },
     {
       "type": "header",
+      "content": "Collections column"
+    },
+    { "type": "link_list", "id": "collections_menu", "label": "Collections menu", "info": "Leave empty to use the legacy footer-collections menu, or the built-in list. A top-level item with sub-items shows as a small label." },
+    {
+      "type": "header",
       "content": "Social links"
     },
     { "type": "url", "id": "instagram_url", "label": "Instagram URL", "info": "Leave blank to hide the Instagram link." },
@@ -253,7 +288,7 @@
       "content": "This address block is the site's single authoritative logistics line (Docs/search-404-footer-build-spec.md §3.2) — Mumbai + worldwide shipping is stated here once, not repeated elsewhere in the footer."
     },
     { "type": "text",     "id": "email",   "label": "Email address", "default": "info@karishmaashita.com" },
-    { "type": "textarea", "id": "address", "label": "Address / shipping note", "default": "Mumbai, India\nComplimentary worldwide shipping via DHL Express" },
+    { "type": "textarea", "id": "address", "label": "Address / shipping note", "default": "Santacruz, Mumbai, India\nComplimentary worldwide shipping via DHL Express" },
     {
       "type": "header",
       "content": "Inner Circle (newsletter column)"

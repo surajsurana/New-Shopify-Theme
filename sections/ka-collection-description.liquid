@@ -1,0 +1,85 @@
+{%- comment -%}
+  K&A Collection Description ("About this Collection")
+  Design: Docs/category-pages-and-owned-fixes-design-2026-10-20.md, section 2.
+
+  Prints collection.description (Admin > Collections > Description) as a quiet
+  editorial note BELOW the product grid. Renders NOTHING AT ALL when the
+  description is empty (no rule, no padding), only on page 1 of the grid, and
+  not on refine-chip (tag-filtered) views.
+    - under 25 words : single centred italic line, no eyebrow (closing note)
+    - 25 to 120 words: two-column note, shown in full
+    - over 120 words : two-column note, collapsed to ~10 lines with a fade and
+      a "Read the full note" toggle. The full text is ALWAYS in the DOM (the
+      collapse is a CSS max-height only, applied by JS only when it measures an
+      overflow), so crawlers, screen readers and no-JS visitors get all of it.
+{%- endcomment -%}
+
+{%- liquid
+  assign cd_text = collection.description | strip_html | strip
+  assign cd_words = 0
+  assign cd_show = false
+  if cd_text != blank and current_page == 1 and current_tags.size == 0
+    assign cd_show = true
+    assign cd_words = cd_text | split: ' ' | size
+  endif
+-%}
+
+{%- if cd_show -%}
+  {{ 'ka-collection-description.css' | asset_url | stylesheet_tag }}
+
+  {%- if cd_words < 25 -%}
+    <section class="ka-coll-desc ka-coll-desc--short" aria-label="About this collection">
+      <div class="ka-coll-desc__short reveal">{{ collection.description }}</div>
+    </section>
+  {%- else -%}
+    <section class="ka-coll-desc" aria-labelledby="ka-coll-desc-title" data-ka-coll-desc>
+      <div class="ka-coll-desc__inner">
+        <div class="ka-coll-desc__head reveal">
+          {%- if section.settings.eyebrow != blank -%}
+            <p class="eyebrow eyebrow--muted ka-coll-desc__eyebrow">{{ section.settings.eyebrow }}</p>
+          {%- endif -%}
+          <h2 class="ka-coll-desc__title" id="ka-coll-desc-title">{{ collection.title }}</h2>
+        </div>
+        <div class="ka-coll-desc__main reveal reveal-delay-1">
+          <div class="ka-coll-desc__body" id="ka-coll-desc-body"{% if cd_words > 120 %} data-collapsible{% endif %}>
+            {{ collection.description }}
+          </div>
+          {%- if cd_words > 120 -%}
+            <button
+              type="button"
+              class="ka-coll-desc__toggle"
+              hidden
+              aria-expanded="false"
+              aria-controls="ka-coll-desc-body"
+              data-label-more="{{ section.settings.more_label | escape }}"
+              data-label-less="{{ section.settings.less_label | escape }}"
+            >{{ section.settings.more_label }}</button>
+          {%- endif -%}
+        </div>
+      </div>
+    </section>
+    {%- if cd_words > 120 -%}
+      <script src="{{ 'ka-collection-description.js' | asset_url }}" defer></script>
+    {%- endif -%}
+  {%- endif -%}
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "Collection Description",
+  "tag": "div",
+  "class": "ka-collection-description-section",
+  "settings": [
+    {
+      "type": "paragraph",
+      "content": "Shows the collection's Admin description below the grid. Edit the text itself in Admin > Collections. Nothing shows when the description is empty."
+    },
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow text", "default": "About This Collection" },
+    { "type": "text", "id": "more_label", "label": "Expand link label", "default": "Read the full note" },
+    { "type": "text", "id": "less_label", "label": "Collapse link label", "default": "Show less" }
+  ],
+  "presets": [
+    { "name": "Collection Description" }
+  ]
+}
+{% endschema %}

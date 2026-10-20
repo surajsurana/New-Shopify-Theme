@@ -16,7 +16,31 @@
   no native "index of this collection in the Maison" concept — it must mirror the fixed
   homepage Collections Directory order (Festive Edit 01, Bloom Soirée 02, Chamakk 03,
   Barre Oblique 04) per CD Note 5. Set manually per collection.json instance.
+
+  2026-10-20 (category pages): image lookup order is now
+    1. section setting hero_image
+    2. collection metafield custom.hero_image (file_reference) -- the four
+       silhouette pages (Lehengas, Drapes, Indo-Western, Corsets) use this
+    3. the known-capsule handle images below
+    4. collection.image (Admin collection image)
+    5. charcoal
+  Eyebrow: collection metafield custom.hero_eyebrow when set, else
+  "The Collections", plus " -- {position}" only when the position setting is
+  non-blank (numerals dropped, D2). Optional metafield custom.hero_focus
+  (e.g. "50% 8%") sets object-position so portrait photographs are not
+  cropped through the face; default stays "center 30%".
 {%- endcomment -%}
+
+{%- liquid
+  assign hero_mf_image = collection.metafields.custom.hero_image.value
+  assign hero_mf_eyebrow = collection.metafields.custom.hero_eyebrow.value
+  assign hero_mf_focus = collection.metafields.custom.hero_focus.value
+  assign hero_focus_style = ''
+  if hero_mf_focus != blank
+    assign hero_focus_safe = hero_mf_focus | strip | escape
+    assign hero_focus_style = 'object-position: ' | append: hero_focus_safe | append: ';'
+  endif
+-%}
 
 <section class="ka-coll-hero">
   <div class="ka-coll-hero__frame reveal-img">
@@ -29,6 +53,18 @@
         width="1800"
         height="1100"
         class="img-filter-coll-page-dark"
+        {% if hero_focus_style != blank %}style="{{ hero_focus_style }}"{% endif %}
+      />
+    {% elsif hero_mf_image != blank %}
+      <img
+        src="{{ hero_mf_image | image_url: width: 1800 }}"
+        alt="{{ hero_mf_image.alt | default: collection.title | escape }}"
+        loading="eager"
+        fetchpriority="high"
+        width="1800"
+        height="1100"
+        class="img-filter-coll-page-dark"
+        {% if hero_focus_style != blank %}style="{{ hero_focus_style }}"{% endif %}
       />
     {% else %}
       {%- assign handle_lower = collection.handle | downcase -%}
@@ -49,13 +85,17 @@
         {%- when 'bestsellers' -%}
           <img src="{{ 'bestsellers-hero.jpg' | asset_url }}" alt="{{ collection.title }}" loading="eager" fetchpriority="high" width="1800" height="1100" class="img-filter-coll-page-dark" />
         {%- else -%}
-          <div style="background: var(--c-charcoal-2); width:100%; height:100%;"></div>
+          {%- if collection.image != blank -%}
+            <img src="{{ collection.image | image_url: width: 1800 }}" alt="{{ collection.image.alt | default: collection.title | escape }}" loading="eager" fetchpriority="high" width="1800" height="1100" class="img-filter-coll-page-dark"{% if hero_focus_style != blank %} style="{{ hero_focus_style }}"{% endif %} />
+          {%- else -%}
+            <div style="background: var(--c-charcoal-2); width:100%; height:100%;"></div>
+          {%- endif -%}
       {%- endcase -%}
     {% endif %}
     <div class="ka-coll-hero__overlay"></div>
     <div class="ka-coll-hero__content">
       <div>
-        <p class="eyebrow eyebrow--on-dark ka-coll-hero__eyebrow reveal">The Collections — {{ section.settings.position | default: '01' }}</p>
+        <p class="eyebrow eyebrow--on-dark ka-coll-hero__eyebrow reveal">{% if hero_mf_eyebrow != blank %}{{ hero_mf_eyebrow | escape }}{% else %}The Collections{% if section.settings.position != blank %} — {{ section.settings.position }}{% endif %}{% endif %}</p>
         <h1 class="ka-coll-hero__title reveal reveal-delay-1">{{ collection.title }}</h1>
       </div>
       <div class="ka-coll-hero__meta reveal reveal-delay-2">
@@ -81,9 +121,8 @@
     {
       "type": "text",
       "id": "position",
-      "label": "Position in Maison order (e.g. 01, 02, 03, 04)",
-      "default": "01",
-      "info": "Must mirror the homepage Collections Directory order: Festive Edit 01, Bloom Soirée 02, Chamakk 03, Barre Oblique 04."
+      "label": "Optional number in eyebrow (e.g. 01)",
+      "info": "Leave blank (recommended) to print just \"The Collections\". Numerals were dropped in the 2026 category-pages release."
     }
   ],
   "presets": [

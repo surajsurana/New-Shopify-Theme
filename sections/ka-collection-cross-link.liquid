@@ -24,15 +24,66 @@
   acceptable for now per F8, revisit only past ~6 collections.
 {%- endcomment -%}
 
+{%- comment -%}
+  2026-10-20 (category pages) -- ring order + silhouette mode.
+
+  CAPSULE RING: one ordered, hand-maintained list of capsule handles. On a
+  capsule page the strip shows the three that follow the current one,
+  wrapping around, so every capsule gets equal cross-link exposure and the
+  strip is always exactly three cards (no orphan fourth card). On any page
+  that is not in the ring (Signature, Wedding Festive, the silhouettes) it
+  shows the first three. Still a fixed list on purpose (CD Note 5), never an
+  algorithm.
+  LOOMIERE: not launched. When it launches, put `loomiere` FIRST in
+  cl_capsule_handles below (newest first) -- nothing else changes.
+
+  SILHOUETTE MODE: on lehengas / drapes / indo-western / corsets the strip
+  shows the other three silhouettes (eyebrow/title swap), and the closing
+  line links back to /collections. Capsule pages get the closing line
+  linking to the four silhouettes instead.
+
+  Images: collection.image, then collection metafield custom.hero_image,
+  then per-handle placeholder assets.
+{%- endcomment -%}
+
 {% liquid
-  assign cl_handles = "the-festive-edit|the-bloom-soiree|chamak|barre-oblique" | split: "|"
+  assign cl_capsule_handles = "first-love|the-festive-edit|the-bloom-soiree|chamak|barre-oblique" | split: "|"
+  assign cl_silhouette_handles = "lehengas|drapes|indo-western|corsets" | split: "|"
+
+  assign cl_is_silhouette = false
+  if cl_silhouette_handles contains collection.handle
+    assign cl_is_silhouette = true
+  endif
+
+  assign cl_picked = ''
+  if cl_is_silhouette
+    for h in cl_silhouette_handles
+      if h != collection.handle
+        assign cl_picked = cl_picked | append: h | append: '|'
+      endif
+    endfor
+  else
+    assign cl_size = cl_capsule_handles.size
+    assign cl_idx = -1
+    for h in cl_capsule_handles
+      if h == collection.handle
+        assign cl_idx = forloop.index0
+      endif
+    endfor
+    assign cl_start = cl_idx | plus: 1
+    for n in (0..2)
+      assign cl_pos = cl_start | plus: n | modulo: cl_size
+      assign cl_picked = cl_picked | append: cl_capsule_handles[cl_pos] | append: '|'
+    endfor
+  endif
+  assign cl_handles = cl_picked | split: '|'
 %}
 
-<section class="ka-cross-link" aria-label="The other collections">
+<section class="ka-cross-link" aria-label="{% if cl_is_silhouette %}The other silhouettes{% else %}The other collections{% endif %}">
   <div class="ka-cross-link__inner">
     <div class="ka-cross-link__header reveal">
       <p class="eyebrow eyebrow--on-dark ka-cross-link__eyebrow">Continue Through the Maison</p>
-      <h2 class="ka-cross-link__title">The Other Collections</h2>
+      <h2 class="ka-cross-link__title">{% if cl_is_silhouette %}The Other Silhouettes{% else %}The Other Collections{% endif %}</h2>
     </div>
     <div class="ka-cross-link__grid">
       {% assign delay = 0 %}
@@ -40,6 +91,7 @@
         {% assign cl_collection = collections[h] %}
         {% if cl_collection != blank and cl_collection.handle != collection.handle %}
           {% assign delay = delay | plus: 1 %}
+          {%- assign cl_mf_image = cl_collection.metafields.custom.hero_image.value -%}
           <a href="{{ cl_collection.url }}" class="ka-cl-card reveal-img{% if delay > 1 %} reveal-delay-{{ delay | minus: 1 }}{% endif %}">
             <div class="ka-cl-card__image">
               {% if cl_collection.image != blank %}
@@ -51,9 +103,22 @@
                   height="675"
                   class="img-filter-coll-page-dark"
                 />
+              {% elsif cl_mf_image != blank %}
+                {%- assign cl_mf_focus = cl_collection.metafields.custom.hero_focus.value | strip | escape -%}
+                <img
+                  src="{{ cl_mf_image | image_url: width: 900 }}"
+                  alt="{{ cl_collection.title }}"
+                  loading="lazy"
+                  width="900"
+                  height="675"
+                  class="img-filter-coll-page-dark"
+                  {% if cl_mf_focus != blank %}style="object-position: {{ cl_mf_focus }};"{% endif %}
+                />
               {% else %}
                 {%- assign cl_handle_lower = cl_collection.handle | downcase -%}
                 {%- case cl_handle_lower -%}
+                  {%- when 'first-love' -%}
+                    <img src="{{ 'first-love-card.jpg' | asset_url }}" alt="{{ cl_collection.title }}" loading="lazy" width="900" height="675" class="img-filter-coll-page-dark" />
                   {%- when 'the-bloom-soiree' -%}
                     <img src="{{ 'bloom-soiree-main.jpg' | asset_url }}" alt="{{ cl_collection.title }}" loading="lazy" width="900" height="675" class="img-filter-coll-page-dark" />
                   {%- when 'the-festive-edit' -%}
@@ -76,6 +141,14 @@
         {% endif %}
       {% endfor %}
     </div>
+    <p class="ka-cross-link__more reveal">
+      {%- if cl_is_silhouette -%}
+        <a href="/collections">Or explore the capsule collections</a>
+      {%- else -%}
+        Or shop by silhouette:
+        <a href="/collections/lehengas">Lehengas</a><span aria-hidden="true"> &middot; </span><a href="/collections/drapes">Drape Sarees</a><span aria-hidden="true"> &middot; </span><a href="/collections/indo-western">Indo-Western</a><span aria-hidden="true"> &middot; </span><a href="/collections/corsets">Corsets</a>
+      {%- endif -%}
+    </p>
   </div>
 </section>
 
@@ -87,7 +160,7 @@
   "settings": [
     {
       "type": "paragraph",
-      "content": "The four cross-linked collections (Festive Edit, Bloom Soirée, Chamakk, Barre Oblique) are fixed in code by handle, not editable here — see the comment at the top of this section's .liquid file. The current page's own collection is automatically excluded from display."
+      "content": "The cross-linked collections are fixed in code by handle, not editable here — see the comment at the top of this section's .liquid file. On capsule pages the next three capsules in a ring are shown; on silhouette pages the other three silhouettes."
     }
   ],
   "presets": [

@@ -28,11 +28,23 @@
   same as every other non-core page.
 {%- endcomment -%}
 
-<section class="ka-collections-list" aria-label="All collections">
+{%- comment -%}
+  2026-10-20 (category pages): the section can now be used twice on the page.
+  Chapter one = the capsules (heading_level h1, as before). Chapter two =
+  "By Silhouette" (heading_level h2, "Second chapter" checked so the top
+  clearance under the nav is not doubled). show_numbers controls the 01/02
+  card numerals (off in the template: numerals dropped, D2). Card image
+  lookup is collection.image, then the collection metafield custom.hero_image
+  (the silhouette pages), then the per-handle placeholder assets.
+{%- endcomment -%}
+{%- assign heading_tag = section.settings.heading_level | default: 'h1' -%}
+<section class="ka-collections-list{% if section.settings.is_second_chapter %} ka-collections-list--chapter-2{% endif %}" aria-label="{{ section.settings.title | escape }}">
   <div class="ka-collections-list__inner">
     <div class="ka-collections-list__header">
-      <p class="eyebrow eyebrow--on-dark" style="margin-bottom: 16px;">{{ section.settings.eyebrow }}</p>
-      <h1 class="ka-collections-list__title">{{ section.settings.title }}</h1>
+      {%- if section.settings.eyebrow != blank -%}
+        <p class="eyebrow eyebrow--on-dark" style="margin-bottom: 16px;">{{ section.settings.eyebrow }}</p>
+      {%- endif -%}
+      <{{ heading_tag }} class="ka-collections-list__title">{{ section.settings.title }}</{{ heading_tag }}>
     </div>
 
     {% liquid
@@ -51,10 +63,20 @@
           {% if coll != blank %}
             <a href="{{ coll.url }}" class="ka-coll-card" {{ block.shopify_attributes }}>
               <div class="ka-coll-card__image">
+                {%- assign coll_mf_image = coll.metafields.custom.hero_image.value -%}
                 {% if coll.image != blank %}
                   <img
                     src="{{ coll.image | image_url: width: 700 }}"
                     alt="{{ coll.image.alt | escape | default: coll.title | escape }}"
+                    loading="lazy"
+                    width="700"
+                    height="1050"
+                    class="img-filter-collection"
+                  />
+                {% elsif coll_mf_image != blank %}
+                  <img
+                    src="{{ coll_mf_image | image_url: width: 700 }}"
+                    alt="{{ coll_mf_image.alt | default: coll.title | escape }}"
                     loading="lazy"
                     width="700"
                     height="1050"
@@ -83,7 +105,9 @@
               </div>
               <div class="ka-coll-card__overlay"></div>
               <div class="ka-coll-card__label">
-                <p class="ka-coll-card__number">{{ forloop.index | prepend: '0' | slice: -2, 2 }}</p>
+                {%- if section.settings.show_numbers -%}
+                  <p class="ka-coll-card__number">{{ forloop.index | prepend: '0' | slice: -2, 2 }}</p>
+                {%- endif -%}
                 <h3 class="ka-coll-card__name">{{ coll.title }}</h3>
                 <span class="ka-coll-card__arrow">Explore &rarr;</span>
               </div>
@@ -107,8 +131,16 @@
       "type": "paragraph",
       "content": "Curated /collections index. Add a block per collection you want shown (Theme Customizer), pick the collection in each block, reorder by dragging blocks. Defaults to 5 collections set in the template — edit anytime, no code change needed."
     },
-    { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "Maison" },
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "Maison", "info": "Leave blank to hide." },
     { "type": "text", "id": "title",   "label": "Page title", "default": "All Collections" },
+    {
+      "type": "select", "id": "heading_level", "label": "Title heading level",
+      "info": "Exactly one section on the page should be H1; use H2 for any other.",
+      "options": [ { "value": "h1", "label": "H1" }, { "value": "h2", "label": "H2" } ],
+      "default": "h1"
+    },
+    { "type": "checkbox", "id": "show_numbers", "label": "Show 01, 02... numbers on cards", "default": true },
+    { "type": "checkbox", "id": "is_second_chapter", "label": "Second chapter (less top space)", "default": false },
     { "type": "text", "id": "empty_state_text", "label": "Empty state text", "default": "Collections are being prepared — please check back shortly, or explore our Signature edit." }
   ],
   "blocks": [

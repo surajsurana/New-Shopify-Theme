@@ -59,7 +59,40 @@
       "settings": {
         "eyebrow": "Maison",
         "title": "All Collections",
+        "heading_level": "h1",
+        "show_numbers": false,
+        "is_second_chapter": false,
         "empty_state_text": "Collections are being prepared — please check back shortly, or explore our Signature edit."
+      }
+    },
+    "ka-collections-silhouettes": {
+      "type": "ka-collections-list",
+      "blocks": {
+        "lehengas": {
+          "type": "featured_collection",
+          "settings": { "collection": "lehengas" }
+        },
+        "drapes": {
+          "type": "featured_collection",
+          "settings": { "collection": "drapes" }
+        },
+        "indo-western": {
+          "type": "featured_collection",
+          "settings": { "collection": "indo-western" }
+        },
+        "corsets": {
+          "type": "featured_collection",
+          "settings": { "collection": "corsets" }
+        }
+      },
+      "block_order": ["lehengas", "drapes", "indo-western", "corsets"],
+      "settings": {
+        "eyebrow": "The Garments",
+        "title": "By Silhouette",
+        "heading_level": "h2",
+        "show_numbers": false,
+        "is_second_chapter": true,
+        "empty_state_text": ""
       }
     },
     "ka-footer": {
@@ -72,7 +105,8 @@
         "youtube_url": "https://www.youtube.com/@KarishmaAshita",
         "pinterest_url": "https://www.pinterest.com/karishmaashita/",
         "email": "info@karishmaashita.com",
-        "address": "Mumbai, India\nComplimentary worldwide shipping via DHL Express",
+        "collections_menu": "footer-collections-2026",
+        "address": "Santacruz, Mumbai, India\nComplimentary worldwide shipping via DHL Express",
         "news_title": "The Inner Circle",
         "news_body": "Collection previews, styling notes and private trunk show invitations — delivered quietly to your inbox.",
         "news_placeholder": "Your email address",
@@ -84,6 +118,7 @@
   "order": [
     "ka-nav",
     "ka-collections-list",
+    "ka-collections-silhouettes",
     "ka-footer"
   ]
 }

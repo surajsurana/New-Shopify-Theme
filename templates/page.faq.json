@@ -117,7 +117,15 @@
           "settings": {
             "category": "sizing",
             "question": "What occasions do K&A pieces suit?",
-            "answer": "<p>K&amp;A's range covers the full arc of a wedding calendar — bridal wear for the wedding day itself, and pieces built for sangeet, mehendi, reception, and cocktail moments, in both fuller bridal silhouettes (lehengas) and leaner, more contemporary ones (drape sarees, Indo-Western sets).</p>"
+            "answer": "<p>K&amp;A's range covers the full arc of a wedding calendar — bridal wear for the wedding day itself, and pieces built for sangeet, mehendi, reception, and cocktail moments, in both fuller bridal silhouettes (<a href=\"/collections/lehengas\">lehengas</a>) and leaner, more contemporary ones (<a href=\"/collections/drapes\">drape sarees</a>, <a href=\"/collections/indo-western\">Indo-Western sets</a>).</p>"
+          }
+        },
+        "q12": {
+          "type": "question",
+          "settings": {
+            "category": "sizing",
+            "question": "Who is behind K&A, and where is the atelier?",
+            "answer": "<p>K&amp;A by Karishma and Ashita was founded in 2016 by Karishma Surana and Ashita Surana. The atelier is in Santacruz, Mumbai, where clients can book a private consultation; video consultations are available to clients anywhere in the world.</p>"
           }
         },
         "q6": {
@@ -125,7 +133,7 @@
           "settings": {
             "category": "ordering",
             "question": "What is K&A's price range?",
-            "answer": "<p>K&amp;A's pieces range from ₹30,000 to ₹280,000+, depending on the piece, embellishment density, and construction complexity. This is a considered, high-involvement purchase rather than an entry-level one — K&amp;A doesn't run discount or sale pricing.</p>"
+            "answer": "<p>K&amp;A's pieces range from ₹30,000 to ₹4,80,000+, depending on the piece, embellishment density, and construction complexity. This is a considered, high-involvement purchase rather than an entry-level one — K&amp;A doesn't run discount or sale pricing.</p>"
           }
         },
         "q7": {
@@ -135,8 +143,11 @@
             "question": "Is a K&A piece made-to-order, and how long does it take?",
             "intro": "<p>Yes — K&amp;A pieces are mostly made-to-order; ready-to-ship inventory is the exception, not the norm. Timelines vary by category:</p>",
             "lead_drapes": "Drapes and corset drape sarees — 20–25 working days",
+            "lead_drapes_url": "/collections/drapes",
             "lead_indowestern": "Indo-Western sets — 30–35 working days",
+            "lead_indowestern_url": "/collections/indo-western",
             "lead_lehengas": "Lehengas — 40–45 working days",
+            "lead_lehengas_url": "/collections/lehengas",
             "outro": "<p>Shipped free worldwide via DHL Express. Worth building that lead time into planning around a wedding date.</p>"
           }
         },
@@ -173,7 +184,7 @@
           }
         }
       },
-      "block_order": ["q1", "q2", "q3", "q4", "q5", "q6", "q7", "q8", "q9", "q10", "q11"]
+      "block_order": ["q1", "q2", "q3", "q4", "q5", "q12", "q6", "q7", "q8", "q9", "q10", "q11"]
     },
     "ka-faq-cta": {
       "type": "ka-appointment",
@@ -198,7 +209,8 @@
         "youtube_url": "https://www.youtube.com/@KarishmaAshita",
         "pinterest_url": "https://www.pinterest.com/karishmaashita/",
         "email": "info@karishmaashita.com",
-        "address": "Mumbai, India\nComplimentary worldwide shipping via DHL Express",
+        "collections_menu": "footer-collections-2026",
+        "address": "Santacruz, Mumbai, India\nComplimentary worldwide shipping via DHL Express",
         "news_title": "The Inner Circle",
         "news_body": "Collection previews, styling notes and private trunk show invitations — delivered quietly to your inbox.",
         "news_placeholder": "Your email address",

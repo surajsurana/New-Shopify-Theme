@@ -52,6 +52,22 @@
   color: var(--c-rosegold);
 }
 
+.ka-cross-link__more {
+  margin-top: var(--s-md);
+  font-family: var(--f-sans);
+  font-size: 0.62rem;
+  font-weight: 400;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.5);
+}
+.ka-cross-link__more a {
+  color: var(--c-rosegold-pale);
+  padding: 4px 2px;
+  transition: color var(--dur-fast);
+}
+.ka-cross-link__more a:hover { color: white; }
+
 @media (max-width: 900px) {
   .ka-cross-link__grid { grid-template-columns: 1fr; gap: 2px; }
 }
