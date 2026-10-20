@@ -18,7 +18,7 @@
   assign cd_text = collection.description | strip_html | strip
   assign cd_words = 0
   assign cd_show = false
-  if cd_text != blank and current_page == 1 and current_tags.size == 0
+  if cd_text != blank and current_page == 1 and current_tags == blank
     assign cd_show = true
     assign cd_words = cd_text | split: ' ' | size
   endif
