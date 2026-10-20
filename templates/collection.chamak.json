@@ -34,7 +34,7 @@
     "ka-collection-hero": {
       "type": "ka-collection-hero",
       "settings": {
-        "position": "03"
+        "position": ""
       }
     },
     "ka-collection-intro": {
@@ -83,6 +83,10 @@
         "insert_after_index": 6
       }
     },
+    "ka-collection-description": {
+      "type": "ka-collection-description",
+      "settings": {}
+    },
     "ka-collection-cross-link": {
       "type": "ka-collection-cross-link",
       "settings": {}
@@ -103,6 +107,7 @@
         "youtube_url": "https://www.youtube.com/@KarishmaAshita",
         "pinterest_url": "https://www.pinterest.com/karishmaashita/",
         "email": "info@karishmaashita.com",
+        "collections_menu": "footer-collections-2026",
         "address": "Mumbai, India\nComplimentary worldwide shipping via DHL Express",
         "news_title": "The Inner Circle",
         "news_body": "Collection previews, styling notes and private trunk show invitations — delivered quietly to your inbox.",
@@ -119,6 +124,7 @@
     "ka-collection-intro",
     "ka-collection-refine-bar",
     "ka-collection-grid",
+    "ka-collection-description",
     "ka-collection-cross-link",
     "ka-collection-concierge",
     "ka-footer"

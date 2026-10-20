@@ -67,16 +67,42 @@
     <!-- Column 2: Collections -->
     <div class="ka-footer__collections">
       <p class="ka-footer__col-title">Collections</p>
+      {%- comment -%}
+        2026-10-20 (category pages): the menu is chosen by the "Collections
+        menu" section setting (link_list picker). When the setting is blank the
+        column reads the legacy `footer-collections` menu exactly as before,
+        and when that is empty/missing it falls back to the hardcoded list
+        below -- so a theme whose templates do not set the picker behaves
+        exactly as it always did. A menu item that has children renders as a
+        small non-clickable sub-label with its children as the list beneath
+        it. 2026-10-20: "By Silhouette" moved to the header Collections
+        panel; this column is the five capsules only.
+        LOOMIERE: not launched -- when it is, add it as the first fallback
+        link and the first item of the Admin menu.
+      {%- endcomment -%}
+      {%- liquid
+        assign footer_coll_menu = section.settings.collections_menu
+        if footer_coll_menu == blank
+          assign footer_coll_menu = linklists['footer-collections']
+        endif
+      -%}
       <ul class="ka-footer__links">
-        {% for link in linklists['footer-collections'].links %}
-          <li><a href="{{ link.url }}">{{ link.title }}</a></li>
+        {% for link in footer_coll_menu.links %}
+          {%- if link.links.size > 0 -%}
+            <li class="ka-footer__sublabel" role="presentation">{{ link.title }}</li>
+            {%- for child in link.links -%}
+              <li><a href="{{ child.url }}">{{ child.title }}</a></li>
+            {%- endfor -%}
+          {%- else -%}
+            <li><a href="{{ link.url }}">{{ link.title }}</a></li>
+          {%- endif -%}
         {% endfor %}
-        {% if linklists['footer-collections'].links.size == 0 %}
+        {% if footer_coll_menu.links.size == 0 %}
+          <li><a href="/collections/first-love">First Love</a></li>
           <li><a href="/collections/the-festive-edit">The Festive Edit</a></li>
           <li><a href="/collections/the-bloom-soiree">The Bloom Soirée</a></li>
           <li><a href="/collections/chamak">Chamakk</a></li>
           <li><a href="/collections/barre-oblique">Barre Oblique</a></li>
-          <li><a href="/collections/signature-top-sellers">Signature</a></li>
         {% endif %}
       </ul>
     </div>
@@ -237,6 +263,11 @@
     { "type": "text",     "id": "brand_name",    "label": "Brand name",  "default": "Karishma Ashita" },
     { "type": "text",     "id": "logo_subline",  "label": "Logo sub-line", "default": "Bridal Couture · Mumbai" },
     { "type": "textarea", "id": "tagline",        "label": "Tagline",     "default": "Bridal couture, handcrafted\nin Mumbai." },
+    {
+      "type": "header",
+      "content": "Collections column"
+    },
+    { "type": "link_list", "id": "collections_menu", "label": "Collections menu", "info": "Leave empty to use the legacy footer-collections menu, or the built-in list. A top-level item with sub-items shows as a small label." },
     {
       "type": "header",
       "content": "Social links"

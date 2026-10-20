@@ -69,7 +69,11 @@
   </title>
 
   {%- if request.page_type == 'index' -%}
-    <meta name="description" content="Karishma &amp; Ashita — luxury bridal couture, handcrafted in Mumbai. Corsets, lehengas and draped sarees made to your exact measurements. Complimentary worldwide delivery." />
+    {%- if shop.description != blank -%}
+      <meta name="description" content="{{ shop.description | strip | escape }}" />
+    {%- else -%}
+      <meta name="description" content="Karishma &amp; Ashita — luxury bridal couture, handcrafted in Mumbai. Corsets, lehengas and draped sarees made to your exact measurements. Complimentary worldwide delivery." />
+    {%- endif -%}
   {%- elsif page_description -%}
     <meta name="description" content="{{ page_description | escape }}" />
   {%- endif -%}
@@ -95,7 +99,11 @@
     <meta property="og:image" content="{{ 'first-love-hero.jpg' | asset_url }}" />
   {%- endif -%}
   {%- if request.page_type == 'index' -%}
-    <meta property="og:description" content="Karishma &amp; Ashita — luxury bridal couture, handcrafted in Mumbai. Corsets, lehengas and draped sarees made to your exact measurements. Complimentary worldwide delivery." />
+    {%- if shop.description != blank -%}
+      <meta property="og:description" content="{{ shop.description | strip | escape }}" />
+    {%- else -%}
+      <meta property="og:description" content="Karishma &amp; Ashita — luxury bridal couture, handcrafted in Mumbai. Corsets, lehengas and draped sarees made to your exact measurements. Complimentary worldwide delivery." />
+    {%- endif -%}
   {%- elsif page_description -%}
     <meta property="og:description" content="{{ page_description | escape }}" />
   {%- endif -%}
@@ -158,7 +166,7 @@
       endif
     endfor
     assign ld_rating_value = '4.7'
-    assign ld_review_count = '67'
+    assign ld_review_count = '68'
     if gr != blank and gr_quotes > 0 and gr.rating_number != blank and gr.rating_count != blank
       assign ld_rating_value = gr.rating_number | append: ''
       assign ld_review_count = gr.rating_count | append: ''

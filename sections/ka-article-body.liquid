@@ -53,8 +53,10 @@
 
 {%- liquid
   assign marker = '[breakout]'
+  assign article_content = article.content
+  assign article_content = article_content | replace: '<p>[breakout]</p>', marker | replace: '<p> [breakout] </p>', marker | replace: '<p>[breakout] </p>', marker | replace: '<p> [breakout]</p>', marker | replace: '<p>&nbsp;[breakout]</p>', marker
   assign has_marker = false
-  if article.content contains marker
+  if article_content contains marker
     assign has_marker = true
   endif
 
@@ -95,7 +97,7 @@
 -%}
 
 {%- if has_marker -%}
-  {%- assign content_parts = article.content | split: marker -%}
+  {%- assign content_parts = article_content | split: marker -%}
   <article class="a-body-wrap">
     <div class="a-body">{{ content_parts[0] }}</div>
   </article>
@@ -130,7 +132,7 @@
   </article>
 {%- else -%}
   <article class="a-body-wrap">
-    <div class="a-body">{{ article.content }}</div>
+    <div class="a-body">{{ article_content }}</div>
   </article>
 
   <figure class="a-breakout reveal-img">

@@ -33,10 +33,33 @@
     <div class="ka-acc__inner">
       {%- if block.type == 'question_timeline' -%}
         {{ block.settings.intro }}
+        {%- comment -%}
+          Each lead-time line can link its category word (the text before
+          " — ") to a collection; the number after the dash stays plain text.
+          No URL set = plain text, exactly as before.
+        {%- endcomment -%}
         <ul>
-          <li>{{ block.settings.lead_drapes }}</li>
-          <li>{{ block.settings.lead_indowestern }}</li>
-          <li>{{ block.settings.lead_lehengas }}</li>
+          {%- for n in (1..3) -%}
+            {%- liquid
+              case n
+                when 1
+                  assign lt_text = block.settings.lead_drapes
+                  assign lt_url = block.settings.lead_drapes_url
+                when 2
+                  assign lt_text = block.settings.lead_indowestern
+                  assign lt_url = block.settings.lead_indowestern_url
+                else
+                  assign lt_text = block.settings.lead_lehengas
+                  assign lt_url = block.settings.lead_lehengas_url
+              endcase
+              assign lt_parts = lt_text | split: ' — '
+            -%}
+            {%- if lt_url != blank and lt_parts.size > 1 -%}
+              <li><a href="{{ lt_url }}">{{ lt_parts[0] }}</a> — {{ lt_parts[1] }}</li>
+            {%- else -%}
+              <li>{{ lt_text }}</li>
+            {%- endif -%}
+          {%- endfor -%}
         </ul>
         {{ block.settings.outro }}
       {%- else -%}

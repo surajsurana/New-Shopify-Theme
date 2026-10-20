@@ -31,7 +31,7 @@
       "type": "ka-hero",
       "settings": {
         "hero_image": "shopify://shop_images/ruby_re_d0af872b-53f1-4bb4-b9cd-d63ef2629e15.jpg",
-        "eyebrow": "Mumbai — Est. in Craft",
+        "eyebrow": "Mumbai, India — Est. 2016",
         "title_line1": "Bridal",
         "title_line2": "Couture",
         "subtitle": "Made-to-order bridal wear — corsets, lehengas, Indo-Western — conceived in Mumbai and worn across the world.",
@@ -172,7 +172,7 @@
         "eyebrow": "What Brides Say",
         "title": "The words of\nour brides.",
         "rating_number": "4.7",
-        "rating_label": "4.7 · 67 Google Reviews",
+        "rating_label": "4.7 · 68 Google Reviews",
         "google_cta_label": "Read all reviews on Google",
         "google_url": "https://www.google.com/maps/search/?api=1&query=Karishma+and+Ashita+Santacruz+Mumbai"
       }
@@ -191,7 +191,6 @@
         "the-festive-edit": {
           "type": "collection_card",
           "settings": {
-            "image": "shopify://shop_images/Wearing_-_karishmaashita_Captured_by_the_best-_pradhumna.sharma_Glammed_by-_makeup_by_d_3.jpg",
             "name": "The Festive Edit",
             "collection": "",
             "card_url": "/collections/the-festive-edit"
@@ -249,14 +248,14 @@
           "type": "item",
           "settings": {
             "label": "Made to Order",
-            "sublabel": "Designed around you"
+            "sublabel": "20–45 working days"
           }
         },
         "worldwide": {
           "type": "item",
           "settings": {
             "label": "Worldwide Delivery",
-            "sublabel": "Complimentary shipping, always"
+            "sublabel": "Complimentary, via DHL Express"
           }
         },
         "concierge": {
@@ -298,6 +297,7 @@
         "youtube_url": "https://www.youtube.com/@KarishmaAshita",
         "pinterest_url": "https://www.pinterest.com/karishmaashita/",
         "email": "info@karishmaashita.com",
+        "collections_menu": "footer-collections-2026",
         "address": "Mumbai, India\nComplimentary worldwide shipping via DHL Express",
         "news_title": "The Inner Circle",
         "news_body": "Collection previews, styling notes and private trunk show invitations — delivered quietly to your inbox.",

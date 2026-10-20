@@ -86,6 +86,107 @@
     if (e.key === 'Escape') closeNav();
   });
 
+  /* --- Mobile drawer: Collections accordion (header-by-silhouette spec).
+     `inert` keeps collapsed links out of the tab order; CSS also hides
+     the collapsed block (visibility), so browsers without `inert` are
+     still correct, and an open block never has inert set. ---------- */
+  var mCollToggle = document.getElementById('ka-m-coll-toggle');
+  var mCollSub    = document.getElementById('ka-m-coll-sub');
+  if (mCollToggle && mCollSub) {
+    var mCollInner = mCollSub.querySelector('.ka-mobile-nav__sub-inner');
+    mCollToggle.addEventListener('click', function () {
+      var open = mCollToggle.getAttribute('aria-expanded') !== 'true';
+      mCollToggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+      mCollSub.classList.toggle('is-open', open);
+      if (mCollInner) {
+        if (open) mCollInner.removeAttribute('inert'); else mCollInner.setAttribute('inert', '');
+      }
+    });
+  }
+
+  /* --- Desktop Collections panel (header-by-silhouette spec). Hover only
+     on fine pointers (140ms intent delay); chevron button click / Enter /
+     Space toggles; Esc closes and returns focus to the chevron; focus
+     leaving item+panel or a scrim click closes. ---------------------- */
+  var collItem   = document.getElementById('ka-coll-item');
+  var collToggle = document.getElementById('ka-coll-toggle');
+  var collPanel  = document.getElementById('ka-coll-panel');
+  var collScrim  = document.getElementById('ka-nav-scrim');
+  if (nav && collItem && collToggle && collPanel && collScrim) {
+    var collTimer = null;
+    var canHover = window.matchMedia('(hover: hover) and (pointer: fine)');
+    var openPanel = function () {
+      clearTimeout(collTimer);
+      collPanel.classList.add('is-open');
+      collScrim.classList.add('is-open');
+      nav.classList.add('is-panel-open');
+      collToggle.setAttribute('aria-expanded', 'true');
+    };
+    var closePanel = function (returnFocus) {
+      clearTimeout(collTimer);
+      collPanel.classList.remove('is-open');
+      collScrim.classList.remove('is-open');
+      nav.classList.remove('is-panel-open');
+      collToggle.setAttribute('aria-expanded', 'false');
+      if (returnFocus) collToggle.focus();
+    };
+    collToggle.addEventListener('click', function () {
+      if (collToggle.getAttribute('aria-expanded') === 'true') closePanel(false); else openPanel();
+    });
+    [collItem, collPanel].forEach(function (el) {
+      el.addEventListener('mouseenter', function () {
+        if (!canHover.matches) return;
+        clearTimeout(collTimer);
+        if (!collPanel.classList.contains('is-open')) collTimer = setTimeout(openPanel, 140);
+      });
+      el.addEventListener('mouseleave', function () {
+        if (!canHover.matches) return;
+        clearTimeout(collTimer);
+        collTimer = setTimeout(function () { closePanel(false); }, 140);
+      });
+    });
+    document.addEventListener('focusin', function (e) {
+      if (!collPanel.classList.contains('is-open')) return;
+      if (!collItem.contains(e.target) && !collPanel.contains(e.target)) closePanel(false);
+    });
+    collScrim.addEventListener('click', function () { closePanel(false); });
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape' && collPanel.classList.contains('is-open')) closePanel(true);
+    });
+    /* Keyboard order fix: the panel is the last child of <nav> (after logo
+       and icons), so natural Tab order from the chevron would leave the
+       item and trigger focus-out close. While open, manage the three
+       boundary moves explicitly. Each move closes/keeps the panel
+       deliberately BEFORE focusing, so the focusin close rule never
+       misfires (it only acts while the panel is open and focus is outside
+       item+panel; managed targets are inside, or the panel is already
+       closed). Shift+Tab on the chevron is left to the browser. */
+    collItem.addEventListener('keydown', function (e) {
+      if (e.key !== 'Tab' || e.shiftKey || e.target !== collToggle) return;
+      if (!collPanel.classList.contains('is-open')) return;
+      var first = collPanel.querySelector('a[href]');
+      if (!first) return;
+      e.preventDefault();
+      first.focus();
+    });
+    collPanel.addEventListener('keydown', function (e) {
+      if (e.key !== 'Tab' || !collPanel.classList.contains('is-open')) return;
+      var links = collPanel.querySelectorAll('a[href]');
+      if (!links.length) return;
+      var firstLink = links[0], lastLink = links[links.length - 1];
+      if (e.shiftKey && e.target === firstLink) {
+        e.preventDefault();
+        collToggle.focus();
+      } else if (!e.shiftKey && e.target === lastLink) {
+        e.preventDefault();
+        var nextLi = collItem.nextElementSibling;
+        var next = nextLi && nextLi.querySelector('a[href], button');
+        closePanel(false);
+        if (next) next.focus();
+      }
+    });
+  }
+
   /* --- Parallax on hero (desktop only, F8/spec) ----------------- */
   /* Only applies when min-width 900px — disabled on mobile to prevent jank */
   var heroBgEl = document.querySelector('.ka-hero__bg');

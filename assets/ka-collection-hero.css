@@ -20,7 +20,11 @@
 .ka-coll-hero__overlay {
   position: absolute;
   inset: 0;
-  background: linear-gradient(to top, rgba(15,12,10,0.66) 0%, rgba(15,12,10,0.10) 45%, rgba(15,12,10,0.18) 100%);
+  background: linear-gradient(to top,
+    rgba(15,12,10,.20) 0%,
+    rgba(15,12,10,.08) 25%,
+    rgba(15,12,10,.03) 45%,
+    rgba(15,12,10,.05) 100%);
 }
 .ka-coll-hero__content {
   position: absolute;
@@ -33,7 +37,40 @@
   gap: 40px;
   flex-wrap: wrap;
 }
-.ka-coll-hero__eyebrow { margin-bottom: 18px; }
+.ka-coll-hero__content {
+  isolation: isolate;
+}
+/* Text-anchored scrim (R2.3): travels with the title block, so the eyebrow always
+   sits at the same depth inside it whatever the photo or title length. Eased
+   ramp, full-bleed edge to edge, so no visible box. */
+.ka-coll-hero__content::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  top: -120px;
+  right: calc(-1 * clamp(24px, 4vw, 64px));
+  bottom: calc(-1 * clamp(28px, 5vw, 56px));
+  left: calc(-1 * clamp(24px, 4vw, 64px));
+  background: linear-gradient(to bottom,
+    rgba(15,12,10,0) 0,
+    rgba(15,12,10,.02) 20px,
+    rgba(15,12,10,.08) 40px,
+    rgba(15,12,10,.19) 60px,
+    rgba(15,12,10,.35) 80px,
+    rgba(15,12,10,.54) 100px,
+    rgba(15,12,10,.70) 120px,
+    rgba(15,12,10,.75) 140px,
+    rgba(15,12,10,.76) 100%);
+  -webkit-mask-image: linear-gradient(to right, #000 0%, #000 45%, rgba(0,0,0,.4) 80%, rgba(0,0,0,.3) 100%);
+  mask-image: linear-gradient(to right, #000 0%, #000 45%, rgba(0,0,0,.4) 80%, rgba(0,0,0,.3) 100%);
+  pointer-events: none;
+}
+.ka-coll-hero .ka-coll-hero__eyebrow {
+  margin-bottom: 18px;
+  color: #F4ECDE;
+  opacity: 1;
+  font-weight: 500;
+}
 .ka-coll-hero__title {
   font-family: var(--f-display);
   font-size: clamp(3rem, 7vw, 6.4rem);
@@ -72,4 +109,5 @@
   .ka-coll-hero__frame { height: 58vh; min-height: 420px; }
   .ka-coll-hero__content { flex-direction: column; align-items: flex-start; gap: 18px; }
   .ka-coll-hero__meta { text-align: left; }
+  .ka-coll-hero__content::before { -webkit-mask-image: none; mask-image: none; }
 }

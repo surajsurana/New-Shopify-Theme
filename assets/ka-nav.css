@@ -64,19 +64,22 @@
 /* Crystallised state — applied on homepage via .scrolled (JS),
    and permanently on interior pages via .ka-nav--settled. */
 .ka-nav.scrolled,
-.ka-nav--settled {
+.ka-nav--settled,
+.ka-nav.is-panel-open {
   background: rgba(247,243,236,0.94);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
   padding: 14px var(--gutter);
   border-bottom: 1px solid var(--line);
 }
-.ka-nav--settled { background: rgba(247,243,236,0.96); }
+.ka-nav--settled,
+.ka-nav.is-panel-open { background: rgba(247,243,236,0.96); }
 
 .ka-nav__links {
   display: flex;
   gap: 32px;
   list-style: none;
+  align-items: center;
 }
 .ka-nav__links a {
   font-family: var(--f-sans);
@@ -99,9 +102,99 @@
 .ka-nav__links a:hover::after { width: 100%; }
 .ka-nav__links a.is-active::after { width: 100%; }
 .ka-nav.scrolled .ka-nav__links a,
-.ka-nav--settled .ka-nav__links a { color: var(--c-ink-mid); }
+.ka-nav--settled .ka-nav__links a,
+.ka-nav.is-panel-open .ka-nav__links a { color: var(--c-ink-mid); }
 .ka-nav.scrolled .ka-nav__links a:hover,
-.ka-nav--settled .ka-nav__links a:hover { color: var(--c-charcoal); }
+.ka-nav--settled .ka-nav__links a:hover,
+.ka-nav.is-panel-open .ka-nav__links a:hover { color: var(--c-charcoal); }
+
+/* ── Collections panel (Docs/header-by-silhouette-2026-10-20.md): the
+     Collections item is a link + a chevron <button>; the panel hangs off
+     the nav bar's bottom edge. No images, no aspect-ratio (Safari-safe). ── */
+.ka-nav__item { display: flex; align-items: center; gap: 2px; }
+.ka-nav__panel-toggle {
+  width: 22px; height: 19px;
+  display: inline-flex; align-items: center; justify-content: center;
+  color: white;
+  transition: color var(--dur-fast);
+}
+.ka-nav__panel-toggle svg {
+  width: 8px; height: 8px;
+  stroke: currentColor; fill: none; stroke-width: 1.2;
+  transition: transform var(--dur-fast) var(--ease-luxury);
+}
+.ka-nav__panel-toggle[aria-expanded="true"] svg { transform: rotate(180deg); }
+.ka-nav.scrolled .ka-nav__panel-toggle,
+.ka-nav--settled .ka-nav__panel-toggle,
+.ka-nav.is-panel-open .ka-nav__panel-toggle { color: var(--c-ink-mid); }
+.ka-nav__panel-toggle:focus-visible,
+.ka-nav__links a:focus-visible,
+.ka-nav__panel a:focus-visible { outline: 1px solid var(--c-rosegold); outline-offset: 4px; }
+
+.ka-nav__panel {
+  position: absolute; left: 0; right: 0; top: 100%;
+  background: var(--c-paper);
+  border-bottom: 1px solid var(--line);
+  box-shadow: 0 24px 40px -28px rgba(42,36,32,0.28);
+  visibility: hidden; opacity: 0; transform: translateY(-6px);
+  transition:
+    opacity var(--dur-fast) var(--ease-luxury),
+    transform var(--dur-fast) var(--ease-luxury),
+    visibility 0s linear var(--dur-fast);
+}
+.ka-nav__panel.is-open { visibility: visible; opacity: 1; transform: none; transition-delay: 0s; }
+.ka-nav__panel-inner {
+  max-width: 720px; margin: 0 auto;
+  padding: 40px var(--gutter) 34px;
+  display: grid; grid-template-columns: 1fr 1fr; column-gap: 72px;
+}
+.ka-nav__panel-title {
+  font-family: var(--f-sans);
+  font-size: 0.58rem; font-weight: 400;
+  letter-spacing: 0.24em; text-transform: uppercase;
+  color: var(--c-rosegold-2);
+  padding-bottom: 14px; margin-bottom: 6px;
+  border-bottom: 1px solid var(--line);
+}
+.ka-nav__panel ul { list-style: none; }
+.ka-nav__panel li a {
+  display: inline-block;
+  font-family: var(--f-display);
+  font-size: 1.22rem; font-weight: 400; line-height: 1; letter-spacing: 0.01em;
+  color: var(--c-ink);
+  padding: 9px 0;
+  position: relative;
+  transition: color var(--dur-fast);
+}
+.ka-nav__panel li a::after {
+  content: ''; position: absolute; left: 0; bottom: 5px;
+  width: 0; height: 1px; background: var(--c-rosegold);
+  transition: width var(--dur-med) var(--ease-luxury);
+}
+.ka-nav__panel li a:hover { color: var(--c-rosegold-2); }
+.ka-nav__panel li a:hover::after { width: 100%; }
+.ka-nav__panel-all {
+  grid-column: 1 / -1;
+  margin-top: 20px; padding-top: 16px;
+  border-top: 1px solid var(--line);
+  text-align: center;
+}
+.ka-nav__panel-all a {
+  font-family: var(--f-sans);
+  font-size: 0.6rem; font-weight: 400;
+  letter-spacing: 0.22em; text-transform: uppercase;
+  color: var(--c-ink-mid);
+  transition: color var(--dur-fast);
+}
+.ka-nav__panel-all a:hover { color: var(--c-charcoal); }
+/* Scrim: soft dim of the page behind the panel; click closes (z 99, under the nav's 100) */
+.ka-nav-scrim {
+  position: fixed; inset: 0; z-index: 99;
+  background: rgba(29,25,22,0.22);
+  opacity: 0; visibility: hidden;
+  transition: opacity var(--dur-fast) var(--ease-soft), visibility 0s linear var(--dur-fast);
+}
+.ka-nav-scrim.is-open { opacity: 1; visibility: visible; transition-delay: 0s; }
 
 .ka-nav__logo {
   grid-column: 2;
@@ -125,9 +218,11 @@
   margin-top: 6px;
 }
 .ka-nav.scrolled .ka-nav__logo,
-.ka-nav--settled .ka-nav__logo { color: var(--c-charcoal); }
+.ka-nav--settled .ka-nav__logo,
+.ka-nav.is-panel-open .ka-nav__logo { color: var(--c-charcoal); }
 .ka-nav.scrolled .ka-nav__logo small,
-.ka-nav--settled .ka-nav__logo small { color: var(--c-rosegold-2); }
+.ka-nav--settled .ka-nav__logo small,
+.ka-nav.is-panel-open .ka-nav__logo small { color: var(--c-rosegold-2); }
 
 .ka-nav__actions {
   display: flex;
@@ -155,7 +250,8 @@
   transition: color var(--dur-med);
 }
 .ka-nav.scrolled .ka-nav__icon-btn,
-.ka-nav--settled .ka-nav__icon-btn { color: var(--c-charcoal); }
+.ka-nav--settled .ka-nav__icon-btn,
+.ka-nav.is-panel-open .ka-nav__icon-btn { color: var(--c-charcoal); }
 .ka-nav__icon-btn svg { width: 20px; height: 20px; stroke: currentColor; fill: none; }
 
 /* ── Bag icon — Round 2 addition (R2-7). Minimal line-drawn bag glyph,
@@ -263,6 +359,8 @@
   padding: 80px var(--gutter) var(--s-lg);
   transform: translateX(100%);
   transition: transform 0.5s var(--ease-luxury);
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
 }
 .ka-mobile-nav.open { transform: translateX(0); }
 
@@ -283,7 +381,7 @@
   list-style: none;
   margin-bottom: var(--s-lg);
 }
-.ka-mobile-nav__links li { border-bottom: 1px solid rgba(255,255,255,0.07); }
+.ka-mobile-nav__links > li { border-bottom: 1px solid rgba(255,255,255,0.07); }
 .ka-mobile-nav__links a {
   display: block;
   font-family: var(--f-display);
@@ -298,6 +396,58 @@
 .ka-mobile-nav__links a:hover { color: var(--c-rosegold); }
 /* Current-page state (Docs/about-us-build-spec.md Section 6 H3) — matches the existing hover colour */
 .ka-mobile-nav__links a.is-current { color: var(--c-rosegold); }
+
+/* ── Drawer accordion for Collections (header-by-silhouette spec) ──
+     grid-template-rows 0fr -> 1fr (Safari 16+). Collapsed state is
+     visibility:hidden (delayed on close so the collapse animates) in
+     addition to `inert` set by JS, so nothing is tabbable while collapsed
+     even where `inert` is unsupported -- and nothing stays hidden when open. ── */
+.ka-mobile-nav__row { display: flex; align-items: center; }
+.ka-mobile-nav__row > a { flex: 1 1 auto; }
+.ka-mobile-nav__sub-toggle {
+  flex: 0 0 auto;
+  width: 48px; height: 48px; margin-right: -12px;
+  display: inline-flex; align-items: center; justify-content: center;
+  color: rgba(255,255,255,0.55);
+}
+.ka-mobile-nav__sub-toggle svg {
+  width: 14px; height: 14px;
+  stroke: currentColor; fill: none; stroke-width: 1.1;
+  transition: transform var(--dur-fast) var(--ease-luxury);
+}
+.ka-mobile-nav__sub-toggle[aria-expanded="true"] svg { transform: rotate(45deg); }
+.ka-mobile-nav__sub {
+  display: grid; grid-template-rows: 0fr;
+  transition: grid-template-rows 0.45s var(--ease-luxury);
+}
+.ka-mobile-nav__sub.is-open { grid-template-rows: 1fr; }
+.ka-mobile-nav__sub-inner {
+  overflow: hidden; min-height: 0;
+  visibility: hidden;
+  transition: visibility 0s linear 0.45s;
+}
+.ka-mobile-nav__sub.is-open .ka-mobile-nav__sub-inner { visibility: visible; transition-delay: 0s; }
+.ka-mobile-nav__sub-title {
+  font-family: var(--f-sans);
+  font-size: 0.58rem; font-weight: 400;
+  letter-spacing: 0.24em; text-transform: uppercase;
+  color: var(--c-rosegold-pale);
+  padding: 6px 0 4px;
+}
+.ka-mobile-nav__sub ul { list-style: none; margin: 0 0 18px; }
+.ka-mobile-nav__links .ka-mobile-nav__sub a {
+  font-family: var(--f-sans); font-style: normal;
+  font-size: 0.8rem; font-weight: 300;
+  letter-spacing: 0.1em; text-transform: uppercase;
+  color: rgba(255,255,255,0.82);
+  padding: 11px 0;
+}
+.ka-mobile-nav__links .ka-mobile-nav__sub a:hover { color: var(--c-rosegold); }
+.ka-mobile-nav__sub .ka-mobile-nav__sub-all {
+  display: block; font-size: 0.7rem;
+  color: rgba(255,255,255,0.45);
+  padding: 2px 0 22px;
+}
 
 /* ── My Account / My Wishlist rows — Docs/account-wishlist-build-spec.md
      S1. Same row treatment as the My Bag row below (icon size, row
@@ -393,6 +543,24 @@
   letter-spacing: 0.06em;
 }
 
+/* Nav-width protection (header-by-silhouette spec): chevron + tighter
+   spacing keep the centred logo clear of the nav words down to 901px. */
+@media (max-width: 1180px) {
+  .ka-nav__links { gap: 22px; }
+  .ka-nav__links a { letter-spacing: 0.14em; }
+  .ka-nav__panel-toggle { width: 18px; }
+  .ka-nav__actions { gap: 18px; }
+}
+@media (max-width: 1000px) and (min-width: 901px) {
+  .ka-nav__links { gap: 16px; }
+  .ka-nav__links a { font-size: 0.62rem; letter-spacing: 0.1em; }
+  .ka-nav__actions { gap: 12px; }
+  .ka-nav__logo { letter-spacing: 0.06em; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .ka-nav__panel, .ka-nav-scrim, .ka-mobile-nav__sub, .ka-mobile-nav__sub-inner { transition: none; }
+}
+
 @media (max-width: 900px) {
   .ka-utility-bar { font-size: 0.54rem; letter-spacing: 0.12em; padding: 8px 12px; overflow: hidden; }
   .ka-utility-bar__spacer { display: none; } /* Task 86: chip sits at the marquee's trailing edge on mobile, per approved prototype */
@@ -415,6 +583,7 @@
      instead of .ka-nav__links) and column 3's content. */
   .ka-nav { top: 30px; padding: 18px 20px; }
   .ka-nav__links   { display: none; }
+  .ka-nav__panel, .ka-nav-scrim { display: none; }
   /* min-width matches .ka-nav__actions' mobile min-content floor (two
      30px icon-btns + one 14px gap = 74px, set below) so both flanking
      grid columns share an equal content floor and .ka-nav__logo sits
