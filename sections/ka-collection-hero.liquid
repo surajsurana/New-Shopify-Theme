@@ -41,6 +41,18 @@
     assign hero_focus_safe = hero_mf_focus | strip | escape
     assign hero_focus_style = 'object-position: ' | append: hero_focus_safe | append: ';'
   endif
+  comment
+    2026-10-20 (CD final calls): per-handle default focus for the capsule
+    branches so Live never depends on metafields. custom.hero_focus wins.
+  endcomment
+  if hero_focus_style == blank
+    case collection.handle | downcase
+      when 'the-bloom-soiree', 'chamak', 'wedding-festive', 'the-wedding-festive-collection-22', 'the-festive-edit'
+        assign hero_focus_style = 'object-position: 50% 10%;'
+      when 'barre-oblique'
+        assign hero_focus_style = 'object-position: 50% 40%;'
+    endcase
+  endif
 -%}
 
 <section class="ka-coll-hero">
@@ -60,20 +72,19 @@
       {%- assign handle_lower = collection.handle | downcase -%}
       {%- case handle_lower -%}
         {%- when 'first-love' -%}
-          <img src="{{ 'first-love-hero.jpg' | asset_url }}" alt="{{ collection.title }}" loading="eager" fetchpriority="high" width="1800" height="1100" class="img-filter-coll-page-dark" />
+          <img src="{{ 'first-love-hero.jpg' | asset_url }}" alt="{{ collection.title }}" loading="eager" fetchpriority="high" width="1800" height="1100" class="img-filter-coll-page-dark"{% if hero_focus_style != blank %} style="{{ hero_focus_style }}"{% endif %} />
         {%- when 'the-bloom-soiree' -%}
-          <img src="{{ 'bloom-soiree-hero.jpg' | asset_url }}" alt="{{ collection.title }}" loading="eager" fetchpriority="high" width="1800" height="1100" class="img-filter-coll-page-dark" />
+          <img src="{{ 'bloom-soiree-hero.jpg' | asset_url }}" alt="{{ collection.title }}" loading="eager" fetchpriority="high" width="1800" height="1100" class="img-filter-coll-page-dark"{% if hero_focus_style != blank %} style="{{ hero_focus_style }}"{% endif %} />
         {%- when 'the-festive-edit' -%}
-          {%- comment -%} Interim stand-in — no suitable studio image yet. Flag for dedicated shoot. {%- endcomment -%}
-          <img src="{{ 'celebrity-editorial.jpg' | asset_url }}" alt="{{ collection.title }}" loading="eager" fetchpriority="high" width="1800" height="1100" class="img-filter-coll-page-dark" />
+          <img src="{{ 'festive-edit-hero.jpg' | asset_url }}" alt="{{ collection.title }}" loading="eager" fetchpriority="high" width="1800" height="1100" class="img-filter-coll-page-dark"{% if hero_focus_style != blank %} style="{{ hero_focus_style }}"{% endif %} />
         {%- when 'chamak' -%}
-          <img src="{{ 'chamak-hero.jpg' | asset_url }}" alt="{{ collection.title }}" loading="eager" fetchpriority="high" width="1800" height="1100" class="img-filter-coll-page-dark" />
+          <img src="{{ 'chamak-hero.jpg' | asset_url }}" alt="{{ collection.title }}" loading="eager" fetchpriority="high" width="1800" height="1100" class="img-filter-coll-page-dark"{% if hero_focus_style != blank %} style="{{ hero_focus_style }}"{% endif %} />
         {%- when 'barre-oblique' -%}
-          <img src="{{ 'barre-hero.jpg' | asset_url }}" alt="{{ collection.title }}" loading="eager" fetchpriority="high" width="1800" height="1100" class="img-filter-coll-page-dark" />
+          <img src="{{ 'barre-hero.jpg' | asset_url }}" alt="{{ collection.title }}" loading="eager" fetchpriority="high" width="1800" height="1100" class="img-filter-coll-page-dark"{% if hero_focus_style != blank %} style="{{ hero_focus_style }}"{% endif %} />
         {%- when 'wedding-festive', 'the-wedding-festive-collection-22' -%}
-          <img src="{{ 'wedding-festive-hero.jpg' | asset_url }}" alt="{{ collection.title }}" loading="eager" fetchpriority="high" width="1800" height="1100" class="img-filter-coll-page-dark" />
+          <img src="{{ 'wedding-festive-hero.jpg' | asset_url }}" alt="{{ collection.title }}" loading="eager" fetchpriority="high" width="1800" height="1100" class="img-filter-coll-page-dark"{% if hero_focus_style != blank %} style="{{ hero_focus_style }}"{% endif %} />
         {%- when 'bestsellers' -%}
-          <img src="{{ 'bestsellers-hero.jpg' | asset_url }}" alt="{{ collection.title }}" loading="eager" fetchpriority="high" width="1800" height="1100" class="img-filter-coll-page-dark" />
+          <img src="{{ 'bestsellers-hero.jpg' | asset_url }}" alt="{{ collection.title }}" loading="eager" fetchpriority="high" width="1800" height="1100" class="img-filter-coll-page-dark"{% if hero_focus_style != blank %} style="{{ hero_focus_style }}"{% endif %} />
         {%- else -%}
           {%- if collection.image != blank -%}
             <img src="{{ collection.image | image_url: width: 1800 }}" alt="{{ collection.image.alt | default: collection.title | escape }}" loading="eager" fetchpriority="high" width="1800" height="1100" class="img-filter-coll-page-dark"{% if hero_focus_style != blank %} style="{{ hero_focus_style }}"{% endif %} />
