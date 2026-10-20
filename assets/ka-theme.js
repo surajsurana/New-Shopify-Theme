@@ -1,4 +1,4 @@
-/* ================================================================
+﻿/* ================================================================
    K&A THEME JS — ka-theme.js
    Vanilla JS only. No third-party libraries.
    Loaded defer from theme.liquid.
