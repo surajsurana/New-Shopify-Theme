@@ -46,7 +46,8 @@
     branches so Live never depends on metafields. custom.hero_focus wins.
   endcomment
   if hero_focus_style == blank
-    case collection.handle | downcase
+    assign hero_handle = collection.handle | downcase
+    case hero_handle
       when 'the-bloom-soiree', 'chamak', 'wedding-festive', 'the-wedding-festive-collection-22', 'the-festive-edit'
         assign hero_focus_style = 'object-position: 50% 10%;'
       when 'barre-oblique'
