@@ -153,6 +153,38 @@
     document.addEventListener('keydown', function (e) {
       if (e.key === 'Escape' && collPanel.classList.contains('is-open')) closePanel(true);
     });
+    /* Keyboard order fix: the panel is the last child of <nav> (after logo
+       and icons), so natural Tab order from the chevron would leave the
+       item and trigger focus-out close. While open, manage the three
+       boundary moves explicitly. Each move closes/keeps the panel
+       deliberately BEFORE focusing, so the focusin close rule never
+       misfires (it only acts while the panel is open and focus is outside
+       item+panel; managed targets are inside, or the panel is already
+       closed). Shift+Tab on the chevron is left to the browser. */
+    collItem.addEventListener('keydown', function (e) {
+      if (e.key !== 'Tab' || e.shiftKey || e.target !== collToggle) return;
+      if (!collPanel.classList.contains('is-open')) return;
+      var first = collPanel.querySelector('a[href]');
+      if (!first) return;
+      e.preventDefault();
+      first.focus();
+    });
+    collPanel.addEventListener('keydown', function (e) {
+      if (e.key !== 'Tab' || !collPanel.classList.contains('is-open')) return;
+      var links = collPanel.querySelectorAll('a[href]');
+      if (!links.length) return;
+      var firstLink = links[0], lastLink = links[links.length - 1];
+      if (e.shiftKey && e.target === firstLink) {
+        e.preventDefault();
+        collToggle.focus();
+      } else if (!e.shiftKey && e.target === lastLink) {
+        e.preventDefault();
+        var nextLi = collItem.nextElementSibling;
+        var next = nextLi && nextLi.querySelector('a[href], button');
+        closePanel(false);
+        if (next) next.focus();
+      }
+    });
   }
 
   /* --- Parallax on hero (desktop only, F8/spec) ----------------- */
