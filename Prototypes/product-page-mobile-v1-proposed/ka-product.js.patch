@@ -1,0 +1,120 @@
+--- a/assets/ka-product.js	2026-10-21 20:18:50
++++ b/assets/ka-product.js	2026-10-21 20:18:50
+@@ -23,6 +23,24 @@
+     });
+   });
+ 
++  /* ---------- mobile swipe gallery (<=900px): dots follow the scroll position ----------
++     CSS scroll-snap does the swiping; this only mirrors the position into the dots. */
++  var swipe = document.getElementById('ka-swipe');
++  var dots = Array.prototype.slice.call(document.querySelectorAll('#ka-dots i'));
++  if (swipe && dots.length) {
++    var swipeTick = false;
++    swipe.addEventListener('scroll', function () {
++      if (swipeTick) return;
++      swipeTick = true;
++      window.requestAnimationFrame(function () {
++        swipeTick = false;
++        var i = Math.round(swipe.scrollLeft / (swipe.clientWidth || 1));
++        i = Math.max(0, Math.min(dots.length - 1, i));
++        dots.forEach(function (d, n) { d.classList.toggle('on', n === i); });
++      });
++    }, { passive: true });
++  }
++
+   /* ---------- size selection + made-to-measure reveal ---------- */
+   var sizes = Array.prototype.slice.call(document.querySelectorAll('.ka-size'));
+   var bespoke = document.getElementById('ka-bespoke');
+@@ -43,11 +61,15 @@
+   var sizeHint = document.getElementById('ka-size-hint');
+   var bagButtons = Array.prototype.slice.call(document.querySelectorAll('[data-ka-add-to-bag]'));
+ 
++  /* Mobile bar secondary button: reads "Select size" (data-label-idle) until a size or
++     Made to my measurements is chosen, then "Add to Bag". Every other Add to Bag button has
++     no data-label-idle and always reads "Add to Bag". */
+   function refreshBagButtons() {
+     var ready = !!selectedVariantId || isBespokeSelected;
+     bagButtons.forEach(function (btn) {
+       if (ready) { btn.removeAttribute('aria-disabled'); }
+       else { btn.setAttribute('aria-disabled', 'true'); }
++      btn.textContent = (!ready && btn.getAttribute('data-label-idle')) || 'Add to Bag';
+     });
+   }
+ 
+@@ -57,7 +79,7 @@
+       sizes.forEach(function (x) { x.classList.remove('sel'); });
+       if (bespoke) bespoke.classList.remove('sel');
+       s.classList.add('sel');
+-      if (mtm) mtm.classList.remove('open');
++      if (mtm) { mtm.classList.remove('open'); syncMtmToggle(); }
+       selectedSizeLabel = s.textContent.trim();
+       selectedVariantId = s.getAttribute('data-variant-id') || null;
+       isBespokeSelected = false;
+@@ -66,24 +88,44 @@
+     });
+   });
+ 
+-  if (bespoke) {
+-    bespoke.addEventListener('click', function () {
+-      sizes.forEach(function (x) { x.classList.remove('sel'); });
+-      bespoke.classList.add('sel');
+-      if (mtm) mtm.classList.add('open');
+-      selectedSizeLabel = 'Made to my measurements';
+-      /* Read the variant ID baked into the button by Liquid.
+-         · Real MTM variant: data-variant-id set, no data-mtm-fallback → plain cart add.
+-         · Fallback: data-mtm-fallback="true" → cart add with "Size: Made to my
+-           measurements" line-item property so the order reads correctly. */
+-      selectedVariantId = bespoke.getAttribute('data-variant-id') || null;
+-      isBespokeFallback = bespoke.getAttribute('data-mtm-fallback') === 'true';
+-      isBespokeSelected = true;
+-      if (sizeHint) sizeHint.classList.remove('show');
+-      refreshBagButtons();
++  /* selectBespoke(): shared by the click handler and the made-to-measure-first
++     pre-selection (data-preselect="true", set by Liquid on high-ticket pages). */
++  function selectBespoke(openExplainer) {
++    sizes.forEach(function (x) { x.classList.remove('sel'); });
++    bespoke.classList.add('sel');
++    if (mtm && openExplainer) { mtm.classList.add('open'); syncMtmToggle(); }
++    selectedSizeLabel = 'Made to my measurements';
++    /* Read the variant ID baked into the button by Liquid.
++       · Real MTM variant: data-variant-id set, no data-mtm-fallback → plain cart add.
++       · Fallback: data-mtm-fallback="true" → cart add with "Size: Made to my
++         measurements" line-item property so the order reads correctly. */
++    selectedVariantId = bespoke.getAttribute('data-variant-id') || null;
++    isBespokeFallback = bespoke.getAttribute('data-mtm-fallback') === 'true';
++    isBespokeSelected = true;
++    if (sizeHint) sizeHint.classList.remove('show');
++    refreshBagButtons();
++  }
++
++  /* "How it works" disclosure (mobile, under the Made to my measurements card). */
++  var mtmToggle = document.getElementById('ka-mtm-toggle');
++  function syncMtmToggle() {
++    if (mtmToggle && mtm) mtmToggle.setAttribute('aria-expanded', mtm.classList.contains('open') ? 'true' : 'false');
++  }
++  if (mtmToggle && mtm) {
++    mtmToggle.addEventListener('click', function () {
++      mtm.classList.toggle('open');
++      syncMtmToggle();
+     });
+   }
+ 
++  if (bespoke) {
++    bespoke.addEventListener('click', function () { selectBespoke(true); });
++    /* Made-to-measure-first pages: the option is the default. Selected quietly (explainer stays
++       closed, "How it works" opens it) and the order is still only placed by tapping Add to Bag. */
++    /* Phones only (<=900px): desktop keeps today's behaviour (nothing pre-selected). */
++    if (bespoke.getAttribute('data-preselect') === 'true' && window.matchMedia && window.matchMedia('(max-width: 900px)').matches) { selectBespoke(false); }
++  }
++
+   /* "Book an Appointment" → TEMPORARY: routes to the same WhatsApp
+      concierge destination as the Concierge button until a real
+      appointment-booking flow/calendar exists. Flagged in
+@@ -162,7 +204,6 @@
+         }
+       })
+       .finally(function () {
+-        bagButtons.forEach(function (btn) { btn.textContent = 'Add to Bag'; });
+         refreshBagButtons();
+       });
+   }

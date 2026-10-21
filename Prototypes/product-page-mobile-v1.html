@@ -1,0 +1,2860 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>K&amp;A — Mobile product page v1 (prototype)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Jost:wght@200;300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root{--paper:#F7F3EC;--deep:#EFE8DD;--smoke:#E9E1D2;--ink:#2A2420;--mid:#6E655B;--muted:#9C9389;--gold:#9A7B4F;--line:rgba(42,36,32,.14)}
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{height:100%}
+  body{background:#DDD5C7;font-family:'Jost',Arial,sans-serif;font-weight:300;color:var(--ink);-webkit-font-smoothing:antialiased}
+  .bar{position:sticky;top:0;z-index:5;background:var(--ink);color:#E9E0D2;display:flex;flex-wrap:wrap;gap:18px 34px;align-items:center;padding:12px 22px;font-size:.66rem;letter-spacing:.16em;text-transform:uppercase}
+  .bar b{font-family:'Cormorant Garamond',serif;font-weight:400;font-style:italic;text-transform:none;letter-spacing:.02em;font-size:1.05rem;color:#fff;margin-right:6px}
+  .grp{display:flex;align-items:center;gap:8px}
+  .grp>span{opacity:.55;margin-right:2px}
+  .bar button{font:inherit;letter-spacing:inherit;text-transform:inherit;color:#E9E0D2;background:transparent;border:1px solid rgba(233,224,210,.3);padding:9px 13px;cursor:pointer;transition:all .3s}
+  .bar button:hover{border-color:#E9E0D2}
+  .bar button.on{background:#E9E0D2;color:var(--ink);border-color:#E9E0D2}
+  .wrap{display:flex;gap:40px;justify-content:center;align-items:flex-start;padding:30px 22px 80px}
+  .stagecol{display:flex;flex-direction:column;align-items:center}
+  .device{background:#1d1916;padding:12px;border-radius:44px;box-shadow:0 30px 70px rgba(0,0,0,.28)}
+  .device.desk{border-radius:12px;padding:10px 10px 14px}
+  .device iframe{display:block;border:0;background:var(--paper);border-radius:34px;width:390px;height:844px}
+  .device.desk iframe{border-radius:4px}
+  .inapp-top,.inapp-bot{background:#F2F2F2;color:#555;font:400 12px/1 -apple-system,Helvetica,Arial,sans-serif;display:none;align-items:center;justify-content:space-between;padding:0 16px}
+  .inapp-top{height:44px;border-radius:34px 34px 0 0}
+  .inapp-bot{height:50px;border-radius:0 0 34px 34px}
+  .device.inapp .inapp-top,.device.inapp .inapp-bot{display:flex}
+  .device.inapp iframe{border-radius:0}
+  .cap{margin-top:14px;font-size:.62rem;letter-spacing:.18em;text-transform:uppercase;color:var(--mid);text-align:center}
+  .notes{width:340px;background:var(--paper);padding:26px 26px 30px;box-shadow:0 14px 40px rgba(0,0,0,.12)}
+  .notes h2{font-family:'Cormorant Garamond',serif;font-weight:400;font-size:1.5rem;margin-bottom:4px}
+  .notes small{display:block;font-size:.62rem;letter-spacing:.18em;text-transform:uppercase;color:var(--gold);margin-bottom:16px}
+  .notes ol{padding-left:18px;font-size:.84rem;line-height:1.6;color:var(--mid)}
+  .notes li{margin-bottom:10px}.notes li b{font-weight:500;color:var(--ink)}
+  .notes .jump{display:flex;flex-wrap:wrap;gap:8px;margin-top:18px}
+  .notes .jump button{font:400 .62rem 'Jost';letter-spacing:.14em;text-transform:uppercase;border:1px solid var(--line);background:transparent;padding:9px 11px;cursor:pointer;color:var(--ink)}
+  .notes .jump button:hover{border-color:var(--ink)}
+  .notes p.k{font-size:.74rem;color:var(--muted);margin-top:16px;line-height:1.55}
+  body.bare .bar,body.bare .notes,body.bare .cap,body.bare .inapp-top,body.bare .inapp-bot{display:none!important}
+  body.bare .wrap{padding:0;display:block}body.bare .stagecol{align-items:flex-start}body.bare{background:#F7F3EC}body.bare .device{padding:0;border-radius:0;box-shadow:none;background:none}
+  body.bare .device iframe{border-radius:0}
+  @media (max-width:700px){body:not(.bare) .bar{display:none}}
+  @media (max-width:1180px){.wrap{flex-direction:column;align-items:center}.notes{width:min(100%,560px)}}
+</style>
+</head>
+<body>
+<div class="bar">
+  <div><b>Karishma &amp; Ashita</b> Mobile product page v1</div>
+  <div class="grp"><span>Screen</span>
+    <button data-dev="phone" class="on">iPhone 390 x 844</button>
+    <button data-dev="inapp">In-app browser 390 x 660</button>
+    <button data-dev="desk">Desktop 1440</button></div>
+  <div class="grp"><span>Page</span>
+    <button data-lay="hi" class="on">Proposed · Rs 1,40,000 (Mani)</button>
+    <button data-lay="lo">Proposed · Rs 38,000 piece</button>
+    <button data-lay="live">Live today</button></div>
+</div>
+<div class="wrap">
+  <div class="stagecol">
+    <div class="device" id="device">
+      <div class="inapp-top"><span>Done</span><span>karishmaashita.com</span><span>&#8226;&#8226;&#8226;</span></div>
+      <iframe id="fr" title="Product page prototype"></iframe>
+      <div class="inapp-bot"><span>&#8249;</span><span>&#8250;</span><span>&#8683;</span><span>&#9678;</span></div>
+    </div>
+    <div class="cap" id="cap"></div>
+  </div>
+  <aside class="notes">
+    <small>What changed (mobile only)</small>
+    <h2>Mani Embellished Corset &amp; Rhinestone Skirt</h2>
+    <ol>
+      <li><b>Two-button bar.</b> Charcoal “Message us on WhatsApp” leads. “Select size” becomes “Add to Bag” the moment a size or Made to my measurements is chosen. Larger type and targets; safe-area padding.</li>
+      <li><b>First screen.</b> Breadcrumb retired (a back chip sits on the photo), slimmer header, full-bleed swipe gallery with dots, then name, price and lead time, all without scrolling.</li>
+      <li><b>Made to measure first</b> on pieces at or above Rs 50,000: the card leads and is selected by default, standard sizes follow. Payment flow unchanged: order, then the advisor calls.</li>
+      <li><b>Polish.</b> Poem and Google rating move below the price; monochrome Google mark; in-page duplicate buttons retired on phones; toast clears the bar; bigger size buttons.</li>
+    </ol>
+    <div class="jump">
+      <button data-jump="0">First screen</button><button data-jump="buy">Order block</button><button data-jump="assure">Assurances</button><button data-jump="end">Bottom</button>
+    </div>
+    <p class="k">Try: swipe the photograph, tap a size, tap “Made to my measurements”, tap “How it works”, tap “Select size” with nothing chosen. “Add to Bag” is simulated (no real cart). Desktop and “Live today” use the real current CSS; compare to confirm desktop is unchanged. On a phone, open this file and the page fills the screen.</p>
+  </aside>
+</div>
+
+<script type="text/plain" id="css-base">/* =================================================================
+   K&A DESIGN TOKENS + GLOBAL RESET
+   Single source of truth. Every section CSS file uses these vars.
+================================================================= */
+:root {
+  /* Canvas */
+  --c-paper:         #F7F3EC;
+  --c-paper-deep:    #EFE8DD;
+  --c-smoke:         #E9E1D2;
+  /* Dark */
+  --c-charcoal:      #2A2420;
+  --c-charcoal-2:    #1D1916;
+  --c-ink:           #2A2420;
+  --c-ink-mid:       #6E655B;
+  --c-ink-muted:     #9C9389;
+  /* Accent — antique gold */
+  --c-rosegold:      #9A7B4F;
+  --c-rosegold-2:    #7E6440;
+  --c-rosegold-pale: #B99B6E;
+  /* Lines */
+  --line:            rgba(42,36,32,0.12);
+  --line-strong:     rgba(42,36,32,0.20);
+  --line-light:      rgba(154,123,79,0.28);
+  --line-on-dark:    rgba(154,123,79,0.22);
+  /* Typography — Cormorant Garamond + Jost */
+  --f-display: 'Cormorant Garamond', Georgia, 'Times New Roman', serif;
+  --f-sans:    'Jost', 'Helvetica Neue', Arial, sans-serif;
+  --t-hero:    clamp(3.6rem, 8vw, 8rem);
+  --t-display: clamp(2.6rem, 5.5vw, 5.2rem);
+  --t-h2:      clamp(2rem, 3.5vw, 3.2rem);
+  --t-h3:      clamp(1.4rem, 2.2vw, 2rem);
+  --t-eyebrow: 0.66rem;
+  --t-body-l:  1.1rem;
+  --t-body:    1rem;
+  --t-caption: 0.76rem;
+  --s-xs:  8px;
+  --s-sm:  16px;
+  --s-md:  32px;
+  --s-lg:  64px;
+  --s-xl:  96px;
+  --s-2xl: 140px;
+  --s-3xl: 200px;
+  --max-wide: 1680px;
+  --max-text: 720px;
+  /* --max-breakout — added for The Journal article template (Docs/
+     journal-build-spec.md §4): a width between --max-text and
+     --max-wide for the article's single full-width "breakout" image
+     (assets/ka-article-body.css .a-breakout). Promoted to a :root
+     token, not a one-off value, since any future long-form Journal
+     article needs the identical breakout treatment repeatedly. */
+  --max-breakout: 1180px;
+  --gutter:   clamp(20px, 5vw, 80px);
+  --ease-luxury: cubic-bezier(0.16, 0.84, 0.44, 1);
+  --ease-soft:   cubic-bezier(0.22, 0.61, 0.36, 1);
+  --dur-slow:    1s;
+  --dur-med:     0.65s;
+  --dur-fast:    0.35s;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; font-size: 16px; }
+body {
+  background: var(--c-paper);
+  color: var(--c-ink);
+  font-family: var(--f-sans);
+  font-weight: 300;
+  line-height: 1.75;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+  box-shadow: none;
+}
+img { display: block; width: 100%; height: 100%; object-fit: cover; }
+a { text-decoration: none; color: inherit; }
+button { border: none; background: none; cursor: pointer; font-family: inherit; box-shadow: none; }
+
+.eyebrow {
+  font-family: var(--f-sans);
+  font-size: var(--t-eyebrow);
+  font-weight: 400;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--c-rosegold-2);
+}
+.eyebrow--light   { color: var(--c-rosegold); }
+.eyebrow--muted   { color: var(--c-ink-muted); }
+.eyebrow--on-dark { color: var(--c-rosegold); }
+
+.reveal {
+  opacity: 0;
+  transform: translateY(28px);
+  transition: opacity var(--dur-slow) var(--ease-luxury), transform var(--dur-slow) var(--ease-luxury);
+}
+.reveal.visible { opacity: 1; transform: translateY(0); }
+.reveal-delay-1 { transition-delay: 0.1s; }
+.reveal-delay-2 { transition-delay: 0.22s; }
+.reveal-delay-3 { transition-delay: 0.38s; }
+.reveal-delay-4 { transition-delay: 0.52s; }
+.reveal-img { overflow: hidden; }
+.reveal-img img { transform: scale(1.04); transition: transform 1.4s var(--ease-luxury); }
+.reveal-img.visible img { transform: scale(1); }
+
+.img-filter-hero        { filter: sepia(0.10) saturate(0.90) brightness(0.96); }
+.img-filter-editorial   { filter: sepia(0.12) saturate(0.90) brightness(0.95); }
+.img-filter-celebrity   { filter: sepia(0.08) saturate(0.88) brightness(0.90); }
+.img-filter-lookbook    { filter: sepia(0.12) saturate(0.88) brightness(0.96); }
+.img-filter-product     { filter: sepia(0.10) saturate(0.90) brightness(0.97); }
+.img-filter-collection  { filter: sepia(0.10) saturate(0.90) brightness(0.90); }
+.img-filter-appointment { filter: sepia(0.10) saturate(0.85) brightness(0.88); }
+.img-filter-coll-page      { filter: sepia(0.10) saturate(0.90) brightness(0.94); }
+.img-filter-coll-page-dark { filter: sepia(0.10) saturate(0.85) brightness(0.88); }
+/* Product-page filters (shared values with collection page, per product-build-spec.md S1) */
+.img-filter        { filter: sepia(0.10) saturate(0.90) brightness(0.94); }
+.img-filter-dark   { filter: sepia(0.10) saturate(0.85) brightness(0.88); }
+/* About page — Craft & Process diptych (Docs/about-us-build-spec.md Section 4/6 H4).
+   .img-filter-about-craft-cobalt is a documented, one-off exception (lighter sepia)
+   specifically to preserve the saturated cobalt blue in about-craft-detail-1.jpg —
+   not a general-purpose token, do not reuse elsewhere without the same rationale. */
+.img-filter-about-craft        { filter: sepia(0.10) saturate(0.90) brightness(0.95); }
+.img-filter-about-craft-cobalt { filter: sepia(0.05) saturate(0.96) brightness(0.93); }
+
+.btn-ghost {
+  font-family: var(--f-sans); font-size: 0.68rem; font-weight: 400;
+  letter-spacing: 0.2em; text-transform: uppercase; color: white;
+  border: 1px solid rgba(255,255,255,0.55); padding: 14px 36px;
+  transition: background var(--dur-fast), color var(--dur-fast), border-color var(--dur-fast);
+  display: inline-block; box-shadow: none;
+}
+.btn-ghost:hover { background: white; color: var(--c-charcoal); border-color: white; }
+
+.btn-text {
+  font-family: var(--f-sans); font-size: 0.68rem; font-weight: 400;
+  letter-spacing: 0.18em; text-transform: uppercase; color: rgba(255,255,255,0.75);
+  display: inline-flex; align-items: center; gap: 12px; transition: color var(--dur-fast);
+}
+.btn-text::after {
+  content: ''; display: block; width: 32px; height: 1px; background: rgba(255,255,255,0.5);
+  transition: width var(--dur-med) var(--ease-luxury), background var(--dur-fast);
+}
+.btn-text:hover { color: white; }
+.btn-text:hover::after { width: 52px; background: white; }
+
+.btn-dark {
+  display: inline-flex; align-items: center; gap: 16px;
+  font-family: var(--f-sans); font-size: 0.68rem; font-weight: 400;
+  letter-spacing: 0.2em; text-transform: uppercase; color: var(--c-charcoal);
+  border-bottom: 1px solid var(--c-rosegold-pale); padding-bottom: 6px;
+  transition: border-color var(--dur-fast), color var(--dur-fast);
+  width: fit-content; box-shadow: none;
+}
+.btn-dark::after {
+  content: '\2192'; font-family: var(--f-sans); font-size: 0.9em;
+  transition: transform var(--dur-med) var(--ease-luxury);
+}
+.btn-dark:hover { color: var(--c-rosegold-2); border-color: var(--c-rosegold-2); }
+.btn-dark:hover::after { transform: translateX(6px); }
+
+.btn-outline-rose {
+  font-family: var(--f-sans); font-size: 0.66rem; font-weight: 400;
+  letter-spacing: 0.2em; text-transform: uppercase; color: var(--c-rosegold);
+  border: 1px solid rgba(196,168,130,0.4); padding: 14px 36px;
+  transition: background var(--dur-fast), color var(--dur-fast), border-color var(--dur-fast);
+  display: inline-block; box-shadow: none;
+}
+.btn-outline-rose:hover { background: var(--c-rosegold); color: var(--c-charcoal); border-color: var(--c-rosegold); }
+
+.btn-outline-white {
+  font-family: var(--f-sans); font-size: 0.66rem; font-weight: 400;
+  letter-spacing: 0.2em; text-transform: uppercase; color: white;
+  border: 1px solid rgba(255,255,255,0.45); padding: 14px 36px;
+  transition: background var(--dur-fast), border-color var(--dur-fast), color var(--dur-fast);
+  display: inline-block; box-shadow: none;
+}
+.btn-outline-white:hover { background: white; color: var(--c-charcoal); border-color: white; }
+
+/* .btn-outline-dark — dark-bordered button variant for light (--c-paper-deep
+   etc.) panels. Introduced by the Visit Us / Find Us section
+   (Docs/store-location-build-spec.md Section 4) and promoted here to
+   ka-base.css per that spec's own recommendation, since .btn-ghost /
+   .btn-outline-white are both built for dark grounds and any future
+   light-panel CTA can reuse this instead of a page-scoped duplicate. */
+.btn-outline-dark {
+  font-family: var(--f-sans); font-size: 0.66rem; font-weight: 400;
+  letter-spacing: 0.2em; text-transform: uppercase; color: var(--c-charcoal);
+  border: 1px solid var(--line-strong); padding: 14px 32px;
+  transition: background var(--dur-fast), color var(--dur-fast), border-color var(--dur-fast);
+  display: inline-block; box-shadow: none;
+}
+.btn-outline-dark:hover { background: var(--c-charcoal); color: white; border-color: var(--c-charcoal); }
+
+.section-header {
+  display: flex; align-items: flex-end; justify-content: space-between;
+  margin-bottom: var(--s-lg); gap: 24px;
+}
+.section-header__title {
+  font-family: var(--f-display); font-size: var(--t-h2);
+  font-weight: 400; color: var(--c-charcoal); line-height: 1.05;
+}
+.section-header__link {
+  font-family: var(--f-sans); font-size: 0.66rem; font-weight: 400;
+  letter-spacing: 0.18em; text-transform: uppercase; color: var(--c-ink-muted);
+  white-space: nowrap; display: inline-flex; align-items: center; gap: 10px;
+  transition: color var(--dur-fast);
+}
+.section-header__link::after { content: '\2192'; }
+.section-header__link:hover  { color: var(--c-charcoal); }
+
+@media (max-width: 600px) {
+  :root { --s-2xl: 80px; --s-xl: 60px; }
+  .section-header { flex-direction: column; align-items: flex-start; gap: 12px; }
+  .btn-outline-white { text-align: center; }
+}
+
+/* =================================================================
+   KA-TOAST — shared "Added to Your Bag" confirmation component.
+   Used by the Product page (real Add to Bag), the Collection grid
+   (card quick-add) and any future quick-add surface. One definition
+   here so it is never duplicated per-section (per CTA-architecture
+   build instructions). Each page provides its own #kaToast markup
+   instance (Shopify sections can't share a single DOM node across
+   templates) but all of them point at this one CSS contract and at
+   the shared JS helpers in ka-theme.js (window.kaShowToast / window.kaUpdateBagCount).
+   Spec: Docs/cta-architecture-revision.md Round 2 + Round 3.
+================================================================= */
+.ka-toast {
+  position: fixed;
+  left: 50%;
+  bottom: 34px;
+  transform: translate(-50%, 18px);
+  z-index: 160;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  background: var(--c-charcoal);
+  color: #F4ECDE;
+  padding: 18px 22px 18px 20px;
+  min-width: 320px;
+  max-width: 90vw;
+  box-shadow: 0 18px 50px rgba(0,0,0,0.28);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.5s var(--ease-luxury), transform 0.5s var(--ease-luxury);
+}
+.ka-toast.show { opacity: 1; transform: translate(-50%, 0); pointer-events: auto; }
+.ka-toast__mark { color: var(--c-rosegold-pale); font-size: 1rem; flex: 0 0 auto; }
+.ka-toast__body { flex: 1 1 auto; }
+.ka-toast__title { font-family: var(--f-display); font-style: italic; font-size: 1.05rem; line-height: 1.2; }
+.ka-toast__sub { font-family: var(--f-sans); font-size: 0.66rem; letter-spacing: 0.06em; color: rgba(244,236,222,0.62); margin-top: 3px; }
+.ka-toast__action {
+  flex: 0 0 auto;
+  font-family: var(--f-sans);
+  font-size: 0.62rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--c-rosegold-pale);
+  border-bottom: 1px solid var(--c-rosegold-pale);
+  padding-bottom: 2px;
+  white-space: nowrap;
+  cursor: pointer;
+  background: none;
+  border-top: none; border-left: none; border-right: none;
+}
+.ka-toast__action:hover { color: #fff; border-color: #fff; }
+@media (max-width: 600px) {
+  /* bottom:86px on the Product page (clears the mobile sticky action
+     bar) — pages with no mobile sticky bar (Collection, Homepage) get
+     the same value; it reads fine sitting slightly off the very bottom
+     edge and keeps one shared rule instead of a per-page override. */
+  .ka-toast { left: 16px; right: 16px; bottom: 86px; transform: translateY(18px); min-width: 0; }
+  .ka-toast.show { transform: translateY(0); }
+}
+</script>
+<script type="text/plain" id="css-nav">/* ================================================================
+   KA-NAV — global header: utility bar + navigation + mobile drawer
+   Z-index stack (search overlay is the new top, spec §1.4): search
+   overlay 220 (assets/ka-search.css) > currency menu/sheet 210
+   (assets/ka-currency.css, Task 86) > mobile drawer 200 > concierge
+   float 110 > utility bar 101 > nav 100 > (product minibar 70) > content.
+   NOTE: .scrolled must NEVER change the nav `top` — it stays at
+   top:34px (desktop) / 30px (mobile) at every scroll position so it
+   can never collide with the utility bar's permanent top:0/z-index:101.
+================================================================ */
+
+/* ── Utility bar (permanent, never moves) ──
+   Task 86: restructured from a single centered text block to a
+   3-part flex row (spacer / track-wrap / currency chip) so the
+   currency chip can sit permanently at the right edge without ever
+   overlapping the scrolling trust-message marquee, at any breakpoint.
+   The spacer only renders (in ka-nav.liquid) when the currency
+   converter is enabled, so with the setting off this collapses back
+   to exactly the old single-centered-block appearance — zero visual
+   change for that case. Chip/divider visual styling lives in
+   assets/ka-currency.css, not here (per-component scoping). */
+.ka-utility-bar {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 101;
+  background: var(--c-charcoal);
+  color: rgba(233,224,210,0.78);
+  font-family: var(--f-sans);
+  font-size: 0.62rem;
+  font-weight: 400;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  display: flex;
+  align-items: center;
+  padding: 9px 16px;
+}
+.ka-utility-bar__spacer { flex: 0 0 auto; width: 108px; }
+.ka-utility-bar__track-wrap { flex: 1 1 auto; overflow: hidden; text-align: center; }
+.ka-utility-bar span { opacity: 0.55; margin: 0 14px; }
+.ka-utility-bar b { font-weight: 400; opacity: 0.95; }
+/* Round 3 fix (R3-3): scroller track. Desktop: static, single line, no
+   change in appearance from before. Mobile: see @media block below for
+   the animation activation + reduced-motion fallback. */
+.ka-utility-bar__track { display: inline-flex; white-space: nowrap; }
+.ka-utility-bar__group { display: inline-flex; align-items: center; flex: 0 0 auto; }
+.ka-utility-bar__group[aria-hidden="true"] { display: none; }
+@keyframes utility-scroll { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+
+/* ── Nav ── */
+.ka-nav {
+  position: fixed;
+  top: 34px; left: 0; right: 0;
+  z-index: 100;
+  padding: 22px var(--gutter);
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  transition:
+    background var(--dur-med) var(--ease-soft),
+    padding    var(--dur-med) var(--ease-soft),
+    backdrop-filter var(--dur-med) var(--ease-soft);
+}
+
+/* Crystallised state — applied on homepage via .scrolled (JS),
+   and permanently on interior pages via .ka-nav--settled. */
+.ka-nav.scrolled,
+.ka-nav--settled,
+.ka-nav.is-panel-open {
+  background: rgba(247,243,236,0.94);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  padding: 14px var(--gutter);
+  border-bottom: 1px solid var(--line);
+}
+.ka-nav--settled,
+.ka-nav.is-panel-open { background: rgba(247,243,236,0.96); }
+
+.ka-nav__links {
+  display: flex;
+  gap: 32px;
+  list-style: none;
+  align-items: center;
+}
+.ka-nav__links a {
+  font-family: var(--f-sans);
+  font-size: 0.66rem;
+  font-weight: 400;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: white;
+  transition: color var(--dur-fast);
+  position: relative;
+}
+.ka-nav__links a::after {
+  content: '';
+  position: absolute;
+  left: 0; bottom: -3px;
+  width: 0; height: 1px;
+  background: var(--c-rosegold);
+  transition: width var(--dur-med) var(--ease-luxury);
+}
+.ka-nav__links a:hover::after { width: 100%; }
+.ka-nav__links a.is-active::after { width: 100%; }
+.ka-nav.scrolled .ka-nav__links a,
+.ka-nav--settled .ka-nav__links a,
+.ka-nav.is-panel-open .ka-nav__links a { color: var(--c-ink-mid); }
+.ka-nav.scrolled .ka-nav__links a:hover,
+.ka-nav--settled .ka-nav__links a:hover,
+.ka-nav.is-panel-open .ka-nav__links a:hover { color: var(--c-charcoal); }
+
+/* ── Collections panel (Docs/header-by-silhouette-2026-10-20.md): the
+     Collections item is a link + a chevron <button>; the panel hangs off
+     the nav bar's bottom edge. No images, no aspect-ratio (Safari-safe). ── */
+.ka-nav__item { display: flex; align-items: center; gap: 2px; }
+.ka-nav__panel-toggle {
+  width: 22px; height: 19px;
+  display: inline-flex; align-items: center; justify-content: center;
+  color: white;
+  transition: color var(--dur-fast);
+}
+.ka-nav__panel-toggle svg {
+  width: 8px; height: 8px;
+  stroke: currentColor; fill: none; stroke-width: 1.2;
+  transition: transform var(--dur-fast) var(--ease-luxury);
+}
+.ka-nav__panel-toggle[aria-expanded="true"] svg { transform: rotate(180deg); }
+.ka-nav.scrolled .ka-nav__panel-toggle,
+.ka-nav--settled .ka-nav__panel-toggle,
+.ka-nav.is-panel-open .ka-nav__panel-toggle { color: var(--c-ink-mid); }
+.ka-nav__panel-toggle:focus-visible,
+.ka-nav__links a:focus-visible,
+.ka-nav__panel a:focus-visible { outline: 1px solid var(--c-rosegold); outline-offset: 4px; }
+
+.ka-nav__panel {
+  position: absolute; left: 0; right: 0; top: 100%;
+  background: var(--c-paper);
+  border-bottom: 1px solid var(--line);
+  box-shadow: 0 24px 40px -28px rgba(42,36,32,0.28);
+  visibility: hidden; opacity: 0; transform: translateY(-6px);
+  transition:
+    opacity var(--dur-fast) var(--ease-luxury),
+    transform var(--dur-fast) var(--ease-luxury),
+    visibility 0s linear var(--dur-fast);
+}
+.ka-nav__panel.is-open { visibility: visible; opacity: 1; transform: none; transition-delay: 0s; }
+.ka-nav__panel-inner {
+  max-width: 720px; margin: 0 auto;
+  padding: 40px var(--gutter) 34px;
+  display: grid; grid-template-columns: 1fr 1fr; column-gap: 72px;
+}
+.ka-nav__panel-title {
+  font-family: var(--f-sans);
+  font-size: 0.58rem; font-weight: 400;
+  letter-spacing: 0.24em; text-transform: uppercase;
+  color: var(--c-rosegold-2);
+  padding-bottom: 14px; margin-bottom: 6px;
+  border-bottom: 1px solid var(--line);
+}
+.ka-nav__panel ul { list-style: none; }
+.ka-nav__panel li a {
+  display: inline-block;
+  font-family: var(--f-display);
+  font-size: 1.22rem; font-weight: 400; line-height: 1; letter-spacing: 0.01em;
+  color: var(--c-ink);
+  padding: 9px 0;
+  position: relative;
+  transition: color var(--dur-fast);
+}
+.ka-nav__panel li a::after {
+  content: ''; position: absolute; left: 0; bottom: 5px;
+  width: 0; height: 1px; background: var(--c-rosegold);
+  transition: width var(--dur-med) var(--ease-luxury);
+}
+.ka-nav__panel li a:hover { color: var(--c-rosegold-2); }
+.ka-nav__panel li a:hover::after { width: 100%; }
+.ka-nav__panel-all {
+  grid-column: 1 / -1;
+  margin-top: 20px; padding-top: 16px;
+  border-top: 1px solid var(--line);
+  text-align: center;
+}
+.ka-nav__panel-all a {
+  font-family: var(--f-sans);
+  font-size: 0.6rem; font-weight: 400;
+  letter-spacing: 0.22em; text-transform: uppercase;
+  color: var(--c-ink-mid);
+  transition: color var(--dur-fast);
+}
+.ka-nav__panel-all a:hover { color: var(--c-charcoal); }
+/* Scrim: soft dim of the page behind the panel; click closes (z 99, under the nav's 100) */
+.ka-nav-scrim {
+  position: fixed; inset: 0; z-index: 99;
+  background: rgba(29,25,22,0.22);
+  opacity: 0; visibility: hidden;
+  transition: opacity var(--dur-fast) var(--ease-soft), visibility 0s linear var(--dur-fast);
+}
+.ka-nav-scrim.is-open { opacity: 1; visibility: visible; transition-delay: 0s; }
+
+.ka-nav__logo {
+  grid-column: 2;
+  text-align: center;
+  font-family: var(--f-display);
+  font-size: clamp(1.2rem, 2.2vw, 1.6rem);
+  font-weight: 400;
+  letter-spacing: 0.1em;
+  color: white;
+  line-height: 1;
+  transition: color var(--dur-med);
+}
+.ka-nav__logo small {
+  display: block;
+  font-family: var(--f-sans);
+  font-size: 0.5rem;
+  font-weight: 400;
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+  color: var(--c-rosegold-pale);
+  margin-top: 6px;
+}
+.ka-nav.scrolled .ka-nav__logo,
+.ka-nav--settled .ka-nav__logo,
+.ka-nav.is-panel-open .ka-nav__logo { color: var(--c-charcoal); }
+.ka-nav.scrolled .ka-nav__logo small,
+.ka-nav--settled .ka-nav__logo small,
+.ka-nav.is-panel-open .ka-nav__logo small { color: var(--c-rosegold-2); }
+
+.ka-nav__actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 24px;
+}
+
+/* ── Shared icon-button language — search trigger + bag icon.
+     Docs/search-404-footer-build-spec.md §1.2: search shares the bag
+     icon's exact pre-existing spec (24x24 viewBox, stroke-width:1.4,
+     round caps, 30x30 hit target) via this one common class, so the
+     pair reads as one considered icon set, not two different UI eras.
+     .ka-nav__bag (below) layers the count-badge positioning on top —
+     it never redeclares size/color, only extends this. ── */
+.ka-nav__icon-btn {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  padding: 4px;
+  color: white;
+  transition: color var(--dur-med);
+}
+.ka-nav.scrolled .ka-nav__icon-btn,
+.ka-nav--settled .ka-nav__icon-btn,
+.ka-nav.is-panel-open .ka-nav__icon-btn { color: var(--c-charcoal); }
+.ka-nav__icon-btn svg { width: 20px; height: 20px; stroke: currentColor; fill: none; }
+
+/* ── Bag icon — Round 2 addition (R2-7). Minimal line-drawn bag glyph,
+     matching the approved prototype, not a generic cart/trolley icon.
+     Lives in every template via this one shared nav section. ── */
+.ka-nav__bag__count {
+  position: absolute;
+  top: -2px; right: -4px;
+  min-width: 15px; height: 15px;
+  border-radius: 50%;
+  background: var(--c-rosegold);
+  color: #fff;
+  font-family: var(--f-sans);
+  font-size: 0.56rem;
+  line-height: 15px;
+  text-align: center;
+  padding: 0 3px;
+}
+.ka-nav__bag__count:empty,
+.ka-nav__bag__count[data-count="0"] { display: none; }
+
+/* ── Account icon "signed in" indicator — Docs/account-wishlist-build-
+   spec.md S0. Reuses the badge's exact rosegold/position language (no
+   new accent colour) — a plain presence dot, no numeral, since
+   routes.account_url is the single source of truth for sign-in state;
+   this is a convenience hint, not a second auth system. Rendered
+   server-side only when {% if customer %} (ka-nav.liquid) — no JS
+   toggling, so no transition needed. ── */
+.ka-nav__signed-dot {
+  position: absolute;
+  top: 1px; right: 1px;
+  width: 7px; height: 7px;
+  border-radius: 50%;
+  background: var(--c-rosegold);
+  border: 1.5px solid var(--c-paper-deep);
+}
+
+/* ── Wishlist icon — Docs/account-wishlist-build-spec.md S0. Reuses the
+   bag icon's exact badge component (.ka-nav__bag__count above) via this
+   sibling class, plus its own heart fill/unfill state (.has-saved, set
+   by assets/ka-wishlist.js) — the bag icon has no equivalent fill
+   state. Motion: --ease-luxury / --dur-fast, a soft settle rather than
+   a bouncy pop, matching every other micro-interaction sitewide. ── */
+.ka-nav__wishlist__count {
+  position: absolute;
+  top: -2px; right: -4px;
+  min-width: 15px; height: 15px;
+  border-radius: 50%;
+  background: var(--c-rosegold);
+  color: #fff;
+  font-family: var(--f-sans);
+  font-size: 0.56rem;
+  line-height: 15px;
+  text-align: center;
+  padding: 0 3px;
+}
+.ka-nav__wishlist__count:empty,
+.ka-nav__wishlist__count[data-count="0"] { display: none; }
+
+.ka-nav__wishlist svg.heart-fill {
+  fill: var(--c-rosegold);
+  stroke: var(--c-rosegold);
+  opacity: 0;
+  transform: scale(0.6);
+  position: absolute;
+  transition: opacity var(--dur-fast) var(--ease-luxury), transform var(--dur-fast) var(--ease-luxury);
+}
+.ka-nav__wishlist svg.heart-line { transition: opacity var(--dur-fast) var(--ease-luxury); }
+.ka-nav__wishlist.has-saved svg.heart-fill { opacity: 1; transform: scale(1); }
+.ka-nav__wishlist.has-saved svg.heart-line { opacity: 0; }
+
+/* Mobile-only. Revision v2 (spec §1.2/§1.4): lives OUTSIDE
+   .ka-nav__actions now, as its own grid item in column 1 — mutually
+   exclusive with .ka-nav__links, which occupies the same column 1 at
+   desktop (only one of the two is ever display-active at a given
+   breakpoint, so there's no conflict). grid-column:1 is set
+   unconditionally (harmless at desktop since display:none removes it
+   from grid flow entirely there). */
+.ka-nav__toggle {
+  display: none;
+  flex-direction: column;
+  gap: 5px;
+  padding: 4px;
+  grid-column: 1;
+  align-items: flex-start;
+}
+.ka-nav__toggle span {
+  display: block;
+  width: 24px;
+  height: 1px;
+  background: white;
+  transition: background var(--dur-med);
+}
+.ka-nav.scrolled .ka-nav__toggle span,
+.ka-nav--settled .ka-nav__toggle span { background: var(--c-charcoal); }
+
+/* ── Mobile nav drawer ── */
+.ka-mobile-nav {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  background: var(--c-charcoal);
+  display: flex;
+  flex-direction: column;
+  padding: 80px var(--gutter) var(--s-lg);
+  transform: translateX(100%);
+  transition: transform 0.5s var(--ease-luxury);
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
+.ka-mobile-nav.open { transform: translateX(0); }
+
+.ka-mobile-nav__close {
+  position: absolute;
+  top: 24px;
+  right: var(--gutter);
+  font-family: var(--f-sans);
+  font-size: 0.63rem;
+  font-weight: 400;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.45);
+  padding: 8px;
+}
+
+.ka-mobile-nav__links {
+  list-style: none;
+  margin-bottom: var(--s-lg);
+}
+.ka-mobile-nav__links > li { border-bottom: 1px solid rgba(255,255,255,0.07); }
+.ka-mobile-nav__links a {
+  display: block;
+  font-family: var(--f-display);
+  font-size: clamp(1.6rem, 6vw, 2.6rem);
+  font-weight: 400;
+  font-style: italic;
+  color: white;
+  padding: 18px 0;
+  letter-spacing: 0.02em;
+  transition: color var(--dur-fast);
+}
+.ka-mobile-nav__links a:hover { color: var(--c-rosegold); }
+/* Current-page state (Docs/about-us-build-spec.md Section 6 H3) — matches the existing hover colour */
+.ka-mobile-nav__links a.is-current { color: var(--c-rosegold); }
+
+/* ── Drawer accordion for Collections (header-by-silhouette spec) ──
+     grid-template-rows 0fr -> 1fr (Safari 16+). Collapsed state is
+     visibility:hidden (delayed on close so the collapse animates) in
+     addition to `inert` set by JS, so nothing is tabbable while collapsed
+     even where `inert` is unsupported -- and nothing stays hidden when open. ── */
+.ka-mobile-nav__row { display: flex; align-items: center; }
+.ka-mobile-nav__row > a { flex: 1 1 auto; }
+.ka-mobile-nav__sub-toggle {
+  flex: 0 0 auto;
+  width: 48px; height: 48px; margin-right: -12px;
+  display: inline-flex; align-items: center; justify-content: center;
+  color: rgba(255,255,255,0.55);
+}
+.ka-mobile-nav__sub-toggle svg {
+  width: 14px; height: 14px;
+  stroke: currentColor; fill: none; stroke-width: 1.1;
+  transition: transform var(--dur-fast) var(--ease-luxury);
+}
+.ka-mobile-nav__sub-toggle[aria-expanded="true"] svg { transform: rotate(45deg); }
+.ka-mobile-nav__sub {
+  display: grid; grid-template-rows: 0fr;
+  transition: grid-template-rows 0.45s var(--ease-luxury);
+}
+.ka-mobile-nav__sub.is-open { grid-template-rows: 1fr; }
+.ka-mobile-nav__sub-inner {
+  overflow: hidden; min-height: 0;
+  visibility: hidden;
+  transition: visibility 0s linear 0.45s;
+}
+.ka-mobile-nav__sub.is-open .ka-mobile-nav__sub-inner { visibility: visible; transition-delay: 0s; }
+.ka-mobile-nav__sub-title {
+  font-family: var(--f-sans);
+  font-size: 0.58rem; font-weight: 400;
+  letter-spacing: 0.24em; text-transform: uppercase;
+  color: var(--c-rosegold-pale);
+  padding: 6px 0 4px;
+}
+.ka-mobile-nav__sub ul { list-style: none; margin: 0 0 18px; }
+.ka-mobile-nav__links .ka-mobile-nav__sub a {
+  font-family: var(--f-sans); font-style: normal;
+  font-size: 0.8rem; font-weight: 300;
+  letter-spacing: 0.1em; text-transform: uppercase;
+  color: rgba(255,255,255,0.82);
+  padding: 11px 0;
+}
+.ka-mobile-nav__links .ka-mobile-nav__sub a:hover { color: var(--c-rosegold); }
+.ka-mobile-nav__sub .ka-mobile-nav__sub-all {
+  display: block; font-size: 0.7rem;
+  color: rgba(255,255,255,0.45);
+  padding: 2px 0 22px;
+}
+
+/* ── My Account / My Wishlist rows — Docs/account-wishlist-build-spec.md
+     S1. Same row treatment as the My Bag row below (icon size, row
+     rhythm, border) via this shared class — applied only to these two
+     new rows; My Bag keeps its own existing class/markup untouched. ── */
+.ka-mobile-nav__util-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 18px 0;
+  border-bottom: 1px solid rgba(255,255,255,0.07);
+  font-family: var(--f-sans);
+  font-size: 0.78rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: white;
+}
+.ka-mobile-nav__util-row svg {
+  width: 18px; height: 18px;
+  stroke: currentColor; fill: none;
+  flex: 0 0 auto;
+}
+/* Account row's right-aligned value — combines the signed-in dot with
+   changing text ("Log In" / "View Account"), so it needs a wrapper the
+   simpler Wishlist count span (below) doesn't. */
+.ka-mobile-nav__util-row .val {
+  margin-left: auto;
+  font-family: var(--f-sans);
+  font-size: 0.7rem;
+  color: var(--c-rosegold);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.ka-mobile-nav__util-row .dot {
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: var(--c-rosegold);
+}
+.ka-mobile-nav__wishlist-count {
+  margin-left: auto;
+  font-family: var(--f-sans);
+  font-size: 0.7rem;
+  color: var(--c-rosegold);
+}
+.ka-mobile-nav__wishlist-count:empty,
+.ka-mobile-nav__wishlist-count[data-count="0"] { display: none; }
+
+/* ── My Bag row — Round 2 addition (R2-7), mobile-drawer equivalent of
+     the desktop bag icon. Sits between the nav links and the
+     Concierge footer, same row treatment as the links list. ── */
+.ka-mobile-nav__bag-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 18px 0;
+  border-bottom: 1px solid rgba(255,255,255,0.07);
+  font-family: var(--f-sans);
+  font-size: 0.78rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: white;
+}
+.ka-mobile-nav__bag-row svg {
+  width: 18px; height: 18px;
+  stroke: currentColor; fill: none;
+  flex: 0 0 auto;
+}
+.ka-mobile-nav__bag-count {
+  margin-left: auto;
+  font-family: var(--f-sans);
+  font-size: 0.7rem;
+  color: var(--c-rosegold);
+}
+.ka-mobile-nav__bag-count:empty,
+.ka-mobile-nav__bag-count[data-count="0"] { display: none; }
+
+.ka-mobile-nav__footer { margin-top: auto; }
+.ka-mobile-nav__footer p {
+  font-family: var(--f-sans);
+  font-size: 0.7rem;
+  font-weight: 300;
+  color: rgba(255,255,255,0.3);
+  letter-spacing: 0.1em;
+  margin-bottom: 8px;
+}
+.ka-mobile-nav__footer a {
+  display: block;
+  font-family: var(--f-sans);
+  font-size: 0.82rem;
+  font-weight: 300;
+  color: var(--c-rosegold);
+  letter-spacing: 0.06em;
+}
+
+/* Nav-width protection (header-by-silhouette spec): chevron + tighter
+   spacing keep the centred logo clear of the nav words down to 901px. */
+@media (max-width: 1180px) {
+  .ka-nav__links { gap: 22px; }
+  .ka-nav__links a { letter-spacing: 0.14em; }
+  .ka-nav__panel-toggle { width: 18px; }
+  .ka-nav__actions { gap: 18px; }
+}
+@media (max-width: 1000px) and (min-width: 901px) {
+  .ka-nav__links { gap: 16px; }
+  .ka-nav__links a { font-size: 0.62rem; letter-spacing: 0.1em; }
+  .ka-nav__actions { gap: 12px; }
+  .ka-nav__logo { letter-spacing: 0.06em; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .ka-nav__panel, .ka-nav-scrim, .ka-mobile-nav__sub, .ka-mobile-nav__sub-inner { transition: none; }
+}
+
+@media (max-width: 900px) {
+  .ka-utility-bar { font-size: 0.54rem; letter-spacing: 0.12em; padding: 8px 12px; overflow: hidden; }
+  .ka-utility-bar__spacer { display: none; } /* Task 86: chip sits at the marquee's trailing edge on mobile, per approved prototype */
+  .ka-utility-bar span { margin: 0 8px; }
+  /* Round 3 fix (R3-3): mobile-only marquee, desktop completely
+     unchanged. The duplicate .ka-utility-bar__group is revealed and
+     the track scrolls continuously instead of wrapping to two lines. */
+  .ka-utility-bar__track { animation: utility-scroll 20s linear infinite; }
+  .ka-utility-bar__group[aria-hidden="true"] { display: inline-flex; }
+  @media (prefers-reduced-motion: reduce) {
+    .ka-utility-bar__track { animation: none; }
+    .ka-utility-bar__group[aria-hidden="true"] { display: none; }
+    .ka-utility-bar { overflow-x: auto; }
+  }
+  /* grid-template-columns is intentionally NOT overridden here — it
+     stays the base 1fr auto 1fr (spec §1.4 addendum): both flanking
+     columns are genuine 1fr tracks at every breakpoint, matching
+     desktop's already-correct symmetric pattern. What changes at this
+     breakpoint is only which elements occupy column 1 (.ka-nav__toggle
+     instead of .ka-nav__links) and column 3's content. */
+  .ka-nav { top: 30px; padding: 18px 20px; }
+  .ka-nav__links   { display: none; }
+  .ka-nav__panel, .ka-nav-scrim { display: none; }
+  /* min-width matches .ka-nav__actions' mobile min-content floor (two
+     30px icon-btns + one 14px gap = 74px, set below) so both flanking
+     grid columns share an equal content floor and .ka-nav__logo sits
+     on true optical centre. This is NOT redundant with the base
+     grid-template-columns: 1fr auto 1fr — CSS Grid first reserves each
+     1fr track's own min-content floor, then distributes remaining free
+     space evenly, so two 1fr tracks with unequal content floors still
+     render at unequal final widths. Without this, .ka-nav__toggle's
+     natural floor (~32px, just padding + bars) would leave column 1
+     narrower than column 3's 74px floor, pushing the logo off-centre by
+     roughly 42px (see Docs/search-404-footer-build-spec.md §1.4 for the
+     full mechanics). Keep this in sync if the icon count on either side
+     ever changes again. */
+  .ka-nav__toggle  { display: flex; min-width: 74px; }
+  .ka-nav__logo    { font-size: 1.2rem; }
+  .ka-nav__logo small { font-size: 0.44rem; letter-spacing: 0.26em; }
+  .ka-nav__actions { gap: 14px; }
+  /* Account + Wishlist stay out of the mobile action cluster entirely
+     (Docs/account-wishlist-build-spec.md S0 "Responsive") — that
+     cluster's tested minimum width keeps the logo centred (see the
+     .ka-nav__toggle comment above) and stays Search + Bag only. Both
+     move into the drawer instead (S1, above). */
+  .ka-nav__actions .ka-nav__account,
+  .ka-nav__actions .ka-nav__wishlist { display: none; }
+}
+</script>
+<script type="text/plain" id="css-cur">/* ================================================================
+   K&A CURRENCY MODULE — ka-currency.css
+   Task 86. Scoped strictly to the currency chip, the shared dropdown/
+   bottom-sheet menu, and the cart conversion bridge line. No page
+   redesign — every value reuses existing ka-base.css tokens (spec
+   Section 1: no new colour/type tokens). Loaded sitewide from
+   layout/theme.liquid, only when settings.enable_currency_converter
+   is on, alongside ka-nav.css (utility bar structure) and each price
+   surface's own section CSS (untouched — this file never overrides
+   price typography, only adds the chip/menu/bridge components).
+
+   Z-index: this module's menu/sheet sits at 210 — above the mobile
+   drawer (200). See the stacking-order comment at the top of
+   ka-nav.css, which documents the full sitewide stack.
+================================================================ */
+
+/* ── Anti-flash gate (F2) — hides every [data-price] element while
+     layout/theme.liquid's inline pre-paint script has determined the
+     visitor needs a non-INR currency and conversion hasn't finished
+     yet. Only ever engages for non-INR visitors; Indian visitors
+     never carry this attribute, so there is zero effect for them. ── */
+html[data-ka-currency-pending] [data-price] {
+  visibility: hidden;
+}
+
+/* ── Utility-bar currency chip (Section 2.1) ── */
+.ka-currency-divider {
+  flex: 0 0 auto;
+  width: 1px;
+  height: 13px;
+  background: rgba(233, 224, 210, 0.28);
+  margin: 0 16px;
+}
+.ka-currency-chip {
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  font-family: var(--f-sans);
+  font-size: 0.62rem;
+  font-weight: 400;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: rgba(233, 224, 210, 0.92);
+  transition: color var(--dur-fast);
+}
+.ka-currency-chip:hover { color: var(--c-rosegold-pale); }
+.ka-currency-chip__label { transition: opacity 0.18s var(--ease-soft); }
+.ka-currency-chip__caret {
+  display: inline-block;
+  color: var(--c-rosegold-pale);
+  font-size: 0.68rem;
+  transition: transform var(--dur-fast) var(--ease-luxury);
+}
+.ka-currency-chip[aria-expanded="true"] .ka-currency-chip__caret { transform: rotate(180deg); }
+
+/* ── Mobile-drawer currency row (Section 2.2) — same row treatment
+     as .ka-mobile-nav__bag-row, reused deliberately for visual
+     consistency (icon + label + right-aligned value + caret). ── */
+.ka-mobile-nav__currency-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 18px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+  font-family: var(--f-sans);
+  font-size: 0.78rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: white;
+}
+.ka-mobile-nav__currency-row svg {
+  width: 18px;
+  height: 18px;
+  stroke: currentColor;
+  fill: none;
+  flex: 0 0 auto;
+  opacity: 0.85;
+}
+.ka-mobile-nav__currency-row .val {
+  margin-left: auto;
+  color: var(--c-rosegold-pale);
+  font-size: 0.72rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/* ── Shared currency menu (Section 2.3) — one element, two shells.
+     >900px: anchored dropdown under the utility-bar chip.
+     <=900px: full-width bottom sheet (see @media block below). ── */
+.ka-currency-scrim {
+  position: fixed;
+  inset: 0;
+  z-index: 205;
+  background: rgba(20, 17, 14, 0.4);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity var(--dur-med) var(--ease-soft);
+  display: none;
+}
+.ka-currency-scrim.show { opacity: 1; pointer-events: auto; }
+
+.ka-currency-menu {
+  position: fixed;
+  z-index: 210;
+  top: 46px;
+  right: var(--gutter);
+  width: 336px;
+  background: var(--c-paper);
+  border: 1px solid var(--line);
+  box-shadow: 0 18px 50px rgba(0, 0, 0, 0.28); /* same shadow value as .ka-toast, per spec */
+  padding: 22px 22px 18px;
+  opacity: 0;
+  transform: translateY(-8px);
+  visibility: hidden;
+  pointer-events: none;
+  transition: opacity 0.4s var(--ease-luxury), transform 0.4s var(--ease-luxury), visibility 0s linear 0.4s;
+}
+.ka-currency-menu.open {
+  opacity: 1;
+  transform: translateY(0);
+  visibility: visible;
+  pointer-events: auto;
+  transition: opacity 0.4s var(--ease-luxury), transform 0.4s var(--ease-luxury), visibility 0s linear 0s;
+}
+.ka-currency-menu__eyebrow { margin-bottom: 14px; }
+.ka-currency-menu__list { list-style: none; }
+.ka-currency-menu__row {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 11px 2px;
+  border-bottom: 1px solid var(--line);
+  font-family: var(--f-sans);
+  text-align: left;
+  color: var(--c-ink);
+  transition: background var(--dur-fast);
+}
+.ka-currency-menu__list li:last-child .ka-currency-menu__row { border-bottom: none; }
+.ka-currency-menu__row:hover { background: var(--c-paper-deep); }
+.ka-currency-menu__dot {
+  flex: 0 0 auto;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--c-rosegold);
+  opacity: 0;
+  transition: opacity var(--dur-fast);
+}
+.ka-currency-menu__row[aria-selected="true"] .ka-currency-menu__dot { opacity: 1; }
+.ka-currency-menu__row[aria-selected="true"] .ka-currency-menu__code { color: var(--c-rosegold-2); }
+.ka-currency-menu__code { flex: 0 0 auto; width: 76px; font-size: 0.86rem; letter-spacing: 0.02em; }
+.ka-currency-menu__name { flex: 1 1 auto; font-size: 0.76rem; color: var(--c-ink-muted); text-align: right; }
+.ka-currency-menu__note {
+  margin-top: 16px;
+  padding-top: 14px;
+  border-top: 1px solid var(--line);
+  font-family: var(--f-sans);
+  font-size: 0.72rem;
+  line-height: 1.6;
+  color: var(--c-ink-muted);
+}
+.ka-currency-menu__close { display: none; }
+.ka-currency-menu__handle { display: none; }
+
+@media (max-width: 900px) {
+  .ka-currency-divider { margin: 0 10px; }
+  .ka-currency-chip { font-size: 0.56rem; letter-spacing: 0.1em; }
+
+  .ka-currency-scrim { display: block; }
+  .ka-currency-menu {
+    top: auto;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    width: auto;
+    border: none;
+    border-top: 1px solid var(--line);
+    box-shadow: 0 -18px 50px rgba(0, 0, 0, 0.28);
+    padding: 14px var(--gutter) 30px;
+    transform: translateY(100%);
+    transition: transform 0.5s var(--ease-luxury), visibility 0s linear 0.5s;
+  }
+  .ka-currency-menu.open {
+    transform: translateY(0);
+    transition: transform 0.5s var(--ease-luxury), visibility 0s linear 0s;
+  }
+  .ka-currency-menu__handle {
+    display: block;
+    width: 36px;
+    height: 3px;
+    background: var(--line-strong);
+    margin: 0 auto 20px;
+  }
+  .ka-currency-menu__close {
+    display: block;
+    position: absolute;
+    top: 14px;
+    right: 18px;
+    font-family: var(--f-sans);
+    font-size: 0.6rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--c-ink-muted);
+    padding: 8px;
+  }
+  .ka-currency-menu__row { padding: 14px 2px; }
+  .ka-currency-menu__code { font-size: 0.92rem; }
+}
+
+/* ── Cart conversion bridge line (Section 2.5) — the one deliberate
+     exception to "replace, never append." Lives inside
+     sections/ka-cart-items.liquid (the merged items + order-summary
+     section, formerly ka-cart-summary.liquid), directly beneath
+     Estimated Total. Only shown when the active currency isn't INR
+     (JS toggles .show). Must always read larger than .ka-summary-tax
+     beneath it — never smaller, so it never reads as fine print
+     (CD Note 5). ── */
+.ka-currency-bridge {
+  display: none;
+  font-family: var(--f-sans);
+  font-size: 0.85rem;
+  letter-spacing: 0;
+  color: var(--c-ink);
+  font-variant-numeric: tabular-nums;
+  margin-bottom: 10px;
+  transition: opacity 0.18s var(--ease-soft);
+}
+.ka-currency-bridge.show { display: block; }
+.ka-currency-bridge .op { color: var(--c-ink-muted); margin: 0 7px; font-weight: 300; }
+</script>
+<script type="text/plain" id="css-pb">/* ================================================================
+   KA-PRODUCT-BREADCRUMB — clears the fixed header stack
+================================================================ */
+.ka-pb {
+  padding: 140px var(--gutter) 0;
+  max-width: var(--max-wide);
+  margin: 0 auto;
+}
+.ka-pb__inner {
+  font-family: var(--f-sans);
+  font-size: 0.66rem;
+  font-weight: 400;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--c-ink-muted);
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+.ka-pb__inner a { transition: color var(--dur-fast); }
+.ka-pb__inner a:hover { color: var(--c-rosegold-2); }
+.ka-pb__sep { opacity: 0.5; }
+.ka-pb__current { color: var(--c-ink); }
+
+@media (max-width: 900px) {
+  .ka-pb { padding-top: 122px; }
+}
+</script>
+<script type="text/plain" id="css-main-old">/* ================================================================
+   KA-PRODUCT-MAIN — sticky gallery + info panel + minibar +
+   lightbox + mobile action bar. Scoped to the product template.
+================================================================ */
+
+/* ── page-specific buttons ── */
+.ka-btn {
+  font-family: var(--f-sans); font-weight: 400; font-size: 0.7rem;
+  letter-spacing: 0.2em; text-transform: uppercase;
+  display: inline-flex; align-items: center; justify-content: center; gap: 0.6em;
+  padding: 18px 30px;
+  border: 1px solid var(--c-charcoal);
+  background: var(--c-charcoal);
+  color: var(--c-paper);
+  cursor: pointer;
+  transition: all 0.5s var(--ease-luxury);
+  width: 100%;
+}
+.ka-btn:hover { background: transparent; color: var(--c-charcoal); }
+.ka-btn--ghost { background: transparent; color: var(--c-charcoal); border-color: var(--c-charcoal); }
+.ka-btn--ghost:hover { background: var(--c-charcoal); color: var(--c-paper); }
+.ka-btn--concierge { background: var(--c-smoke); color: var(--c-charcoal); border: 1px solid var(--c-rosegold-pale); }
+.ka-btn--concierge:hover { background: var(--c-rosegold); border-color: var(--c-rosegold); color: #fff; }
+.ka-btn--concierge .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--c-rosegold); transition: background 0.4s; }
+.ka-btn--concierge:hover .dot { background: #fff; }
+
+/* ── Add to Bag — Round 2 (Docs/cta-architecture-revision.md), the
+   primary buy-path button. Rose-gold fill so it visually outranks the
+   neutral charcoal/ghost buttons (Book an Appointment, Concierge) per
+   CLAUDE.md: the buy path must read as the clear, primary action. ── */
+.ka-btn--bag { background: var(--c-rosegold); border-color: var(--c-rosegold); color: #fff; }
+.ka-btn--bag:hover { background: var(--c-rosegold-2); border-color: var(--c-rosegold-2); color: #fff; }
+.ka-btn--bag:disabled,
+.ka-btn--bag[aria-disabled="true"] { background: var(--c-smoke); border-color: var(--line); color: var(--c-ink-muted); cursor: not-allowed; }
+.ka-btn--bag[aria-disabled="true"]:hover { background: var(--c-smoke); border-color: var(--line); color: var(--c-ink-muted); }
+.ka-btn-line {
+  background: transparent; color: var(--c-charcoal); border: none;
+  border-bottom: 1px solid var(--c-charcoal); padding: 8px 2px; width: auto;
+  letter-spacing: 0.18em; font-family: var(--f-sans); font-size: 0.7rem; text-transform: uppercase;
+  cursor: pointer;
+}
+.ka-btn-line:hover { color: var(--c-rosegold); border-color: var(--c-rosegold); }
+
+/* ── product hero grid ── */
+.ka-product {
+  max-width: var(--max-wide); margin: 0 auto; padding: 26px var(--gutter) 0;
+  display: grid; grid-template-columns: 1.18fr 1fr; gap: 60px; align-items: start;
+}
+
+/* ── gallery — horizontal filmstrip below the stage (Docs — item #27
+   3rd-pass CD spec, 2026-09-07): the old 86px-column vertical rail plus
+   grid-stretch of .ka-thumbs to .ka-stage's height was the root cause of
+   a tall empty box beside short thumbnail content. Single-column flow
+   removes the height-link entirely — .ka-thumbs now only ever takes the
+   height its own row of thumbnails needs. ── */
+.ka-media { position: sticky; top: 104px; display: flex; flex-direction: column; gap: var(--s-sm); }
+.ka-thumbs { display: flex; flex-direction: row; gap: 12px; overflow-x: auto; }
+.ka-thumb {
+  flex: 1 1 0; max-width: 150px; min-width: 64px; aspect-ratio: 3 / 4;
+  cursor: pointer; opacity: 0.48;
+  border: 1px solid transparent;
+  background-size: cover; background-position: center;
+  transition: opacity 0.45s var(--ease-luxury), border-color 0.45s var(--ease-luxury);
+  filter: sepia(0.10) saturate(0.90) brightness(0.94);
+}
+.ka-thumb:hover { opacity: 0.82; }
+.ka-thumb.active { opacity: 1; border-color: var(--c-charcoal); }
+.ka-thumb--ph { background: linear-gradient(135deg, #E9E1D2, #B99B6E); filter: none; }
+
+/* ── item #27 experiment (Docs/pending-tasks.md #27): box adapts to each
+   photo's own real aspect ratio instead of the fixed 3:4 crop, so
+   background-size:cover scales-to-fit with zero cropping. Applied ONLY
+   via a modifier class + --ratio custom property set in
+   sections/ka-product-main.liquid, scoped to exactly one product handle
+   (electric-blue-victorian-corset-with-drape-saree) — this does not
+   touch the base .ka-thumb rule above, so every other product's
+   thumbnails render byte-identical to today. Falls back to the standard
+   3:4 box if --ratio is ever unset. ── */
+.ka-thumb--native-ratio { aspect-ratio: var(--ratio, 3 / 4); }
+
+.ka-stage {
+  position: relative; overflow: hidden;
+  /* width:100% is load-bearing, not decorative — see
+     Docs/product-stage-image-fix-spec.md addendum (2026-09-07 regression
+     fix, predates the filmstrip change below). .ka-stage is a flex item
+     in .ka-media (single-column flow as of the item #27 3rd-pass filmstrip
+     change) with no intrinsic content box (it's a <div> painted via
+     background-image, not an <img>), so nothing else gives it a definite
+     width. Pairing
+     aspect-ratio with max-height (below) means that whenever the
+     aspect-ratio-derived height from a full-width box would exceed
+     max-height — which happens at ordinary desktop widths once the
+     column gets wide enough — the browser resolves the conflict by
+     recomputing WIDTH down from the clamped height to preserve the 3:4
+     ratio, instead of keeping width filled to the column/container and
+     only capping height. That silently shrinks the box below its column
+     width (visibly narrower than the thumbnail row beneath it) and, at
+     narrow/mobile widths where the same clamp can trigger against
+     the ≤900px max-height override below, left-aligns a visibly
+     narrower-than-container box. Setting width explicitly makes it a
+     definite value the aspect-ratio/max-height negotiation can never
+     renegotiate — only height is ever adjusted, which is exactly the
+     item #27 crop behavior this must not weaken. */
+  width: 100%;
+  aspect-ratio: 3 / 4;
+  max-height: 90vh;
+  background-size: cover; background-position: center;
+  cursor: zoom-in;
+  filter: sepia(0.10) saturate(0.90) brightness(0.94);
+}
+.ka-stage--ph { background: linear-gradient(135deg, #E9E1D2, #B99B6E); filter: none; }
+
+/* ── item #27 experiment — see .ka-thumb--native-ratio above for full
+   context/rationale. Same scoping: one product handle only, via Liquid;
+   does not alter the base .ka-stage rule above, so every other
+   product's stage image renders byte-identical to today.
+
+   Follow-up fix (2026-09-10, reported by Suraj on staging): .ka-stage
+   forces width:100% (the full gallery column, ~650-740px at real
+   desktop widths), unlike .ka-thumb which caps at max-width:150px.
+   Multiplying the same real --ratio by that much larger width produces
+   a genuinely tall box (~950-1100px, confirmed via live rendering) —
+   and because width stays fixed at 100% even once max-height:90vh
+   clamps it, the clamp doesn't shrink the box, it CROPS it (confirmed:
+   at a 749px-tall viewport the box clamped to a 661x674 box, a 0.98
+   ratio box, not 0.7368 — silently reintroducing the exact cropping
+   this experiment exists to eliminate). Explicit width formula below
+   fixes this: when the aspect-ratio-derived height at full column
+   width would exceed the SAME 90vh ceiling .ka-stage already uses,
+   width narrows instead of height cropping, keeping the photo fully
+   visible with zero cropping always. This must be a definite/calculated
+   value, not `auto` — auto lets flex align-items:stretch override it
+   back to full width (and in one tested variant collapsed the box to
+   0x0 entirely), both confirmed via real headless-Chrome measurement,
+   not assumed. When there's no height pressure (the common case), this
+   evaluates to exactly 100% — byte-identical to today's unclamped
+   behavior (confirmed: 739.19px width either way at a spacious
+   viewport). Uses the literal 0.75 fallback (not var(--ratio) again)
+   so the formula still resolves to 100% width on every other product,
+   where --ratio is never set. ── */
+.ka-stage--native-ratio {
+  aspect-ratio: var(--ratio, 3 / 4);
+  width: min(100%, 90vh * var(--ratio, 0.75));
+}
+.ka-stage__idx {
+  position: absolute; left: 18px; bottom: 16px;
+  font-family: var(--f-sans); font-size: 0.62rem; letter-spacing: 0.2em; color: #fff;
+  background: rgba(42,36,32,0.42); backdrop-filter: blur(3px); -webkit-backdrop-filter: blur(3px); padding: 6px 11px;
+}
+.ka-stage__zoom {
+  position: absolute; right: 16px; bottom: 16px;
+  font-family: var(--f-sans); font-size: 0.62rem; letter-spacing: 0.18em; text-transform: uppercase;
+  color: #fff; background: rgba(42,36,32,0.42); backdrop-filter: blur(3px); -webkit-backdrop-filter: blur(3px); padding: 6px 11px;
+  opacity: 0; transition: opacity 0.4s;
+}
+.ka-stage:hover .ka-stage__zoom { opacity: 1; }
+
+/* ── Wishlist heart — Docs/account-wishlist-build-spec.md S6. Same
+   construction as .ka-p-card__wish (assets/ka-collection-grid.css),
+   scaled up (34px -> 46px) to suit the much larger hero canvas. Position
+   never changes across breakpoints (top-right, per the spec's placement
+   rationale), only size — see the ≤900px override below. ── */
+.ka-stage__wish {
+  position: absolute;
+  top: 20px; right: 20px;
+  z-index: 4;
+  width: 46px; height: 46px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(247,243,236,0.88);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  transition: background var(--dur-fast), transform var(--dur-fast) var(--ease-luxury);
+}
+.ka-stage__wish:hover { background: var(--c-paper); transform: scale(1.06); }
+.ka-stage__wish svg {
+  width: 21px; height: 21px;
+  stroke: var(--c-charcoal);
+  fill: none;
+  stroke-width: 1.4;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.ka-stage__wish svg.heart-fill {
+  fill: var(--c-rosegold);
+  stroke: var(--c-rosegold);
+  opacity: 0;
+  transform: scale(0.6);
+  position: absolute;
+  transition: opacity var(--dur-fast) var(--ease-luxury), transform var(--dur-fast) var(--ease-luxury);
+}
+.ka-stage__wish svg.heart-line { transition: opacity var(--dur-fast) var(--ease-luxury); }
+.ka-stage__wish.is-saved svg.heart-fill { opacity: 1; transform: scale(1); }
+.ka-stage__wish.is-saved svg.heart-line { opacity: 0; }
+
+/* ── info panel ── */
+.ka-info-wrap { position: relative; }
+.ka-panel { padding-top: 6px; }
+.ka-collection-tag { display: inline-block; margin-bottom: 18px; transition: color var(--dur-fast); }
+.ka-collection-tag:hover { color: var(--c-rosegold-2); }
+.ka-p-title { font-family: var(--f-display); font-size: var(--t-display); font-weight: 300; line-height: 1.05; margin: 10px 0 14px; color: var(--c-ink); }
+.ka-p-poem { font-family: var(--f-display); font-size: 1.25rem; font-style: italic; color: var(--c-ink-mid); font-weight: 300; line-height: 1.5; max-width: 30ch; margin-bottom: 24px; }
+
+.ka-grating { display: flex; align-items: center; gap: 12px; margin: 0 0 22px; cursor: pointer; background: none; border: none; padding: 0; }
+.ka-grating__stars { color: var(--c-rosegold); letter-spacing: 0.18em; font-size: 0.9rem; }
+.ka-grating__tx { font-family: var(--f-sans); font-size: 0.72rem; letter-spacing: 0.04em; color: var(--c-ink-mid); }
+.ka-grating__tx b { color: var(--c-ink); font-weight: 500; }
+.ka-glogo { font-family: var(--f-sans); font-weight: 500; font-size: 0.78rem; display: inline-flex; align-items: center; gap: 2px; }
+.ka-glogo .b { color: #4285F4; } .ka-glogo .r { color: #EA4335; } .ka-glogo .y { color: #FBBC05; } .ka-glogo .g2 { color: #34A853; }
+.ka-grating:hover .ka-grating__tx { color: var(--c-ink); }
+
+.ka-p-price-row { display: flex; align-items: baseline; gap: 14px; margin-bottom: 6px; }
+.ka-p-price { font-family: var(--f-display); font-size: 1.7rem; font-weight: 400; color: var(--c-ink); }
+.ka-p-tax { font-family: var(--f-sans); font-size: 0.68rem; letter-spacing: 0.1em; color: var(--c-ink-muted); text-transform: uppercase; }
+.ka-p-made {
+  font-family: var(--f-sans); font-size: 0.7rem; letter-spacing: 0.12em; text-transform: uppercase;
+  color: var(--c-rosegold-2); display: flex; align-items: center; gap: 9px; margin-bottom: 30px;
+}
+.ka-p-made::before { content: ""; width: 26px; height: 1px; background: var(--c-rosegold); }
+
+/* ── size + bespoke ── */
+.ka-opt-head { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 14px; }
+.ka-opt-label { font-family: var(--f-sans); font-size: var(--t-eyebrow); font-weight: 400; letter-spacing: 0.2em; text-transform: uppercase; color: var(--c-ink); }
+.ka-size-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; margin-bottom: 12px; }
+.ka-size {
+  font-family: var(--f-sans); font-size: 0.8rem; letter-spacing: 0.06em;
+  border: 1px solid var(--line); background: var(--c-paper);
+  padding: 14px 0; text-align: center; cursor: pointer; color: var(--c-ink-mid);
+  transition: all 0.35s var(--ease-luxury);
+}
+.ka-size:hover { border-color: var(--c-ink-mid); color: var(--c-ink); }
+.ka-size.sel { background: var(--c-charcoal); color: var(--c-paper); border-color: var(--c-charcoal); }
+.ka-size--oos { opacity: 0.38; cursor: not-allowed; text-decoration: line-through; }
+.ka-size--oos:hover { border-color: var(--line); color: var(--c-ink-mid); }
+.ka-bespoke {
+  display: flex; align-items: center; gap: 13px; width: 100%;
+  border: 1px solid var(--line); background: var(--c-paper);
+  padding: 14px 16px; cursor: pointer; text-align: left;
+  transition: all 0.35s var(--ease-luxury); margin-bottom: 6px;
+}
+.ka-bespoke:hover { border-color: var(--c-rosegold-pale); }
+.ka-bespoke.sel { border-color: var(--c-rosegold); background: var(--c-smoke); }
+.ka-bespoke__k { font-family: var(--f-sans); font-size: 0.72rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--c-ink); }
+.ka-bespoke__s { font-family: var(--f-display); font-size: 0.9rem; font-style: italic; color: var(--c-ink-mid); margin-left: auto; }
+.ka-bespoke__dot { width: 9px; height: 9px; border: 1px solid var(--c-ink-mid); border-radius: 50%; flex: 0 0 auto; }
+.ka-bespoke.sel .ka-bespoke__dot { background: var(--c-rosegold); border-color: var(--c-rosegold); }
+
+/* ── made-to-measure reveal ── */
+.ka-mtm { max-height: 0; overflow: hidden; opacity: 0; transition: max-height 0.55s var(--ease-luxury), opacity 0.5s var(--ease-luxury); border-left: 2px solid var(--c-rosegold-pale); margin-top: 0; }
+.ka-mtm.open { max-height: 620px; opacity: 1; margin-top: 12px; }
+.ka-mtm__inner { padding: 16px 18px; background: var(--c-smoke); }
+.ka-mtm__inner h4 { font-family: var(--f-sans); font-size: 0.7rem; letter-spacing: 0.16em; text-transform: uppercase; color: var(--c-ink); margin-bottom: 12px; }
+.ka-mtm__foot { font-family: var(--f-display); font-size: 0.95rem; font-style: italic; color: var(--c-ink-mid); line-height: 1.5; margin: 2px 0 13px; }
+.ka-mtm__steps { counter-reset: m; display: flex; flex-direction: column; gap: 9px; margin-bottom: 12px; }
+.ka-mtm__steps li { list-style: none; display: flex; gap: 11px; font-size: 0.92rem; color: var(--c-ink-mid); line-height: 1.45; }
+.ka-mtm__steps li::before { counter-increment: m; content: counter(m); font-family: var(--f-display); font-style: italic; color: var(--c-rosegold); font-size: 1rem; flex: 0 0 auto; width: 16px; }
+.ka-mtm__link { font-family: var(--f-sans); font-size: 0.66rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--c-rosegold-2); border: none; border-bottom: 1px solid var(--c-rosegold-pale); padding: 0 0 2px; background: none; cursor: pointer; }
+
+/* ── CTA stack ── */
+.ka-cta-stack { display: flex; flex-direction: column; gap: 11px; margin-top: 22px; }
+.ka-or { display: flex; align-items: center; gap: 16px; color: var(--c-ink-muted); font-family: var(--f-sans); font-size: 0.62rem; letter-spacing: 0.2em; text-transform: uppercase; margin: 4px 0; }
+.ka-or::before, .ka-or::after { content: ""; flex: 1; height: 1px; background: var(--line); }
+
+/* ── size-required hint — collapsed by default, reveals on a failed
+   Add to Bag attempt (no size/bespoke chosen yet). Matches the
+   prototype's collapse pattern (max-height/opacity, not display:none)
+   so the reveal can be transitioned smoothly. ── */
+.ka-size-required-hint {
+  font-family: var(--f-sans); font-size: 0.64rem; letter-spacing: 0.08em;
+  color: var(--c-rosegold-2); text-align: center;
+  max-height: 0; opacity: 0; overflow: hidden; margin-top: 0;
+  transition: max-height 0.4s var(--ease-luxury), opacity 0.35s var(--ease-luxury), margin-top 0.35s var(--ease-luxury);
+}
+.ka-size-required-hint.show { opacity: 1; max-height: 24px; margin-top: 2px; }
+
+/* ── assurances ── */
+.ka-assure { margin-top: 26px; display: flex; flex-direction: column; gap: 12px; }
+.ka-assure__row { display: flex; gap: 13px; align-items: flex-start; font-family: var(--f-sans); font-size: 0.82rem; color: var(--c-ink-mid); line-height: 1.5; }
+.ka-assure__row .mk { color: var(--c-rosegold); font-size: 0.85rem; line-height: 1.4; flex: 0 0 auto; }
+
+/* ── accordion ── */
+.ka-accordion { margin-top: 34px; border-top: 1px solid var(--line); }
+.ka-acc { border-bottom: 1px solid var(--line); }
+.ka-acc__head {
+  width: 100%; background: none; border: none; cursor: pointer;
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 20px 2px; font-family: var(--f-sans); font-size: 0.72rem; letter-spacing: 0.16em; text-transform: uppercase; color: var(--c-ink);
+}
+.ka-acc__pm { font-size: 1.1rem; color: var(--c-rosegold); transition: transform 0.4s var(--ease-luxury); font-family: var(--f-display); }
+.ka-acc.open .ka-acc__pm { transform: rotate(45deg); }
+.ka-acc__body { max-height: 0; overflow: hidden; transition: max-height 0.55s var(--ease-luxury); }
+.ka-acc__inner { padding: 0 2px 24px; color: var(--c-ink-mid); font-size: 0.92rem; line-height: 1.65; }
+.ka-acc__inner table { width: 100%; border-collapse: collapse; margin-top: 6px; font-family: var(--f-sans); font-size: 0.76rem; }
+.ka-acc__inner th, .ka-acc__inner td { border: 1px solid var(--line); padding: 9px 12px; text-align: center; color: var(--c-ink-mid); }
+.ka-acc__inner th { background: var(--c-paper-deep); color: var(--c-ink); font-weight: 400; letter-spacing: 0.08em; text-transform: uppercase; font-size: 0.66rem; }
+.ka-acc__inner ul { list-style: none; margin-top: 8px; }
+.ka-acc__inner li { padding-left: 18px; position: relative; margin-bottom: 6px; }
+.ka-acc__inner li::before { content: "—"; position: absolute; left: 0; color: var(--c-rosegold); }
+
+/* ── sticky minibar (z-index 70, docks below header stack) ── */
+.ka-minibar {
+  position: fixed; left: 0; right: 0; top: 0; z-index: 70;
+  background: rgba(247,243,236,0.97);
+  backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--line);
+  transform: translateY(-120%);
+  transition: transform 0.55s var(--ease-luxury);
+}
+.ka-minibar.show { transform: translateY(76px); }
+.ka-minibar__in {
+  max-width: var(--max-wide); margin: 0 auto; padding: 12px var(--gutter);
+  display: flex; align-items: center; justify-content: space-between; gap: 20px;
+}
+.ka-minibar__l { display: flex; align-items: center; gap: 18px; }
+.ka-minibar__thumb { width: 44px; height: 58px; background: linear-gradient(135deg, #E9E1D2, #B99B6E); background-size: cover; background-position: center; flex: 0 0 auto; }
+.ka-minibar__name { font-family: var(--f-display); font-size: 1.1rem; line-height: 1.1; color: var(--c-ink); }
+.ka-minibar__price { font-family: var(--f-sans); font-size: 0.7rem; letter-spacing: 0.08em; color: var(--c-ink-mid); margin-top: 2px; }
+.ka-minibar__r { display: flex; gap: 10px; }
+.ka-minibar__r .ka-btn { width: auto; padding: 12px 22px; font-size: 0.62rem; }
+
+/* ── lightbox (z-index 150) ── */
+.ka-lb { position: fixed; inset: 0; z-index: 150; background: rgba(28,24,21,0.94); display: none; align-items: center; justify-content: center; cursor: zoom-out; }
+.ka-lb.show { display: flex; }
+.ka-lb__frame { width: 70vw; max-width: 900px; height: 80vh; background-size: contain; background-repeat: no-repeat; background-position: center; background-color: #1c1815; box-shadow: 0 30px 80px rgba(0,0,0,0.5); }
+.ka-lb__x { position: absolute; top: 26px; right: 34px; color: #E9E0D2; font-family: var(--f-sans); font-size: 0.7rem; letter-spacing: 0.2em; text-transform: uppercase; cursor: pointer; }
+
+/* ── mobile sticky action bar (z-index 95) ── */
+.ka-mobile-bar {
+  display: none; position: fixed; left: 0; right: 0; bottom: 0; z-index: 95;
+  background: var(--c-paper); border-top: 1px solid var(--line);
+  padding: 11px 14px; gap: 10px;
+}
+.ka-mobile-bar .ka-btn { padding: 15px 10px; font-size: 0.62rem; }
+
+/* ── responsive ── */
+@media (max-width: 1100px) {
+  .ka-product { grid-template-columns: 1.1fr 1fr; gap: 40px; }
+}
+@media (max-width: 900px) {
+  .ka-minibar { display: none; }
+  .ka-product { display: block; padding-top: 14px; }
+  .ka-media { position: static; display: block; }
+  .ka-stage { cursor: default; max-height: 80vh; min-height: 380px; }
+  /* .ka-stage--native-ratio's width formula (above, desktop-authored)
+     is keyed to 90vh to match .ka-stage's desktop max-height. This
+     breakpoint changes the ACTIVE max-height to 80vh -- without this
+     override the width formula keeps dividing by 90vh while height
+     actually clamps at 80vh, so width and height stop agreeing with
+     each other and the box no longer matches --ratio (confirmed via
+     real headless-Chrome measurement at the catalog's most extreme
+     ratio, 0.6875: width computed from 90vh came out 428.78px while
+     height clamped to 554.39px from 80vh, giving a rendered 0.7734
+     box instead of 0.6875 -- real cropping, not just off-by-a-few-px).
+     Re-deriving width from the SAME 80vh this breakpoint actually uses
+     keeps the two mutually consistent, so background-size:cover still
+     has zero cropping to do at any real catalog ratio on mobile. ── */
+  .ka-stage--native-ratio { width: min(100%, 80vh * var(--ratio, 0.75)); }
+  .ka-stage__zoom { display: none; }
+  /* flex-direction:row and overflow-x:auto now come from the base
+     .ka-thumbs rule above (desktop uses the same filmstrip mechanism as
+     of this pass) — mobile only overrides gap/padding, i.e. scale, not
+     layout strategy. */
+  .ka-thumbs { gap: 9px; padding: 12px 0 2px; }
+  .ka-thumb { flex: 0 0 64px; width: 64px; height: 86px; }
+  .ka-panel { padding: 30px 0 0; }
+  .ka-mobile-bar { display: flex; }
+  body { padding-bottom: 74px; }
+  /* Heart scales down slightly to sit comfortably within the narrower
+     stage, but keeps its exact top-right position — no placement change
+     between breakpoints, only size (Docs/account-wishlist-build-spec.md
+     S6 "Responsive"). */
+  .ka-stage__wish { width: 40px; height: 40px; top: 14px; right: 14px; }
+  .ka-stage__wish svg { width: 18px; height: 18px; }
+}
+@media (max-width: 600px) {
+  .ka-p-title { font-size: 2.4rem; }
+}
+</script>
+<script type="text/plain" id="css-main-new">/* ================================================================
+   KA-PRODUCT-MAIN — sticky gallery + info panel + minibar +
+   lightbox + mobile action bar. Scoped to the product template.
+================================================================ */
+
+/* ── page-specific buttons ── */
+.ka-btn {
+  font-family: var(--f-sans); font-weight: 400; font-size: 0.7rem;
+  letter-spacing: 0.2em; text-transform: uppercase;
+  display: inline-flex; align-items: center; justify-content: center; gap: 0.6em;
+  padding: 18px 30px;
+  border: 1px solid var(--c-charcoal);
+  background: var(--c-charcoal);
+  color: var(--c-paper);
+  cursor: pointer;
+  transition: all 0.5s var(--ease-luxury);
+  width: 100%;
+}
+.ka-btn:hover { background: transparent; color: var(--c-charcoal); }
+.ka-btn--ghost { background: transparent; color: var(--c-charcoal); border-color: var(--c-charcoal); }
+.ka-btn--ghost:hover { background: var(--c-charcoal); color: var(--c-paper); }
+.ka-btn--concierge { background: var(--c-smoke); color: var(--c-charcoal); border: 1px solid var(--c-rosegold-pale); }
+.ka-btn--concierge:hover { background: var(--c-rosegold); border-color: var(--c-rosegold); color: #fff; }
+.ka-btn--concierge .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--c-rosegold); transition: background 0.4s; }
+.ka-btn--concierge:hover .dot { background: #fff; }
+
+/* ── Add to Bag — Round 2 (Docs/cta-architecture-revision.md), the
+   primary buy-path button. Rose-gold fill so it visually outranks the
+   neutral charcoal/ghost buttons (Book an Appointment, Concierge) per
+   CLAUDE.md: the buy path must read as the clear, primary action. ── */
+.ka-btn--bag { background: var(--c-rosegold); border-color: var(--c-rosegold); color: #fff; }
+.ka-btn--bag:hover { background: var(--c-rosegold-2); border-color: var(--c-rosegold-2); color: #fff; }
+.ka-btn--bag:disabled,
+.ka-btn--bag[aria-disabled="true"] { background: var(--c-smoke); border-color: var(--line); color: var(--c-ink-muted); cursor: not-allowed; }
+.ka-btn--bag[aria-disabled="true"]:hover { background: var(--c-smoke); border-color: var(--line); color: var(--c-ink-muted); }
+.ka-btn-line {
+  background: transparent; color: var(--c-charcoal); border: none;
+  border-bottom: 1px solid var(--c-charcoal); padding: 8px 2px; width: auto;
+  letter-spacing: 0.18em; font-family: var(--f-sans); font-size: 0.7rem; text-transform: uppercase;
+  cursor: pointer;
+}
+.ka-btn-line:hover { color: var(--c-rosegold); border-color: var(--c-rosegold); }
+
+/* ── product hero grid ── */
+.ka-product {
+  max-width: var(--max-wide); margin: 0 auto; padding: 26px var(--gutter) 0;
+  display: grid; grid-template-columns: 1.18fr 1fr; gap: 60px; align-items: start;
+}
+
+/* ── gallery — horizontal filmstrip below the stage (Docs — item #27
+   3rd-pass CD spec, 2026-09-07): the old 86px-column vertical rail plus
+   grid-stretch of .ka-thumbs to .ka-stage's height was the root cause of
+   a tall empty box beside short thumbnail content. Single-column flow
+   removes the height-link entirely — .ka-thumbs now only ever takes the
+   height its own row of thumbnails needs. ── */
+.ka-media { position: sticky; top: 104px; display: flex; flex-direction: column; gap: var(--s-sm); }
+.ka-thumbs { display: flex; flex-direction: row; gap: 12px; overflow-x: auto; }
+.ka-thumb {
+  flex: 1 1 0; max-width: 150px; min-width: 64px; aspect-ratio: 3 / 4;
+  cursor: pointer; opacity: 0.48;
+  border: 1px solid transparent;
+  background-size: cover; background-position: center;
+  transition: opacity 0.45s var(--ease-luxury), border-color 0.45s var(--ease-luxury);
+  filter: sepia(0.10) saturate(0.90) brightness(0.94);
+}
+.ka-thumb:hover { opacity: 0.82; }
+.ka-thumb.active { opacity: 1; border-color: var(--c-charcoal); }
+.ka-thumb--ph { background: linear-gradient(135deg, #E9E1D2, #B99B6E); filter: none; }
+
+/* ── item #27 experiment (Docs/pending-tasks.md #27): box adapts to each
+   photo's own real aspect ratio instead of the fixed 3:4 crop, so
+   background-size:cover scales-to-fit with zero cropping. Applied ONLY
+   via a modifier class + --ratio custom property set in
+   sections/ka-product-main.liquid, scoped to exactly one product handle
+   (electric-blue-victorian-corset-with-drape-saree) — this does not
+   touch the base .ka-thumb rule above, so every other product's
+   thumbnails render byte-identical to today. Falls back to the standard
+   3:4 box if --ratio is ever unset. ── */
+.ka-thumb--native-ratio { aspect-ratio: var(--ratio, 3 / 4); }
+
+.ka-stage {
+  position: relative; overflow: hidden;
+  /* width:100% is load-bearing, not decorative — see
+     Docs/product-stage-image-fix-spec.md addendum (2026-09-07 regression
+     fix, predates the filmstrip change below). .ka-stage is a flex item
+     in .ka-media (single-column flow as of the item #27 3rd-pass filmstrip
+     change) with no intrinsic content box (it's a <div> painted via
+     background-image, not an <img>), so nothing else gives it a definite
+     width. Pairing
+     aspect-ratio with max-height (below) means that whenever the
+     aspect-ratio-derived height from a full-width box would exceed
+     max-height — which happens at ordinary desktop widths once the
+     column gets wide enough — the browser resolves the conflict by
+     recomputing WIDTH down from the clamped height to preserve the 3:4
+     ratio, instead of keeping width filled to the column/container and
+     only capping height. That silently shrinks the box below its column
+     width (visibly narrower than the thumbnail row beneath it) and, at
+     narrow/mobile widths where the same clamp can trigger against
+     the ≤900px max-height override below, left-aligns a visibly
+     narrower-than-container box. Setting width explicitly makes it a
+     definite value the aspect-ratio/max-height negotiation can never
+     renegotiate — only height is ever adjusted, which is exactly the
+     item #27 crop behavior this must not weaken. */
+  width: 100%;
+  aspect-ratio: 3 / 4;
+  max-height: 90vh;
+  background-size: cover; background-position: center;
+  cursor: zoom-in;
+  filter: sepia(0.10) saturate(0.90) brightness(0.94);
+}
+.ka-stage--ph { background: linear-gradient(135deg, #E9E1D2, #B99B6E); filter: none; }
+
+/* ── item #27 experiment — see .ka-thumb--native-ratio above for full
+   context/rationale. Same scoping: one product handle only, via Liquid;
+   does not alter the base .ka-stage rule above, so every other
+   product's stage image renders byte-identical to today.
+
+   Follow-up fix (2026-09-10, reported by Suraj on staging): .ka-stage
+   forces width:100% (the full gallery column, ~650-740px at real
+   desktop widths), unlike .ka-thumb which caps at max-width:150px.
+   Multiplying the same real --ratio by that much larger width produces
+   a genuinely tall box (~950-1100px, confirmed via live rendering) —
+   and because width stays fixed at 100% even once max-height:90vh
+   clamps it, the clamp doesn't shrink the box, it CROPS it (confirmed:
+   at a 749px-tall viewport the box clamped to a 661x674 box, a 0.98
+   ratio box, not 0.7368 — silently reintroducing the exact cropping
+   this experiment exists to eliminate). Explicit width formula below
+   fixes this: when the aspect-ratio-derived height at full column
+   width would exceed the SAME 90vh ceiling .ka-stage already uses,
+   width narrows instead of height cropping, keeping the photo fully
+   visible with zero cropping always. This must be a definite/calculated
+   value, not `auto` — auto lets flex align-items:stretch override it
+   back to full width (and in one tested variant collapsed the box to
+   0x0 entirely), both confirmed via real headless-Chrome measurement,
+   not assumed. When there's no height pressure (the common case), this
+   evaluates to exactly 100% — byte-identical to today's unclamped
+   behavior (confirmed: 739.19px width either way at a spacious
+   viewport). Uses the literal 0.75 fallback (not var(--ratio) again)
+   so the formula still resolves to 100% width on every other product,
+   where --ratio is never set. ── */
+.ka-stage--native-ratio {
+  aspect-ratio: var(--ratio, 3 / 4);
+  width: min(100%, 90vh * var(--ratio, 0.75));
+}
+.ka-stage__idx {
+  position: absolute; left: 18px; bottom: 16px;
+  font-family: var(--f-sans); font-size: 0.62rem; letter-spacing: 0.2em; color: #fff;
+  background: rgba(42,36,32,0.42); backdrop-filter: blur(3px); -webkit-backdrop-filter: blur(3px); padding: 6px 11px;
+}
+.ka-stage__zoom {
+  position: absolute; right: 16px; bottom: 16px;
+  font-family: var(--f-sans); font-size: 0.62rem; letter-spacing: 0.18em; text-transform: uppercase;
+  color: #fff; background: rgba(42,36,32,0.42); backdrop-filter: blur(3px); -webkit-backdrop-filter: blur(3px); padding: 6px 11px;
+  opacity: 0; transition: opacity 0.4s;
+}
+.ka-stage:hover .ka-stage__zoom { opacity: 1; }
+
+/* ── Wishlist heart — Docs/account-wishlist-build-spec.md S6. Same
+   construction as .ka-p-card__wish (assets/ka-collection-grid.css),
+   scaled up (34px -> 46px) to suit the much larger hero canvas. Position
+   never changes across breakpoints (top-right, per the spec's placement
+   rationale), only size — see the ≤900px override below. ── */
+.ka-stage__wish {
+  position: absolute;
+  top: 20px; right: 20px;
+  z-index: 4;
+  width: 46px; height: 46px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(247,243,236,0.88);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  transition: background var(--dur-fast), transform var(--dur-fast) var(--ease-luxury);
+}
+.ka-stage__wish:hover { background: var(--c-paper); transform: scale(1.06); }
+.ka-stage__wish svg {
+  width: 21px; height: 21px;
+  stroke: var(--c-charcoal);
+  fill: none;
+  stroke-width: 1.4;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.ka-stage__wish svg.heart-fill {
+  fill: var(--c-rosegold);
+  stroke: var(--c-rosegold);
+  opacity: 0;
+  transform: scale(0.6);
+  position: absolute;
+  transition: opacity var(--dur-fast) var(--ease-luxury), transform var(--dur-fast) var(--ease-luxury);
+}
+.ka-stage__wish svg.heart-line { transition: opacity var(--dur-fast) var(--ease-luxury); }
+.ka-stage__wish.is-saved svg.heart-fill { opacity: 1; transform: scale(1); }
+.ka-stage__wish.is-saved svg.heart-line { opacity: 0; }
+
+/* ── info panel ── */
+.ka-info-wrap { position: relative; }
+.ka-panel { padding-top: 6px; }
+.ka-collection-tag { display: inline-block; margin-bottom: 18px; transition: color var(--dur-fast); }
+.ka-collection-tag:hover { color: var(--c-rosegold-2); }
+.ka-p-title { font-family: var(--f-display); font-size: var(--t-display); font-weight: 300; line-height: 1.05; margin: 10px 0 14px; color: var(--c-ink); }
+.ka-p-poem { font-family: var(--f-display); font-size: 1.25rem; font-style: italic; color: var(--c-ink-mid); font-weight: 300; line-height: 1.5; max-width: 30ch; margin-bottom: 24px; }
+
+.ka-grating { display: flex; align-items: center; gap: 12px; margin: 0 0 22px; cursor: pointer; background: none; border: none; padding: 0; }
+.ka-grating__stars { color: var(--c-rosegold); letter-spacing: 0.18em; font-size: 0.9rem; }
+.ka-grating__tx { font-family: var(--f-sans); font-size: 0.72rem; letter-spacing: 0.04em; color: var(--c-ink-mid); }
+.ka-grating__tx b { color: var(--c-ink); font-weight: 500; }
+.ka-glogo { font-family: var(--f-sans); font-weight: 500; font-size: 0.78rem; display: inline-flex; align-items: center; gap: 2px; }
+.ka-glogo .b { color: #4285F4; } .ka-glogo .r { color: #EA4335; } .ka-glogo .y { color: #FBBC05; } .ka-glogo .g2 { color: #34A853; }
+.ka-grating:hover .ka-grating__tx { color: var(--c-ink); }
+
+.ka-p-price-row { display: flex; align-items: baseline; gap: 14px; margin-bottom: 6px; }
+.ka-p-price { font-family: var(--f-display); font-size: 1.7rem; font-weight: 400; color: var(--c-ink); }
+.ka-p-tax { font-family: var(--f-sans); font-size: 0.68rem; letter-spacing: 0.1em; color: var(--c-ink-muted); text-transform: uppercase; }
+.ka-p-made {
+  font-family: var(--f-sans); font-size: 0.7rem; letter-spacing: 0.12em; text-transform: uppercase;
+  color: var(--c-rosegold-2); display: flex; align-items: center; gap: 9px; margin-bottom: 30px;
+}
+.ka-p-made::before { content: ""; width: 26px; height: 1px; background: var(--c-rosegold); }
+
+/* ── size + bespoke ── */
+.ka-opt-head { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 14px; }
+.ka-opt-label { font-family: var(--f-sans); font-size: var(--t-eyebrow); font-weight: 400; letter-spacing: 0.2em; text-transform: uppercase; color: var(--c-ink); }
+.ka-size-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; margin-bottom: 12px; }
+.ka-size {
+  font-family: var(--f-sans); font-size: 0.8rem; letter-spacing: 0.06em;
+  border: 1px solid var(--line); background: var(--c-paper);
+  padding: 14px 0; text-align: center; cursor: pointer; color: var(--c-ink-mid);
+  transition: all 0.35s var(--ease-luxury);
+}
+.ka-size:hover { border-color: var(--c-ink-mid); color: var(--c-ink); }
+.ka-size.sel { background: var(--c-charcoal); color: var(--c-paper); border-color: var(--c-charcoal); }
+.ka-size--oos { opacity: 0.38; cursor: not-allowed; text-decoration: line-through; }
+.ka-size--oos:hover { border-color: var(--line); color: var(--c-ink-mid); }
+.ka-bespoke {
+  display: flex; align-items: center; gap: 13px; width: 100%;
+  border: 1px solid var(--line); background: var(--c-paper);
+  padding: 14px 16px; cursor: pointer; text-align: left;
+  transition: all 0.35s var(--ease-luxury); margin-bottom: 6px;
+}
+.ka-bespoke:hover { border-color: var(--c-rosegold-pale); }
+.ka-bespoke.sel { border-color: var(--c-rosegold); background: var(--c-smoke); }
+.ka-bespoke__k { font-family: var(--f-sans); font-size: 0.72rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--c-ink); }
+.ka-bespoke__s { font-family: var(--f-display); font-size: 0.9rem; font-style: italic; color: var(--c-ink-mid); margin-left: auto; }
+.ka-bespoke__dot { width: 9px; height: 9px; border: 1px solid var(--c-ink-mid); border-radius: 50%; flex: 0 0 auto; }
+.ka-bespoke.sel .ka-bespoke__dot { background: var(--c-rosegold); border-color: var(--c-rosegold); }
+
+/* ── made-to-measure reveal ── */
+.ka-mtm { max-height: 0; overflow: hidden; opacity: 0; transition: max-height 0.55s var(--ease-luxury), opacity 0.5s var(--ease-luxury); border-left: 2px solid var(--c-rosegold-pale); margin-top: 0; }
+.ka-mtm.open { max-height: 620px; opacity: 1; margin-top: 12px; }
+.ka-mtm__inner { padding: 16px 18px; background: var(--c-smoke); }
+.ka-mtm__inner h4 { font-family: var(--f-sans); font-size: 0.7rem; letter-spacing: 0.16em; text-transform: uppercase; color: var(--c-ink); margin-bottom: 12px; }
+.ka-mtm__foot { font-family: var(--f-display); font-size: 0.95rem; font-style: italic; color: var(--c-ink-mid); line-height: 1.5; margin: 2px 0 13px; }
+.ka-mtm__steps { counter-reset: m; display: flex; flex-direction: column; gap: 9px; margin-bottom: 12px; }
+.ka-mtm__steps li { list-style: none; display: flex; gap: 11px; font-size: 0.92rem; color: var(--c-ink-mid); line-height: 1.45; }
+.ka-mtm__steps li::before { counter-increment: m; content: counter(m); font-family: var(--f-display); font-style: italic; color: var(--c-rosegold); font-size: 1rem; flex: 0 0 auto; width: 16px; }
+.ka-mtm__link { font-family: var(--f-sans); font-size: 0.66rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--c-rosegold-2); border: none; border-bottom: 1px solid var(--c-rosegold-pale); padding: 0 0 2px; background: none; cursor: pointer; }
+
+/* ── CTA stack ── */
+.ka-cta-stack { display: flex; flex-direction: column; gap: 11px; margin-top: 22px; }
+.ka-or { display: flex; align-items: center; gap: 16px; color: var(--c-ink-muted); font-family: var(--f-sans); font-size: 0.62rem; letter-spacing: 0.2em; text-transform: uppercase; margin: 4px 0; }
+.ka-or::before, .ka-or::after { content: ""; flex: 1; height: 1px; background: var(--line); }
+
+/* ── size-required hint — collapsed by default, reveals on a failed
+   Add to Bag attempt (no size/bespoke chosen yet). Matches the
+   prototype's collapse pattern (max-height/opacity, not display:none)
+   so the reveal can be transitioned smoothly. ── */
+.ka-size-required-hint {
+  font-family: var(--f-sans); font-size: 0.64rem; letter-spacing: 0.08em;
+  color: var(--c-rosegold-2); text-align: center;
+  max-height: 0; opacity: 0; overflow: hidden; margin-top: 0;
+  transition: max-height 0.4s var(--ease-luxury), opacity 0.35s var(--ease-luxury), margin-top 0.35s var(--ease-luxury);
+}
+.ka-size-required-hint.show { opacity: 1; max-height: 24px; margin-top: 2px; }
+
+/* ── assurances ── */
+.ka-assure { margin-top: 26px; display: flex; flex-direction: column; gap: 12px; }
+.ka-assure__row { display: flex; gap: 13px; align-items: flex-start; font-family: var(--f-sans); font-size: 0.82rem; color: var(--c-ink-mid); line-height: 1.5; }
+.ka-assure__row .mk { color: var(--c-rosegold); font-size: 0.85rem; line-height: 1.4; flex: 0 0 auto; }
+
+/* ── accordion ── */
+.ka-accordion { margin-top: 34px; border-top: 1px solid var(--line); }
+.ka-acc { border-bottom: 1px solid var(--line); }
+.ka-acc__head {
+  width: 100%; background: none; border: none; cursor: pointer;
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 20px 2px; font-family: var(--f-sans); font-size: 0.72rem; letter-spacing: 0.16em; text-transform: uppercase; color: var(--c-ink);
+}
+.ka-acc__pm { font-size: 1.1rem; color: var(--c-rosegold); transition: transform 0.4s var(--ease-luxury); font-family: var(--f-display); }
+.ka-acc.open .ka-acc__pm { transform: rotate(45deg); }
+.ka-acc__body { max-height: 0; overflow: hidden; transition: max-height 0.55s var(--ease-luxury); }
+.ka-acc__inner { padding: 0 2px 24px; color: var(--c-ink-mid); font-size: 0.92rem; line-height: 1.65; }
+.ka-acc__inner table { width: 100%; border-collapse: collapse; margin-top: 6px; font-family: var(--f-sans); font-size: 0.76rem; }
+.ka-acc__inner th, .ka-acc__inner td { border: 1px solid var(--line); padding: 9px 12px; text-align: center; color: var(--c-ink-mid); }
+.ka-acc__inner th { background: var(--c-paper-deep); color: var(--c-ink); font-weight: 400; letter-spacing: 0.08em; text-transform: uppercase; font-size: 0.66rem; }
+.ka-acc__inner ul { list-style: none; margin-top: 8px; }
+.ka-acc__inner li { padding-left: 18px; position: relative; margin-bottom: 6px; }
+.ka-acc__inner li::before { content: "—"; position: absolute; left: 0; color: var(--c-rosegold); }
+
+/* ── sticky minibar (z-index 70, docks below header stack) ── */
+.ka-minibar {
+  position: fixed; left: 0; right: 0; top: 0; z-index: 70;
+  background: rgba(247,243,236,0.97);
+  backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--line);
+  transform: translateY(-120%);
+  transition: transform 0.55s var(--ease-luxury);
+}
+.ka-minibar.show { transform: translateY(76px); }
+.ka-minibar__in {
+  max-width: var(--max-wide); margin: 0 auto; padding: 12px var(--gutter);
+  display: flex; align-items: center; justify-content: space-between; gap: 20px;
+}
+.ka-minibar__l { display: flex; align-items: center; gap: 18px; }
+.ka-minibar__thumb { width: 44px; height: 58px; background: linear-gradient(135deg, #E9E1D2, #B99B6E); background-size: cover; background-position: center; flex: 0 0 auto; }
+.ka-minibar__name { font-family: var(--f-display); font-size: 1.1rem; line-height: 1.1; color: var(--c-ink); }
+.ka-minibar__price { font-family: var(--f-sans); font-size: 0.7rem; letter-spacing: 0.08em; color: var(--c-ink-mid); margin-top: 2px; }
+.ka-minibar__r { display: flex; gap: 10px; }
+.ka-minibar__r .ka-btn { width: auto; padding: 12px 22px; font-size: 0.62rem; }
+
+/* ── lightbox (z-index 150) ── */
+.ka-lb { position: fixed; inset: 0; z-index: 150; background: rgba(28,24,21,0.94); display: none; align-items: center; justify-content: center; cursor: zoom-out; }
+.ka-lb.show { display: flex; }
+.ka-lb__frame { width: 70vw; max-width: 900px; height: 80vh; background-size: contain; background-repeat: no-repeat; background-position: center; background-color: #1c1815; box-shadow: 0 30px 80px rgba(0,0,0,0.5); }
+.ka-lb__x { position: absolute; top: 26px; right: 34px; color: #E9E0D2; font-family: var(--f-sans); font-size: 0.7rem; letter-spacing: 0.2em; text-transform: uppercase; cursor: pointer; }
+
+/* ── mobile sticky action bar (z-index 95) ── */
+.ka-mobile-bar {
+  display: none; position: fixed; left: 0; right: 0; bottom: 0; z-index: 95;
+  background: var(--c-paper); border-top: 1px solid var(--line);
+  padding: 11px 14px; gap: 10px;
+}
+.ka-mobile-bar .ka-btn { padding: 15px 10px; font-size: 0.62rem; }
+
+/* ── responsive ── */
+@media (max-width: 1100px) {
+  .ka-product { grid-template-columns: 1.1fr 1fr; gap: 40px; }
+}
+@media (max-width: 900px) {
+  .ka-minibar { display: none; }
+  .ka-product { display: block; padding-top: 14px; }
+  .ka-media { position: static; display: block; }
+  .ka-stage { cursor: default; max-height: 80vh; min-height: 380px; }
+  /* .ka-stage--native-ratio's width formula (above, desktop-authored)
+     is keyed to 90vh to match .ka-stage's desktop max-height. This
+     breakpoint changes the ACTIVE max-height to 80vh -- without this
+     override the width formula keeps dividing by 90vh while height
+     actually clamps at 80vh, so width and height stop agreeing with
+     each other and the box no longer matches --ratio (confirmed via
+     real headless-Chrome measurement at the catalog's most extreme
+     ratio, 0.6875: width computed from 90vh came out 428.78px while
+     height clamped to 554.39px from 80vh, giving a rendered 0.7734
+     box instead of 0.6875 -- real cropping, not just off-by-a-few-px).
+     Re-deriving width from the SAME 80vh this breakpoint actually uses
+     keeps the two mutually consistent, so background-size:cover still
+     has zero cropping to do at any real catalog ratio on mobile. ── */
+  .ka-stage--native-ratio { width: min(100%, 80vh * var(--ratio, 0.75)); }
+  .ka-stage__zoom { display: none; }
+  /* flex-direction:row and overflow-x:auto now come from the base
+     .ka-thumbs rule above (desktop uses the same filmstrip mechanism as
+     of this pass) — mobile only overrides gap/padding, i.e. scale, not
+     layout strategy. */
+  .ka-thumbs { gap: 9px; padding: 12px 0 2px; }
+  .ka-thumb { flex: 0 0 64px; width: 64px; height: 86px; }
+  .ka-panel { padding: 30px 0 0; }
+  .ka-mobile-bar { display: flex; }
+  body { padding-bottom: 74px; }
+  /* Heart scales down slightly to sit comfortably within the narrower
+     stage, but keeps its exact top-right position — no placement change
+     between breakpoints, only size (Docs/account-wishlist-build-spec.md
+     S6 "Responsive"). */
+  .ka-stage__wish { width: 40px; height: 40px; top: 14px; right: 14px; }
+  .ka-stage__wish svg { width: 18px; height: 18px; }
+}
+@media (max-width: 600px) {
+  .ka-p-title { font-size: 2.4rem; }
+}
+
+/* ================================================================
+   MOBILE PRODUCT PAGE v1 — 2026-10-21
+   Docs/product-page-mobile-build-spec-2026-10-21.md
+
+   Everything below is additive. The new elements (.ka-swipe, .ka-dots,
+   .ka-back, .ka-mtm-toggle, .ka-talk, .ka-bespoke__txt/__n, the
+   .ka-opt-label__m label) are display:none above 900px, and nothing
+   here changes a desktop rule — desktop must render pixel-identical.
+
+   Safari/WebKit rules followed here: no aspect-ratio on any flex/grid
+   item that lacks in-flow content (the mobile stage sets aspect-ratio:auto
+   and an explicit height; slides use an absolutely-positioned <img>);
+   100vh fallback declared before 100svh; env() paired with a max() floor.
+================================================================ */
+
+/* ── desktop: hide every mobile-only element ── */
+.ka-swipe, .ka-dots, .ka-back, .ka-mtm-toggle, .ka-talk, .ka-bespoke__n, .ka-opt-label__m { display: none; }
+.ka-bespoke__txt { display: flex; flex-direction: column; min-width: 0; }
+.ka-mobile-bar .ka-wa-glyph { display: none; }
+
+@media (max-width: 900px) {
+
+  /* 1. slimmer chrome on the product page: breadcrumb retired (the back
+        chip over the photo replaces it), nav bar tightened, logo
+        sub-line dropped. Utility bar (marquee + currency chip) is kept. */
+  .ka-pb { display: none; }
+  body.template-product .ka-nav { padding-top: 9px; padding-bottom: 9px; }
+  body.template-product .ka-nav__logo small { display: none; }
+  .ka-product { padding: var(--ka-hdr, 79px) 0 0; }
+
+  /* 2. gallery: full-bleed swipe gallery, no thumbnail strip.
+        Height = what is left of the screen after the header (79px), the
+        title / price / lead-time strip (~128px) and the sticky bar (78px),
+        never taller than the photo's own 3:4 and never shorter than 360px.
+        That floor is what makes name, price and lead time fit above the
+        bar inside an in-app browser (390x660). */
+  .ka-thumbs { display: none; }
+  .ka-stage,
+  .ka-stage--native-ratio {
+    aspect-ratio: auto; width: 100%; max-height: none; min-height: 0;
+    height: clamp(360px, calc(100vh - 79px - 136px - 78px), 133.33vw);
+    height: clamp(360px, calc(100svh - 79px - 136px - 78px), 133.33vw);
+    background-image: none !important;
+    background-color: var(--c-paper-deep);
+  }
+  .ka-stage__idx { display: none; }
+  .ka-swipe {
+    display: flex; height: 100%;
+    overflow-x: auto; overflow-y: hidden;
+    scroll-snap-type: x mandatory; -webkit-overflow-scrolling: touch;
+    overscroll-behavior-x: contain;
+    scrollbar-width: none;
+  }
+  .ka-swipe::-webkit-scrollbar { display: none; }
+  .ka-swipe__slide { flex: 0 0 100%; position: relative; scroll-snap-align: start; scroll-snap-stop: always; }
+  .ka-swipe__slide img { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; object-position: 50% 12%; }
+  .ka-dots { display: flex; gap: 7px; position: absolute; left: 0; right: 0; bottom: 14px; justify-content: center; pointer-events: none; }
+  .ka-dots i { width: 6px; height: 6px; border-radius: 50%; background: rgba(247,243,236,0.55); transition: background 0.35s var(--ease-luxury), transform 0.35s var(--ease-luxury); }
+  .ka-dots i.on { background: #F7F3EC; transform: scale(1.25); }
+  .ka-back {
+    position: absolute; top: 14px; left: 14px; z-index: 4;
+    display: inline-flex; align-items: center; gap: 4px; min-height: 44px; padding: 0 14px 0 8px;
+    background: rgba(247,243,236,0.88); backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px);
+    font-family: var(--f-sans); font-size: 0.68rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--c-charcoal);
+  }
+  .ka-back svg { width: 16px; height: 16px; fill: none; stroke: var(--c-charcoal); stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; }
+  .ka-stage__wish { width: 44px; height: 44px; }
+
+  /* 2b. title, price, lead time first; poem and rating follow. The panel
+         becomes a column so DOM order is untouched (SEO/a11y unchanged). */
+  .ka-panel { display: flex; flex-direction: column; padding: 16px var(--gutter) 0; }
+  .ka-collection-tag { display: none; }
+  .ka-p-title { order: 1; font-size: 1.5rem; line-height: 1.12; margin: 0 0 6px; }
+  .ka-p-price-row { order: 2; margin-bottom: 2px; }
+  .ka-p-price { font-size: 1.5rem; line-height: 1.2; }
+  .ka-p-price-row { line-height: 1.2; }
+  .ka-p-tax { line-height: 1.2; }
+  .ka-p-made {
+    order: 3; margin-bottom: 16px; display: block; line-height: 1.3;
+    font-family: var(--f-display); font-style: italic; font-size: 1.02rem; letter-spacing: 0; text-transform: none;
+  }
+  .ka-p-made::before { display: none; }
+  .ka-p-poem { order: 4; font-size: 1.1rem; max-width: none; margin-bottom: 16px; }
+  .ka-grating { order: 5; margin-bottom: 24px; font-size: 0.74rem; }
+  .ka-glogo { font-family: var(--f-sans); font-size: 0.74rem; gap: 0; }
+  .ka-glogo span { color: var(--c-ink-mid) !important; }          /* monochrome G: off-palette colours retired */
+  .ka-buy { order: 6; display: flex; flex-direction: column; padding-top: 22px; border-top: 1px solid var(--line); }
+  .ka-toast { order: 7; }
+  .ka-assure { order: 8; }
+  .ka-accordion { order: 9; }
+
+  /* 3. purchase block: bigger targets, made-to-measure card, order switch */
+  .ka-opt-head { order: 3; align-items: center; margin-bottom: 12px; }
+  .ka-size-grid { order: 4; gap: 8px; margin-bottom: 14px; }
+  .ka-size { min-height: 48px; padding: 0; font-size: 0.88rem; display: inline-flex; align-items: center; justify-content: center; }
+  .ka-opt-label__d { display: inline; }
+  .ka-btn-line { min-height: 44px; display: inline-flex; align-items: center; padding: 0 2px; border-bottom: 0; text-decoration: underline; text-decoration-color: var(--c-charcoal); text-underline-offset: 5px; }
+
+  .ka-bespoke {
+    order: 5; padding: 18px 16px; gap: 14px; align-items: flex-start; margin-bottom: 10px; min-height: 72px;
+  }
+  .ka-bespoke__dot { width: 12px; height: 12px; margin-top: 7px; }
+  .ka-bespoke__k { font-family: var(--f-display); font-size: 1.3rem; letter-spacing: 0; text-transform: none; font-weight: 400; line-height: 1.2; }
+  .ka-bespoke__n { display: block; font-family: var(--f-sans); font-size: 0.82rem; line-height: 1.5; color: var(--c-ink-mid); margin-top: 4px; }
+  .ka-bespoke__s { display: none; }   /* the card's position and note already say it; badge retired on phones */
+  .ka-bespoke.sel { border-color: var(--c-charcoal); }
+  .ka-mtm-toggle {
+    order: 6; display: block; align-self: flex-start; min-height: 44px; margin: -4px 0 6px 2px; padding: 0 2px;
+    font-family: var(--f-sans); font-size: 0.7rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--c-rosegold-2);
+    text-decoration: underline; text-decoration-color: var(--c-rosegold-pale); text-underline-offset: 5px; line-height: 44px; height: 44px;
+  }
+  .ka-mtm { order: 7; }
+  .ka-talk { order: 9; }
+
+  /* made-to-measure first: card, how-it-works, then the standard sizes */
+  .ka-buy--mtm .ka-bespoke { order: 0; margin-bottom: 0; }
+  .ka-buy--mtm .ka-mtm-toggle { order: 1; }
+  .ka-buy--mtm .ka-mtm { order: 2; }
+  .ka-buy--mtm .ka-opt-head { order: 3; margin-top: 14px; }
+  .ka-buy--mtm .ka-size-grid { order: 4; }
+  .ka-buy--mtm .ka-opt-label__d { display: none; }
+  .ka-buy--mtm .ka-opt-label__m { display: inline; }
+  /* standard-size-first pages keep sizes above the card; the card keeps its small italic tag */
+
+  .ka-mtm.open { max-height: 760px; }
+  .ka-mtm__steps li { font-size: 0.95rem; }
+
+  /* in-page Add to Bag / Book an Appointment are retired on mobile: the sticky bar carries both.
+     The size hint stays (it is the response to a "Select size" tap). */
+  .ka-cta-stack { display: contents; }   /* hint becomes a direct child of .ka-buy so it can sit under the size grid */
+  .ka-cta-stack .ka-btn { display: none; }
+  .ka-size-required-hint { order: 4; font-size: 0.78rem; letter-spacing: 0.03em; text-align: left; }
+  .ka-size-required-hint.show { max-height: 48px; margin-top: 0; margin-bottom: 8px; }
+
+  /* inline enquiry line */
+  .ka-talk {
+    display: block; margin: 14px 0 0; font-family: var(--f-display); font-style: italic; font-size: 1.08rem; color: var(--c-ink-mid); line-height: 1.5;
+  }
+  .ka-talk a { font-family: var(--f-sans); font-style: normal; font-size: 0.74rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--c-charcoal); text-decoration: underline; text-decoration-color: var(--c-rosegold-pale); text-underline-offset: 5px; display: inline-block; padding: 8px 0; }
+
+  /* 1b. sticky bar: two buttons, bigger type and targets, safe-area aware */
+  .ka-mobile-bar {
+    display: flex; gap: 10px; align-items: stretch;
+    padding: 12px 14px max(12px, env(safe-area-inset-bottom));
+    background: rgba(247,243,236,0.97);
+    backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+  }
+  .ka-mobile-bar .ka-btn {
+    width: auto; min-width: 0; min-height: 54px; padding: 0 11px;
+    font-size: 0.72rem; letter-spacing: 0.07em; line-height: 1.25; text-align: center; gap: 9px;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .ka-mobile-bar .ka-btn--wa { flex: 1 1 auto; background: var(--c-charcoal); border-color: var(--c-charcoal); color: var(--c-paper); }
+  .ka-mobile-bar .ka-btn--wa:hover { background: var(--c-charcoal); color: var(--c-paper); }
+  .ka-mobile-bar .ka-btn--wa:active { background: var(--c-charcoal-2); }
+  .ka-mobile-bar .ka-wa-glyph { display: block; width: 18px; height: 18px; flex: 0 0 auto; fill: none; stroke: currentColor; stroke-width: 1.5; stroke-linejoin: round; }
+  .ka-mobile-bar .ka-btn--bag {
+    flex: 0 0 auto; min-width: 104px; background: transparent; color: var(--c-charcoal); border: 1px solid var(--c-charcoal); cursor: pointer;
+  }
+  .ka-mobile-bar .ka-btn--bag[aria-disabled="true"],
+  .ka-mobile-bar .ka-btn--bag[aria-disabled="true"]:hover { background: transparent; color: var(--c-charcoal); border-color: var(--c-charcoal); cursor: pointer; }
+  .ka-mobile-bar .ka-btn--bag:not([aria-disabled="true"]),
+  .ka-mobile-bar .ka-btn--bag:not([aria-disabled="true"]):hover { background: var(--c-rosegold); border-color: var(--c-rosegold); color: #fff; }
+  body { padding-bottom: calc(84px + env(safe-area-inset-bottom)); }
+
+  /* toast clears the bar */
+  body.template-product .ka-toast { bottom: calc(96px + env(safe-area-inset-bottom)); min-width: 0; width: calc(100vw - 28px); }
+}
+
+/* narrow phones (<=380px): keep the lead-time line on one row so the strip still clears the bar */
+@media (max-width: 380px) {
+  .ka-p-made { font-size: 0.92rem; }
+  .ka-p-title { font-size: 1.4rem; }
+}
+
+/* tablet portrait (601-900px): same stack, gallery capped so it never swallows the screen */
+@media (min-width: 601px) and (max-width: 900px) {
+  .ka-stage,
+  .ka-stage--native-ratio { height: min(133.33vw, 78vh); height: min(133.33vw, 78svh); }
+}
+
+</script>
+<script type="text/plain" id="js-old">/* ================================================================
+   K&A PRODUCT PAGE JS — ka-product.js
+   Vanilla, no dependencies. Scoped to the product template.
+   (Sitewide reveals/nav/mobile-drawer are handled by ka-theme.js.)
+================================================================ */
+(function () {
+  'use strict';
+
+  /* ---------- gallery: thumbnail rail + stage ---------- */
+  var thumbs = Array.prototype.slice.call(document.querySelectorAll('.ka-thumb'));
+  var stage = document.getElementById('ka-stage');
+  var stageIdx = document.getElementById('ka-stage-idx');
+  var total = thumbs.length || 1;
+  var pad = function (n) { return (n < 10 ? '0' : '') + n; };
+
+  thumbs.forEach(function (t, i) {
+    t.addEventListener('click', function () {
+      thumbs.forEach(function (x) { x.classList.remove('active'); });
+      t.classList.add('active');
+      var full = t.getAttribute('data-full');
+      if (stage && full) { stage.style.backgroundImage = "url('" + full + "')"; }
+      if (stageIdx) { stageIdx.textContent = pad(i + 1) + ' / ' + pad(total); }
+    });
+  });
+
+  /* ---------- size selection + made-to-measure reveal ---------- */
+  var sizes = Array.prototype.slice.call(document.querySelectorAll('.ka-size'));
+  var bespoke = document.getElementById('ka-bespoke');
+  var mtm = document.getElementById('ka-mtm');
+
+  /* ---------- Add to Bag state + real Ajax Cart wiring ----------
+     Round 2 (Docs/cta-architecture-revision.md). selectedSizeLabel/
+     selectedVariantId gate every Add to Bag button (desktop CTA stack,
+     sticky minibar, mobile sticky bar — three buttons, one shared
+     state). selectedVariantId is null for the bespoke path on purpose:
+     "Made to my measurements" has no real variant to add (see the OPEN
+     DECISION comment in ka-product-main.liquid) — choosing it routes
+     to the WhatsApp/appointment flow instead of /cart/add.js. */
+  var selectedSizeLabel = null;
+  var selectedVariantId = null;
+  var isBespokeSelected = false;
+  var isBespokeFallback = false;
+  var sizeHint = document.getElementById('ka-size-hint');
+  var bagButtons = Array.prototype.slice.call(document.querySelectorAll('[data-ka-add-to-bag]'));
+
+  function refreshBagButtons() {
+    var ready = !!selectedVariantId || isBespokeSelected;
+    bagButtons.forEach(function (btn) {
+      if (ready) { btn.removeAttribute('aria-disabled'); }
+      else { btn.setAttribute('aria-disabled', 'true'); }
+    });
+  }
+
+  sizes.forEach(function (s) {
+    s.addEventListener('click', function () {
+      if (s.classList.contains('ka-size--oos') || s.getAttribute('aria-disabled') === 'true') return;
+      sizes.forEach(function (x) { x.classList.remove('sel'); });
+      if (bespoke) bespoke.classList.remove('sel');
+      s.classList.add('sel');
+      if (mtm) mtm.classList.remove('open');
+      selectedSizeLabel = s.textContent.trim();
+      selectedVariantId = s.getAttribute('data-variant-id') || null;
+      isBespokeSelected = false;
+      if (sizeHint) sizeHint.classList.remove('show');
+      refreshBagButtons();
+    });
+  });
+
+  if (bespoke) {
+    bespoke.addEventListener('click', function () {
+      sizes.forEach(function (x) { x.classList.remove('sel'); });
+      bespoke.classList.add('sel');
+      if (mtm) mtm.classList.add('open');
+      selectedSizeLabel = 'Made to my measurements';
+      /* Read the variant ID baked into the button by Liquid.
+         · Real MTM variant: data-variant-id set, no data-mtm-fallback → plain cart add.
+         · Fallback: data-mtm-fallback="true" → cart add with "Size: Made to my
+           measurements" line-item property so the order reads correctly. */
+      selectedVariantId = bespoke.getAttribute('data-variant-id') || null;
+      isBespokeFallback = bespoke.getAttribute('data-mtm-fallback') === 'true';
+      isBespokeSelected = true;
+      if (sizeHint) sizeHint.classList.remove('show');
+      refreshBagButtons();
+    });
+  }
+
+  /* "Book an Appointment" → TEMPORARY: routes to the same WhatsApp
+     concierge destination as the Concierge button until a real
+     appointment-booking flow/calendar exists. Flagged in
+     Docs/cta-architecture-revision.md Round 2 — do not let this
+     silently become permanent; wire a real booking flow when one
+     is built.
+
+     2026-10-21: appointment CTAs are now real <a href="https://wa.me/...">
+     links (no JS handler). Click tracking is the delegated listener in
+     ka-theme.js (data-ka-enquiry). ka-product.js only needs the fallback
+     URL for the bespoke add-to-bag redirect below. */
+  var KA_WHATSAPP_URL = 'https://wa.me/919967543087';
+
+  function addToBag() {
+    if (isBespokeSelected && !selectedVariantId) {
+      /* No "Made to my measurements" variant configured on this product —
+         fall back to WhatsApp so the customer can still place a bespoke
+         enquiry. To enable cart-add for MTM, add a "Made to my measurements"
+         size variant to the product in Shopify Admin and this branch will
+         stop firing. */
+      /* Same real wa.me link (with product context) as the Appointment CTA;
+         tracked like every other enquiry link. */
+      var apptLink = document.getElementById('ka-cta-appt');
+      var bespokeUrl = apptLink ? apptLink.href : KA_WHATSAPP_URL;
+      if (apptLink && window.kaTrackEnquiry) window.kaTrackEnquiry('appointment', 'pdp-bespoke-fallback', apptLink.getAttribute('data-ka-product'));
+      window.open(bespokeUrl, '_blank', 'noopener');
+      return;
+    }
+    if (!selectedVariantId) {
+      if (sizeHint) sizeHint.classList.add('show');
+      var sizesEl = document.getElementById('ka-sizes');
+      if (sizesEl) sizesEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      return;
+    }
+
+    var productTitle = document.querySelector('.ka-p-title');
+    var titleText = productTitle ? productTitle.textContent.trim() : 'Your piece';
+
+    bagButtons.forEach(function (btn) { btn.setAttribute('aria-disabled', 'true'); btn.textContent = 'Adding…'; });
+
+    /* Build the line-item payload. When MTM is using a fallback variant (no
+       dedicated "Made to my measurements" Shopify variant on this product), include
+       a custom property so the style advisor sees the intent on the order. */
+    var lineItem = { id: selectedVariantId, quantity: 1 };
+    if (isBespokeSelected && isBespokeFallback) {
+      lineItem.properties = { 'Size': 'Made to my measurements' };
+    }
+
+    fetch('/cart/add.js', {
+      method: 'POST',
+      credentials: 'same-origin',
+      headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+      body: JSON.stringify({ items: [lineItem] })
+    })
+      .then(function (res) {
+        if (!res.ok) return res.json().then(function (err) { throw err; });
+        return res.json();
+      })
+      .then(function () {
+        if (window.kaShowToast) {
+          window.kaShowToast(titleText + ' · ' + selectedSizeLabel);
+        }
+        return fetch('/cart.js', { credentials: 'same-origin' });
+      })
+      .then(function (res) { return res.ok ? res.json() : null; })
+      .then(function (cart) {
+        if (cart && window.kaUpdateBagCount) window.kaUpdateBagCount(cart.item_count);
+      })
+      .catch(function () {
+        /* Ajax Cart API failure (sold out mid-request, network, etc.) —
+           fail visibly rather than silently: re-enable the button and
+           let the customer try again, no false "added" toast. */
+        if (sizeHint) {
+          sizeHint.textContent = 'Something went wrong — please try again, or message us on WhatsApp.';
+          sizeHint.classList.add('show');
+        }
+      })
+      .finally(function () {
+        bagButtons.forEach(function (btn) { btn.textContent = 'Add to Bag'; });
+        refreshBagButtons();
+      });
+  }
+
+  bagButtons.forEach(function (btn) {
+    btn.addEventListener('click', addToBag);
+  });
+
+  /* ---------- accordion ---------- */
+  function toggleAcc(head) {
+    var acc = head.parentElement;
+    var body = acc.querySelector('.ka-acc__body');
+    if (acc.classList.contains('open')) {
+      acc.classList.remove('open');
+      body.style.maxHeight = null;
+    } else {
+      acc.classList.add('open');
+      body.style.maxHeight = body.scrollHeight + 'px';
+    }
+  }
+  function openAcc(name) {
+    var acc = document.querySelector('.ka-acc[data-acc="' + name + '"]');
+    if (!acc) return;
+    if (!acc.classList.contains('open')) toggleAcc(acc.querySelector('.ka-acc__head'));
+    acc.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }
+  document.querySelectorAll('.ka-acc__head').forEach(function (h) {
+    h.addEventListener('click', function () { toggleAcc(h); });
+  });
+  /* deep-link buttons → open the Size & Fit accordion panel */
+  document.querySelectorAll('[data-open-acc]').forEach(function (btn) {
+    btn.addEventListener('click', function () { openAcc(btn.getAttribute('data-open-acc')); });
+  });
+
+  /* ---------- grating → scroll to reviews ---------- */
+  var grating = document.getElementById('ka-grating');
+  if (grating) {
+    grating.addEventListener('click', function () {
+      var rev = document.getElementById('reviews');
+      if (rev) rev.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+  }
+
+  /* ---------- lightbox (desktop/tablet only) ---------- */
+  var lb = document.getElementById('ka-lb');
+  var lbFrame = document.getElementById('ka-lb-frame');
+  if (stage && lb) {
+    stage.addEventListener('click', function (e) {
+      /* Docs/account-wishlist-build-spec.md S6 — the wishlist heart
+         button (assets/ka-product-main.css .ka-stage__wish) lives inside
+         #ka-stage, so without this guard tapping it would also pop open
+         the lightbox underneath. Not in the original build spec's file
+         map for this file, but verified necessary against this actual
+         click handler (mirrors the equivalent guard already present in
+         Prototypes/product-page-wishlist-v1.html's own lightbox script). */
+      if (e.target.closest('.ka-stage__wish')) return;
+      if (window.innerWidth <= 900) return;
+      if (lbFrame) lbFrame.style.backgroundImage = stage.style.backgroundImage;
+      lb.classList.add('show');
+    });
+    lb.addEventListener('click', function () { lb.classList.remove('show'); });
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape') lb.classList.remove('show');
+    });
+  }
+
+  /* ---------- sticky minibar — shows once the product hero scrolls past ---------- */
+  var minibar = document.getElementById('ka-minibar');
+  var hero = document.getElementById('ka-product');
+  if (minibar && hero && 'IntersectionObserver' in window) {
+    var mbObs = new IntersectionObserver(function (entries) {
+      entries.forEach(function (en) {
+        if (!en.isIntersecting && en.boundingClientRect.top < 0) {
+          minibar.classList.add('show');
+        } else {
+          minibar.classList.remove('show');
+        }
+      });
+    }, { threshold: 0 });
+    mbObs.observe(hero);
+  }
+
+})();
+</script>
+<script type="text/plain" id="js-new">/* ================================================================
+   K&A PRODUCT PAGE JS — ka-product.js
+   Vanilla, no dependencies. Scoped to the product template.
+   (Sitewide reveals/nav/mobile-drawer are handled by ka-theme.js.)
+================================================================ */
+(function () {
+  'use strict';
+
+  /* ---------- gallery: thumbnail rail + stage ---------- */
+  var thumbs = Array.prototype.slice.call(document.querySelectorAll('.ka-thumb'));
+  var stage = document.getElementById('ka-stage');
+  var stageIdx = document.getElementById('ka-stage-idx');
+  var total = thumbs.length || 1;
+  var pad = function (n) { return (n < 10 ? '0' : '') + n; };
+
+  thumbs.forEach(function (t, i) {
+    t.addEventListener('click', function () {
+      thumbs.forEach(function (x) { x.classList.remove('active'); });
+      t.classList.add('active');
+      var full = t.getAttribute('data-full');
+      if (stage && full) { stage.style.backgroundImage = "url('" + full + "')"; }
+      if (stageIdx) { stageIdx.textContent = pad(i + 1) + ' / ' + pad(total); }
+    });
+  });
+
+  /* ---------- mobile swipe gallery (<=900px): dots follow the scroll position ----------
+     CSS scroll-snap does the swiping; this only mirrors the position into the dots. */
+  var swipe = document.getElementById('ka-swipe');
+  var dots = Array.prototype.slice.call(document.querySelectorAll('#ka-dots i'));
+  if (swipe && dots.length) {
+    var swipeTick = false;
+    swipe.addEventListener('scroll', function () {
+      if (swipeTick) return;
+      swipeTick = true;
+      window.requestAnimationFrame(function () {
+        swipeTick = false;
+        var i = Math.round(swipe.scrollLeft / (swipe.clientWidth || 1));
+        i = Math.max(0, Math.min(dots.length - 1, i));
+        dots.forEach(function (d, n) { d.classList.toggle('on', n === i); });
+      });
+    }, { passive: true });
+  }
+
+  /* ---------- size selection + made-to-measure reveal ---------- */
+  var sizes = Array.prototype.slice.call(document.querySelectorAll('.ka-size'));
+  var bespoke = document.getElementById('ka-bespoke');
+  var mtm = document.getElementById('ka-mtm');
+
+  /* ---------- Add to Bag state + real Ajax Cart wiring ----------
+     Round 2 (Docs/cta-architecture-revision.md). selectedSizeLabel/
+     selectedVariantId gate every Add to Bag button (desktop CTA stack,
+     sticky minibar, mobile sticky bar — three buttons, one shared
+     state). selectedVariantId is null for the bespoke path on purpose:
+     "Made to my measurements" has no real variant to add (see the OPEN
+     DECISION comment in ka-product-main.liquid) — choosing it routes
+     to the WhatsApp/appointment flow instead of /cart/add.js. */
+  var selectedSizeLabel = null;
+  var selectedVariantId = null;
+  var isBespokeSelected = false;
+  var isBespokeFallback = false;
+  var sizeHint = document.getElementById('ka-size-hint');
+  var bagButtons = Array.prototype.slice.call(document.querySelectorAll('[data-ka-add-to-bag]'));
+
+  /* Mobile bar secondary button: reads "Select size" (data-label-idle) until a size or
+     Made to my measurements is chosen, then "Add to Bag". Every other Add to Bag button has
+     no data-label-idle and always reads "Add to Bag". */
+  function refreshBagButtons() {
+    var ready = !!selectedVariantId || isBespokeSelected;
+    bagButtons.forEach(function (btn) {
+      if (ready) { btn.removeAttribute('aria-disabled'); }
+      else { btn.setAttribute('aria-disabled', 'true'); }
+      btn.textContent = (!ready && btn.getAttribute('data-label-idle')) || 'Add to Bag';
+    });
+  }
+
+  sizes.forEach(function (s) {
+    s.addEventListener('click', function () {
+      if (s.classList.contains('ka-size--oos') || s.getAttribute('aria-disabled') === 'true') return;
+      sizes.forEach(function (x) { x.classList.remove('sel'); });
+      if (bespoke) bespoke.classList.remove('sel');
+      s.classList.add('sel');
+      if (mtm) { mtm.classList.remove('open'); syncMtmToggle(); }
+      selectedSizeLabel = s.textContent.trim();
+      selectedVariantId = s.getAttribute('data-variant-id') || null;
+      isBespokeSelected = false;
+      if (sizeHint) sizeHint.classList.remove('show');
+      refreshBagButtons();
+    });
+  });
+
+  /* selectBespoke(): shared by the click handler and the made-to-measure-first
+     pre-selection (data-preselect="true", set by Liquid on high-ticket pages). */
+  function selectBespoke(openExplainer) {
+    sizes.forEach(function (x) { x.classList.remove('sel'); });
+    bespoke.classList.add('sel');
+    if (mtm && openExplainer) { mtm.classList.add('open'); syncMtmToggle(); }
+    selectedSizeLabel = 'Made to my measurements';
+    /* Read the variant ID baked into the button by Liquid.
+       · Real MTM variant: data-variant-id set, no data-mtm-fallback → plain cart add.
+       · Fallback: data-mtm-fallback="true" → cart add with "Size: Made to my
+         measurements" line-item property so the order reads correctly. */
+    selectedVariantId = bespoke.getAttribute('data-variant-id') || null;
+    isBespokeFallback = bespoke.getAttribute('data-mtm-fallback') === 'true';
+    isBespokeSelected = true;
+    if (sizeHint) sizeHint.classList.remove('show');
+    refreshBagButtons();
+  }
+
+  /* "How it works" disclosure (mobile, under the Made to my measurements card). */
+  var mtmToggle = document.getElementById('ka-mtm-toggle');
+  function syncMtmToggle() {
+    if (mtmToggle && mtm) mtmToggle.setAttribute('aria-expanded', mtm.classList.contains('open') ? 'true' : 'false');
+  }
+  if (mtmToggle && mtm) {
+    mtmToggle.addEventListener('click', function () {
+      mtm.classList.toggle('open');
+      syncMtmToggle();
+    });
+  }
+
+  if (bespoke) {
+    bespoke.addEventListener('click', function () { selectBespoke(true); });
+    /* Made-to-measure-first pages: the option is the default. Selected quietly (explainer stays
+       closed, "How it works" opens it) and the order is still only placed by tapping Add to Bag. */
+    /* Phones only (<=900px): desktop keeps today's behaviour (nothing pre-selected). */
+    if (bespoke.getAttribute('data-preselect') === 'true' && window.matchMedia && window.matchMedia('(max-width: 900px)').matches) { selectBespoke(false); }
+  }
+
+  /* "Book an Appointment" → TEMPORARY: routes to the same WhatsApp
+     concierge destination as the Concierge button until a real
+     appointment-booking flow/calendar exists. Flagged in
+     Docs/cta-architecture-revision.md Round 2 — do not let this
+     silently become permanent; wire a real booking flow when one
+     is built.
+
+     2026-10-21: appointment CTAs are now real <a href="https://wa.me/...">
+     links (no JS handler). Click tracking is the delegated listener in
+     ka-theme.js (data-ka-enquiry). ka-product.js only needs the fallback
+     URL for the bespoke add-to-bag redirect below. */
+  var KA_WHATSAPP_URL = 'https://wa.me/919967543087';
+
+  function addToBag() {
+    if (isBespokeSelected && !selectedVariantId) {
+      /* No "Made to my measurements" variant configured on this product —
+         fall back to WhatsApp so the customer can still place a bespoke
+         enquiry. To enable cart-add for MTM, add a "Made to my measurements"
+         size variant to the product in Shopify Admin and this branch will
+         stop firing. */
+      /* Same real wa.me link (with product context) as the Appointment CTA;
+         tracked like every other enquiry link. */
+      var apptLink = document.getElementById('ka-cta-appt');
+      var bespokeUrl = apptLink ? apptLink.href : KA_WHATSAPP_URL;
+      if (apptLink && window.kaTrackEnquiry) window.kaTrackEnquiry('appointment', 'pdp-bespoke-fallback', apptLink.getAttribute('data-ka-product'));
+      window.open(bespokeUrl, '_blank', 'noopener');
+      return;
+    }
+    if (!selectedVariantId) {
+      if (sizeHint) sizeHint.classList.add('show');
+      var sizesEl = document.getElementById('ka-sizes');
+      if (sizesEl) sizesEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      return;
+    }
+
+    var productTitle = document.querySelector('.ka-p-title');
+    var titleText = productTitle ? productTitle.textContent.trim() : 'Your piece';
+
+    bagButtons.forEach(function (btn) { btn.setAttribute('aria-disabled', 'true'); btn.textContent = 'Adding…'; });
+
+    /* Build the line-item payload. When MTM is using a fallback variant (no
+       dedicated "Made to my measurements" Shopify variant on this product), include
+       a custom property so the style advisor sees the intent on the order. */
+    var lineItem = { id: selectedVariantId, quantity: 1 };
+    if (isBespokeSelected && isBespokeFallback) {
+      lineItem.properties = { 'Size': 'Made to my measurements' };
+    }
+
+    fetch('/cart/add.js', {
+      method: 'POST',
+      credentials: 'same-origin',
+      headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+      body: JSON.stringify({ items: [lineItem] })
+    })
+      .then(function (res) {
+        if (!res.ok) return res.json().then(function (err) { throw err; });
+        return res.json();
+      })
+      .then(function () {
+        if (window.kaShowToast) {
+          window.kaShowToast(titleText + ' · ' + selectedSizeLabel);
+        }
+        return fetch('/cart.js', { credentials: 'same-origin' });
+      })
+      .then(function (res) { return res.ok ? res.json() : null; })
+      .then(function (cart) {
+        if (cart && window.kaUpdateBagCount) window.kaUpdateBagCount(cart.item_count);
+      })
+      .catch(function () {
+        /* Ajax Cart API failure (sold out mid-request, network, etc.) —
+           fail visibly rather than silently: re-enable the button and
+           let the customer try again, no false "added" toast. */
+        if (sizeHint) {
+          sizeHint.textContent = 'Something went wrong — please try again, or message us on WhatsApp.';
+          sizeHint.classList.add('show');
+        }
+      })
+      .finally(function () {
+        refreshBagButtons();
+      });
+  }
+
+  bagButtons.forEach(function (btn) {
+    btn.addEventListener('click', addToBag);
+  });
+
+  /* ---------- accordion ---------- */
+  function toggleAcc(head) {
+    var acc = head.parentElement;
+    var body = acc.querySelector('.ka-acc__body');
+    if (acc.classList.contains('open')) {
+      acc.classList.remove('open');
+      body.style.maxHeight = null;
+    } else {
+      acc.classList.add('open');
+      body.style.maxHeight = body.scrollHeight + 'px';
+    }
+  }
+  function openAcc(name) {
+    var acc = document.querySelector('.ka-acc[data-acc="' + name + '"]');
+    if (!acc) return;
+    if (!acc.classList.contains('open')) toggleAcc(acc.querySelector('.ka-acc__head'));
+    acc.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }
+  document.querySelectorAll('.ka-acc__head').forEach(function (h) {
+    h.addEventListener('click', function () { toggleAcc(h); });
+  });
+  /* deep-link buttons → open the Size & Fit accordion panel */
+  document.querySelectorAll('[data-open-acc]').forEach(function (btn) {
+    btn.addEventListener('click', function () { openAcc(btn.getAttribute('data-open-acc')); });
+  });
+
+  /* ---------- grating → scroll to reviews ---------- */
+  var grating = document.getElementById('ka-grating');
+  if (grating) {
+    grating.addEventListener('click', function () {
+      var rev = document.getElementById('reviews');
+      if (rev) rev.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+  }
+
+  /* ---------- lightbox (desktop/tablet only) ---------- */
+  var lb = document.getElementById('ka-lb');
+  var lbFrame = document.getElementById('ka-lb-frame');
+  if (stage && lb) {
+    stage.addEventListener('click', function (e) {
+      /* Docs/account-wishlist-build-spec.md S6 — the wishlist heart
+         button (assets/ka-product-main.css .ka-stage__wish) lives inside
+         #ka-stage, so without this guard tapping it would also pop open
+         the lightbox underneath. Not in the original build spec's file
+         map for this file, but verified necessary against this actual
+         click handler (mirrors the equivalent guard already present in
+         Prototypes/product-page-wishlist-v1.html's own lightbox script). */
+      if (e.target.closest('.ka-stage__wish')) return;
+      if (window.innerWidth <= 900) return;
+      if (lbFrame) lbFrame.style.backgroundImage = stage.style.backgroundImage;
+      lb.classList.add('show');
+    });
+    lb.addEventListener('click', function () { lb.classList.remove('show'); });
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape') lb.classList.remove('show');
+    });
+  }
+
+  /* ---------- sticky minibar — shows once the product hero scrolls past ---------- */
+  var minibar = document.getElementById('ka-minibar');
+  var hero = document.getElementById('ka-product');
+  if (minibar && hero && 'IntersectionObserver' in window) {
+    var mbObs = new IntersectionObserver(function (entries) {
+      entries.forEach(function (en) {
+        if (!en.isIntersecting && en.boundingClientRect.top < 0) {
+          minibar.classList.add('show');
+        } else {
+          minibar.classList.remove('show');
+        }
+      });
+    }, { threshold: 0 });
+    mbObs.observe(hero);
+  }
+
+})();
+</script>
+
+<script>
+(function(){
+'use strict';
+var $=function(id){return document.getElementById(id)};
+var T=function(id){return $(id).textContent};
+var BASE=location.href.replace(/[^\/]*$/,'');
+var IMG=['images/mani/mani-1.jpg','images/mani/mani-2.jpg','images/mani/mani-3.jpg'].map(function(p){return BASE+p});
+var q=new URLSearchParams(location.search);
+var state={dev:q.get('device')||'phone',lay:q.get('layout')||'hi'};
+var FILL=window.innerWidth<=480&&!q.get('bare');
+if(q.get('bare')||FILL) document.body.classList.add('bare');
+
+var WA='https://wa.me/919967543087?text=';
+function wa(t){return WA+encodeURIComponent(t)}
+var TITLE='Mani Embellished Corset & Rhinestone Skirt';
+var URLP='https://karishmaashita.com/products/mani';
+
+function header(){return ''+
+'<div class="ka-utility-bar" role="complementary"><div class="ka-utility-bar__track-wrap"><div class="ka-utility-bar__track">'+
+'<span class="ka-utility-bar__group"><b>Complimentary Worldwide Delivery</b><span aria-hidden="true">·</span><b>Hand-Embroidered to Order</b><span aria-hidden="true">·</span><b>Private &amp; Virtual Appointments</b></span>'+
+'<span class="ka-utility-bar__group" aria-hidden="true"><b>Complimentary Worldwide Delivery</b><span aria-hidden="true">·</span><b>Hand-Embroidered to Order</b><span aria-hidden="true">·</span><b>Private &amp; Virtual Appointments</b></span>'+
+'</div></div><div class="ka-currency-divider" aria-hidden="true"></div><button type="button" class="ka-currency-chip"><span class="ka-currency-chip__label">₹ INR</span><span class="ka-currency-chip__caret" aria-hidden="true">&#9662;</span></button></div>'+
+'<nav class="ka-nav ka-nav--settled" id="ka-nav" aria-label="Main navigation">'+
+'<button class="ka-nav__toggle" aria-label="Open menu"><span></span><span></span><span></span></button>'+
+'<ul class="ka-nav__links"><li><a href="#">Signature</a></li><li class="ka-nav__item"><a href="#">Collections</a></li><li><a href="#">Client Diaries</a></li></ul>'+
+'<a href="#" class="ka-nav__logo">Karishma Ashita<small>Bridal Couture · Mumbai</small></a>'+
+'<div class="ka-nav__actions">'+
+'<button type="button" class="ka-nav__icon-btn" aria-label="Search"><svg viewBox="0 0 24 24" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M20 20l-4.8-4.8"/></svg></button>'+
+'<a href="#" class="ka-nav__icon-btn ka-nav__account" aria-label="Account"><svg viewBox="0 0 24 24" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8.3" r="3.6"/><path d="M4.8 20c1-3.7 4-5.7 7.2-5.7s6.2 2 7.2 5.7"/></svg></a>'+
+'<a href="#" class="ka-nav__icon-btn ka-nav__wishlist" aria-label="Wishlist"><svg class="heart-line" viewBox="0 0 24 24" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20s-7-4.35-9.5-8.5C.8 8.3 1.4 4.9 4.4 3.6c2.1-.9 4.4-.2 5.7 1.6L12 7.4l1.9-2.2c1.3-1.8 3.6-2.5 5.7-1.6 3 1.3 3.6 4.7 1.9 7.9C19 15.65 12 20 12 20z"/></svg></a>'+
+'<a href="#" class="ka-nav__icon-btn ka-nav__bag" aria-label="Bag"><svg viewBox="0 0 24 24" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8h12l-1 12H7L6 8z"/><path d="M9 8V6a3 3 0 0 1 6 0v2"/></svg><span class="ka-nav__bag__count" data-ka-bag-count data-count="0"></span></a>'+
+'</div></nav>';}
+
+var SIZES=[['XS','49156602036514'],['S','49156602069282'],['M','49156602102050'],['L','49156602134818'],['XL','49156602167586']];
+var HEART='<svg class="heart-line" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20s-7-4.35-9.5-8.5C.8 8.3 1.4 4.9 4.4 3.6c2.1-.9 4.4-.2 5.7 1.6L12 7.4l1.9-2.2c1.3-1.8 3.6-2.5 5.7-1.6 3 1.3 3.6 4.7 1.9 7.9C19 15.65 12 20 12 20z"/></svg><svg class="heart-fill" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20s-7-4.35-9.5-8.5C.8 8.3 1.4 4.9 4.4 3.6c2.1-.9 4.4-.2 5.7 1.6L12 7.4l1.9-2.2c1.3-1.8 3.6-2.5 5.7-1.6 3 1.3 3.6 4.7 1.9 7.9C19 15.65 12 20 12 20z"/></svg>';
+
+function section(o){ // o.neu, o.mtm, o.price
+  var h='';
+  h+='<nav class="ka-pb" aria-label="Breadcrumb"><div class="ka-pb__inner"><a href="#">Home</a><span class="ka-pb__sep">/</span><a href="#">All Products</a><span class="ka-pb__sep">/</span><span class="ka-pb__current">'+TITLE.replace('&','&amp;')+'</span></div></nav>';
+  h+='<section class="ka-product'+(o.neu&&o.mtm?' ka-product--mtm':'')+'" id="ka-product"><div class="ka-media" id="ka-media">';
+  h+='<div class="ka-stage ka-stage--native-ratio" id="ka-stage" style="background-image:url(\''+IMG[0]+'\'); --ratio: 0.75;">';
+  if(o.neu){
+    h+='<div class="ka-swipe" id="ka-swipe" tabindex="0" aria-label="Photographs">'+IMG.map(function(s,i){return '<div class="ka-swipe__slide"><img src="'+s+'" alt="Mani Embellished Corset &amp; Rhinestone Skirt" draggable="false"'+(i?' loading="lazy"':'')+'></div>'}).join('')+'</div>';
+    h+='<div class="ka-dots" id="ka-dots" aria-hidden="true"><i class="on"></i><i></i><i></i></div>';
+    h+='<a class="ka-back" href="#"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg><span>All Products</span></a>';
+  }
+  h+='<span class="ka-stage__idx" id="ka-stage-idx">01 / 03</span><span class="ka-stage__zoom" aria-hidden="true">&#10530; Zoom</span>';
+  h+='<button type="button" class="ka-stage__wish" data-product-handle="mani" aria-label="Save to wishlist" aria-pressed="false">'+HEART+'</button></div>';
+  h+='<div class="ka-thumbs" id="ka-thumbs">'+IMG.map(function(s,i){return '<button type="button" class="ka-thumb'+(i?'':' active')+' ka-thumb--native-ratio" data-full="'+s+'" aria-label="View image '+(i+1)+'" style="background-image:url(\''+s+'\'); --ratio: 0.75;"></button>'}).join('')+'</div></div>';
+  h+='<div class="ka-info-wrap"><div class="ka-panel"><a href="#" class="eyebrow ka-collection-tag">All Products</a>';
+  h+='<h1 class="ka-p-title">'+TITLE.replace('&','&amp;')+'</h1>';
+  h+='<button type="button" class="ka-grating" id="ka-grating"><span class="ka-grating__stars">&#9733;&#9733;&#9733;&#9733;&#9733;</span><span class="ka-grating__tx"><b>4.7</b> · 68 reviews on</span><span class="ka-glogo"><span class="b">G</span><span class="r">o</span><span class="y">o</span><span class="b">g</span><span class="g2">l</span><span class="r">e</span></span></button>';
+  h+='<div class="ka-p-price-row"><div class="ka-p-price">'+o.price+'</div><div class="ka-p-tax">Taxes included</div></div>';
+  h+='<div class="ka-p-made">Made to measure · Crafted to order in 30–35 working days</div>';
+  var opening=o.neu?'<div class="ka-buy'+(o.mtm?' ka-buy--mtm':'')+'">':'';
+  h+=opening;
+  h+='<div class="ka-opt-head"><span class="ka-opt-label">'+(o.neu?'<span class="ka-opt-label__d">Select Your Size</span>'+(o.mtm?'<span class="ka-opt-label__m">Or choose a standard size</span>':''):'Select Your Size')+'</span><button type="button" class="ka-btn-line" data-open-acc="size">Size &amp; Fit Guide</button></div>';
+  h+='<div class="ka-size-grid" id="ka-sizes">'+SIZES.map(function(s){return '<button type="button" class="ka-size" data-value="'+s[0]+'" data-variant-id="'+s[1]+'">'+s[0]+'</button>'}).join('')+'</div>';
+  h+='<button class="ka-bespoke" id="ka-bespoke" type="button" data-variant-id="49156602036514" data-mtm-fallback="true"'+(o.neu&&o.mtm?' data-preselect="true"':'')+'><span class="ka-bespoke__dot" aria-hidden="true"></span>';
+  if(o.neu) h+='<span class="ka-bespoke__txt"><span class="ka-bespoke__k">Made to my measurements</span><span class="ka-bespoke__n">Your advisor will call within 24 hours of your order.</span></span>';
+  else h+='<span class="ka-bespoke__k">Made to my measurements</span>';
+  h+='<span class="ka-bespoke__s">Recommended</span></button>';
+  if(o.neu) h+='<button type="button" class="ka-mtm-toggle" id="ka-mtm-toggle" aria-expanded="false" aria-controls="ka-mtm">How it works</button>';
+  h+='<div class="ka-mtm" id="ka-mtm"><div class="ka-mtm__inner"><h4>How Your Piece Comes to Life</h4><ul class="ka-mtm__steps">'+
+   '<li>Place your order — no measurements needed yet. Your personal style advisor will be in touch within 24 hours to begin. Already have your measurements? Add them to the order notes at checkout and we will take it from there.</li>'+
+   '<li>Confirm your fit with your advisor — over WhatsApp, on a virtual call, or in our Mumbai atelier. We work at your pace, entirely.</li>'+
+   '<li>Our atelier cuts, drapes and hand-embroiders your piece to your exact measurements. Every element made for you alone.</li></ul>'+
+   '<p class="ka-mtm__foot">Your piece is then pressed, quality-checked and delivered worldwide in 30–35 working days.</p><button type="button" class="ka-mtm__link" data-open-acc="size">View the measurement guide &rarr;</button></div></div>';
+  h+='<div class="ka-cta-stack"><button type="button" class="ka-btn ka-btn--bag" id="ka-bag-btn" data-ka-add-to-bag aria-disabled="true">Add to Bag</button><p class="ka-size-required-hint" id="ka-size-hint">Please select a size, or choose Made to my measurements.</p>'+
+   '<a class="ka-btn ka-btn--ghost" id="ka-cta-appt" href="'+wa('Hello K&A, I\'d like to book an appointment for '+TITLE+' ('+URLP+')')+'" target="_blank" rel="noopener" data-ka-enquiry="appointment" data-ka-placement="pdp-appointment" data-ka-product="mani">Book an Appointment</a></div>';
+  if(o.neu) h+='<p class="ka-talk">Prefer to talk? <a href="'+wa('Hello K&A, I\'d like to know more about '+TITLE+' ('+URLP+')')+'" target="_blank" rel="noopener" data-ka-enquiry="whatsapp" data-ka-placement="pdp-inline-whatsapp" data-ka-product="mani">Message our advisor on WhatsApp</a></p></div>';
+  h+='<div class="ka-toast" id="kaToast" role="status" aria-live="polite"><span class="ka-toast__mark" aria-hidden="true">&#10022;</span><div class="ka-toast__body"><div class="ka-toast__title">Added to Your Bag</div><div class="ka-toast__sub" id="kaToastSub">&nbsp;</div></div><a class="ka-toast__action" href="#">View Bag &rarr;</a></div>';
+  h+='<div class="ka-assure" id="ka-assure"><div class="ka-assure__row"><span class="mk" aria-hidden="true">&#10022;</span><span>Each piece is cut, draped and hand-embroidered to order by our karigars — never machine-made.</span></div><div class="ka-assure__row"><span class="mk" aria-hidden="true">&#10022;</span><span>Complimentary worldwide delivery by DHL Express, beautifully packaged.</span></div><div class="ka-assure__row"><span class="mk" aria-hidden="true">&#10022;</span><span>A personal advisor accompanies every order, confirming your measurements and fit after you enquire.</span></div></div>';
+  h+='<div class="ka-accordion" id="ka-accordion">'+
+   acc('atelier','The Atelier Process','Every Karishma &amp; Ashita piece is made to measure. After your enquiry, our atelier cuts and constructs the garment to your individual measurements, then hand-embroiders the corset over several weeks before a final press and quality check. Your piece reaches you in 30–35 working days.')+
+   acc('fabric','Fabric &amp; Embroidery','<p class="ka-acc__fabric-label"><strong>Fabric:</strong> Net</p><ul><li>Natural-fibre base fabrics — naturally breathable, fluid and soothing to wear</li><li>Concealed boning and structure for a sculpted, confident silhouette</li></ul>')+
+   acc('size','Size &amp; Fit Guide','All measurements in inches. For a true couture fit, select <em>Made to my measurements</em> and share your details with your style advisor.<table><tr><th></th><th>Bust</th><th>Waist</th><th>Hip</th></tr><tr><th>XS</th><td>32</td><td>26</td><td>35</td></tr><tr><th>S</th><td>34</td><td>28</td><td>38</td></tr><tr><th>M</th><td>36</td><td>30</td><td>39</td></tr><tr><th>L</th><td>38</td><td>32</td><td>40</td></tr><tr><th>XL</th><td>40</td><td>34</td><td>42</td></tr></table>')+
+   acc('delivery','Delivery &amp; Care','<ul><li>Crafted to order in 30–35 working days</li><li>Complimentary worldwide shipping via DHL Express</li></ul>')+'</div>';
+  h+='</div></div></section>';
+  h+='<div style="text-align:center;padding:70px 20px 40px;font-family:Cormorant Garamond,serif;font-style:italic;color:#9C9389;font-size:1.05rem">Product description, reviews and footer continue as today.</div>';
+  // minibar (desktop)
+  h+='<div class="ka-minibar" id="ka-minibar"><div class="ka-minibar__in"><div class="ka-minibar__l"><div class="ka-minibar__thumb" style="background-image:url(\''+IMG[0]+'\')"></div><div><div class="ka-minibar__name">'+TITLE.replace('&','&amp;')+'</div><div class="ka-minibar__price">'+o.price+' · All Products</div></div></div><div class="ka-minibar__r"><a class="ka-btn ka-btn--ghost" href="#" target="_blank" rel="noopener">Book an Appointment</a><button type="button" class="ka-btn ka-btn--bag" id="ka-minibar-bag" data-ka-add-to-bag aria-disabled="true">Add to Bag</button></div></div></div>';
+  // mobile bar
+  if(o.neu){
+    h+='<div class="ka-mobile-bar" role="group" aria-label="Order actions"><a class="ka-btn ka-btn--wa" href="'+wa('Hello K&A, I\'d like to know more about '+TITLE+' ('+URLP+')')+'" target="_blank" rel="noopener" data-ka-enquiry="whatsapp" data-ka-placement="pdp-mobilebar-whatsapp" data-ka-product="mani"><svg class="ka-wa-glyph" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20l1.3-4.2A8 8 0 1 1 8.4 18.8L4 20z"/></svg><span>Message us on WhatsApp</span></a><button type="button" class="ka-btn ka-btn--bag" id="ka-mobilebar-bag" data-ka-add-to-bag data-label-idle="Select size" aria-disabled="true">Select size</button></div>';
+  } else {
+    h+='<div class="ka-mobile-bar"><a class="ka-btn ka-btn--ghost" href="#" target="_blank" rel="noopener">Appointment</a><a class="ka-btn ka-btn--concierge" href="'+wa('Hello K&A, I\'d like to know more about '+TITLE)+'" target="_blank" rel="noopener"><span class="dot"></span>Concierge</a><button type="button" class="ka-btn ka-btn--bag" id="ka-mobilebar-bag" data-ka-add-to-bag aria-disabled="true">Add to Bag</button></div>';
+  }
+  h+='<div class="ka-lb" id="ka-lb"><span class="ka-lb__x" aria-hidden="true">Close &#10005;</span><div class="ka-lb__frame" id="ka-lb-frame"></div></div>';
+  return h;
+}
+function acc(k,t,body){return '<div class="ka-acc" data-acc="'+k+'"><button class="ka-acc__head" type="button">'+t+'<span class="ka-acc__pm" aria-hidden="true">+</span></button><div class="ka-acc__body"><div class="ka-acc__inner">'+body+'</div></div></div>';}
+
+function build(lay){
+  var neu = lay!=='live';
+  var o={neu:neu,mtm:lay==='hi',price:lay==='lo'?'₹ 38,000':'₹ 140,000'};
+  var css=T('css-base')+T('css-nav')+T('css-cur')+T('css-pb')+(neu?T('css-main-new'):T('css-main-old'));
+  var boot='window.__hold=9000;window.kaShowToast=function(m){var t=document.getElementById("kaToast"),s=document.getElementById("kaToastSub");if(s)s.textContent=m;t.classList.add("show");clearTimeout(window.__t);window.__t=setTimeout(function(){t.classList.remove("show")},(window.__hold||3600))};window.kaUpdateBagCount=function(n){var b=document.querySelector("[data-ka-bag-count]");if(b){b.setAttribute("data-count",n);b.textContent=n||""}};var __n=0;window.fetch=function(u){if(String(u).indexOf("cart/add")>-1){__n++;return Promise.resolve({ok:true,json:function(){return Promise.resolve({})}})}return Promise.resolve({ok:true,json:function(){return Promise.resolve({item_count:__n})}})};document.addEventListener("click",function(e){var a=e.target.closest&&e.target.closest("a[target=_blank]");if(a){e.preventDefault();window.parent.postMessage({wa:a.href},"*")}});';
+  return '<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><base href="'+BASE+'"><link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Jost:wght@200;300;400;500&display=swap" rel="stylesheet"><style>'+css+(q.get('nt')?'*{transition:none!important;animation:none!important}':'')+'</style></head><body class="template-product">'+header()+section(o)+'<script>'+boot+'<\/script><script>'+T(neu?'js-new':'js-old')+'<\/script></body></html>';
+}
+
+var dev={phone:[390,844,'iPhone, 390 x 844'],inapp:[390,660,'In-app browser viewport, 390 x 660 (Instagram-style top and bottom bars drawn outside it)'],desk:[1440,900,'Desktop, 1440 x 900']};
+if(q.get('w')){dev.desk[0]=+q.get('w');dev.phone[0]=+q.get('w');dev.inapp[0]=+q.get('w')}
+if(q.get('h')){dev.desk[1]=+q.get('h');dev.phone[1]=+q.get('h')}
+var fr=$('fr'),device=$('device');
+function render(keepScroll){
+  var d=dev[state.dev];
+  var bare=document.body.classList.contains('bare');
+  device.className='device'+(state.dev==='desk'?' desk':'')+(state.dev==='inapp'?' inapp':'');
+  if(FILL){fr.style.width='100vw';fr.style.height='100vh';}
+  else{
+    fr.style.width=d[0]+'px';fr.style.height=d[1]+'px';
+    if(state.dev==='desk'&&!bare){var s=Math.min(1,(window.innerWidth-120-(window.innerWidth>1180?340:0))/1480);device.style.transform='scale('+s+')';device.style.transformOrigin='top center';device.style.marginBottom=(-(1-s)*d[1])+'px';}
+    else{device.style.transform='';device.style.marginBottom='';}
+  }
+  $('cap').textContent=d[2]+' — '+({hi:'Proposed, Rs 1,40,000 piece (made to measure first)',lo:'Proposed, Rs 38,000 piece (standard sizes first)',live:'Live today (for comparison)'})[state.lay];
+  fr.srcdoc=build(state.lay);
+  document.querySelectorAll('[data-dev]').forEach(function(b){b.classList.toggle('on',b.dataset.dev===state.dev)});
+  document.querySelectorAll('[data-lay]').forEach(function(b){b.classList.toggle('on',b.dataset.lay===state.lay)});
+}
+document.querySelectorAll('[data-dev]').forEach(function(b){b.onclick=function(){state.dev=b.dataset.dev;render()}});
+document.querySelectorAll('[data-lay]').forEach(function(b){b.onclick=function(){state.lay=b.dataset.lay;render()}});
+document.querySelectorAll('[data-jump]').forEach(function(b){b.onclick=function(){
+  var w=fr.contentWindow,d=w.document,k=b.dataset.jump,y=0;
+  if(k==='buy'){var e=d.querySelector('.ka-buy')||d.getElementById('ka-sizes');y=e.getBoundingClientRect().top+w.scrollY-120}
+  if(k==='assure'){y=d.getElementById('ka-assure').getBoundingClientRect().top+w.scrollY-110}
+  if(k==='end'){y=d.body.scrollHeight}
+  w.scrollTo({top:y,behavior:'smooth'})}});
+window.addEventListener('message',function(e){if(e.data&&e.data.wa){var u=decodeURIComponent(e.data.wa.split('text=')[1]||'');var m=document.createElement('div');m.style.cssText='position:fixed;left:50%;top:70px;transform:translateX(-50%);background:#2A2420;color:#F4ECDE;padding:14px 20px;font-size:.78rem;z-index:20;max-width:90vw;box-shadow:0 14px 40px rgba(0,0,0,.3)';m.innerHTML='<b style="font-weight:500">Opens WhatsApp</b> with: “'+u.replace(/</g,'&lt;')+'”';document.body.appendChild(m);setTimeout(function(){m.remove()},3800)}});
+window.addEventListener('resize',function(){if(state.dev==='desk'&&!document.body.classList.contains('bare'))render()});
+fr.addEventListener('load',function(){
+  var a=q.get('act');if(!a)return;var w=fr.contentWindow,d=w.document;
+  setTimeout(function(){a.split(',').forEach(function(x){var p=x.split(':');
+    if(p[0]==='size'){var b=d.querySelector('.ka-size[data-value="'+p[1]+'"]');b&&b.click()}
+    if(p[0]==='bespoke'){d.getElementById('ka-bespoke').click()}
+    if(p[0]==='how'){d.getElementById('ka-mtm-toggle').click()}
+    if(p[0]==='bag'){d.getElementById('ka-mobilebar-bag').click()}
+    if(p[0]==='swipe'){var s=d.getElementById('ka-swipe');s.scrollLeft=s.clientWidth*(+p[1])}
+    if(p[0]==='probe'){setTimeout(function(){var r={};['.ka-nav','.ka-stage','.ka-p-title','.ka-p-price-row','.ka-p-made','.ka-mobile-bar','.ka-grating','.ka-buy','.ka-bespoke','.ka-size-grid','.ka-talk','.ka-size-required-hint','.ka-cta-stack','.ka-toast','.ka-mobile-bar .ka-btn--wa','.ka-mobile-bar .ka-btn--bag'].forEach(function(k){var e=d.querySelector(k);if(e){var b=e.getBoundingClientRect();r[k]=[Math.round(b.top),Math.round(b.bottom),Math.round(b.left),Math.round(b.right)]}});r.sw=d.documentElement.scrollWidth;var hh=d.getElementById('ka-size-hint');r.hint=hh.className+'|'+getComputedStyle(hh).opacity+'|'+getComputedStyle(hh).maxHeight;r.vh=w.innerHeight;var pre=document.createElement('pre');pre.id='probe';pre.textContent=JSON.stringify(r);document.body.appendChild(pre)},1500)}
+    if(p[0]==='scroll'){w.scrollTo({top:+p[1],behavior:'instant'})}
+    if(p[0]==='scrollto'){var e=d.querySelector(p[1]);w.scrollTo({top:e.getBoundingClientRect().top+w.scrollY-(+p[2]||100),behavior:'instant'})}
+  })},400);
+});
+render();
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,289 @@
+/* ================================================================
+   K&A PRODUCT PAGE JS — ka-product.js
+   Vanilla, no dependencies. Scoped to the product template.
+   (Sitewide reveals/nav/mobile-drawer are handled by ka-theme.js.)
+================================================================ */
+(function () {
+  'use strict';
+
+  /* ---------- gallery: thumbnail rail + stage ---------- */
+  var thumbs = Array.prototype.slice.call(document.querySelectorAll('.ka-thumb'));
+  var stage = document.getElementById('ka-stage');
+  var stageIdx = document.getElementById('ka-stage-idx');
+  var total = thumbs.length || 1;
+  var pad = function (n) { return (n < 10 ? '0' : '') + n; };
+
+  thumbs.forEach(function (t, i) {
+    t.addEventListener('click', function () {
+      thumbs.forEach(function (x) { x.classList.remove('active'); });
+      t.classList.add('active');
+      var full = t.getAttribute('data-full');
+      if (stage && full) { stage.style.backgroundImage = "url('" + full + "')"; }
+      if (stageIdx) { stageIdx.textContent = pad(i + 1) + ' / ' + pad(total); }
+    });
+  });
+
+  /* ---------- mobile swipe gallery (<=900px): dots follow the scroll position ----------
+     CSS scroll-snap does the swiping; this only mirrors the position into the dots. */
+  var swipe = document.getElementById('ka-swipe');
+  var dots = Array.prototype.slice.call(document.querySelectorAll('#ka-dots i'));
+  if (swipe && dots.length) {
+    var swipeTick = false;
+    swipe.addEventListener('scroll', function () {
+      if (swipeTick) return;
+      swipeTick = true;
+      window.requestAnimationFrame(function () {
+        swipeTick = false;
+        var i = Math.round(swipe.scrollLeft / (swipe.clientWidth || 1));
+        i = Math.max(0, Math.min(dots.length - 1, i));
+        dots.forEach(function (d, n) { d.classList.toggle('on', n === i); });
+      });
+    }, { passive: true });
+  }
+
+  /* ---------- size selection + made-to-measure reveal ---------- */
+  var sizes = Array.prototype.slice.call(document.querySelectorAll('.ka-size'));
+  var bespoke = document.getElementById('ka-bespoke');
+  var mtm = document.getElementById('ka-mtm');
+
+  /* ---------- Add to Bag state + real Ajax Cart wiring ----------
+     Round 2 (Docs/cta-architecture-revision.md). selectedSizeLabel/
+     selectedVariantId gate every Add to Bag button (desktop CTA stack,
+     sticky minibar, mobile sticky bar — three buttons, one shared
+     state). selectedVariantId is null for the bespoke path on purpose:
+     "Made to my measurements" has no real variant to add (see the OPEN
+     DECISION comment in ka-product-main.liquid) — choosing it routes
+     to the WhatsApp/appointment flow instead of /cart/add.js. */
+  var selectedSizeLabel = null;
+  var selectedVariantId = null;
+  var isBespokeSelected = false;
+  var isBespokeFallback = false;
+  var sizeHint = document.getElementById('ka-size-hint');
+  var bagButtons = Array.prototype.slice.call(document.querySelectorAll('[data-ka-add-to-bag]'));
+
+  /* Mobile bar secondary button: reads "Select size" (data-label-idle) until a size or
+     Made to my measurements is chosen, then "Add to Bag". Every other Add to Bag button has
+     no data-label-idle and always reads "Add to Bag". */
+  function refreshBagButtons() {
+    var ready = !!selectedVariantId || isBespokeSelected;
+    bagButtons.forEach(function (btn) {
+      if (ready) { btn.removeAttribute('aria-disabled'); }
+      else { btn.setAttribute('aria-disabled', 'true'); }
+      btn.textContent = (!ready && btn.getAttribute('data-label-idle')) || 'Add to Bag';
+    });
+  }
+
+  sizes.forEach(function (s) {
+    s.addEventListener('click', function () {
+      if (s.classList.contains('ka-size--oos') || s.getAttribute('aria-disabled') === 'true') return;
+      sizes.forEach(function (x) { x.classList.remove('sel'); });
+      if (bespoke) bespoke.classList.remove('sel');
+      s.classList.add('sel');
+      if (mtm) { mtm.classList.remove('open'); syncMtmToggle(); }
+      selectedSizeLabel = s.textContent.trim();
+      selectedVariantId = s.getAttribute('data-variant-id') || null;
+      isBespokeSelected = false;
+      if (sizeHint) sizeHint.classList.remove('show');
+      refreshBagButtons();
+    });
+  });
+
+  /* selectBespoke(): shared by the click handler and the made-to-measure-first
+     pre-selection (data-preselect="true", set by Liquid on high-ticket pages). */
+  function selectBespoke(openExplainer) {
+    sizes.forEach(function (x) { x.classList.remove('sel'); });
+    bespoke.classList.add('sel');
+    if (mtm && openExplainer) { mtm.classList.add('open'); syncMtmToggle(); }
+    selectedSizeLabel = 'Made to my measurements';
+    /* Read the variant ID baked into the button by Liquid.
+       · Real MTM variant: data-variant-id set, no data-mtm-fallback → plain cart add.
+       · Fallback: data-mtm-fallback="true" → cart add with "Size: Made to my
+         measurements" line-item property so the order reads correctly. */
+    selectedVariantId = bespoke.getAttribute('data-variant-id') || null;
+    isBespokeFallback = bespoke.getAttribute('data-mtm-fallback') === 'true';
+    isBespokeSelected = true;
+    if (sizeHint) sizeHint.classList.remove('show');
+    refreshBagButtons();
+  }
+
+  /* "How it works" disclosure (mobile, under the Made to my measurements card). */
+  var mtmToggle = document.getElementById('ka-mtm-toggle');
+  function syncMtmToggle() {
+    if (mtmToggle && mtm) mtmToggle.setAttribute('aria-expanded', mtm.classList.contains('open') ? 'true' : 'false');
+  }
+  if (mtmToggle && mtm) {
+    mtmToggle.addEventListener('click', function () {
+      mtm.classList.toggle('open');
+      syncMtmToggle();
+    });
+  }
+
+  if (bespoke) {
+    bespoke.addEventListener('click', function () { selectBespoke(true); });
+    /* Made-to-measure-first pages: the option is the default. Selected quietly (explainer stays
+       closed, "How it works" opens it) and the order is still only placed by tapping Add to Bag. */
+    /* Phones only (<=900px): desktop keeps today's behaviour (nothing pre-selected). */
+    if (bespoke.getAttribute('data-preselect') === 'true' && window.matchMedia && window.matchMedia('(max-width: 900px)').matches) { selectBespoke(false); }
+  }
+
+  /* "Book an Appointment" → TEMPORARY: routes to the same WhatsApp
+     concierge destination as the Concierge button until a real
+     appointment-booking flow/calendar exists. Flagged in
+     Docs/cta-architecture-revision.md Round 2 — do not let this
+     silently become permanent; wire a real booking flow when one
+     is built.
+
+     2026-10-21: appointment CTAs are now real <a href="https://wa.me/...">
+     links (no JS handler). Click tracking is the delegated listener in
+     ka-theme.js (data-ka-enquiry). ka-product.js only needs the fallback
+     URL for the bespoke add-to-bag redirect below. */
+  var KA_WHATSAPP_URL = 'https://wa.me/919967543087';
+
+  function addToBag() {
+    if (isBespokeSelected && !selectedVariantId) {
+      /* No "Made to my measurements" variant configured on this product —
+         fall back to WhatsApp so the customer can still place a bespoke
+         enquiry. To enable cart-add for MTM, add a "Made to my measurements"
+         size variant to the product in Shopify Admin and this branch will
+         stop firing. */
+      /* Same real wa.me link (with product context) as the Appointment CTA;
+         tracked like every other enquiry link. */
+      var apptLink = document.getElementById('ka-cta-appt');
+      var bespokeUrl = apptLink ? apptLink.href : KA_WHATSAPP_URL;
+      if (apptLink && window.kaTrackEnquiry) window.kaTrackEnquiry('appointment', 'pdp-bespoke-fallback', apptLink.getAttribute('data-ka-product'));
+      window.open(bespokeUrl, '_blank', 'noopener');
+      return;
+    }
+    if (!selectedVariantId) {
+      if (sizeHint) sizeHint.classList.add('show');
+      var sizesEl = document.getElementById('ka-sizes');
+      if (sizesEl) sizesEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      return;
+    }
+
+    var productTitle = document.querySelector('.ka-p-title');
+    var titleText = productTitle ? productTitle.textContent.trim() : 'Your piece';
+
+    bagButtons.forEach(function (btn) { btn.setAttribute('aria-disabled', 'true'); btn.textContent = 'Adding…'; });
+
+    /* Build the line-item payload. When MTM is using a fallback variant (no
+       dedicated "Made to my measurements" Shopify variant on this product), include
+       a custom property so the style advisor sees the intent on the order. */
+    var lineItem = { id: selectedVariantId, quantity: 1 };
+    if (isBespokeSelected && isBespokeFallback) {
+      lineItem.properties = { 'Size': 'Made to my measurements' };
+    }
+
+    fetch('/cart/add.js', {
+      method: 'POST',
+      credentials: 'same-origin',
+      headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+      body: JSON.stringify({ items: [lineItem] })
+    })
+      .then(function (res) {
+        if (!res.ok) return res.json().then(function (err) { throw err; });
+        return res.json();
+      })
+      .then(function () {
+        if (window.kaShowToast) {
+          window.kaShowToast(titleText + ' · ' + selectedSizeLabel);
+        }
+        return fetch('/cart.js', { credentials: 'same-origin' });
+      })
+      .then(function (res) { return res.ok ? res.json() : null; })
+      .then(function (cart) {
+        if (cart && window.kaUpdateBagCount) window.kaUpdateBagCount(cart.item_count);
+      })
+      .catch(function () {
+        /* Ajax Cart API failure (sold out mid-request, network, etc.) —
+           fail visibly rather than silently: re-enable the button and
+           let the customer try again, no false "added" toast. */
+        if (sizeHint) {
+          sizeHint.textContent = 'Something went wrong — please try again, or message us on WhatsApp.';
+          sizeHint.classList.add('show');
+        }
+      })
+      .finally(function () {
+        refreshBagButtons();
+      });
+  }
+
+  bagButtons.forEach(function (btn) {
+    btn.addEventListener('click', addToBag);
+  });
+
+  /* ---------- accordion ---------- */
+  function toggleAcc(head) {
+    var acc = head.parentElement;
+    var body = acc.querySelector('.ka-acc__body');
+    if (acc.classList.contains('open')) {
+      acc.classList.remove('open');
+      body.style.maxHeight = null;
+    } else {
+      acc.classList.add('open');
+      body.style.maxHeight = body.scrollHeight + 'px';
+    }
+  }
+  function openAcc(name) {
+    var acc = document.querySelector('.ka-acc[data-acc="' + name + '"]');
+    if (!acc) return;
+    if (!acc.classList.contains('open')) toggleAcc(acc.querySelector('.ka-acc__head'));
+    acc.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }
+  document.querySelectorAll('.ka-acc__head').forEach(function (h) {
+    h.addEventListener('click', function () { toggleAcc(h); });
+  });
+  /* deep-link buttons → open the Size & Fit accordion panel */
+  document.querySelectorAll('[data-open-acc]').forEach(function (btn) {
+    btn.addEventListener('click', function () { openAcc(btn.getAttribute('data-open-acc')); });
+  });
+
+  /* ---------- grating → scroll to reviews ---------- */
+  var grating = document.getElementById('ka-grating');
+  if (grating) {
+    grating.addEventListener('click', function () {
+      var rev = document.getElementById('reviews');
+      if (rev) rev.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+  }
+
+  /* ---------- lightbox (desktop/tablet only) ---------- */
+  var lb = document.getElementById('ka-lb');
+  var lbFrame = document.getElementById('ka-lb-frame');
+  if (stage && lb) {
+    stage.addEventListener('click', function (e) {
+      /* Docs/account-wishlist-build-spec.md S6 — the wishlist heart
+         button (assets/ka-product-main.css .ka-stage__wish) lives inside
+         #ka-stage, so without this guard tapping it would also pop open
+         the lightbox underneath. Not in the original build spec's file
+         map for this file, but verified necessary against this actual
+         click handler (mirrors the equivalent guard already present in
+         Prototypes/product-page-wishlist-v1.html's own lightbox script). */
+      if (e.target.closest('.ka-stage__wish')) return;
+      if (window.innerWidth <= 900) return;
+      if (lbFrame) lbFrame.style.backgroundImage = stage.style.backgroundImage;
+      lb.classList.add('show');
+    });
+    lb.addEventListener('click', function () { lb.classList.remove('show'); });
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape') lb.classList.remove('show');
+    });
+  }
+
+  /* ---------- sticky minibar — shows once the product hero scrolls past ---------- */
+  var minibar = document.getElementById('ka-minibar');
+  var hero = document.getElementById('ka-product');
+  if (minibar && hero && 'IntersectionObserver' in window) {
+    var mbObs = new IntersectionObserver(function (entries) {
+      entries.forEach(function (en) {
+        if (!en.isIntersecting && en.boundingClientRect.top < 0) {
+          minibar.classList.add('show');
+        } else {
+          minibar.classList.remove('show');
+        }
+      });
+    }, { threshold: 0 });
+    mbObs.observe(hero);
+  }
+
+})();
