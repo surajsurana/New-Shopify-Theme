@@ -339,7 +339,7 @@
       {%- else -%}
         {%- comment -%}No dedicated MTM variant — use first available variant as fallback.
           ka-product.js will add "Size: Made to my measurements" as a line-item property
-          so the order reads correctly for the style advisor.{%- endcomment -%}
+          so the order reads correctly for the designer.{%- endcomment -%}
         <button class="ka-bespoke" id="ka-bespoke" type="button"
           data-variant-id="{{ product.selected_or_first_available_variant.id }}"
           data-mtm-fallback="true"{% if mtm_first %} data-preselect="true"{% endif %}>
@@ -347,7 +347,7 @@
         <span class="ka-bespoke__dot" aria-hidden="true"></span>
         <span class="ka-bespoke__txt">
           <span class="ka-bespoke__k">Made to my measurements</span>
-          <span class="ka-bespoke__n">Your advisor will call within 24 hours of your order.</span>
+          <span class="ka-bespoke__n">Your designer will call within 24 hours of your order.</span>
         </span>
         <span class="ka-bespoke__s">Recommended</span>
       </button>
@@ -358,8 +358,8 @@
         <div class="ka-mtm__inner">
           <h4>How Your Piece Comes to Life</h4>
           <ul class="ka-mtm__steps">
-            <li>Place your order — no measurements needed yet. Your personal style advisor will be in touch within 24 hours to begin. Already have your measurements? Add them to the order notes at checkout and we will take it from there.</li>
-            <li>Confirm your fit with your advisor — over WhatsApp, on a virtual call, or in our Mumbai atelier. We work at your pace, entirely.</li>
+            <li>Place your order — no measurements needed yet. Your designer will be in touch within 24 hours to begin. Already have your measurements? Add them to the order notes at checkout and we will take it from there.</li>
+            <li>Confirm your fit with your designer — over WhatsApp, on a virtual call, or in our Mumbai atelier. We work at your pace, entirely.</li>
             <li>Our atelier cuts, drapes and hand-embroiders your piece to your exact measurements. Every element made for you alone.</li>
           </ul>
           <p class="ka-mtm__foot">Your piece is then pressed, quality-checked and delivered worldwide in {{ lead_time }}.</p>
@@ -399,7 +399,7 @@
       </div>
 
       {%- comment -%}MOBILE ONLY inline enquiry line (hidden on desktop). Real anchor, product pre-filled, tracked like every other enquiry link (assets/ka-theme.js reads data-ka-enquiry).{%- endcomment -%}
-      <p class="ka-talk">Prefer to talk? <a href="{{ wa_enquire }}" target="_blank" rel="noopener" data-ka-enquiry="whatsapp" data-ka-placement="pdp-inline-whatsapp" data-ka-product="{{ product.handle }}">Message our advisor on WhatsApp</a></p>
+      <p class="ka-talk">Prefer to talk? <a href="{{ wa_enquire }}" target="_blank" rel="noopener" data-ka-enquiry="whatsapp" data-ka-placement="pdp-inline-whatsapp" data-ka-product="{{ product.handle }}">Message our designer on WhatsApp</a></p>
       </div><!-- /.ka-buy -->
 
       <!-- Toast: shared component, CSS in ka-base.css, JS in ka-theme.js (window.kaShowToast) -->
@@ -416,7 +416,7 @@
       <div class="ka-assure">
         <div class="ka-assure__row"><span class="mk" aria-hidden="true">&#10022;</span><span>Each piece is cut, draped and hand-embroidered to order by our karigars — never machine-made.</span></div>
         <div class="ka-assure__row"><span class="mk" aria-hidden="true">&#10022;</span><span>Complimentary worldwide delivery by DHL Express, beautifully packaged.</span></div>
-        <div class="ka-assure__row"><span class="mk" aria-hidden="true">&#10022;</span><span>A personal advisor accompanies every order, confirming your measurements and fit after you enquire.</span></div>
+        <div class="ka-assure__row"><span class="mk" aria-hidden="true">&#10022;</span><span>Your designer accompanies every order, confirming your measurements and fit after you enquire.</span></div>
       </div>
 
       <!-- ACCORDION -->
@@ -444,7 +444,7 @@
           <button class="ka-acc__head" type="button">Size &amp; Fit Guide<span class="ka-acc__pm" aria-hidden="true">+</span></button>
           <div class="ka-acc__body"><div class="ka-acc__inner">
             {%- if mf_sizefit != blank -%}{{ mf_sizefit.content }}{%- else -%}
-              All measurements in inches. For a true couture fit, select <em>Made to my measurements</em> and share your details with your style advisor.
+              All measurements in inches. For a true couture fit, select <em>Made to my measurements</em> and share your details with your designer.
               <table>
                 <tr><th></th><th>Bust</th><th>Waist</th><th>Hip</th></tr>
                 <tr><th>XS</th><td>32</td><td>26</td><td>35</td></tr>
@@ -467,7 +467,7 @@
                 <li>Crafted to order in {{ lead_time }}</li>
                 <li>Complimentary worldwide shipping via DHL Express</li>
                 <li>Dry clean only — store flat, away from direct light</li>
-                <li>As each piece is made to measure, kindly review our exchange policy with your style advisor</li>
+                <li>As each piece is made to measure, kindly review our exchange policy with your designer</li>
               </ul>
             {%- endif -%}
           </div></div>

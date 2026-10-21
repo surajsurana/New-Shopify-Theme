@@ -168,7 +168,7 @@
 
     /* Build the line-item payload. When MTM is using a fallback variant (no
        dedicated "Made to my measurements" Shopify variant on this product), include
-       a custom property so the style advisor sees the intent on the order. */
+       a custom property so the designer sees the intent on the order. */
     var lineItem = { id: selectedVariantId, quantity: 1 };
     if (isBespokeSelected && isBespokeFallback) {
       lineItem.properties = { 'Size': 'Made to my measurements' };
