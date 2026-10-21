@@ -376,3 +376,185 @@
 @media (max-width: 600px) {
   .ka-p-title { font-size: 2.4rem; }
 }
+
+/* ================================================================
+   MOBILE PRODUCT PAGE v1 — 2026-10-21
+   Docs/product-page-mobile-build-spec-2026-10-21.md
+
+   Everything below is additive. The new elements (.ka-swipe, .ka-dots,
+   .ka-back, .ka-mtm-toggle, .ka-talk, .ka-bespoke__txt/__n, the
+   .ka-opt-label__m label) are display:none above 900px, and nothing
+   here changes a desktop rule — desktop must render pixel-identical.
+
+   Safari/WebKit rules followed here: no aspect-ratio on any flex/grid
+   item that lacks in-flow content (the mobile stage sets aspect-ratio:auto
+   and an explicit height; slides use an absolutely-positioned <img>);
+   100vh fallback declared before 100svh; env() paired with a max() floor.
+================================================================ */
+
+/* ── desktop: hide every mobile-only element ── */
+.ka-swipe, .ka-dots, .ka-back, .ka-mtm-toggle, .ka-talk, .ka-bespoke__n, .ka-opt-label__m { display: none; }
+.ka-bespoke__txt { display: flex; flex-direction: column; min-width: 0; }
+.ka-mobile-bar .ka-wa-glyph { display: none; }
+
+@media (max-width: 900px) {
+
+  /* 1. slimmer chrome on the product page: breadcrumb retired (the back
+        chip over the photo replaces it), nav bar tightened, logo
+        sub-line dropped. Utility bar (marquee + currency chip) is kept. */
+  .ka-pb { display: none; }
+  body.template-product .ka-nav { padding-top: 9px; padding-bottom: 9px; }
+  body.template-product .ka-nav__logo small { display: none; }
+  .ka-product { padding: var(--ka-hdr, 79px) 0 0; }
+
+  /* 2. gallery: full-bleed swipe gallery, no thumbnail strip.
+        Height = what is left of the screen after the header (79px), the
+        title / price / lead-time strip (~128px) and the sticky bar (78px),
+        never taller than the photo's own 3:4 and never shorter than 360px.
+        That floor is what makes name, price and lead time fit above the
+        bar inside an in-app browser (390x660). */
+  .ka-thumbs { display: none; }
+  .ka-stage,
+  .ka-stage--native-ratio {
+    aspect-ratio: auto; width: 100%; max-height: none; min-height: 0;
+    height: clamp(360px, calc(100vh - 79px - 136px - 78px), 133.33vw);
+    height: clamp(360px, calc(100svh - 79px - 136px - 78px), 133.33vw);
+    background-image: none !important;
+    background-color: var(--c-paper-deep);
+  }
+  .ka-stage__idx { display: none; }
+  .ka-swipe {
+    display: flex; height: 100%;
+    overflow-x: auto; overflow-y: hidden;
+    scroll-snap-type: x mandatory; -webkit-overflow-scrolling: touch;
+    overscroll-behavior-x: contain;
+    scrollbar-width: none;
+  }
+  .ka-swipe::-webkit-scrollbar { display: none; }
+  .ka-swipe__slide { flex: 0 0 100%; position: relative; scroll-snap-align: start; scroll-snap-stop: always; }
+  .ka-swipe__slide img { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; object-position: 50% 12%; }
+  .ka-dots { display: flex; gap: 7px; position: absolute; left: 0; right: 0; bottom: 14px; justify-content: center; pointer-events: none; }
+  .ka-dots i { width: 6px; height: 6px; border-radius: 50%; background: rgba(247,243,236,0.55); transition: background 0.35s var(--ease-luxury), transform 0.35s var(--ease-luxury); }
+  .ka-dots i.on { background: #F7F3EC; transform: scale(1.25); }
+  .ka-back {
+    position: absolute; top: 14px; left: 14px; z-index: 4;
+    display: inline-flex; align-items: center; gap: 4px; min-height: 44px; padding: 0 14px 0 8px;
+    background: rgba(247,243,236,0.88); backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px);
+    font-family: var(--f-sans); font-size: 0.68rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--c-charcoal);
+  }
+  .ka-back svg { width: 16px; height: 16px; fill: none; stroke: var(--c-charcoal); stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; }
+  .ka-stage__wish { width: 44px; height: 44px; }
+
+  /* 2b. title, price, lead time first; poem and rating follow. The panel
+         becomes a column so DOM order is untouched (SEO/a11y unchanged). */
+  .ka-panel { display: flex; flex-direction: column; padding: 16px var(--gutter) 0; }
+  .ka-collection-tag { display: none; }
+  .ka-p-title { order: 1; font-size: 1.5rem; line-height: 1.12; margin: 0 0 6px; }
+  .ka-p-price-row { order: 2; margin-bottom: 2px; }
+  .ka-p-price { font-size: 1.5rem; line-height: 1.2; }
+  .ka-p-price-row { line-height: 1.2; }
+  .ka-p-tax { line-height: 1.2; }
+  .ka-p-made {
+    order: 3; margin-bottom: 16px; display: block; line-height: 1.3;
+    font-family: var(--f-display); font-style: italic; font-size: 1.02rem; letter-spacing: 0; text-transform: none;
+  }
+  .ka-p-made::before { display: none; }
+  .ka-p-poem { order: 4; font-size: 1.1rem; max-width: none; margin-bottom: 16px; }
+  .ka-grating { order: 5; margin-bottom: 24px; font-size: 0.74rem; }
+  .ka-glogo { font-family: var(--f-sans); font-size: 0.74rem; gap: 0; }
+  .ka-glogo span { color: var(--c-ink-mid) !important; }          /* monochrome G: off-palette colours retired */
+  .ka-buy { order: 6; display: flex; flex-direction: column; padding-top: 22px; border-top: 1px solid var(--line); }
+  .ka-toast { order: 7; }
+  .ka-assure { order: 8; }
+  .ka-accordion { order: 9; }
+
+  /* 3. purchase block: bigger targets, made-to-measure card, order switch */
+  .ka-opt-head { order: 3; align-items: center; margin-bottom: 12px; }
+  .ka-size-grid { order: 4; gap: 8px; margin-bottom: 14px; }
+  .ka-size { min-height: 48px; padding: 0; font-size: 0.88rem; display: inline-flex; align-items: center; justify-content: center; }
+  .ka-opt-label__d { display: inline; }
+  .ka-btn-line { min-height: 44px; display: inline-flex; align-items: center; padding: 0 2px; border-bottom: 0; text-decoration: underline; text-decoration-color: var(--c-charcoal); text-underline-offset: 5px; }
+
+  .ka-bespoke {
+    order: 5; padding: 18px 16px; gap: 14px; align-items: flex-start; margin-bottom: 10px; min-height: 72px;
+  }
+  .ka-bespoke__dot { width: 12px; height: 12px; margin-top: 7px; }
+  .ka-bespoke__k { font-family: var(--f-display); font-size: 1.3rem; letter-spacing: 0; text-transform: none; font-weight: 400; line-height: 1.2; }
+  .ka-bespoke__n { display: block; font-family: var(--f-sans); font-size: 0.82rem; line-height: 1.5; color: var(--c-ink-mid); margin-top: 4px; }
+  .ka-bespoke__s { display: none; }   /* the card's position and note already say it; badge retired on phones */
+  .ka-bespoke.sel { border-color: var(--c-charcoal); }
+  .ka-mtm-toggle {
+    order: 6; display: block; align-self: flex-start; min-height: 44px; margin: -4px 0 6px 2px; padding: 0 2px;
+    font-family: var(--f-sans); font-size: 0.7rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--c-rosegold-2);
+    text-decoration: underline; text-decoration-color: var(--c-rosegold-pale); text-underline-offset: 5px; line-height: 44px; height: 44px;
+  }
+  .ka-mtm { order: 7; }
+  .ka-talk { order: 9; }
+
+  /* made-to-measure first: card, how-it-works, then the standard sizes */
+  .ka-buy--mtm .ka-bespoke { order: 0; margin-bottom: 0; }
+  .ka-buy--mtm .ka-mtm-toggle { order: 1; }
+  .ka-buy--mtm .ka-mtm { order: 2; }
+  .ka-buy--mtm .ka-opt-head { order: 3; margin-top: 14px; }
+  .ka-buy--mtm .ka-size-grid { order: 4; }
+  .ka-buy--mtm .ka-opt-label__d { display: none; }
+  .ka-buy--mtm .ka-opt-label__m { display: inline; }
+  /* standard-size-first pages keep sizes above the card; the card keeps its small italic tag */
+
+  .ka-mtm.open { max-height: 760px; }
+  .ka-mtm__steps li { font-size: 0.95rem; }
+
+  /* in-page Add to Bag / Book an Appointment are retired on mobile: the sticky bar carries both.
+     The size hint stays (it is the response to a "Select size" tap). */
+  .ka-cta-stack { display: contents; }   /* hint becomes a direct child of .ka-buy so it can sit under the size grid */
+  .ka-cta-stack .ka-btn { display: none; }
+  .ka-size-required-hint { order: 4; font-size: 0.78rem; letter-spacing: 0.03em; text-align: left; }
+  .ka-size-required-hint.show { max-height: 48px; margin-top: 0; margin-bottom: 8px; }
+
+  /* inline enquiry line */
+  .ka-talk {
+    display: block; margin: 14px 0 0; font-family: var(--f-display); font-style: italic; font-size: 1.08rem; color: var(--c-ink-mid); line-height: 1.5;
+  }
+  .ka-talk a { font-family: var(--f-sans); font-style: normal; font-size: 0.74rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--c-charcoal); text-decoration: underline; text-decoration-color: var(--c-rosegold-pale); text-underline-offset: 5px; display: inline-block; padding: 8px 0; }
+
+  /* 1b. sticky bar: two buttons, bigger type and targets, safe-area aware */
+  .ka-mobile-bar {
+    display: flex; gap: 10px; align-items: stretch;
+    padding: 12px 14px max(12px, env(safe-area-inset-bottom));
+    background: rgba(247,243,236,0.97);
+    backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+  }
+  .ka-mobile-bar .ka-btn {
+    width: auto; min-width: 0; min-height: 54px; padding: 0 11px;
+    font-size: 0.72rem; letter-spacing: 0.07em; line-height: 1.25; text-align: center; gap: 9px;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .ka-mobile-bar .ka-btn--wa { flex: 1 1 auto; background: var(--c-charcoal); border-color: var(--c-charcoal); color: var(--c-paper); }
+  .ka-mobile-bar .ka-btn--wa:hover { background: var(--c-charcoal); color: var(--c-paper); }
+  .ka-mobile-bar .ka-btn--wa:active { background: var(--c-charcoal-2); }
+  .ka-mobile-bar .ka-wa-glyph { display: block; width: 18px; height: 18px; flex: 0 0 auto; fill: none; stroke: currentColor; stroke-width: 1.5; stroke-linejoin: round; }
+  .ka-mobile-bar .ka-btn--bag {
+    flex: 0 0 auto; min-width: 104px; background: transparent; color: var(--c-charcoal); border: 1px solid var(--c-charcoal); cursor: pointer;
+  }
+  .ka-mobile-bar .ka-btn--bag[aria-disabled="true"],
+  .ka-mobile-bar .ka-btn--bag[aria-disabled="true"]:hover { background: transparent; color: var(--c-charcoal); border-color: var(--c-charcoal); cursor: pointer; }
+  .ka-mobile-bar .ka-btn--bag:not([aria-disabled="true"]),
+  .ka-mobile-bar .ka-btn--bag:not([aria-disabled="true"]):hover { background: var(--c-rosegold); border-color: var(--c-rosegold); color: #fff; }
+  body { padding-bottom: calc(84px + env(safe-area-inset-bottom)); }
+
+  /* toast clears the bar */
+  body.template-product .ka-toast { bottom: calc(96px + env(safe-area-inset-bottom)); min-width: 0; width: calc(100vw - 28px); }
+}
+
+/* narrow phones (<=380px): keep the lead-time line on one row so the strip still clears the bar */
+@media (max-width: 380px) {
+  .ka-p-made { font-size: 0.92rem; }
+  .ka-p-title { font-size: 1.4rem; }
+}
+
+/* tablet portrait (601-900px): same stack, gallery capped so it never swallows the screen */
+@media (min-width: 601px) and (max-width: 900px) {
+  .ka-stage,
+  .ka-stage--native-ratio { height: min(133.33vw, 78vh); height: min(133.33vw, 78svh); }
+}
+
