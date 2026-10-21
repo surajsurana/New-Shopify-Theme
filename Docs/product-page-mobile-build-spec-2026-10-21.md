@@ -633,3 +633,73 @@ Using TD's `ka_enquiry_click` events: placements are now `pdp-mobilebar-whatsapp
 3. Threshold Rs 50,000: keep, raise or lower after 4 weeks of data.
 4. Extend made-to-measure-first and the monochrome Google mark to desktop? (Recommended, separate approval; not built.)
 5. Optional response-time promise beside the inline WhatsApp line: only if it can be kept daily.
+
+
+## 12. Addendum v1.1 (2026-10-21): clean photo overlay controls (supersedes the back chip and heart box in 4.3 and 4.5)
+
+Suraj's feedback: the beige "ALL PRODUCTS" chip and the beige heart box block the photograph. Decision: both become icon-only, transparent, no box, no text. Phones only (inside the existing `@media (max-width: 900px)` block). Desktop and tablet-above-900 stay pixel-identical. Prototype: `Prototypes/product-page-mobile-v1.html` (toggles "Photo overlay: Before / After" and "Photo: Mani / Ivory (very light) / Deep red (dark, busy)"; `?ov=before|after&prod=mani|ivory|dark`).
+
+**Decision on the back control:** keep it, icon-only. The header's hamburger opens the menu, it does not go back, and the breadcrumb is retired on phones, so without it a bride deep in a collection has no on-page way back to where she came from (browser back is unreliable in Instagram/WhatsApp in-app browsers, which is where much of this traffic arrives). Removing it is not recommended.
+
+**Legibility without a box (both light and dark photos):**
+1. White 1.5px line icons, 24px.
+2. Layered drop-shadow on the icon: `drop-shadow(0 0 1px rgba(0,0,0,.55)) drop-shadow(0 1px 6px rgba(0,0,0,.45))`.
+3. A very soft top scrim over the photo only (charcoal 36% fading to 0 over 110px). It reads as natural vignetting, not as a band.
+4. Verified on three stress photos: Mani (beige), the Ivory column corset (palest wall in the catalogue, worst case for white), a deep red busy photo.
+
+**Saved heart:** outline heart becomes a solid `var(--c-rosegold)` (bronze) heart with a 1.3px white outline, so it is unmistakable on light, dark and busy photos.
+
+**Hit area:** 44 x 44px, invisible (no background, no border), icon centred, inset 6px from the photo edges so the icon sits about 16px from the edge. `-webkit-tap-highlight-color: transparent`; pressed state is icon opacity 0.7.
+
+### 12.1 `sections/ka-product-main.liquid`
+Replace the back link (spec 4.5 line with `class="ka-back"`) with the icon-only version. The text span is removed; the accessible name moves to `aria-label`:
+```liquid
+<a class="ka-back" href="{{ back_url }}" aria-label="Back to {{ back_label }}"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg></a>
+```
+`back_label` stays as already computed (collection name, or "All Products" fallback), so the label reads "Back to All Products" or "Back to Corsets". No other markup change. The wishlist button markup is NOT changed: keep the existing `.ka-stage__wish` button, its two SVGs (`heart-line`, `heart-fill`), `aria-label` ("Save to wishlist" / existing wording managed by `ka-wishlist.js`) and `aria-pressed`. Do not touch `ka-wishlist.js`.
+
+### 12.2 `assets/ka-product-main.css`
+Inside the existing `@media (max-width: 900px)` block of the mobile section, DELETE the current `.ka-back { ... }`, `.ka-back svg { ... }` and `.ka-stage__wish { width: 44px; height: 44px; }` rules, and put this in their place:
+```css
+  /* Photo overlay controls: icon-only, no box, no text. */
+  .ka-stage::after {
+    content: ''; position: absolute; left: 0; right: 0; top: 0; height: 110px;
+    z-index: 3; pointer-events: none;
+    background: linear-gradient(to bottom, rgba(29,25,22,0.36) 0%, rgba(29,25,22,0.14) 55%, rgba(29,25,22,0) 100%);
+  }
+  .ka-back, .ka-stage__wish {
+    position: absolute; top: 6px; z-index: 4;
+    width: 44px; height: 44px; padding: 0; margin: 0; border: 0;
+    display: inline-flex; align-items: center; justify-content: center;
+    background: none; backdrop-filter: none; -webkit-backdrop-filter: none;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .ka-back { left: 6px; }
+  .ka-stage__wish { right: 6px; }
+  .ka-stage__wish:hover { background: none; transform: none; }
+  .ka-back svg, .ka-stage__wish svg {
+    width: 24px; height: 24px; fill: none; stroke: #fff; stroke-width: 1.5;
+    stroke-linecap: round; stroke-linejoin: round;
+    filter: drop-shadow(0 0 1px rgba(0,0,0,0.55)) drop-shadow(0 1px 6px rgba(0,0,0,0.45));
+  }
+  .ka-stage__wish svg.heart-fill { fill: var(--c-rosegold); stroke: #fff; stroke-width: 1.3; }
+  .ka-stage__wish:active svg, .ka-back:active svg { opacity: 0.7; }
+```
+Notes for TD:
+- The `.ka-stage::after` scrim is inside the media query, so it does not exist on desktop. The base `.ka-back` is already `display:none` above 900px (spec 4.3), so the shared rule above only applies on phones.
+- Keep the existing `.ka-stage__wish.is-saved svg.heart-fill { opacity:1; transform:scale(1) }` and `.is-saved svg.heart-line { opacity:0 }` rules from the base CSS (they already exist and still apply). The new `.heart-fill` rule above only restyles colour.
+- Position: the heart's 40px/14px `top/right` from the existing <=900px block is overridden by the `top: 6px; right: 6px` here (later in the file, same specificity). Confirm in devtools.
+- Dots stay as is (z-index 4 area, bottom); the scrim only covers the top.
+- Collection cards and the product grid heart (`.ka-p-card__wish` in `assets/ka-collection-grid.css`) are a different class and file and are NOT touched. Wishlist page and header heart also untouched.
+- Lightbox guard `e.target.closest('.ka-stage__wish')` unchanged.
+
+### 12.3 QA checklist (add to section 10)
+1. 390x844 on three products (a light/beige photo, a very pale photo, a dark or saturated photo): chevron and heart clearly legible, no visible boxes, no visible hard scrim edge.
+2. Tap targets measure 44x44 (devtools), taps on the empty area around the icon work, tap on heart does not swipe the gallery or open the lightbox.
+3. VoiceOver/TalkBack: "Back to <collection>", heart announces its name and pressed state.
+4. Saved heart: solid bronze with white outline, visible on all three; toggling off restores the white outline heart.
+5. Desktop 1440 and 901px: no scrim, no change, back link hidden.
+6. Collection grid cards: heart unchanged.
+7. Safari iOS: `filter: drop-shadow` on inline SVG renders (it does on iOS 15+); confirm in Suraj's Safari check.
+
+Build complexity: simple (CSS replacement plus one markup line). Platform feasibility: none.

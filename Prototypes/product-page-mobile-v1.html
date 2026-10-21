@@ -58,6 +58,13 @@
     <button data-lay="hi" class="on">Proposed · Rs 1,40,000 (Mani)</button>
     <button data-lay="lo">Proposed · Rs 38,000 piece</button>
     <button data-lay="live">Live today</button></div>
+  <div class="grp"><span>Photo overlay</span>
+    <button data-ov="before">Before (beige boxes)</button>
+    <button data-ov="after" class="on">After (icon only)</button></div>
+  <div class="grp"><span>Photo</span>
+    <button data-prod="mani" class="on">Mani (beige)</button>
+    <button data-prod="ivory">Ivory (very light)</button>
+    <button data-prod="dark">Deep red (dark, busy)</button></div>
 </div>
 <div class="wrap">
   <div class="stagecol">
@@ -73,7 +80,7 @@
     <h2>Mani Embellished Corset &amp; Rhinestone Skirt</h2>
     <ol>
       <li><b>Two-button bar.</b> Charcoal “Message us on WhatsApp” leads. “Select size” becomes “Add to Bag” the moment a size or Made to my measurements is chosen. Larger type and targets; safe-area padding.</li>
-      <li><b>First screen.</b> Breadcrumb retired (a back chip sits on the photo), slimmer header, full-bleed swipe gallery with dots, then name, price and lead time, all without scrolling.</li>
+      <li><b>First screen.</b> Breadcrumb retired (an icon-only back chevron sits on the photo), slimmer header, full-bleed swipe gallery with dots, then name, price and lead time, all without scrolling.</li>
       <li><b>Made to measure first</b> on pieces at or above Rs 50,000: the card leads and is selected by default, standard sizes follow. Payment flow unchanged: order, then the advisor calls.</li>
       <li><b>Polish.</b> Poem and Google rating move below the price; monochrome Google mark; in-page duplicate buttons retired on phones; toast clears the bar; bigger size buttons.</li>
     </ol>
@@ -2047,14 +2054,32 @@ html[data-ka-currency-pending] [data-price] {
   .ka-dots { display: flex; gap: 7px; position: absolute; left: 0; right: 0; bottom: 14px; justify-content: center; pointer-events: none; }
   .ka-dots i { width: 6px; height: 6px; border-radius: 50%; background: rgba(247,243,236,0.55); transition: background 0.35s var(--ease-luxury), transform 0.35s var(--ease-luxury); }
   .ka-dots i.on { background: #F7F3EC; transform: scale(1.25); }
-  .ka-back {
-    position: absolute; top: 14px; left: 14px; z-index: 4;
-    display: inline-flex; align-items: center; gap: 4px; min-height: 44px; padding: 0 14px 0 8px;
-    background: rgba(247,243,236,0.88); backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px);
-    font-family: var(--f-sans); font-size: 0.68rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--c-charcoal);
+  /* Photo overlay controls (v1.1, 2026-10-21): icon-only, no box, no text.
+     Legibility on any photograph comes from (a) a very soft top scrim and
+     (b) a layered drop-shadow on the white line icons, never from a chip.
+     Scoped to the PDP photo only (.ka-stage__wish is not used by cards). */
+  .ka-stage::after {
+    content: ''; position: absolute; left: 0; right: 0; top: 0; height: 110px;
+    z-index: 3; pointer-events: none;
+    background: linear-gradient(to bottom, rgba(29,25,22,0.36) 0%, rgba(29,25,22,0.14) 55%, rgba(29,25,22,0) 100%);
   }
-  .ka-back svg { width: 16px; height: 16px; fill: none; stroke: var(--c-charcoal); stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; }
-  .ka-stage__wish { width: 44px; height: 44px; }
+  .ka-back, .ka-stage__wish {
+    position: absolute; top: 6px; z-index: 4;
+    width: 44px; height: 44px; padding: 0; margin: 0; border: 0;
+    display: inline-flex; align-items: center; justify-content: center;
+    background: none; backdrop-filter: none; -webkit-backdrop-filter: none;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .ka-back { left: 6px; }
+  .ka-stage__wish { right: 6px; }
+  .ka-stage__wish:hover { background: none; transform: none; }
+  .ka-back svg, .ka-stage__wish svg {
+    width: 24px; height: 24px; fill: none; stroke: #fff; stroke-width: 1.5;
+    stroke-linecap: round; stroke-linejoin: round;
+    filter: drop-shadow(0 0 1px rgba(0,0,0,0.55)) drop-shadow(0 1px 6px rgba(0,0,0,0.45));
+  }
+  .ka-stage__wish svg.heart-fill { fill: var(--c-rosegold); stroke: #fff; stroke-width: 1.3; }
+  .ka-stage__wish:active svg, .ka-back:active svg { opacity: 0.7; }
 
   /* 2b. title, price, lead time first; poem and rating follow. The panel
          becomes a column so DOM order is untouched (SEO/a11y unchanged). */
@@ -2716,9 +2741,10 @@ html[data-ka-currency-pending] [data-price] {
 var $=function(id){return document.getElementById(id)};
 var T=function(id){return $(id).textContent};
 var BASE=location.href.replace(/[^\/]*$/,'');
-var IMG=['images/mani/mani-1.jpg','images/mani/mani-2.jpg','images/mani/mani-3.jpg'].map(function(p){return BASE+p});
+var IMG;
+function setImgs(){IMG=({mani:['images/mani/mani-1.jpg','images/mani/mani-2.jpg','images/mani/mani-3.jpg'],ivory:['images/product-ivory-column-corset.jpg','images/product-snow-veil-corset.jpg','images/product-bloom-lehenga.jpg'],dark:['images/cd-simran-maroon-1.jpg','images/cd-simran-maroon-2.jpg','images/cd-simran-maroon-3.jpg']})[state.prod||'mani'].map(function(p){return BASE+p})}
 var q=new URLSearchParams(location.search);
-var state={dev:q.get('device')||'phone',lay:q.get('layout')||'hi'};
+var state={dev:q.get('device')||'phone',lay:q.get('layout')||'hi',ov:q.get('ov')||'after',prod:q.get('prod')||'mani'};
 var FILL=window.innerWidth<=480&&!q.get('bare');
 if(q.get('bare')||FILL) document.body.classList.add('bare');
 
@@ -2754,7 +2780,7 @@ function section(o){ // o.neu, o.mtm, o.price
   if(o.neu){
     h+='<div class="ka-swipe" id="ka-swipe" tabindex="0" aria-label="Photographs">'+IMG.map(function(s,i){return '<div class="ka-swipe__slide"><img src="'+s+'" alt="Mani Embellished Corset &amp; Rhinestone Skirt" draggable="false"'+(i?' loading="lazy"':'')+'></div>'}).join('')+'</div>';
     h+='<div class="ka-dots" id="ka-dots" aria-hidden="true"><i class="on"></i><i></i><i></i></div>';
-    h+='<a class="ka-back" href="#"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg><span>All Products</span></a>';
+    h+='<a class="ka-back" href="#" aria-label="Back to All Products"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg>'+(state.ov==='before'?'<span>All Products</span>':'')+'</a>';
   }
   h+='<span class="ka-stage__idx" id="ka-stage-idx">01 / 03</span><span class="ka-stage__zoom" aria-hidden="true">&#10530; Zoom</span>';
   h+='<button type="button" class="ka-stage__wish" data-product-handle="mani" aria-label="Save to wishlist" aria-pressed="false">'+HEART+'</button></div>';
@@ -2803,12 +2829,13 @@ function section(o){ // o.neu, o.mtm, o.price
 }
 function acc(k,t,body){return '<div class="ka-acc" data-acc="'+k+'"><button class="ka-acc__head" type="button">'+t+'<span class="ka-acc__pm" aria-hidden="true">+</span></button><div class="ka-acc__body"><div class="ka-acc__inner">'+body+'</div></div></div>';}
 
-function build(lay){
+var BEFORE='@media(max-width:900px){.ka-stage::after{display:none}.ka-back{position:absolute;top:14px;left:14px;width:auto;height:auto;display:inline-flex;align-items:center;gap:4px;min-height:44px;padding:0 14px 0 8px;background:rgba(247,243,236,.88);backdrop-filter:blur(4px);font-family:var(--f-sans);font-size:.68rem;letter-spacing:.14em;text-transform:uppercase;color:var(--c-charcoal)}.ka-back svg{width:16px;height:16px;stroke:var(--c-charcoal);filter:none}.ka-stage__wish{top:14px;right:14px;background:rgba(247,243,236,.88);backdrop-filter:blur(4px)}.ka-stage__wish svg{width:18px;height:18px;stroke:var(--c-charcoal);filter:none}.ka-stage__wish svg.heart-fill{fill:var(--c-rosegold);stroke:var(--c-rosegold)}}';
+function build(lay){setImgs();
   var neu = lay!=='live';
   var o={neu:neu,mtm:lay==='hi',price:lay==='lo'?'₹ 38,000':'₹ 140,000'};
   var css=T('css-base')+T('css-nav')+T('css-cur')+T('css-pb')+(neu?T('css-main-new'):T('css-main-old'));
-  var boot='window.__hold=9000;window.kaShowToast=function(m){var t=document.getElementById("kaToast"),s=document.getElementById("kaToastSub");if(s)s.textContent=m;t.classList.add("show");clearTimeout(window.__t);window.__t=setTimeout(function(){t.classList.remove("show")},(window.__hold||3600))};window.kaUpdateBagCount=function(n){var b=document.querySelector("[data-ka-bag-count]");if(b){b.setAttribute("data-count",n);b.textContent=n||""}};var __n=0;window.fetch=function(u){if(String(u).indexOf("cart/add")>-1){__n++;return Promise.resolve({ok:true,json:function(){return Promise.resolve({})}})}return Promise.resolve({ok:true,json:function(){return Promise.resolve({item_count:__n})}})};document.addEventListener("click",function(e){var a=e.target.closest&&e.target.closest("a[target=_blank]");if(a){e.preventDefault();window.parent.postMessage({wa:a.href},"*")}});';
-  return '<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><base href="'+BASE+'"><link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Jost:wght@200;300;400;500&display=swap" rel="stylesheet"><style>'+css+(q.get('nt')?'*{transition:none!important;animation:none!important}':'')+'</style></head><body class="template-product">'+header()+section(o)+'<script>'+boot+'<\/script><script>'+T(neu?'js-new':'js-old')+'<\/script></body></html>';
+  var boot='window.__hold=9000;window.kaShowToast=function(m){var t=document.getElementById("kaToast"),s=document.getElementById("kaToastSub");if(s)s.textContent=m;t.classList.add("show");clearTimeout(window.__t);window.__t=setTimeout(function(){t.classList.remove("show")},(window.__hold||3600))};window.kaUpdateBagCount=function(n){var b=document.querySelector("[data-ka-bag-count]");if(b){b.setAttribute("data-count",n);b.textContent=n||""}};var __n=0;window.fetch=function(u){if(String(u).indexOf("cart/add")>-1){__n++;return Promise.resolve({ok:true,json:function(){return Promise.resolve({})}})}return Promise.resolve({ok:true,json:function(){return Promise.resolve({item_count:__n})}})};document.addEventListener("click",function(e){var a=e.target.closest&&e.target.closest("a[target=_blank]");if(a){e.preventDefault();window.parent.postMessage({wa:a.href},"*")}});document.addEventListener("click",function(e){var w=e.target.closest&&e.target.closest(".ka-stage__wish");if(w){var on=w.classList.toggle("is-saved");w.setAttribute("aria-pressed",on)}});';
+  return '<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><base href="'+BASE+'"><link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Jost:wght@200;300;400;500&display=swap" rel="stylesheet"><style>'+css+(q.get('nt')?'*{transition:none!important;animation:none!important}':'')+(state.ov==='before'?BEFORE:'')+'</style></head><body class="template-product">'+header()+section(o)+'<script>'+boot+'<\/script><script>'+T(neu?'js-new':'js-old')+'<\/script></body></html>';
 }
 
 var dev={phone:[390,844,'iPhone, 390 x 844'],inapp:[390,660,'In-app browser viewport, 390 x 660 (Instagram-style top and bottom bars drawn outside it)'],desk:[1440,900,'Desktop, 1440 x 900']};
@@ -2829,9 +2856,13 @@ function render(keepScroll){
   fr.srcdoc=build(state.lay);
   document.querySelectorAll('[data-dev]').forEach(function(b){b.classList.toggle('on',b.dataset.dev===state.dev)});
   document.querySelectorAll('[data-lay]').forEach(function(b){b.classList.toggle('on',b.dataset.lay===state.lay)});
+  document.querySelectorAll('[data-ov]').forEach(function(b){b.classList.toggle('on',b.dataset.ov===state.ov)});
+  document.querySelectorAll('[data-prod]').forEach(function(b){b.classList.toggle('on',b.dataset.prod===state.prod)});
 }
 document.querySelectorAll('[data-dev]').forEach(function(b){b.onclick=function(){state.dev=b.dataset.dev;render()}});
 document.querySelectorAll('[data-lay]').forEach(function(b){b.onclick=function(){state.lay=b.dataset.lay;render()}});
+document.querySelectorAll('[data-ov]').forEach(function(b){b.onclick=function(){state.ov=b.dataset.ov;render()}});
+document.querySelectorAll('[data-prod]').forEach(function(b){b.onclick=function(){state.prod=b.dataset.prod;render()}});
 document.querySelectorAll('[data-jump]').forEach(function(b){b.onclick=function(){
   var w=fr.contentWindow,d=w.document,k=b.dataset.jump,y=0;
   if(k==='buy'){var e=d.querySelector('.ka-buy')||d.getElementById('ka-sizes');y=e.getBoundingClientRect().top+w.scrollY-120}
@@ -2845,6 +2876,7 @@ fr.addEventListener('load',function(){
   setTimeout(function(){a.split(',').forEach(function(x){var p=x.split(':');
     if(p[0]==='size'){var b=d.querySelector('.ka-size[data-value="'+p[1]+'"]');b&&b.click()}
     if(p[0]==='bespoke'){d.getElementById('ka-bespoke').click()}
+    if(p[0]==='wish'){d.querySelector('.ka-stage__wish').click()}
     if(p[0]==='how'){d.getElementById('ka-mtm-toggle').click()}
     if(p[0]==='bag'){d.getElementById('ka-mobilebar-bag').click()}
     if(p[0]==='swipe'){var s=d.getElementById('ka-swipe');s.scrollLeft=s.clientWidth*(+p[1])}
