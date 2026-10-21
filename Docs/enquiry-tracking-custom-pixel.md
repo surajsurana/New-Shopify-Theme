@@ -30,11 +30,11 @@ below does that.
 
 ## The custom pixel code
 
-Replace `G-XXXXXXXXXX` with the real GA4 Measurement ID before saving.
+GA4 Measurement ID: `G-0JW62LQCS4` (account 325873901, property 454935652, web stream karishmaashita.com).
 
 ```js
 // K&A enquiry tracking: forwards the theme's 'ka_enquiry_click' event to GA4 as generate_lead.
-const GA4_ID = 'G-XXXXXXXXXX'; // <-- REPLACE with the GA4 Measurement ID
+const GA4_ID = 'G-0JW62LQCS4';
 
 window.dataLayer = window.dataLayer || [];
 function gtag() { dataLayer.push(arguments); }
@@ -69,24 +69,27 @@ Notes:
   parameters. To report on them, register them once as custom dimensions
   (GA4 Admin > Custom definitions > Create custom dimension > scope: Event).
 - Mark `generate_lead` as a key event (GA4 Admin > Events > toggle "Mark as key event").
-- If GA4 is already loaded on the storefront through the Google & YouTube channel, keep the
-  same Measurement ID so sessions stitch together; otherwise the pixel's events appear as a
-  separate stream of hits under the same property.
+- The site may already send GA4 events through Shopify's Google & YouTube app. This pixel is
+  deliberately limited so it cannot double-count: it loads gtag inside the pixel sandbox, sets
+  `send_page_view: false`, and sends ONLY `generate_lead` (no page_view, no purchase or other
+  ecommerce events). It uses the same Measurement ID so sessions stitch together.
 
 ## Steps for Suraj (cannot be created via the API)
 
-1. Get the GA4 Measurement ID: GA4 Admin > Data streams > the web stream > "Measurement ID"
-   (format `G-XXXXXXXXXX`).
+1. The GA4 Measurement ID is already filled in (`G-0JW62LQCS4`); nothing to look up.
 2. Shopify Admin > Settings > Customer events.
 3. Click "Add custom pixel". Name it `KA Enquiry Tracking (GA4)`. Click "Add pixel".
-4. Paste the code above into the code box. Replace `G-XXXXXXXXXX` with the real ID.
+4. Paste the code above into the code box (the ID is already in it).
 5. Permissions: set "Required" is not needed if you only use this for analytics; the cleanest
    setting is Permission = "Not required" with Data sale = "Data collected does not qualify as
    data sale" (this pixel only reports anonymous enquiry clicks). If your consent policy
    requires it, choose "Marketing/Analytics" and the pixel only fires for visitors who
    consented.
 6. Click "Save", then "Connect" (top right). The status must read "Connected".
-7. Test: open GA4 > Admin > DebugView (or Reports > Realtime). On the storefront, open a
+7. Mark `generate_lead` as a key event in GA4 (Admin > Events / Key events; needs Editor
+   access). The event only appears in that list after it has fired once, so do this after the
+   test in step 8, or toggle it from Admin > Key events > New key event by name.
+8. Test: open GA4 > Admin > DebugView (or Reports > Realtime). On the storefront, open a
    product page and tap "Appointment" or "Concierge". Within about a minute a
    `generate_lead` event should appear with `placement` and `product_handle` filled in.
    (Shopify's "Test" button in the pixel editor only checks Shopify-standard events; test on
