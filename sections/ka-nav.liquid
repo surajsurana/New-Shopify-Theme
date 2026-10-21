@@ -8,6 +8,7 @@
   later, per the spec's own flagged follow-up — not done here since
   that is out of this page's scope.
 {%- endcomment -%}
+{%- assign wa_base = 'https://wa.me/' | append: settings.whatsapp_number -%}
 {%- assign is_about_us = false -%}
 {%- if request.page_type == 'page' and page.handle == 'about-us' -%}{%- assign is_about_us = true -%}{%- endif -%}
 {%- comment -%}
@@ -277,7 +278,7 @@
     <li><a href="{{ section.settings.link_about }}"{% if is_about_us %} class="is-current"{% endif %}>About</a></li>
     <li><a href="{{ section.settings.link_visit | default: '/pages/visit-the-atelier' }}"{% if is_visit %} class="is-current"{% endif %}>Visit Us</a></li>
     <li><a href="{{ section.settings.link_faq | default: '/pages/faq' }}"{% if is_faq %} class="is-current"{% endif %}>FAQ</a></li>
-    <li><a href="#" data-ka-appt-link>Book an Appointment</a></li>
+    <li><a href="{{ wa_base }}?text={{ "Hello K&A, I'd like to book an appointment" | url_encode }}" target="_blank" rel="noopener" data-ka-enquiry="appointment" data-ka-placement="nav-drawer-appointment">Book an Appointment</a></li>
   </ul>
   {%- comment -%}
     My Account / My Wishlist rows — Docs/account-wishlist-build-spec.md
@@ -333,7 +334,7 @@
   {%- endif -%}
   <div class="ka-mobile-nav__footer">
     <p>Concierge</p>
-    <a href="https://wa.me/{{ settings.whatsapp_number }}" target="_blank" rel="noopener">
+    <a href="{{ wa_base }}?text={{ "Hello K&A, I'd like to speak with a concierge" | url_encode }}" target="_blank" rel="noopener" data-ka-enquiry="whatsapp" data-ka-placement="nav-drawer-concierge">
       {{ settings.whatsapp_display }}
     </a>
   </div>
@@ -370,37 +371,6 @@
     <p class="ka-currency-menu__note">Prices shown for your convenience. Checkout completes in Indian Rupees.</p>
   </div>
 {%- endif -%}
-
-<script>
-  /* "Book an Appointment" — TEMPORARY interim routing, same pattern as
-     the Product page's openAppt(): until a real booking flow/calendar
-     exists, every [data-ka-appt-link] click anywhere on the site opens
-     the WhatsApp concierge thread instead. This single delegated
-     listener (document-level) covers every page that includes ka-nav,
-     so it handles the mobile drawer link here AND any other section
-     that marks an element data-ka-appt-link (Product page CTA stack,
-     Appointment section, Hero secondary CTA, Collection concierge band,
-     Footer "Book an Appointment" link, etc. — see
-     Docs/cta-architecture-revision.md Round 2, R2-4, and the soft-launch
-     appointments-page-fix notes). Number comes from the theme's global
-     settings.whatsapp_number (Theme Settings -> Contact), rendered
-     server-side here since this is a .liquid file, not hardcoded.
-     An optional data-ka-appt-text attribute lets a given link pre-fill a
-     more specific enquiry message (e.g. "in-store" vs. "virtual" on the
-     Appointment section); links without it just open WhatsApp with no
-     pre-filled text, same as before this attribute existed.
-     Flagged — do not let this silently become permanent. Re-wire every
-     data-ka-appt-link element to a real booking flow URL once one exists. */
-  document.addEventListener('click', function (e) {
-    var link = e.target.closest && e.target.closest('[data-ka-appt-link]');
-    if (!link) return;
-    e.preventDefault();
-    var waUrl = 'https://wa.me/{{ settings.whatsapp_number }}';
-    var apptText = link.getAttribute('data-ka-appt-text');
-    if (apptText) { waUrl += '?text=' + encodeURIComponent(apptText); }
-    window.open(waUrl, '_blank');
-  });
-</script>
 
 {% schema %}
 {

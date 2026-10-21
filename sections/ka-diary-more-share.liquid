@@ -103,7 +103,7 @@
           assign wa_message = "Hi, I'm a K&A client and I'd love to share my story for the Client Diaries" | url_param_escape
           assign wa_share_url = 'https://wa.me/' | append: settings.whatsapp_number | append: '?text=' | append: wa_message
         -%}
-        <a href="{{ wa_share_url }}" class="text-link" target="_blank" rel="noopener">Share Your Story on WhatsApp &rarr;</a>
+        <a href="{{ wa_share_url }}" class="text-link" target="_blank" rel="noopener" data-ka-enquiry="whatsapp" data-ka-placement="diary-more-share">Share Your Story on WhatsApp &rarr;</a>
       {%- endif -%}
     </div>
   </section>

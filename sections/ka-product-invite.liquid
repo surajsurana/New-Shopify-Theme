@@ -2,9 +2,12 @@
 
 {%- liquid
   assign wa = settings.whatsapp_number
-  assign appt_url = section.settings.appointment_url | default: '/pages/appointments'
-  assign wa_text = 'Hi, I' | append: '%27' | append: 'd like to enquire about the ' | append: product.title
-  assign wa_enquire = 'https://wa.me/' | append: wa | append: '?text=' | append: wa_text | url_param_escape
+  assign wa_appt_text = "Hello K&A, I'd like to book an appointment for " | append: product.title | append: ' (' | append: canonical_url | append: ')'
+  assign wa_appt_text_enc = wa_appt_text | url_encode
+  assign appt_url = 'https://wa.me/' | append: wa | append: '?text=' | append: wa_appt_text_enc
+  assign wa_text = "Hello K&A, I'd like to know more about " | append: product.title | append: ' (' | append: canonical_url | append: ')'
+  assign wa_text_enc = wa_text | url_encode
+  assign wa_enquire = 'https://wa.me/' | append: wa | append: '?text=' | append: wa_text_enc
 -%}
 
 <section class="ka-invite">
@@ -14,8 +17,8 @@
     <h2>{{ section.settings.title }}</h2>
     <p>{{ section.settings.body }}</p>
     <div class="ka-invite__acts">
-      <a class="ka-btn" href="{{ appt_url }}">Book a Private Appointment</a>
-      <a class="ka-btn ka-btn--concierge" href="{{ wa_enquire }}" target="_blank" rel="noopener"><span class="dot"></span>Speak with a Couture Concierge</a>
+      <a class="ka-btn" href="{{ appt_url }}" target="_blank" rel="noopener" data-ka-enquiry="appointment" data-ka-placement="pdp-invite-appointment" data-ka-product="{{ product.handle }}">Book a Private Appointment</a>
+      <a class="ka-btn ka-btn--concierge" href="{{ wa_enquire }}" target="_blank" rel="noopener" data-ka-enquiry="whatsapp" data-ka-placement="pdp-invite-concierge" data-ka-product="{{ product.handle }}"><span class="dot"></span>Speak with a Couture Concierge</a>
     </div>
   </div>
 </section>
@@ -25,7 +28,7 @@
   "name": "Conversation CTA",
   "tag": "section",
   "settings": [
-    { "type": "url",      "id": "appointment_url", "label": "Appointment booking URL" },
+    { "type": "url",      "id": "appointment_url", "label": "Appointment URL (dormant)", "info": "Not used: the button opens a WhatsApp appointment enquiry naming the product." },
     { "type": "text",     "id": "eyebrow", "label": "Eyebrow", "default": "The K&A Experience" },
     { "type": "text",     "id": "title",   "label": "Title",   "default": "Every Piece Begins with a Conversation" },
     { "type": "textarea", "id": "body",    "label": "Body", "default": "Tell us about your celebration. Our atelier will guide you on fit, fabric and customisation — with no obligation, only care." }

@@ -9,11 +9,18 @@
 {{ 'ka-concierge-float.css' | asset_url | stylesheet_tag }}
 
 {%- if settings.whatsapp_number != blank -%}
+  {%- if product -%}
+    {%- capture ctx_text -%}Hello K&A, I'd like to know more about {{ product.title }} ({{ canonical_url }}){%- endcapture -%}
+  {%- else -%}
+    {%- assign ctx_text = "Hello K&A, I'd like to speak with a concierge" -%}
+  {%- endif -%}
   <a
-    href="https://wa.me/{{ settings.whatsapp_number }}"
+    href="https://wa.me/{{ settings.whatsapp_number }}?text={{ ctx_text | url_encode }}"
     class="ka-concierge-float"
     target="_blank"
     rel="noopener"
+    data-ka-enquiry="whatsapp" data-ka-placement="float-concierge"
+    {% if product %}data-ka-product="{{ product.handle }}"{% endif %}
     title="Speak with a Couture Concierge"
     aria-label="Speak with a Couture Concierge on WhatsApp"
   >

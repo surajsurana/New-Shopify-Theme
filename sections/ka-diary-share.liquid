@@ -18,7 +18,7 @@
       assign wa_message = section.settings.whatsapp_prefill | default: "Hi, I'm a K&A client and I'd love to share my story for the Client Diaries" | url_param_escape
       assign wa_share_url = 'https://wa.me/' | append: settings.whatsapp_number | append: '?text=' | append: wa_message
     -%}
-    <a href="{{ wa_share_url }}" class="text-link reveal reveal-delay-3" target="_blank" rel="noopener">{{ section.settings.cta_label }} &rarr;</a>
+    <a href="{{ wa_share_url }}" class="text-link reveal reveal-delay-3" target="_blank" rel="noopener" data-ka-enquiry="whatsapp" data-ka-placement="diary-share">{{ section.settings.cta_label }} &rarr;</a>
   {%- endif -%}
 </section>
 

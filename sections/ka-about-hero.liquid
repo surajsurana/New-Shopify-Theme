@@ -75,7 +75,7 @@
         architecture-revision.md Round 2, R2-4). Intercepted by the
         delegated click handler in ka-nav.liquid.
       {%- endcomment -%}
-      <a href="{{ section.settings.cta_secondary_url | default: '/pages/appointments' }}" class="btn-text" data-ka-appt-link data-ka-appt-text="Hi, I'd like to book a styling appointment">{{ section.settings.cta_secondary_label }}</a>
+      <a href="https://wa.me/{{ settings.whatsapp_number }}?text={{ "Hello K&A, I'd like to book a styling appointment" | url_encode }}" class="btn-text" target="_blank" rel="noopener" data-ka-enquiry="appointment" data-ka-placement="about-hero-appointment">{{ section.settings.cta_secondary_label }}</a>
     </div>
   </div>
 
@@ -112,7 +112,7 @@
     { "type": "text", "id": "cta_primary_label",   "label": "Primary CTA label",   "default": "Explore the Collections" },
     { "type": "url",  "id": "cta_primary_url",     "label": "Primary CTA URL",     "info": "Defaults to /collections." },
     { "type": "text", "id": "cta_secondary_label", "label": "Secondary CTA label", "default": "Book a Styling Appointment" },
-    { "type": "url",  "id": "cta_secondary_url",   "label": "Secondary CTA URL",   "info": "Defaults to /pages/appointments. JS currently always reroutes to WhatsApp until a real booking flow exists." }
+    { "type": "url",  "id": "cta_secondary_url",   "label": "Secondary CTA URL",   "info": "Dormant: the CTA opens a WhatsApp appointment enquiry until a real booking flow exists." }
   ],
   "presets": [
     { "name": "About Hero" }

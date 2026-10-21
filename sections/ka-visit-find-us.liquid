@@ -46,10 +46,11 @@
           {{ section.settings.cta_directions_label }}
         </a>
         <a
-          href="https://wa.me/{{ settings.whatsapp_number }}"
+          href="https://wa.me/{{ settings.whatsapp_number }}?text={{ section.settings.whatsapp_message | default: "Hello K&A, I'd like to book an appointment to visit the atelier" | url_encode }}"
           class="ka-visit-find-us__whatsapp"
-          data-ka-appt-link
-          data-ka-appt-text="{{ section.settings.whatsapp_message }}"
+          target="_blank"
+          rel="noopener"
+          data-ka-enquiry="appointment" data-ka-placement="visit-whatsapp"
         >
           {{ section.settings.cta_whatsapp_label }}
         </a>

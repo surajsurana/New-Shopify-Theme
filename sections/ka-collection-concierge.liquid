@@ -18,6 +18,7 @@
 
 {% liquid
   assign short_name = collection.metafields.custom.short_name
+  assign coll_wa_text = "Hello K&A, I'd like to enquire about the " | append: collection.title | append: ' collection'
 %}
 
 <section class="ka-coll-concierge" aria-label="Concierge enquiry">
@@ -33,26 +34,22 @@
     </p>
     <div class="ka-coll-concierge__ctas reveal reveal-delay-3">
       <a
-        href="https://wa.me/{{ settings.whatsapp_number }}?text=Hi%2C%20I%27d%20like%20to%20enquire%20about%20the%20{{ collection.title | url_param_escape }}%20collection"
+        href="https://wa.me/{{ settings.whatsapp_number }}?text={{ coll_wa_text | url_encode }}"
         class="btn-dark-solid"
         target="_blank"
         rel="noopener"
+        data-ka-enquiry="whatsapp" data-ka-placement="collection-concierge-enquire"
       >Enquire on WhatsApp</a>
       {%- comment -%}
-        "Book a Styling Session" — TEMPORARY interim WhatsApp routing,
-        same pattern as the rest of the site (Docs/cta-architecture-revision.md
-        Round 2, R2-4; extended here for the soft-launch /pages/appointments
-        dead-link fix). data-ka-appt-link is intercepted by the sitewide
-        delegated handler in ka-nav.liquid. styling_session_url is kept as
-        the real href (no-JS fallback + ready slot for a real booking flow
-        later); Suraj can still set it via section settings, but JS reroutes
-        to WhatsApp regardless until a real booking flow exists.
+        "Book a Styling Session" is a real wa.me link (2026-10-21,
+        enquiry tracking); styling_session_url is DORMANT.
       {%- endcomment -%}
       <a
-        href="{{ section.settings.styling_session_url | default: '/#appointment' }}"
+        href="https://wa.me/{{ settings.whatsapp_number }}?text={{ "Hello K&A, I'd like to book a styling session" | url_encode }}"
         class="btn-outline-dark"
-        data-ka-appt-link
-        data-ka-appt-text="Hi, I'd like to book a styling session"
+        target="_blank"
+        rel="noopener"
+        data-ka-enquiry="appointment" data-ka-placement="collection-concierge-styling"
       >Book a Styling Session</a>
     </div>
   </div>

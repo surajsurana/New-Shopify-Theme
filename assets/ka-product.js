@@ -91,13 +91,10 @@
      silently become permanent; wire a real booking flow when one
      is built.
 
-     NOTE: the actual [data-ka-appt-link] click handler lives sitewide
-     in ka-nav.liquid (a document-level delegated listener that already
-     covers every element with this attribute, on every page, including
-     these Product-page buttons). It is intentionally NOT duplicated
-     here — binding a second listener on the same elements would open
-     two WhatsApp tabs per click. ka-product.js only needs the shared
-     WHATSAPP_URL constant for the bespoke add-to-bag redirect below. */
+     2026-10-21: appointment CTAs are now real <a href="https://wa.me/...">
+     links (no JS handler). Click tracking is the delegated listener in
+     ka-theme.js (data-ka-enquiry). ka-product.js only needs the fallback
+     URL for the bespoke add-to-bag redirect below. */
   var KA_WHATSAPP_URL = 'https://wa.me/919967543087';
 
   function addToBag() {
@@ -107,7 +104,12 @@
          enquiry. To enable cart-add for MTM, add a "Made to my measurements"
          size variant to the product in Shopify Admin and this branch will
          stop firing. */
-      window.open(KA_WHATSAPP_URL, '_blank');
+      /* Same real wa.me link (with product context) as the Appointment CTA;
+         tracked like every other enquiry link. */
+      var apptLink = document.getElementById('ka-cta-appt');
+      var bespokeUrl = apptLink ? apptLink.href : KA_WHATSAPP_URL;
+      if (apptLink && window.kaTrackEnquiry) window.kaTrackEnquiry('appointment', 'pdp-bespoke-fallback', apptLink.getAttribute('data-ka-product'));
+      window.open(bespokeUrl, '_blank', 'noopener');
       return;
     }
     if (!selectedVariantId) {

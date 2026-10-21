@@ -105,7 +105,7 @@
 {%- liquid
   assign wa = settings.whatsapp_number
   assign collections_url = section.settings.collections_url | default: '/collections'
-  assign wa_concierge_text = 'Hi, I' | append: '%27' | append: 'd like to ask a question before checking out.'
+  assign wa_concierge_text = "Hello K&A, I'd like to ask a question before checking out." | url_encode
   assign wa_concierge_url = 'https://wa.me/' | append: wa | append: '?text=' | append: wa_concierge_text
 -%}
 
@@ -312,7 +312,7 @@
       <div class="ka-empty__acts">
         <a href="{{ collections_url }}" class="ka-btn">Explore the Collections</a>
         <div class="ka-empty__or">or</div>
-        <a class="ka-btn ka-btn--concierge" href="{{ wa_concierge_url }}" target="_blank" rel="noopener"><span class="dot"></span>Speak with a Couture Concierge</a>
+        <a class="ka-btn ka-btn--concierge" href="{{ wa_concierge_url }}" target="_blank" rel="noopener" data-ka-enquiry="whatsapp" data-ka-placement="cart-empty-concierge"><span class="dot"></span>Speak with a Couture Concierge</a>
       </div>
     </div>
     <div class="ka-empty__img reveal-img reveal-delay-1">
