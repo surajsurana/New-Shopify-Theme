@@ -163,7 +163,7 @@
         </div>
       {%- endif -%}
       {%- endif -%}
-      <a class="ka-back" href="{{ back_url }}"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg><span>{{ back_label }}</span></a>
+      <a class="ka-back" href="{{ back_url }}" aria-label="Back to {{ back_label }}"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg></a>
       <span class="ka-stage__idx" id="ka-stage-idx">01 / {% if product.images.size > 0 %}{{ product.images.size | prepend: '0' | slice: -2, 2 }}{% else %}01{% endif %}</span>
       <span class="ka-stage__zoom" aria-hidden="true">&#10530; Zoom</span>
       {%- comment -%}

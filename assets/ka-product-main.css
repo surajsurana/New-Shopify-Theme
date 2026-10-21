@@ -436,14 +436,29 @@
   .ka-dots { display: flex; gap: 7px; position: absolute; left: 0; right: 0; bottom: 14px; justify-content: center; pointer-events: none; }
   .ka-dots i { width: 6px; height: 6px; border-radius: 50%; background: rgba(247,243,236,0.55); transition: background 0.35s var(--ease-luxury), transform 0.35s var(--ease-luxury); }
   .ka-dots i.on { background: #F7F3EC; transform: scale(1.25); }
-  .ka-back {
-    position: absolute; top: 14px; left: 14px; z-index: 4;
-    display: inline-flex; align-items: center; gap: 4px; min-height: 44px; padding: 0 14px 0 8px;
-    background: rgba(247,243,236,0.88); backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px);
-    font-family: var(--f-sans); font-size: 0.68rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--c-charcoal);
+  /* Photo overlay controls: icon-only, no box, no text. */
+  .ka-stage::after {
+    content: ''; position: absolute; left: 0; right: 0; top: 0; height: 110px;
+    z-index: 3; pointer-events: none;
+    background: linear-gradient(to bottom, rgba(29,25,22,0.36) 0%, rgba(29,25,22,0.14) 55%, rgba(29,25,22,0) 100%);
   }
-  .ka-back svg { width: 16px; height: 16px; fill: none; stroke: var(--c-charcoal); stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; }
-  .ka-stage__wish { width: 44px; height: 44px; }
+  .ka-back, .ka-stage__wish {
+    position: absolute; top: 6px; z-index: 4;
+    width: 44px; height: 44px; padding: 0; margin: 0; border: 0;
+    display: inline-flex; align-items: center; justify-content: center;
+    background: none; backdrop-filter: none; -webkit-backdrop-filter: none;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .ka-back { left: 6px; }
+  .ka-stage__wish { right: 6px; }
+  .ka-stage__wish:hover { background: none; transform: none; }
+  .ka-back svg, .ka-stage__wish svg {
+    width: 24px; height: 24px; fill: none; stroke: #fff; stroke-width: 1.5;
+    stroke-linecap: round; stroke-linejoin: round;
+    filter: drop-shadow(0 0 1px rgba(0,0,0,0.55)) drop-shadow(0 1px 6px rgba(0,0,0,0.45));
+  }
+  .ka-stage__wish svg.heart-fill { fill: var(--c-rosegold); stroke: #fff; stroke-width: 1.3; }
+  .ka-stage__wish:active svg, .ka-back:active svg { opacity: 0.7; }
 
   /* 2b. title, price, lead time first; poem and rating follow. The panel
          becomes a column so DOM order is untouched (SEO/a11y unchanged). */
