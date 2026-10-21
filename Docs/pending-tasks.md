@@ -326,6 +326,28 @@ Client Diaries entries never reach the homepage. Suraj wants the images to
 keep changing and shuffling on their own, even when no new diary has been
 added for a while, drawing on the real Client Diaries entries.
 
+### 33. Paste the GA4 enquiry-tracking custom pixel -- OPEN (Suraj, after the enquiry-tracking release)
+**Source:** enquiry-tracking work, 2026-10-21. After the release that ships the
+tagged WhatsApp/appointment links, paste the pixel from
+`Docs/enquiry-tracking-custom-pixel.md` into Shopify Admin > Settings >
+Customer events (GA4 G-0JW62LQCS4, sends only `generate_lead`). Cannot be
+created via the API. Once the first `generate_lead` appears, mark it as a key
+event in GA4 (Suraj is Administrator). Tell SEO & Discoverability when it fires.
+
+### 34. Check installed apps around 3 Aug / 2 Oct (automated checkout sessions) -- OPEN (Suraj, optional)
+**Source:** `Docs/bot-checkout-investigation-2026-10-21.md`. A weekly US checkout
+probe (3 Aug - 7 Oct) and 7 San Jose no-source sessions that created carts via
+app/API. Check Admin > Settings > Apps and sales channels for anything
+installed/updated around 3 Aug or 2 Oct, and Settings > Customer events for
+pixel access. No orders/payments were affected; Meta ads unaffected (checked).
+
+### 35. Rename the two Admin menus (remove "(staging preview)") -- OPEN (Suraj, cosmetic)
+**Source:** category-pages release, 2026-10-21. Admin > Online Store >
+Navigation: "Header Collections (staging preview)" -> "Header Collections",
+"Footer Collections 2026 (staging preview)" -> "Footer Collections". Handles
+must stay `header-collections` and `footer-collections-2026`. Not visible to
+customers.
+
 ### 5. Footer legal-entity line has a double period ("Ltd..") -- RESOLVED and LIVE (fixed 2026-08-29, `22f6c4a`; confirmed on staging and main 2026-10-18)
 **Source:** QA Reviewer, 2026-08-11. Sitewide (`sections/ka-footer.liquid`), now
 on both staging and Live. Root cause: the `legal_entity_name` schema default
