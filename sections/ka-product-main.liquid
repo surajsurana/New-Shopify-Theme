@@ -146,6 +146,7 @@
       <div class="ka-swipe" id="ka-swipe" tabindex="0" aria-label="{{ product.title | escape }} photographs">
         {%- for image in product.images -%}
           <div class="ka-swipe__slide">
+            {%- if forloop.first -%}<picture><source media="(min-width: 901px)" srcset="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw=="> {%- endif -%}
             <img
               src="{{ image | image_url: width: 900 }}"
               srcset="{{ image | image_url: width: 600 }} 600w, {{ image | image_url: width: 900 }} 900w, {{ image | image_url: width: 1200 }} 1200w"
@@ -154,6 +155,7 @@
               alt="{{ image.alt | default: product.title | escape }}"
               {% if forloop.first %}fetchpriority="high"{% else %}loading="lazy"{% endif %}
               draggable="false">
+            {%- if forloop.first -%}</picture>{%- endif -%}
           </div>
         {%- endfor -%}
       </div>
