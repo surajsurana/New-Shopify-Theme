@@ -68,3 +68,8 @@
 @media (max-width: 900px) {
   .template-product .ka-concierge-float { display: none; }
 }
+
+/* The cart's sticky checkout bar (<=900px) owns the bottom edge (site inspection C1, CD decision A). */
+@media (max-width: 900px) {
+  .template-cart .ka-concierge-float { display: none; }
+}

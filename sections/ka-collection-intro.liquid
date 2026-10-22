@@ -6,6 +6,9 @@
   Editorial description + a facts strip (Silhouettes / Made to Order / Price Range /
   Sizing) that replaces a filter sidebar with the information a bride actually needs.
 
+  RULE (CD decision B1, 2026-10-22): an empty value renders nothing. No placeholder text, no dash.
+  A fact cell is printed only if it has a value; the facts block only if any cell does.
+
   Content priority (highest to lowest):
     1. Section settings — editable from Theme Editor when a per-collection template
        (templates/collection.{handle}.json) is assigned to the collection in Admin.
@@ -24,9 +27,9 @@
 {%- endcomment -%}
 
 {%- liquid
-  assign intro_copy  = section.settings.intro_copy          | default: collection.metafields.custom.intro_copy          | default: "Intro copy pending — Creative Director, see collection-build-spec.md §4"
-  assign silhouettes = section.settings.silhouettes         | default: collection.metafields.custom.silhouettes         | default: "—"
-  assign lead_time   = section.settings.lead_time           | default: collection.metafields.custom.lead_time           | default: "—"
+  assign intro_copy  = section.settings.intro_copy          | default: collection.metafields.custom.intro_copy         
+  assign silhouettes = section.settings.silhouettes         | default: collection.metafields.custom.silhouettes
+  assign lead_time   = section.settings.lead_time           | default: collection.metafields.custom.lead_time
   assign pr_min = 0
   assign pr_max = 0
   for p in collection.products
@@ -62,33 +65,46 @@
       assign price_range = pr_lo_txt | append: ' – ' | append: pr_hi_txt | append: '+'
     endif
   endif
-  if price_range == blank
-    assign price_range = "—"
-  endif
   assign sizing_note = section.settings.sizing_note         | default: collection.metafields.custom.sizing_note         | default: "Made to Measure"
 -%}
 
-<section class="ka-coll-intro">
+{%- assign has_facts = false -%}
+{%- if silhouettes != blank or lead_time != blank or price_range != blank or sizing_note != blank -%}{%- assign has_facts = true -%}{%- endif -%}
+{%- if intro_copy != blank or has_facts -%}
+<section class="ka-coll-intro{% if intro_copy == blank or has_facts == false %} ka-coll-intro--single{% endif %}">
+  {%- if intro_copy != blank -%}
   <p class="ka-coll-intro__body reveal">{{ intro_copy }}</p>
+  {%- endif -%}
+  {%- if has_facts -%}
   <div class="ka-coll-intro__facts reveal reveal-delay-1">
+    {%- if silhouettes != blank -%}
     <div>
       <p class="ka-coll-intro__fact-label">Silhouettes</p>
       <p class="ka-coll-intro__fact-value">{{ silhouettes }}</p>
     </div>
+    {%- endif -%}
+    {%- if lead_time != blank -%}
     <div>
       <p class="ka-coll-intro__fact-label">Made to Order</p>
       <p class="ka-coll-intro__fact-value">{{ lead_time }}</p>
     </div>
+    {%- endif -%}
+    {%- if price_range != blank -%}
     <div>
       <p class="ka-coll-intro__fact-label">Price Range</p>
       <p class="ka-coll-intro__fact-value" data-ka-price-range>{{ price_range }}</p>
     </div>
+    {%- endif -%}
+    {%- if sizing_note != blank -%}
     <div>
       <p class="ka-coll-intro__fact-label">Sizing</p>
       <p class="ka-coll-intro__fact-value">{{ sizing_note }}</p>
     </div>
+    {%- endif -%}
   </div>
+  {%- endif -%}
 </section>
+{%- endif -%}
 
 {%- if collection.products_count > 50 and pr_max > 0 -%}
 <script>

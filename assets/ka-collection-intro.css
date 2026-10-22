@@ -38,6 +38,10 @@
   color: var(--c-charcoal);
 }
 
+/* Only one of copy / facts present: one column, left-aligned, no empty half. */
+.ka-coll-intro--single { grid-template-columns: 1fr; }
+.ka-coll-intro--single .ka-coll-intro__body { max-width: 64ch; }
+
 @media (max-width: 900px) {
   .ka-coll-intro { grid-template-columns: 1fr; gap: var(--s-lg); }
   .ka-coll-intro__facts { grid-template-columns: repeat(2, 1fr); }

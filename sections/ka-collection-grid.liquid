@@ -119,7 +119,8 @@
         </div>
       </div>
 
-      {% if forloop.index == insert_after_index and paginate.current_page == 1 %}
+      {%- assign insert_caption = collection.metafields.custom.editorial_caption -%}
+      {% if forloop.index == insert_after_index and paginate.current_page == 1 and insert_caption != blank %}
         <div class="ka-editorial-insert">
           <div class="ka-editorial-insert__frame reveal-img">
             {% if section.settings.insert_image != blank %}
@@ -154,7 +155,7 @@
             {% endif %}
             <div class="ka-editorial-insert__overlay"></div>
             <p class="ka-editorial-insert__caption reveal">
-              {{ collection.metafields.custom.editorial_caption | default: "Caption pending — Creative Director, see collection-build-spec.md §4" }}
+              {{ insert_caption }}
             </p>
           </div>
         </div>
