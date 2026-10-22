@@ -106,22 +106,34 @@
       var sectionId = wrap.getAttribute('data-section-id');
       var pages = parseInt(wrap.getAttribute('data-pages'), 10) || 1;
       var cur = parseInt(wrap.getAttribute('data-current-page'), 10) || 1;
+      // Best-selling / price orderings are not stable between requests (ties and live sales
+      // reshuffle them), so pages fetched separately overlap and drop pieces. In that case fetch
+      // EVERY page, including the one already shown, in a deterministic title order, and de-duplicate
+      // by product id against what is on the page.
+      var unstable = wrap.getAttribute('data-sort-unstable') === 'true';
+      var first = unstable ? 1 : cur + 1;
       var jobs = [];
-      for (var n = cur + 1; n <= pages; n++) {
+      for (var n = first; n <= pages; n++) {
         (function (page) {
           var params = new URLSearchParams(window.location.search);
           params.set('page', page);
           params.set('section_id', sectionId);
+          if (unstable) params.set('sort_by', 'title-ascending');
           jobs.push(fetch(window.location.pathname + '?' + params.toString(), { credentials: 'same-origin' })
             .then(function (r) { if (!r.ok) throw new Error('page ' + page); return r.text(); }));
         })(n);
       }
       loadingAll = Promise.all(jobs).then(function (htmls) {
+        var have = {};
+        Array.prototype.forEach.call(grid.querySelectorAll('.ka-p-card'), function (c) { have[c.getAttribute('data-ka-pid')] = true; });
         htmls.forEach(function (html) {
           var doc = new DOMParser().parseFromString(html, 'text/html');
           var g = doc.getElementById('ka-product-grid-' + sectionId);
           if (!g) return;
           Array.prototype.forEach.call(g.querySelectorAll('.ka-p-card'), function (c) {
+            var pid = c.getAttribute('data-ka-pid');
+            if (pid && have[pid]) return;
+            have[pid] = true;
             c.classList.add('visible');
             grid.appendChild(c);
           });
@@ -227,8 +239,12 @@
         var newLoadMore = doc.querySelector('[data-ka-load-more]');
 
         if (newGrid) {
+          var haveIds = {};
+          Array.prototype.forEach.call(grid.querySelectorAll('.ka-p-card'), function (c) { haveIds[c.getAttribute('data-ka-pid')] = true; });
           while (newGrid.firstChild) {
-            grid.appendChild(newGrid.firstChild);
+            var node = newGrid.firstChild;
+            if (node.nodeType === 1 && node.classList.contains('ka-p-card') && haveIds[node.getAttribute('data-ka-pid')]) { newGrid.removeChild(node); continue; }
+            grid.appendChild(node);
           }
           var newReveals = grid.querySelectorAll('.reveal:not(.visible), .reveal-img:not(.visible)');
           if ('IntersectionObserver' in window && newReveals.length) {
