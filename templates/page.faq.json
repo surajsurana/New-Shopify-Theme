@@ -142,11 +142,11 @@
             "category": "ordering",
             "question": "Is a K&A piece made-to-order, and how long does it take?",
             "intro": "<p>Yes — K&amp;A pieces are mostly made-to-order; ready-to-ship inventory is the exception, not the norm. Timelines vary by category:</p>",
-            "lead_drapes": "Drapes and corset drape sarees — 20–25 working days",
+            "lead_drapes": "Drape sarees and corset sarees — 20–35 working days",
             "lead_drapes_url": "/collections/drapes",
-            "lead_indowestern": "Indo-Western sets — 30–35 working days",
+            "lead_indowestern": "Indo-Western — 20–35 working days",
             "lead_indowestern_url": "/collections/indo-western",
-            "lead_lehengas": "Lehengas — 40–45 working days",
+            "lead_lehengas": "Lehengas — 20–50 working days",
             "lead_lehengas_url": "/collections/lehengas",
             "outro": "<p>Shipped free worldwide via DHL Express. Worth building that lead time into planning around a wedding date.</p>"
           }
@@ -191,7 +191,7 @@
       "settings": {
         "eyebrow": "Still Have a Question?",
         "title": "We'd Love to Continue\nThis Conversation.",
-        "body": "However specific, however small — our styling concierge and advisors are always glad to help, over WhatsApp or in a private appointment, in the atelier or virtually.",
+        "body": "However specific, however small — our styling concierge and designers are always glad to help, over WhatsApp or in a private appointment, in the atelier or virtually.",
         "cta_instore_label": "Ask Our Styling Concierge",
         "cta_instore_wa_text": "Hi, I have a question about a K&A piece.",
         "cta_virtual_label": "Book an Appointment",

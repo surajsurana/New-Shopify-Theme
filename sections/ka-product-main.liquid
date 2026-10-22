@@ -7,7 +7,7 @@
   # through WhatsApp instead, as a TEMPORARY measure pending a real
   # booking flow/calendar. The setting is left in the schema (not removed)
   # so a future real booking flow has a ready slot to wire into — see
-  # data-ka-appt-link handling in ka-product.js.
+  # (2026-10-21: the CTA is now a real wa.me link, see wa_appt below).
   assign appt_url = section.settings.appointment_url | default: '/pages/appointments'
   assign price = product.price | money_without_trailing_zeros | replace: 'Rs.', '₹'
 
@@ -24,9 +24,32 @@
   # the fixed 3:4 box untouched, per Suraj's explicit scope decision.
 
   # Pre-filled WhatsApp enquiry with product context (F2)
-  assign wa_text = 'Hi, I' | append: '%27' | append: 'd like to enquire about the ' | append: product.title
-  assign wa_text_enc = wa_text | url_param_escape
+  # 2026-10-21 (enquiry tracking): real wa.me links, product title + canonical URL in the message.
+  # url_encode (not url_param_escape over a pre-encoded string) so "K&A" and apostrophes survive.
+  assign wa_text = "Hello K&A, I'd like to know more about " | append: product.title | append: ' (' | append: canonical_url | append: ')'
+  assign wa_text_enc = wa_text | url_encode
   assign wa_enquire = 'https://wa.me/' | append: wa | append: '?text=' | append: wa_text_enc
+  assign wa_appt_text = "Hello K&A, I'd like to book an appointment for " | append: product.title | append: ' (' | append: canonical_url | append: ')'
+  assign wa_appt_text_enc = wa_appt_text | url_encode
+  assign wa_appt = 'https://wa.me/' | append: wa | append: '?text=' | append: wa_appt_text_enc
+
+  # Made-to-measure-first layout (Docs/product-page-mobile-build-spec-2026-10-21.md, decision 3).
+  # ON when the product's price is at/above the section setting "mtm_first_from" (INR, default
+  # 50000 = the highest price that has ever converted online was Rs 48,000), unless the optional
+  # product metafield custom.mtm_first (boolean: true = force on, false = force off; yes/no text also tolerated). Plain if/elsif,
+  # no filters inside any case block (known silent-drop pattern).
+  assign mtm_first = false
+  assign mtm_override = product.metafields.custom.mtm_first.value | append: '' | downcase
+  assign mtm_from_paise = section.settings.mtm_first_from | default: 50000 | times: 100
+  if mtm_override == 'yes' or mtm_override == 'true'
+    assign mtm_first = true
+  elsif mtm_override == 'no' or mtm_override == 'false'
+    assign mtm_first = false
+  elsif product.price >= mtm_from_paise
+    assign mtm_first = true
+  endif
+  assign back_url = product.collections.first.url | default: routes.all_products_collection_url
+  assign back_label = product.collections.first.title | default: 'All Products'
 
   # Detect the Size option (case-insensitive) for variant-driven selection
   assign size_option = null
@@ -104,7 +127,7 @@
 }
 </script>
 
-<section class="ka-product" id="ka-product">
+<section class="ka-product{% if mtm_first %} ka-product--mtm{% endif %}" id="ka-product">
 
   <!-- ── Gallery: sticky thumbnail rail + stage ── -->
   <div class="ka-media" id="ka-media">
@@ -114,6 +137,35 @@
       id="ka-stage"
       {% if first_image %}style="background-image:url('{{ first_image | image_url: width: 1400 }}'); --ratio: {{ first_image.aspect_ratio }};"{% endif %}
     >
+      {%- comment -%}
+        MOBILE ONLY (<=900px): native swipe gallery replaces the thumbnail strip. On desktop this
+        whole block is display:none and the stage/thumbs behave exactly as before. Slides use an
+        absolutely-positioned <img> (no aspect-ratio on flex items: Safari collapse bug).
+      {%- endcomment -%}
+      {%- if product.images.size > 0 -%}
+      <div class="ka-swipe" id="ka-swipe" tabindex="0" aria-label="{{ product.title | escape }} photographs">
+        {%- for image in product.images -%}
+          <div class="ka-swipe__slide">
+            {%- if forloop.first -%}<picture><source media="(min-width: 901px)" srcset="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw=="> {%- endif -%}
+            <img
+              src="{{ image | image_url: width: 900 }}"
+              srcset="{{ image | image_url: width: 600 }} 600w, {{ image | image_url: width: 900 }} 900w, {{ image | image_url: width: 1200 }} 1200w"
+              sizes="100vw"
+              width="{{ image.width }}" height="{{ image.height }}"
+              alt="{{ image.alt | default: product.title | escape }}"
+              {% if forloop.first %}fetchpriority="high"{% else %}loading="lazy"{% endif %}
+              draggable="false">
+            {%- if forloop.first -%}</picture>{%- endif -%}
+          </div>
+        {%- endfor -%}
+      </div>
+      {%- if product.images.size > 1 -%}
+        <div class="ka-dots" id="ka-dots" aria-hidden="true">
+          {%- for image in product.images -%}<i{% if forloop.first %} class="on"{% endif %}></i>{%- endfor -%}
+        </div>
+      {%- endif -%}
+      {%- endif -%}
+      <a class="ka-back" href="{{ back_url }}" aria-label="Back to {{ back_label }}"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg></a>
       <span class="ka-stage__idx" id="ka-stage-idx">01 / {% if product.images.size > 0 %}{{ product.images.size | prepend: '0' | slice: -2, 2 }}{% else %}01{% endif %}</span>
       <span class="ka-stage__zoom" aria-hidden="true">&#10530; Zoom</span>
       {%- comment -%}
@@ -199,8 +251,10 @@
       <div class="ka-p-made">Made to measure · Crafted to order in {{ lead_time }}</div>
 
       <!-- SIZE + BESPOKE (mapped to Shopify variant option) -->
+      {%- comment -%}.ka-buy groups the purchase controls so that on mobile the made-to-measure card can lead (CSS order) on high-ticket pieces. No visual change on desktop.{%- endcomment -%}
+      <div class="ka-buy{% if mtm_first %} ka-buy--mtm{% endif %}">
       <div class="ka-opt-head">
-        <span class="ka-opt-label">Select Your Size</span>
+        <span class="ka-opt-label"><span class="ka-opt-label__d">Select Your Size</span>{% if mtm_first %}<span class="ka-opt-label__m">Or choose a standard size</span>{% endif %}</span>
         <button type="button" class="ka-btn-line" data-open-acc="size">Size &amp; Fit Guide</button>
       </div>
 
@@ -283,27 +337,31 @@
       {%- endfor -%}
       {%- if bespoke_variant -%}
         {%- comment -%}Real MTM variant — add to cart directly, no special properties needed.{%- endcomment -%}
-        <button class="ka-bespoke" id="ka-bespoke" type="button" data-variant-id="{{ bespoke_variant.id }}">
+        <button class="ka-bespoke" id="ka-bespoke" type="button" data-variant-id="{{ bespoke_variant.id }}"{% if mtm_first %} data-preselect="true"{% endif %}>
       {%- else -%}
         {%- comment -%}No dedicated MTM variant — use first available variant as fallback.
           ka-product.js will add "Size: Made to my measurements" as a line-item property
-          so the order reads correctly for the style advisor.{%- endcomment -%}
+          so the order reads correctly for the designer.{%- endcomment -%}
         <button class="ka-bespoke" id="ka-bespoke" type="button"
           data-variant-id="{{ product.selected_or_first_available_variant.id }}"
-          data-mtm-fallback="true">
+          data-mtm-fallback="true"{% if mtm_first %} data-preselect="true"{% endif %}>
       {%- endif -%}
         <span class="ka-bespoke__dot" aria-hidden="true"></span>
-        <span class="ka-bespoke__k">Made to my measurements</span>
+        <span class="ka-bespoke__txt">
+          <span class="ka-bespoke__k">Made to my measurements</span>
+          <span class="ka-bespoke__n">Your designer will call within one working day of your order.</span>
+        </span>
         <span class="ka-bespoke__s">Recommended</span>
       </button>
+      <button type="button" class="ka-mtm-toggle" id="ka-mtm-toggle" aria-expanded="false" aria-controls="ka-mtm">How it works</button>
 
       <!-- MADE-TO-MEASURE reveal -->
       <div class="ka-mtm" id="ka-mtm">
         <div class="ka-mtm__inner">
           <h4>How Your Piece Comes to Life</h4>
           <ul class="ka-mtm__steps">
-            <li>Place your order — no measurements needed yet. Your personal style advisor will be in touch within 24 hours to begin. Already have your measurements? Add them to the order notes at checkout and we will take it from there.</li>
-            <li>Confirm your fit with your advisor — over WhatsApp, on a virtual call, or in our Mumbai atelier. We work at your pace, entirely.</li>
+            <li>Place your order — no measurements needed yet. Your designer will be in touch within one working day to begin. Already have your measurements? Add them to the order notes at checkout and we will take it from there.</li>
+            <li>Confirm your fit with your designer — over WhatsApp, on a virtual call, or in our Mumbai atelier. We work at your pace, entirely.</li>
             <li>Our atelier cuts, drapes and hand-embroiders your piece to your exact measurements. Every element made for you alone.</li>
           </ul>
           <p class="ka-mtm__foot">Your piece is then pressed, quality-checked and delivered worldwide in {{ lead_time }}.</p>
@@ -339,8 +397,12 @@
       <div class="ka-cta-stack">
         <button type="button" class="ka-btn ka-btn--bag" id="ka-bag-btn" data-ka-add-to-bag aria-disabled="true">Add to Bag</button>
         <p class="ka-size-required-hint" id="ka-size-hint">Please select a size, or choose Made to my measurements.</p>
-        <button type="button" class="ka-btn ka-btn--ghost" id="ka-cta-appt" data-ka-appt-link>Book an Appointment</button>
+        <a class="ka-btn ka-btn--ghost" id="ka-cta-appt" href="{{ wa_appt }}" target="_blank" rel="noopener" data-ka-enquiry="appointment" data-ka-placement="pdp-appointment" data-ka-product="{{ product.handle }}">Book an Appointment</a>
       </div>
+
+      {%- comment -%}MOBILE ONLY inline enquiry line (hidden on desktop). Real anchor, product pre-filled, tracked like every other enquiry link (assets/ka-theme.js reads data-ka-enquiry).{%- endcomment -%}
+      <p class="ka-talk">Prefer to talk? <a href="{{ wa_enquire }}" target="_blank" rel="noopener" data-ka-enquiry="whatsapp" data-ka-placement="pdp-inline-whatsapp" data-ka-product="{{ product.handle }}">Message our designer on WhatsApp</a></p>
+      </div><!-- /.ka-buy -->
 
       <!-- Toast: shared component, CSS in ka-base.css, JS in ka-theme.js (window.kaShowToast) -->
       <div class="ka-toast" id="kaToast" role="status" aria-live="polite">
@@ -356,7 +418,7 @@
       <div class="ka-assure">
         <div class="ka-assure__row"><span class="mk" aria-hidden="true">&#10022;</span><span>Each piece is cut, draped and hand-embroidered to order by our karigars — never machine-made.</span></div>
         <div class="ka-assure__row"><span class="mk" aria-hidden="true">&#10022;</span><span>Complimentary worldwide delivery by DHL Express, beautifully packaged.</span></div>
-        <div class="ka-assure__row"><span class="mk" aria-hidden="true">&#10022;</span><span>A personal advisor accompanies every order, confirming your measurements and fit after you enquire.</span></div>
+        <div class="ka-assure__row"><span class="mk" aria-hidden="true">&#10022;</span><span>Your designer accompanies every order, confirming your measurements and fit after you enquire.</span></div>
       </div>
 
       <!-- ACCORDION -->
@@ -384,7 +446,7 @@
           <button class="ka-acc__head" type="button">Size &amp; Fit Guide<span class="ka-acc__pm" aria-hidden="true">+</span></button>
           <div class="ka-acc__body"><div class="ka-acc__inner">
             {%- if mf_sizefit != blank -%}{{ mf_sizefit.content }}{%- else -%}
-              All measurements in inches. For a true couture fit, select <em>Made to my measurements</em> and share your details with your style advisor.
+              All measurements in inches. For a true couture fit, select <em>Made to my measurements</em> and share your details with your designer.
               <table>
                 <tr><th></th><th>Bust</th><th>Waist</th><th>Hip</th></tr>
                 <tr><th>XS</th><td>32</td><td>26</td><td>35</td></tr>
@@ -407,7 +469,7 @@
                 <li>Crafted to order in {{ lead_time }}</li>
                 <li>Complimentary worldwide shipping via DHL Express</li>
                 <li>Dry clean only — store flat, away from direct light</li>
-                <li>As each piece is made to measure, kindly review our exchange policy with your style advisor</li>
+                <li>As each piece is made to measure, kindly review our exchange policy with your designer</li>
               </ul>
             {%- endif -%}
           </div></div>
@@ -428,20 +490,24 @@
       </div>
     </div>
     <div class="ka-minibar__r">
-      <button type="button" class="ka-btn ka-btn--ghost" data-ka-appt-link>Book an Appointment</button>
+      <a class="ka-btn ka-btn--ghost" href="{{ wa_appt }}" target="_blank" rel="noopener" data-ka-enquiry="appointment" data-ka-placement="pdp-minibar-appointment" data-ka-product="{{ product.handle }}">Book an Appointment</a>
       <button type="button" class="ka-btn ka-btn--bag" id="ka-minibar-bag" data-ka-add-to-bag aria-disabled="true">Add to Bag</button>
     </div>
   </div>
 </div>
 
-<!-- ── Mobile sticky action bar ── -->
-<!-- "Appointment" + "Add to Bag" per Round 2; Concierge is kept as a
-     secondary WhatsApp-questions affordance, not the primary buy path
-     (CLAUDE.md: buy path stays clear/simple/primary; WhatsApp secondary). -->
-<div class="ka-mobile-bar">
-  <button type="button" class="ka-btn ka-btn--ghost" data-ka-appt-link>Appointment</button>
-  <a class="ka-btn ka-btn--concierge" href="{{ wa_enquire }}" target="_blank" rel="noopener"><span class="dot"></span>Concierge</a>
-  <button type="button" class="ka-btn ka-btn--bag" id="ka-mobilebar-bag" data-ka-add-to-bag aria-disabled="true">Add to Bag</button>
+<!-- ── Mobile sticky action bar (<=900px) ──
+     Two buttons only. Primary: charcoal "Message us on WhatsApp" (real anchor, product pre-filled).
+     Secondary: "Select size" until a size / Made-to-measure is chosen, then "Add to Bag".
+     The secondary keeps aria-disabled="true" while idle (JS shows the size hint on tap) but is
+     styled as a normal outlined button, never greyed out. The separate "Appointment" button is
+     retired from the bar: appointment requests are made in the WhatsApp chat. -->
+<div class="ka-mobile-bar" role="group" aria-label="Order actions">
+  <a class="ka-btn ka-btn--wa" href="{{ wa_enquire }}" target="_blank" rel="noopener" data-ka-enquiry="whatsapp" data-ka-placement="pdp-mobilebar-whatsapp" data-ka-product="{{ product.handle }}">
+    <svg class="ka-wa-glyph" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20l1.3-4.2A8 8 0 1 1 8.4 18.8L4 20z"/></svg>
+    <span>Message us on WhatsApp</span>
+  </a>
+  <button type="button" class="ka-btn ka-btn--bag" id="ka-mobilebar-bag" data-ka-add-to-bag data-label-idle="Select size" aria-disabled="true">Select size</button>
 </div>
 
 <!-- ── Lightbox (desktop/tablet only, disabled <900px via JS) ── -->
@@ -458,6 +524,7 @@
   "tag": "section",
   "settings": [
     { "type": "url",  "id": "appointment_url", "label": "Appointment booking URL (dormant — interim WhatsApp routing active)", "info": "Not currently used. \"Book an Appointment\" routes to WhatsApp until a real booking flow exists (Round 2, Docs/cta-architecture-revision.md). Kept here so a future booking flow has a ready setting to wire up." },
+    { "type": "number", "id": "mtm_first_from", "label": "Measure-first from (INR)", "default": 50000, "info": "Pieces at or above this price lead with Made to my measurements on phones. Override per product with the true/false product metafield custom.mtm_first." },
     { "type": "text", "id": "default_lead_time", "label": "Default lead time", "default": "20–25 days", "info": "Used when a product has no custom.lead_time metafield." },
     {
       "type": "header",

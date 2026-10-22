@@ -1,19 +1,12 @@
 {{ 'ka-appointment.css' | asset_url | stylesheet_tag }}
 
 {%- comment -%}
-  Both appointment CTAs — TEMPORARY interim WhatsApp routing, same pattern
-  used sitewide (Docs/cta-architecture-revision.md Round 2, R2-4; extended
-  to this section as part of the soft-launch /pages/appointments dead-link
-  fix, since no Shopify Page with that handle exists). Each button carries
-  data-ka-appt-link, intercepted by the sitewide delegated click handler in
-  ka-nav.liquid, which opens https://wa.me/{{ settings.whatsapp_number }}
-  with a pre-filled enquiry distinguishing in-store vs. virtual so Suraj's
-  team knows which was requested. cta_instore_url / cta_virtual_url are kept
-  as the real hrefs (no-JS fallback + ready slot for a real booking flow
-  later) — Suraj can still override them via section settings, but until a
-  real booking system exists, JS always reroutes to WhatsApp regardless of
-  what's configured here. Remove data-ka-appt-link from a button once its
-  real booking destination is live.
+  Both appointment CTAs are real <a href="https://wa.me/..."> links
+  (2026-10-21, enquiry tracking), with a pre-filled in-store vs. virtual
+  message so the team knows which was requested, tagged
+  data-ka-enquiry/data-ka-placement for ka-theme.js click tracking.
+  cta_instore_url / cta_virtual_url are DORMANT (kept for a future real
+  booking flow).
 {%- endcomment -%}
 
 <section class="ka-appointment" aria-label="Book a styling appointment">
@@ -55,19 +48,21 @@
     <p class="ka-appointment__body reveal reveal-delay-2">{{ section.settings.body }}</p>
     <div class="ka-appointment__options reveal reveal-delay-3">
       <a
-        href="{{ section.settings.cta_instore_url | default: '/pages/appointments' }}"
+        href="https://wa.me/{{ settings.whatsapp_number }}?text={{ section.settings.cta_instore_wa_text | default: "Hello K&A, I'd like to book an in-store appointment" | url_encode }}"
         class="btn-outline-white"
-        data-ka-appt-link
-        data-ka-appt-text="{{ section.settings.cta_instore_wa_text | default: "Hi, I'd like to book an in-store appointment" }}"
+        target="_blank"
+        rel="noopener"
+        data-ka-enquiry="appointment" data-ka-placement="appointment-instore"
       >
         {{ section.settings.cta_instore_label }}
       </a>
       <span class="ka-appointment__divider">or</span>
       <a
-        href="{{ section.settings.cta_virtual_url | default: '/pages/appointments' }}"
+        href="https://wa.me/{{ settings.whatsapp_number }}?text={{ section.settings.cta_virtual_wa_text | default: "Hello K&A, I'd like to book a virtual styling session" | url_encode }}"
         class="btn-outline-white"
-        data-ka-appt-link
-        data-ka-appt-text="{{ section.settings.cta_virtual_wa_text | default: "Hi, I'd like to book a virtual styling session" }}"
+        target="_blank"
+        rel="noopener"
+        data-ka-enquiry="appointment" data-ka-placement="appointment-virtual"
       >
         {{ section.settings.cta_virtual_label }}
       </a>

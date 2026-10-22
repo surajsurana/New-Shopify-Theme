@@ -2,8 +2,9 @@
 
 {%- liquid
   assign wa = settings.whatsapp_number
-  assign wa_text = 'Hi, I' | append: '%27' | append: 'd like a styling consultation for the ' | append: product.title
-  assign wa_styling = 'https://wa.me/' | append: wa | append: '?text=' | append: wa_text | url_param_escape
+  assign wa_text = "Hello K&A, I'd like a styling consultation for " | append: product.title | append: ' (' | append: canonical_url | append: ')'
+  assign wa_text_enc = wa_text | url_encode
+  assign wa_styling = 'https://wa.me/' | append: wa | append: '?text=' | append: wa_text_enc
   assign body = product.metafields.custom.styling_notes | default: section.settings.body
   assign accent = product.metafields.custom.styling_accent_line | default: section.settings.accent
 -%}
@@ -22,7 +23,7 @@
         {%- endfor -%}
       </div>
       <div style="margin-top:32px">
-        <a class="ka-btn-line" href="{{ wa_styling }}" target="_blank" rel="noopener">Ask for a Styling Consultation &rarr;</a>
+        <a class="ka-btn-line" href="{{ wa_styling }}" target="_blank" rel="noopener" data-ka-enquiry="whatsapp" data-ka-placement="pdp-styling-consultation" data-ka-product="{{ product.handle }}">Ask for a Styling Consultation &rarr;</a>
       </div>
     </div>
     <div class="ka-styling__ph reveal-img reveal-delay-1">
@@ -41,7 +42,7 @@
     { "type": "image_picker", "id": "image", "label": "Image (right)", "info": "Falls back to a gradient placeholder if empty." },
     { "type": "text",     "id": "eyebrow", "label": "Eyebrow", "default": "Styling Notes" },
     { "type": "text",     "id": "title",   "label": "Title",   "default": "One House, Every Celebration" },
-    { "type": "richtext", "id": "body",    "label": "Body copy (fallback)", "info": "Overridden by the product's custom.styling_notes metafield when present.", "default": "<p>This piece was made to move through a wedding season. Worn long and fluid for a reception, it is pure drama. Styled with heirloom jewels for a sangeet, it becomes a memory. Our style advisors will tailor the silhouette, length and embroidery to your role in the celebration.</p>" },
+    { "type": "richtext", "id": "body",    "label": "Body copy (fallback)", "info": "Overridden by the product's custom.styling_notes metafield when present.", "default": "<p>This piece was made to move through a wedding season. Worn long and fluid for a reception, it is pure drama. Styled with heirloom jewels for a sangeet, it becomes a memory. Our designers will tailor the silhouette, length and embroidery to your role in the celebration.</p>" },
     { "type": "text",     "id": "accent",  "label": "Accent line (fallback)", "info": "Overridden by custom.styling_accent_line metafield when present.", "default": "Whether you are the bride, her sister, her mother, or the guest everyone remembers — there is a way to wear it that is entirely yours." }
   ],
   "blocks": [

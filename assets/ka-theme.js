@@ -18,6 +18,37 @@
     }, { passive: true });
   }
 
+  /* --- Enquiry click tracking -------------------------------------
+     WhatsApp / appointment CTAs are real <a href="https://wa.me/...">
+     links tagged data-ka-enquiry="whatsapp|appointment" and
+     data-ka-placement="<name>". On click we publish a Shopify customer
+     event ('ka_enquiry_click') that a Customer Events custom pixel
+     forwards to GA4 (Docs/enquiry-tracking-custom-pixel.md). Strictly
+     fire-and-forget: wrapped in try/catch, never preventDefault, so
+     navigation can never be blocked or delayed by tracking. */
+  function kaTrackEnquiry(type, placement, handle) {
+    try {
+      if (!handle) {
+        var m = window.location.pathname.match(/\/products\/([^\/?#]+)/);
+        handle = m ? m[1] : '';
+      }
+      if (window.Shopify && Shopify.analytics && typeof Shopify.analytics.publish === 'function') {
+        Shopify.analytics.publish('ka_enquiry_click', {
+          placement: placement || '',
+          enquiry_type: type || '',
+          product_handle: handle || '',
+          page_path: window.location.pathname
+        });
+      }
+    } catch (err) { /* tracking must never affect the click */ }
+  }
+  window.kaTrackEnquiry = kaTrackEnquiry;
+  document.addEventListener('click', function (e) {
+    var el = e.target && e.target.closest ? e.target.closest('[data-ka-enquiry]') : null;
+    if (!el) return;
+    kaTrackEnquiry(el.getAttribute('data-ka-enquiry'), el.getAttribute('data-ka-placement'), el.getAttribute('data-ka-product'));
+  });
+
   /* --- Hero bg entry zoom --------------------------------------- */
   var heroBg = document.getElementById('ka-hero-bg');
   if (heroBg) {

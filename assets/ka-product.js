@@ -23,6 +23,24 @@
     });
   });
 
+  /* ---------- mobile swipe gallery (<=900px): dots follow the scroll position ----------
+     CSS scroll-snap does the swiping; this only mirrors the position into the dots. */
+  var swipe = document.getElementById('ka-swipe');
+  var dots = Array.prototype.slice.call(document.querySelectorAll('#ka-dots i'));
+  if (swipe && dots.length) {
+    var swipeTick = false;
+    swipe.addEventListener('scroll', function () {
+      if (swipeTick) return;
+      swipeTick = true;
+      window.requestAnimationFrame(function () {
+        swipeTick = false;
+        var i = Math.round(swipe.scrollLeft / (swipe.clientWidth || 1));
+        i = Math.max(0, Math.min(dots.length - 1, i));
+        dots.forEach(function (d, n) { d.classList.toggle('on', n === i); });
+      });
+    }, { passive: true });
+  }
+
   /* ---------- size selection + made-to-measure reveal ---------- */
   var sizes = Array.prototype.slice.call(document.querySelectorAll('.ka-size'));
   var bespoke = document.getElementById('ka-bespoke');
@@ -43,11 +61,15 @@
   var sizeHint = document.getElementById('ka-size-hint');
   var bagButtons = Array.prototype.slice.call(document.querySelectorAll('[data-ka-add-to-bag]'));
 
+  /* Mobile bar secondary button: reads "Select size" (data-label-idle) until a size or
+     Made to my measurements is chosen, then "Add to Bag". Every other Add to Bag button has
+     no data-label-idle and always reads "Add to Bag". */
   function refreshBagButtons() {
     var ready = !!selectedVariantId || isBespokeSelected;
     bagButtons.forEach(function (btn) {
       if (ready) { btn.removeAttribute('aria-disabled'); }
       else { btn.setAttribute('aria-disabled', 'true'); }
+      btn.textContent = (!ready && btn.getAttribute('data-label-idle')) || 'Add to Bag';
     });
   }
 
@@ -57,7 +79,7 @@
       sizes.forEach(function (x) { x.classList.remove('sel'); });
       if (bespoke) bespoke.classList.remove('sel');
       s.classList.add('sel');
-      if (mtm) mtm.classList.remove('open');
+      if (mtm) { mtm.classList.remove('open'); syncMtmToggle(); }
       selectedSizeLabel = s.textContent.trim();
       selectedVariantId = s.getAttribute('data-variant-id') || null;
       isBespokeSelected = false;
@@ -66,22 +88,42 @@
     });
   });
 
-  if (bespoke) {
-    bespoke.addEventListener('click', function () {
-      sizes.forEach(function (x) { x.classList.remove('sel'); });
-      bespoke.classList.add('sel');
-      if (mtm) mtm.classList.add('open');
-      selectedSizeLabel = 'Made to my measurements';
-      /* Read the variant ID baked into the button by Liquid.
-         · Real MTM variant: data-variant-id set, no data-mtm-fallback → plain cart add.
-         · Fallback: data-mtm-fallback="true" → cart add with "Size: Made to my
-           measurements" line-item property so the order reads correctly. */
-      selectedVariantId = bespoke.getAttribute('data-variant-id') || null;
-      isBespokeFallback = bespoke.getAttribute('data-mtm-fallback') === 'true';
-      isBespokeSelected = true;
-      if (sizeHint) sizeHint.classList.remove('show');
-      refreshBagButtons();
+  /* selectBespoke(): shared by the click handler and the made-to-measure-first
+     pre-selection (data-preselect="true", set by Liquid on high-ticket pages). */
+  function selectBespoke(openExplainer) {
+    sizes.forEach(function (x) { x.classList.remove('sel'); });
+    bespoke.classList.add('sel');
+    if (mtm && openExplainer) { mtm.classList.add('open'); syncMtmToggle(); }
+    selectedSizeLabel = 'Made to my measurements';
+    /* Read the variant ID baked into the button by Liquid.
+       · Real MTM variant: data-variant-id set, no data-mtm-fallback → plain cart add.
+       · Fallback: data-mtm-fallback="true" → cart add with "Size: Made to my
+         measurements" line-item property so the order reads correctly. */
+    selectedVariantId = bespoke.getAttribute('data-variant-id') || null;
+    isBespokeFallback = bespoke.getAttribute('data-mtm-fallback') === 'true';
+    isBespokeSelected = true;
+    if (sizeHint) sizeHint.classList.remove('show');
+    refreshBagButtons();
+  }
+
+  /* "How it works" disclosure (mobile, under the Made to my measurements card). */
+  var mtmToggle = document.getElementById('ka-mtm-toggle');
+  function syncMtmToggle() {
+    if (mtmToggle && mtm) mtmToggle.setAttribute('aria-expanded', mtm.classList.contains('open') ? 'true' : 'false');
+  }
+  if (mtmToggle && mtm) {
+    mtmToggle.addEventListener('click', function () {
+      mtm.classList.toggle('open');
+      syncMtmToggle();
     });
+  }
+
+  if (bespoke) {
+    bespoke.addEventListener('click', function () { selectBespoke(true); });
+    /* Made-to-measure-first pages: the option is the default. Selected quietly (explainer stays
+       closed, "How it works" opens it) and the order is still only placed by tapping Add to Bag. */
+    /* Phones only (<=900px): desktop keeps today's behaviour (nothing pre-selected). */
+    if (bespoke.getAttribute('data-preselect') === 'true' && window.matchMedia && window.matchMedia('(max-width: 900px)').matches) { selectBespoke(false); }
   }
 
   /* "Book an Appointment" → TEMPORARY: routes to the same WhatsApp
@@ -91,13 +133,10 @@
      silently become permanent; wire a real booking flow when one
      is built.
 
-     NOTE: the actual [data-ka-appt-link] click handler lives sitewide
-     in ka-nav.liquid (a document-level delegated listener that already
-     covers every element with this attribute, on every page, including
-     these Product-page buttons). It is intentionally NOT duplicated
-     here — binding a second listener on the same elements would open
-     two WhatsApp tabs per click. ka-product.js only needs the shared
-     WHATSAPP_URL constant for the bespoke add-to-bag redirect below. */
+     2026-10-21: appointment CTAs are now real <a href="https://wa.me/...">
+     links (no JS handler). Click tracking is the delegated listener in
+     ka-theme.js (data-ka-enquiry). ka-product.js only needs the fallback
+     URL for the bespoke add-to-bag redirect below. */
   var KA_WHATSAPP_URL = 'https://wa.me/919967543087';
 
   function addToBag() {
@@ -107,7 +146,12 @@
          enquiry. To enable cart-add for MTM, add a "Made to my measurements"
          size variant to the product in Shopify Admin and this branch will
          stop firing. */
-      window.open(KA_WHATSAPP_URL, '_blank');
+      /* Same real wa.me link (with product context) as the Appointment CTA;
+         tracked like every other enquiry link. */
+      var apptLink = document.getElementById('ka-cta-appt');
+      var bespokeUrl = apptLink ? apptLink.href : KA_WHATSAPP_URL;
+      if (apptLink && window.kaTrackEnquiry) window.kaTrackEnquiry('appointment', 'pdp-bespoke-fallback', apptLink.getAttribute('data-ka-product'));
+      window.open(bespokeUrl, '_blank', 'noopener');
       return;
     }
     if (!selectedVariantId) {
@@ -124,7 +168,7 @@
 
     /* Build the line-item payload. When MTM is using a fallback variant (no
        dedicated "Made to my measurements" Shopify variant on this product), include
-       a custom property so the style advisor sees the intent on the order. */
+       a custom property so the designer sees the intent on the order. */
     var lineItem = { id: selectedVariantId, quantity: 1 };
     if (isBespokeSelected && isBespokeFallback) {
       lineItem.properties = { 'Size': 'Made to my measurements' };
@@ -160,7 +204,6 @@
         }
       })
       .finally(function () {
-        bagButtons.forEach(function (btn) { btn.textContent = 'Add to Bag'; });
         refreshBagButtons();
       });
   }

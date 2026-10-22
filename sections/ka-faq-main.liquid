@@ -152,7 +152,7 @@
   <div class="ka-faq-empty" id="faqEmpty">
     <h3 class="ka-faq-empty__title">{{ section.settings.empty_title }}</h3>
     <p class="ka-faq-empty__body">{{ section.settings.empty_body }}</p>
-    <a href="https://wa.me/{{ settings.whatsapp_number }}" class="btn-outline-rose" target="_blank" rel="noopener">{{ section.settings.empty_cta_label }}</a>
+    <a href="https://wa.me/{{ settings.whatsapp_number }}?text={{ "Hello K&A, I have a question that I couldn't find in your FAQ" | url_encode }}" class="btn-outline-rose" target="_blank" rel="noopener" data-ka-enquiry="whatsapp" data-ka-placement="faq-empty-concierge">{{ section.settings.empty_cta_label }}</a>
   </div>
 
 </div>

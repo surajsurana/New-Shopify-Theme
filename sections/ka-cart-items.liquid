@@ -105,7 +105,7 @@
 {%- liquid
   assign wa = settings.whatsapp_number
   assign collections_url = section.settings.collections_url | default: '/collections'
-  assign wa_concierge_text = 'Hi, I' | append: '%27' | append: 'd like to ask a question before checking out.'
+  assign wa_concierge_text = "Hello K&A, I'd like to ask a question before checking out." | url_encode
   assign wa_concierge_url = 'https://wa.me/' | append: wa | append: '?text=' | append: wa_concierge_text
 -%}
 
@@ -214,7 +214,7 @@
 
               <div class="ka-item__made">
                 {%- if is_bespoke -%}
-                  A style advisor will confirm your measurements after checkout
+                  Your designer will confirm your measurements after checkout
                 {%- else -%}
                   Hand-embroidered to order · {{ lead_time }}
                 {%- endif -%}
@@ -284,7 +284,7 @@
 
       <div class="ka-reassure">
         <div class="row"><span class="mk">✦</span><span>Each piece is cut, draped and hand-embroidered to order by our karigars — never machine-made.</span></div>
-        <div class="row"><span class="mk">✦</span><span>Crafted to order. A personal advisor will confirm fit and measurements after you check out.</span></div>
+        <div class="row"><span class="mk">✦</span><span>Crafted to order. Your designer will confirm fit and measurements after you check out.</span></div>
         <div class="row"><span class="mk">✦</span><span>Delivered worldwide, complimentary, by DHL Express, beautifully packaged.</span></div>
       </div>
 
@@ -308,11 +308,11 @@
     <div class="ka-empty__text reveal">
       <div class="eyebrow">Made to Order</div>
       <h1>Your Atelier<br>Awaits</h1>
-      <p>Nothing has found its way here yet. Explore our collections, or write to us directly — our style advisors are always glad to begin with a conversation rather than a cart.</p>
+      <p>Nothing has found its way here yet. Explore our collections, or write to us directly — our designers are always glad to begin with a conversation rather than a cart.</p>
       <div class="ka-empty__acts">
         <a href="{{ collections_url }}" class="ka-btn">Explore the Collections</a>
         <div class="ka-empty__or">or</div>
-        <a class="ka-btn ka-btn--concierge" href="{{ wa_concierge_url }}" target="_blank" rel="noopener"><span class="dot"></span>Speak with a Couture Concierge</a>
+        <a class="ka-btn ka-btn--concierge" href="{{ wa_concierge_url }}" target="_blank" rel="noopener" data-ka-enquiry="whatsapp" data-ka-placement="cart-empty-concierge"><span class="dot"></span>Speak with a Couture Concierge</a>
       </div>
     </div>
     <div class="ka-empty__img reveal-img reveal-delay-1">
