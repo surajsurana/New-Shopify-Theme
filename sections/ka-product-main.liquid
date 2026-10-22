@@ -132,10 +132,12 @@
   <!-- ── Gallery: sticky thumbnail rail + stage ── -->
   <div class="ka-media" id="ka-media">
     {%- assign first_image = product.featured_image -%}
+    {%- comment -%} --ratio-m: phone/tablet frame ratio, clamped 0.5-1.0 (ka-product.js updates it per slide) {%- endcomment -%}
+    {%- if first_image -%}{%- assign ratio_m = first_image.aspect_ratio | default: 0.75 | at_least: 0.5 | at_most: 1.0 -%}{%- endif -%}
     <div
       class="ka-stage{% unless first_image %} ka-stage--ph{% endunless %}{% if first_image %} ka-stage--native-ratio{% endif %}"
       id="ka-stage"
-      {% if first_image %}style="background-image:url('{{ first_image | image_url: width: 1400 }}'); --ratio: {{ first_image.aspect_ratio }};"{% endif %}
+      {% if first_image %}style="background-image:url('{{ first_image | image_url: width: 1400 }}'); --ratio: {{ first_image.aspect_ratio }}; --ratio-m: {{ ratio_m }};"{% endif %}
     >
       {%- comment -%}
         MOBILE ONLY (<=900px): native swipe gallery replaces the thumbnail strip. On desktop this
@@ -509,6 +511,42 @@
   </a>
   <button type="button" class="ka-btn ka-btn--bag" id="ka-mobilebar-bag" data-ka-add-to-bag data-label-idle="Select size" aria-disabled="true">Select size</button>
 </div>
+{%- comment -%}
+  Hem clearance (Docs/cd-decisions-2026-10-22.md D1): on short phone screens the bar would cover
+  the bottom of the photo on load, so it waits below the screen and slides up once the photo's
+  bottom edge clears it. Once shown it stays. Inline so it applies before first paint; tall
+  phones release it immediately with no animation.
+{%- endcomment -%}
+<script>
+(function () {
+  var bar = document.currentScript.previousElementSibling;
+  var stage = document.getElementById('ka-stage');
+  if (!bar || !stage || !window.matchMedia('(max-width: 900px)').matches) return;
+  var done = false, tick = false;
+  function clear() { return stage.getBoundingClientRect().bottom <= window.innerHeight - bar.offsetHeight; }
+  function release(animate) {
+    done = true;
+    if (!animate) { bar.style.transition = 'none'; }
+    bar.classList.remove('is-held');
+    if (!animate) { bar.offsetHeight; bar.style.transition = ''; }
+    window.removeEventListener('scroll', onChange);
+    window.removeEventListener('resize', onChange);
+  }
+  function check(animate) { if (!done && clear()) release(animate); }
+  function onChange() {
+    if (tick) return;
+    tick = true;
+    window.requestAnimationFrame(function () { tick = false; check(true); });
+  }
+  bar.classList.add('is-held');
+  window.addEventListener('scroll', onChange, { passive: true });
+  window.addEventListener('resize', onChange);
+  stage.addEventListener('transitionend', onChange);
+  check(false);
+  document.addEventListener('DOMContentLoaded', function () { check(false); });
+  window.addEventListener('load', function () { check(false); });
+})();
+</script>
 
 <!-- ── Lightbox (desktop/tablet only, disabled <900px via JS) ── -->
 <div class="ka-lb" id="ka-lb">
