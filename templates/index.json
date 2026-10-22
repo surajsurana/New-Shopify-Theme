@@ -27,6 +27,10 @@
         "link_appointment": "/pages/appointments"
       }
     },
+    "ka-loomiere-teaser": {
+      "type": "ka-loomiere-teaser",
+      "settings": {}
+    },
     "ka-hero": {
       "type": "ka-hero",
       "settings": {
@@ -312,6 +316,7 @@
   },
   "order": [
     "ka-nav",
+    "ka-loomiere-teaser",
     "ka-hero",
     "ka-manifesto",
     "ka-collection-story",
