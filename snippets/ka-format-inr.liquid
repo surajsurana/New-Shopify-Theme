@@ -1,0 +1,32 @@
+{%- comment -%}
+  Prints a whole-rupee amount with Indian digit grouping (4,30,000), prefixed with the rupee sign.
+  Usage: render this snippet with a whole-rupee number named rupees.
+  Whitespace-controlled so it can be captured into a variable.
+{%- endcomment -%}
+{%- liquid
+  assign inr_digits = rupees | round | append: ''
+  assign inr_len = inr_digits.size
+  if inr_len <= 3
+    assign inr_out = inr_digits
+  else
+    assign inr_cut = inr_len | minus: 3
+    assign inr_out = inr_digits | slice: inr_cut, 3
+    assign inr_rest = inr_digits | slice: 0, inr_cut
+    for i in (1..4)
+      assign inr_rest_len = inr_rest.size
+      if inr_rest_len == 0
+        break
+      endif
+      if inr_rest_len <= 2
+        assign inr_out = inr_rest | append: ',' | append: inr_out
+        assign inr_rest = ''
+      else
+        assign inr_cut2 = inr_rest_len | minus: 2
+        assign inr_pair = inr_rest | slice: inr_cut2, 2
+        assign inr_out = inr_pair | append: ',' | append: inr_out
+        assign inr_rest = inr_rest | slice: 0, inr_cut2
+      endif
+    endfor
+  endif
+-%}
+₹{{ inr_out }}

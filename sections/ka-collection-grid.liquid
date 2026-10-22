@@ -60,7 +60,9 @@
   <div class="ka-product-grid" id="ka-product-grid-{{ section.id }}" data-ka-product-grid>
     {% for product in collection.products %}
       {%- assign quickadd_variant = product.selected_or_first_available_variant -%}
-      <div class="ka-p-card reveal-img">
+      {%- comment -%} Collection-membership handles drive the refine chips (assets/ka-collection.js); no product tags needed. {%- endcomment -%}
+      {%- capture card_colls -%}{%- for c in product.collections -%}{{ c.handle | append: ' ' }}{%- endfor -%}{%- endcapture -%}
+      <div class="ka-p-card reveal-img" data-ka-pid="{{ product.id }}" data-ka-colls="{{ card_colls | strip }}">
         <div class="ka-p-card__image">
           {%- comment -%}
             Sibling (not nested) absolutely-positioned layers: the image-link
@@ -117,7 +119,8 @@
         </div>
       </div>
 
-      {% if forloop.index == insert_after_index and paginate.current_page == 1 %}
+      {%- assign insert_caption = collection.metafields.custom.editorial_caption -%}
+      {% if forloop.index == insert_after_index and paginate.current_page == 1 and insert_caption != blank %}
         <div class="ka-editorial-insert">
           <div class="ka-editorial-insert__frame reveal-img">
             {% if section.settings.insert_image != blank %}
@@ -152,7 +155,7 @@
             {% endif %}
             <div class="ka-editorial-insert__overlay"></div>
             <p class="ka-editorial-insert__caption reveal">
-              {{ collection.metafields.custom.editorial_caption | default: "Caption pending — Creative Director, see collection-build-spec.md §4" }}
+              {{ insert_caption }}
             </p>
           </div>
         </div>
@@ -164,6 +167,7 @@
     data-section-id="{{ section.id }}"
     data-current-page="{{ paginate.current_page }}"
     data-pages="{{ paginate.pages }}"
+    data-sort-unstable="{% assign eff_sort = collection.sort_by | default: collection.default_sort_by %}{% if eff_sort == 'best-selling' or eff_sort == 'price-ascending' or eff_sort == 'price-descending' %}true{% else %}false{% endif %}"
     data-items="{{ paginate.items }}"
     data-per-page="{{ per_page }}"
     data-next-url="{% if paginate.next %}{{ paginate.next.url }}{% endif %}"

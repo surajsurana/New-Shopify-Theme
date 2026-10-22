@@ -6,47 +6,133 @@
   Editorial description + a facts strip (Silhouettes / Made to Order / Price Range /
   Sizing) that replaces a filter sidebar with the information a bride actually needs.
 
+  RULE (CD decision B1, 2026-10-22): an empty value renders nothing. No placeholder text, no dash.
+  A fact cell is printed only if it has a value; the facts block only if any cell does.
+
   Content priority (highest to lowest):
     1. Section settings — editable from Theme Editor when a per-collection template
        (templates/collection.{handle}.json) is assigned to the collection in Admin.
     2. Collection metafields — custom.intro_copy, custom.silhouettes, custom.lead_time,
-       custom.price_range_display, custom.sizing_note. Edit in Admin > Collections >
+       custom.sizing_note. (Price range is computed, see below.) Edit in Admin > Collections >
        [collection name] > scroll to Metafields at the bottom of the page.
     3. Hardcoded placeholder — shown when neither source has data yet.
 
-  Per CD Note 4 (spec Section 7): price range is always a manually maintained
-  string, never computed from collection.products min/max.
+  PRICE RANGE (changed 2026-10-22, site inspection C2): computed from the collection's own
+  products, lowest to highest with "+" after the top figure, Indian grouping. The hand-typed
+  custom.price_range_display metafield and the section setting are no longer read.
+  Liquid exposes only the first 50 products of a collection and no price-range minimum, so:
+    - max  = the larger of the first-50 max and the price filter's range_max (whole collection)
+    - min  = first-50 minimum; for collections of more than 50 products an inline script re-fetches
+             this same section sorted price-ascending (the section renders its own true minimum there)
+             and swaps the text in. /products.json ignores sort_by, so it is NOT used.
 {%- endcomment -%}
 
 {%- liquid
-  assign intro_copy  = section.settings.intro_copy          | default: collection.metafields.custom.intro_copy          | default: "Intro copy pending — Creative Director, see collection-build-spec.md §4"
-  assign silhouettes = section.settings.silhouettes         | default: collection.metafields.custom.silhouettes         | default: "—"
-  assign lead_time   = section.settings.lead_time           | default: collection.metafields.custom.lead_time           | default: "—"
-  assign price_range = section.settings.price_range_display | default: collection.metafields.custom.price_range_display | default: "—"
+  assign intro_copy  = section.settings.intro_copy          | default: collection.metafields.custom.intro_copy         
+  assign silhouettes = section.settings.silhouettes         | default: collection.metafields.custom.silhouettes
+  assign lead_time   = section.settings.lead_time           | default: collection.metafields.custom.lead_time
+  assign pr_min = 0
+  assign pr_max = 0
+  for p in collection.products
+    assign p_lo = p.price_min
+    assign p_hi = p.price_max
+    if pr_min == 0 or p_lo < pr_min
+      assign pr_min = p_lo
+    endif
+    if p_hi > pr_max
+      assign pr_max = p_hi
+    endif
+  endfor
+  for f in collection.filters
+    if f.type == 'price_range' and f.range_max > pr_max
+      assign pr_max = f.range_max
+    endif
+  endfor
+  assign price_range = ''
+  if pr_max > 0
+    assign pr_min_r = pr_min | divided_by: 100.0 | round
+    assign pr_max_r = pr_max | divided_by: 100.0 | round
+    capture pr_lo_txt
+      render 'ka-format-inr', rupees: pr_min_r
+    endcapture
+    capture pr_hi_txt
+      render 'ka-format-inr', rupees: pr_max_r
+    endcapture
+    assign pr_lo_txt = pr_lo_txt | strip
+    assign pr_hi_txt = pr_hi_txt | strip
+    if pr_min_r == pr_max_r
+      assign price_range = pr_hi_txt
+    else
+      assign price_range = pr_lo_txt | append: ' – ' | append: pr_hi_txt | append: '+'
+    endif
+  endif
   assign sizing_note = section.settings.sizing_note         | default: collection.metafields.custom.sizing_note         | default: "Made to Measure"
 -%}
 
-<section class="ka-coll-intro">
+{%- assign has_facts = false -%}
+{%- if silhouettes != blank or lead_time != blank or price_range != blank or sizing_note != blank -%}{%- assign has_facts = true -%}{%- endif -%}
+{%- if intro_copy != blank or has_facts -%}
+<section class="ka-coll-intro{% if intro_copy == blank or has_facts == false %} ka-coll-intro--single{% endif %}">
+  {%- if intro_copy != blank -%}
   <p class="ka-coll-intro__body reveal">{{ intro_copy }}</p>
+  {%- endif -%}
+  {%- if has_facts -%}
   <div class="ka-coll-intro__facts reveal reveal-delay-1">
+    {%- if silhouettes != blank -%}
     <div>
       <p class="ka-coll-intro__fact-label">Silhouettes</p>
       <p class="ka-coll-intro__fact-value">{{ silhouettes }}</p>
     </div>
+    {%- endif -%}
+    {%- if lead_time != blank -%}
     <div>
       <p class="ka-coll-intro__fact-label">Made to Order</p>
       <p class="ka-coll-intro__fact-value">{{ lead_time }}</p>
     </div>
+    {%- endif -%}
+    {%- if price_range != blank -%}
     <div>
       <p class="ka-coll-intro__fact-label">Price Range</p>
-      <p class="ka-coll-intro__fact-value">{{ price_range }}</p>
+      <p class="ka-coll-intro__fact-value{% if collection.products_count > 50 %} is-pending{% endif %}" data-ka-price-range>{{ price_range }}</p>
     </div>
+    {%- endif -%}
+    {%- if sizing_note != blank -%}
     <div>
       <p class="ka-coll-intro__fact-label">Sizing</p>
       <p class="ka-coll-intro__fact-value">{{ sizing_note }}</p>
     </div>
+    {%- endif -%}
   </div>
+  {%- endif -%}
 </section>
+{%- endif -%}
+
+{%- if collection.products_count > 50 and pr_max > 0 -%}
+<style>.ka-coll-intro__fact-value.is-pending { visibility: hidden; }</style>
+<noscript><style>.ka-coll-intro__fact-value.is-pending { visibility: visible; }</style></noscript>
+<script>
+(function () {
+  var el = document.querySelector('[data-ka-price-range]');
+  if (!el) return;
+  var done = false;
+  function reveal() { done = true; el.classList.remove('is-pending'); }
+  if (!window.fetch) { reveal(); return; }
+  /* Liquid sees only the first 50 pieces, in the collection's own order. Re-request this very
+     section with the collection sorted price-ascending: the cheapest piece is then in its first 50,
+     so the section's own Liquid computes the true minimum. The pending value stays hidden meanwhile. */
+  window.setTimeout(function () { if (!done) reveal(); }, 4000);
+  fetch('{{ collection.url }}?sort_by=price-ascending&section_id={{ section.id }}', { credentials: 'same-origin' })
+    .then(function (r) { if (!r.ok) throw new Error('x'); return r.text(); })
+    .then(function (html) {
+      var doc = new DOMParser().parseFromString(html, 'text/html');
+      var n = doc.querySelector('[data-ka-price-range]');
+      if (n && n.textContent.trim()) el.textContent = n.textContent.trim();
+      reveal();
+    })
+    .catch(reveal);
+})();
+</script>
+{%- endif -%}
 
 {% schema %}
 {
@@ -61,7 +147,6 @@
     { "type": "textarea", "id": "intro_copy",          "label": "Intro copy" },
     { "type": "text",     "id": "silhouettes",         "label": "Silhouettes (e.g. Corsets, Lehengas)" },
     { "type": "text",     "id": "lead_time",           "label": "Lead time (e.g. 6–8 Weeks, Made to Order)" },
-    { "type": "text",     "id": "price_range_display", "label": "Price range (e.g. ₹42,000–₹85,000+)" },
     { "type": "text",     "id": "sizing_note",         "label": "Sizing note", "default": "Made to Measure" }
   ],
   "presets": [

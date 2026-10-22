@@ -19,5 +19,9 @@
   /* This bar only renders on a filled cart, so this bottom-padding rule
      only ever applies when the bar is actually present — no clearance
      gap is added on the empty-cart state, where the bar never renders. */
-  body { padding-bottom: 78px; }
+  body { padding-bottom: calc(78px + env(safe-area-inset-bottom)); }
+  /* Home-indicator clearance (the PDP bar already has this). */
+  .ka-mobile-bar { padding-bottom: max(12px, env(safe-area-inset-bottom)); }
+  /* Toast must clear the bar. */
+  .template-cart .ka-toast { bottom: calc(96px + env(safe-area-inset-bottom)); }
 }

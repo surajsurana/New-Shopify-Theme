@@ -7,14 +7,13 @@
   ("All" + up to 3) plus a 3-option sort. Deliberately no price slider, no stock filter
   — see CD Note 2, do not add either even if a future app suggests it.
 
-  F4 implementation chosen: tag-based collection filtering via Shopify's native
-  /collections/{handle}/{tag-handle} URL path (works on every Shopify plan, no
-  Search & Discovery app / Storefront Filter API dependency required). Chip labels
-  are per-collection section-setting text fields (block-based) so Creative Director
-  can set the real silhouette split per collection without a code change — chip tag
-  values are handleized automatically by Shopify from the chip label text, matching
-  product tags exactly (case-sensitive handleization — confirm exact product tag
-  spelling against the chip label when CD sets these).
+  F4 implementation (rewritten 2026-10-22, site inspection H3): the old tag URLs
+  (/collections/x/lehengas) 301ed back because no product carries tags. Chips now filter by
+  MEMBERSHIP in the silhouette collection of the same handle (corsets / lehengas /
+  indo-western): the chip label is handleized and matched against each card's
+  data-ka-colls (the handles of every collection the product belongs to, set in
+  ka-collection-grid.liquid). Filtering runs in assets/ka-collection.js; with JS off the
+  chip is a plain link to that silhouette collection. No product tags are involved.
 
   Sort maps to Shopify's native collection sort_by query parameter, appended via a
   real <select> with onchange navigation (progressively enhanced by ka-collection.js
@@ -22,19 +21,45 @@
   with no JS).
 {%- endcomment -%}
 
+{%- liquid
+  comment
+    Which silhouette collections actually have pieces in THIS collection? Liquid only exposes the
+    first 50 products, so: a hit in the first 50 proves the chip is non-empty; no hit in a collection
+    of 50 or fewer proves it empty (chip hidden); a larger collection keeps the chip and the page
+    script (assets/ka-collection.js) removes it if the full list turns out to hold no match.
+  endcomment
+  assign seen = '|'
+  for p in collection.products
+    for c in p.collections
+      assign seen = seen | append: c.handle | append: '|'
+    endfor
+  endfor
+  assign sample_is_whole = true
+  if collection.products_count > 50
+    assign sample_is_whole = false
+  endif
+-%}
 <div class="ka-refine-bar" data-ka-refine-bar>
   <nav class="ka-refine-bar__chips" data-ka-refine-chips aria-label="Refine collection">
     <a
       href="{{ collection.url }}"
-      class="ka-chip{% if current_tags == empty or current_tags == blank %} is-active{% endif %}"
+      class="ka-chip is-active"
+      data-ka-chip-all
     >All</a>
     {% for block in section.blocks %}
-      {% assign chip_tag_handle = block.settings.chip_label | handle %}
+      {%- assign chip_handle = block.settings.chip_label | handle -%}
+      {%- assign chip_needle = '|' | append: chip_handle | append: '|' -%}
+      {%- assign chip_show = true -%}
+      {%- if chip_handle == collection.handle -%}{%- assign chip_show = false -%}{%- endif -%}
+      {%- if sample_is_whole -%}{%- unless seen contains chip_needle -%}{%- assign chip_show = false -%}{%- endunless -%}{%- endif -%}
+      {%- if chip_show or request.design_mode -%}
       <a
-        href="{{ collection.url }}/{{ chip_tag_handle }}"
-        class="ka-chip{% if current_tags contains block.settings.chip_label %} is-active{% endif %}"
+        href="/collections/{{ chip_handle }}"
+        class="ka-chip"
+        data-ka-chip="{{ chip_handle }}"
         {{ block.shopify_attributes }}
       >{{ block.settings.chip_label }}</a>
+      {%- endif -%}
     {% endfor %}
   </nav>
 
@@ -56,7 +81,7 @@
   "settings": [
     {
       "type": "paragraph",
-      "content": "Add up to 3 chip blocks below. Chip label text must exactly match (case-sensitive) a real product tag handle used in this collection's products, since Shopify auto-handleizes the label to build the filter URL."
+      "content": "Add up to 3 chip blocks below. A chip filters this collection to the pieces that are also in the collection whose handle matches the chip label (Corsets = corsets, Lehengas = lehengas, Indo-Western = indo-western). Chips with no matching pieces hide themselves."
     }
   ],
   "blocks": [
@@ -65,7 +90,7 @@
       "name": "Refine chip",
       "limit": 3,
       "settings": [
-        { "type": "text", "id": "chip_label", "label": "Chip label / product tag", "default": "Corsets" }
+        { "type": "text", "id": "chip_label", "label": "Chip label (= collection)", "default": "Corsets" }
       ]
     }
   ],

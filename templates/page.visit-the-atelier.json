@@ -79,14 +79,14 @@
         "facts_eyebrow": "A Visit, in Brief",
         "phone_label": "Phone",
         "hours_label": "Hours",
-        "hours_value": "Opens 11:00 AM",
-        "hours_note": "Full weekly hours & closing time to be confirmed — message us before visiting outside typical daytime hours.",
+        "hours_value": "Open 11 am – 7 pm",
+        "hours_note": "",
         "rating_label": "Rated on Google",
         "rating_score": "4.7",
         "rating_sub": "Designer Clothing Store",
         "rating_link_label": "View on Google Maps",
         "walkins_label": "Walk-Ins",
-        "walkins_value": "Welcome anytime — no appointment required."
+        "walkins_value": "Welcome during opening hours — no appointment required."
       }
     },
     "ka-visit-photo": {
