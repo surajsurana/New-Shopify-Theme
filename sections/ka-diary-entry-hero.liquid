@@ -90,7 +90,12 @@
   -%}
 
   <header class="e-hero" id="entryHero" aria-label="{{ article.title | escape }}">
-    <div class="e-hero__bg reveal-img" id="entryHeroBg">
+    {%- assign e_focus_y = article.metafields.custom.hero_focus_y.value -%}
+    {%- assign e_focus_style = '' -%}
+    {%- if e_focus_y != blank and e_focus_y >= 0 and e_focus_y <= 100 -%}
+      {%- assign e_focus_style = e_focus_y | round | prepend: 'style="--hero-y: ' | append: '%"' -%}
+    {%- endif -%}
+    <div class="e-hero__bg reveal-img" id="entryHeroBg" {{ e_focus_style }}>
       {%- if hero_image != blank -%}
         <img
           src="{{ hero_image | image_url: width: 1800 }}"

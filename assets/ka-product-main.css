@@ -140,7 +140,7 @@
    where --ratio is never set. ── */
 .ka-stage--native-ratio {
   aspect-ratio: var(--ratio, 3 / 4);
-  width: min(100%, 90vh * var(--ratio, 0.75));
+  width: min(100%, max(440px, min(90vh, 100svh - 200px)) * var(--ratio, 0.75));
 }
 .ka-stage__idx {
   position: absolute; left: 18px; bottom: 16px;
