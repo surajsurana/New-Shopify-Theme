@@ -82,6 +82,51 @@
     });
   }
 
+  /* --- Complete, stable product set (shared by View More and the refine chips) ------
+     On best-selling / price sorts Shopify's order shifts between page requests, so paging with
+     "page=2,3,..." overlaps and silently drops pieces. For those sorts we fetch EVERY page once,
+     in a deterministic title-ascending order, de-duplicate by data-ka-pid and cache the result. */
+  var fullWrap = document.querySelector('[data-ka-load-more]');
+  var fullSetPromise = null;
+  function sortIsUnstable() { return !!fullWrap && fullWrap.getAttribute('data-sort-unstable') === 'true'; }
+  function getFullSet() {
+    if (fullSetPromise) return fullSetPromise;
+    var sid = fullWrap.getAttribute('data-section-id');
+    var pages = parseInt(fullWrap.getAttribute('data-pages'), 10) || 1;
+    var jobs = [];
+    for (var n = 1; n <= pages; n++) {
+      (function (page) {
+        var params = new URLSearchParams(window.location.search);
+        params.set('page', page);
+        params.set('section_id', sid);
+        params.set('sort_by', 'title-ascending');
+        jobs.push(fetch(window.location.pathname + '?' + params.toString(), { credentials: 'same-origin' })
+          .then(function (r) { if (!r.ok) throw new Error('page ' + page); return r.text(); }));
+      })(n);
+    }
+    fullSetPromise = Promise.all(jobs).then(function (htmls) {
+      var seen = {}, out = [];
+      htmls.forEach(function (html) {
+        var doc = new DOMParser().parseFromString(html, 'text/html');
+        var g = doc.getElementById('ka-product-grid-' + sid);
+        if (!g) return;
+        Array.prototype.forEach.call(g.querySelectorAll('.ka-p-card'), function (c) {
+          var pid = c.getAttribute('data-ka-pid');
+          if (pid && seen[pid]) return;
+          seen[pid] = true;
+          out.push(c);
+        });
+      });
+      return out;
+    }).catch(function (e) { fullSetPromise = null; throw e; });
+    return fullSetPromise;
+  }
+  function onPage(grid) {
+    var have = {};
+    Array.prototype.forEach.call(grid.querySelectorAll('.ka-p-card'), function (c) { have[c.getAttribute('data-ka-pid')] = true; });
+    return have;
+  }
+
   /* --- Refine chips: filter by collection membership -------------------
      Each card carries data-ka-colls (handles of every collection it is in).
      A chip with data-ka-chip="lehengas" shows only cards that are also in the
@@ -106,19 +151,28 @@
       var sectionId = wrap.getAttribute('data-section-id');
       var pages = parseInt(wrap.getAttribute('data-pages'), 10) || 1;
       var cur = parseInt(wrap.getAttribute('data-current-page'), 10) || 1;
-      // Best-selling / price orderings are not stable between requests (ties and live sales
-      // reshuffle them), so pages fetched separately overlap and drop pieces. In that case fetch
-      // EVERY page, including the one already shown, in a deterministic title order, and de-duplicate
-      // by product id against what is on the page.
-      var unstable = wrap.getAttribute('data-sort-unstable') === 'true';
-      var first = unstable ? 1 : cur + 1;
+      if (sortIsUnstable()) {
+        loadingAll = getFullSet().then(function (all) {
+          var have = onPage(grid);
+          all.forEach(function (c) {
+            var pid = c.getAttribute('data-ka-pid');
+            if (have[pid]) return;
+            have[pid] = true;
+            c.classList.add('visible');
+            grid.appendChild(c);
+          });
+          var btn = wrap.querySelector('[data-ka-load-more-btn]');
+          if (btn) btn.remove();
+        }).catch(function () { loadingAll = null; throw new Error('load'); });
+        return loadingAll;
+      }
+      var first = cur + 1;
       var jobs = [];
       for (var n = first; n <= pages; n++) {
         (function (page) {
           var params = new URLSearchParams(window.location.search);
           params.set('page', page);
           params.set('section_id', sectionId);
-          if (unstable) params.set('sort_by', 'title-ascending');
           jobs.push(fetch(window.location.pathname + '?' + params.toString(), { credentials: 'same-origin' })
             .then(function (r) { if (!r.ok) throw new Error('page ' + page); return r.text(); }));
         })(n);
@@ -217,6 +271,26 @@
   if (!loadMoreBtn || !grid) return;
 
   loadMoreBtn.addEventListener('click', function (e) {
+    if (sortIsUnstable()) {
+      // Keep the curated cards already shown; append unseen pieces from the complete cached set,
+      // one normal page at a time.
+      e.preventDefault();
+      loadMoreBtn.textContent = 'Loading…';
+      getFullSet().then(function (all) {
+        var have = onPage(grid);
+        var fresh = all.filter(function (c) { return !have[c.getAttribute('data-ka-pid')]; });
+        fresh.slice(0, perPage).forEach(function (c) { c.classList.add('visible'); grid.appendChild(c); });
+        var shownNow = grid.querySelectorAll('.ka-p-card').length;
+        var total = shownNow + Math.max(0, fresh.length - perPage);
+        if (countEl) countEl.textContent = 'Showing ' + shownNow + ' of ' + total + ' pieces';
+        if (fresh.length <= perPage) loadMoreBtn.remove();
+        else loadMoreBtn.textContent = 'View More of the Collection';
+      }).catch(function () {
+        var href = loadMoreBtn.getAttribute('href');
+        if (href) window.location.href = href; else loadMoreBtn.textContent = 'View More of the Collection';
+      });
+      return;
+    }
     var nextPage = currentPage + 1;
 
     var currentPath = window.location.pathname;
