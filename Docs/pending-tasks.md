@@ -341,7 +341,7 @@ app/API. Check Admin > Settings > Apps and sales channels for anything
 installed/updated around 3 Aug or 2 Oct, and Settings > Customer events for
 pixel access. No orders/payments were affected; Meta ads unaffected (checked).
 
-### 35. Rename the two Admin menus (remove "(staging preview)") -- OPEN (Suraj, cosmetic)
+### 35. Rename the two Admin menus (remove "(staging preview)") -- DONE 2026-10-22 (renamed via API; handles unchanged, links verified live)
 **Source:** category-pages release, 2026-10-21. Admin > Online Store >
 Navigation: "Header Collections (staging preview)" -> "Header Collections",
 "Footer Collections 2026 (staging preview)" -> "Footer Collections". Handles
