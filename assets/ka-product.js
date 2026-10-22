@@ -27,6 +27,34 @@
      CSS scroll-snap does the swiping; this only mirrors the position into the dots. */
   var swipe = document.getElementById('ka-swipe');
   var dots = Array.prototype.slice.call(document.querySelectorAll('#ka-dots i'));
+
+  /* photo frame follows the active photo's ratio (Docs/cd-decisions-2026-10-22.md D):
+     --ratio-m on #ka-stage drives the phone/tablet stage height in ka-product-main.css.
+     Uses the image's declared width/height (known before it loads), then its natural size. */
+  if (swipe && stage) {
+    var slideImgs = Array.prototype.slice.call(swipe.querySelectorAll('.ka-swipe__slide img'));
+    var ratioOf = function (img) {
+      var w = img.naturalWidth || parseFloat(img.getAttribute('width'));
+      var h = img.naturalHeight || parseFloat(img.getAttribute('height'));
+      return (w > 0 && h > 0) ? Math.max(0.5, Math.min(1, w / h)) : 0;
+    };
+    var setRatio = function () {
+      var i = Math.round(swipe.scrollLeft / (swipe.clientWidth || 1));
+      var img = slideImgs[Math.max(0, Math.min(slideImgs.length - 1, i))];
+      var r = img && ratioOf(img);
+      if (r) { stage.style.setProperty('--ratio-m', r.toFixed(4)); }
+    };
+    var ratioTimer;
+    swipe.addEventListener('scroll', function () {
+      clearTimeout(ratioTimer);
+      ratioTimer = setTimeout(setRatio, 80);
+    }, { passive: true });
+    slideImgs.forEach(function (img) {
+      if (!img.complete) { img.addEventListener('load', setRatio); }
+    });
+    setRatio();
+  }
+
   if (swipe && dots.length) {
     var swipeTick = false;
     swipe.addEventListener('scroll', function () {
