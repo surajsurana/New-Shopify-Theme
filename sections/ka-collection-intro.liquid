@@ -54,6 +54,8 @@
     capture pr_hi_txt
       render 'ka-format-inr', rupees: pr_max_r
     endcapture
+    assign pr_lo_txt = pr_lo_txt | strip
+    assign pr_hi_txt = pr_hi_txt | strip
     if pr_min_r == pr_max_r
       assign price_range = pr_hi_txt
     else

@@ -1,7 +1,7 @@
 {%- comment -%}
   Prints a whole-rupee amount with Indian digit grouping (4,30,000), prefixed with the rupee sign.
-  Usage: {% render 'ka-format-inr', rupees: 430000 %}
-  Whitespace-controlled so it is safe inside {% capture %}.
+  Usage: render this snippet with a whole-rupee number named rupees.
+  Whitespace-controlled so it can be captured into a variable.
 {%- endcomment -%}
 {%- liquid
   assign inr_digits = rupees | round | append: ''
