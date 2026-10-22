@@ -321,3 +321,7 @@
   align-items: center;
   gap: 16px;
 }
+
+/* Refine-chip filtering (assets/ka-collection.js): filtered-out cards and the editorial insert stay hidden. */
+.ka-p-card[hidden],
+.ka-product-grid.is-filtered .ka-editorial-insert { display: none !important; }

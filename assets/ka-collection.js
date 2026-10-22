@@ -5,7 +5,7 @@
    per the project's per-section/page CSS/JS scoping rule — this code
    has no purpose on any page that isn't a collection template.
 
-   Three responsibilities, per Docs/collection-build-spec.md and the
+   Four responsibilities (the refine chips, added 2026-10-22, are the fourth), per Docs/collection-build-spec.md and the
    Round 2 CTA revision (Docs/cta-architecture-revision.md):
    1. Sort select (Section 5 / F4) — navigates to the collection URL
       with Shopify's native sort_by parameter appended. The refine
@@ -81,6 +81,114 @@
       window.location.href = url.toString();
     });
   }
+
+  /* --- Refine chips: filter by collection membership -------------------
+     Each card carries data-ka-colls (handles of every collection it is in).
+     A chip with data-ka-chip="lehengas" shows only cards that are also in the
+     "lehengas" collection. Liquid only renders one page of the grid, so the
+     first filter click fetches the remaining pages (Section Rendering API,
+     same mechanism as Load More) and appends them, then filters locally. */
+  (function () {
+    var chipNav = document.querySelector('[data-ka-refine-chips]');
+    var wrap = document.querySelector('[data-ka-load-more]');
+    if (!chipNav) return;
+    var grid = wrap ? document.getElementById('ka-product-grid-' + wrap.getAttribute('data-section-id')) : document.querySelector('[data-ka-product-grid]');
+    if (!grid) return;
+    var chips = chipNav.querySelectorAll('[data-ka-chip]');
+    var allChip = chipNav.querySelector('[data-ka-chip-all]');
+    var loadingAll = null;
+
+    function cards() { return grid.querySelectorAll('.ka-p-card'); }
+
+    function loadEverything() {
+      if (loadingAll) return loadingAll;
+      if (!wrap) { loadingAll = Promise.resolve(); return loadingAll; }
+      var sectionId = wrap.getAttribute('data-section-id');
+      var pages = parseInt(wrap.getAttribute('data-pages'), 10) || 1;
+      var cur = parseInt(wrap.getAttribute('data-current-page'), 10) || 1;
+      var jobs = [];
+      for (var n = cur + 1; n <= pages; n++) {
+        (function (page) {
+          var params = new URLSearchParams(window.location.search);
+          params.set('page', page);
+          params.set('section_id', sectionId);
+          jobs.push(fetch(window.location.pathname + '?' + params.toString(), { credentials: 'same-origin' })
+            .then(function (r) { if (!r.ok) throw new Error('page ' + page); return r.text(); }));
+        })(n);
+      }
+      loadingAll = Promise.all(jobs).then(function (htmls) {
+        htmls.forEach(function (html) {
+          var doc = new DOMParser().parseFromString(html, 'text/html');
+          var g = doc.getElementById('ka-product-grid-' + sectionId);
+          if (!g) return;
+          Array.prototype.forEach.call(g.querySelectorAll('.ka-p-card'), function (c) {
+            c.classList.add('visible');
+            grid.appendChild(c);
+          });
+        });
+        // Everything is on the page now: retire Load More for good.
+        var btn = wrap.querySelector('[data-ka-load-more-btn]');
+        if (btn) btn.remove();
+      }).catch(function () { loadingAll = null; throw new Error('load'); });
+      return loadingAll;
+    }
+
+    function setActive(el) {
+      allChip && allChip.classList.remove('is-active');
+      Array.prototype.forEach.call(chips, function (c) { c.classList.remove('is-active'); });
+      el.classList.add('is-active');
+    }
+
+    function apply(handle) {
+      var shown = 0;
+      Array.prototype.forEach.call(cards(), function (c) {
+        var has = !handle || (' ' + (c.getAttribute('data-ka-colls') || '') + ' ').indexOf(' ' + handle + ' ') !== -1;
+        c.hidden = !has;
+        if (has) { shown++; c.classList.add('visible'); }
+      });
+      grid.classList.toggle('is-filtered', !!handle);
+      var countEl = wrap && wrap.querySelector('[data-ka-load-more-count]');
+      if (countEl && (handle || loadingAll)) countEl.textContent = 'Showing ' + shown + ' of ' + shown + ' pieces';
+      return shown;
+    }
+
+    function select(chip) {
+      var handle = chip ? chip.getAttribute('data-ka-chip') : '';
+      if (!handle) {
+        setActive(allChip);
+        apply('');
+        if (history.replaceState) history.replaceState(null, '', window.location.pathname + window.location.search);
+        return;
+      }
+      setActive(chip);
+      loadEverything().then(function () {
+        if (apply(handle) === 0) {
+          // Nothing in this collection belongs to the silhouette: drop the chip, show everything.
+          chip.parentNode && chip.parentNode.removeChild(chip);
+          select(null);
+          return;
+        }
+        if (history.replaceState) history.replaceState(null, '', '#' + handle);
+        grid.scrollIntoView && chipNav.scrollIntoView({ block: 'start', behavior: 'smooth' });
+      }).catch(function () {
+        // Fetch failed: fall back to the silhouette collection page the link points at.
+        window.location.href = chip.getAttribute('href');
+      });
+    }
+
+    chipNav.addEventListener('click', function (e) {
+      var a = e.target.closest && e.target.closest('a');
+      if (!a || !chipNav.contains(a)) return;
+      if (a.hasAttribute('data-ka-chip')) { e.preventDefault(); select(a); }
+      else if (a.hasAttribute('data-ka-chip-all')) { e.preventDefault(); select(null); }
+    });
+
+    var hash = window.location.hash.replace('#', '');
+    if (hash) {
+      var pre = chipNav.querySelector('[data-ka-chip="' + hash.replace(/[^a-z0-9-]/gi, '') + '"]');
+      if (pre) select(pre);
+    }
+  })();
 
   /* --- AJAX Load More ---------------------------------------------- */
   var loadMoreWrap = document.querySelector('[data-ka-load-more]');

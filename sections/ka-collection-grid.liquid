@@ -60,7 +60,9 @@
   <div class="ka-product-grid" id="ka-product-grid-{{ section.id }}" data-ka-product-grid>
     {% for product in collection.products %}
       {%- assign quickadd_variant = product.selected_or_first_available_variant -%}
-      <div class="ka-p-card reveal-img">
+      {%- comment -%} Collection-membership handles drive the refine chips (assets/ka-collection.js); no product tags needed. {%- endcomment -%}
+      {%- capture card_colls -%}{%- for c in product.collections -%}{{ c.handle }}{% unless forloop.last %} {% endunless %}{%- endfor -%}{%- endcapture -%}
+      <div class="ka-p-card reveal-img" data-ka-colls="{{ card_colls }}">
         <div class="ka-p-card__image">
           {%- comment -%}
             Sibling (not nested) absolutely-positioned layers: the image-link

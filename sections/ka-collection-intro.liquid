@@ -10,19 +10,59 @@
     1. Section settings — editable from Theme Editor when a per-collection template
        (templates/collection.{handle}.json) is assigned to the collection in Admin.
     2. Collection metafields — custom.intro_copy, custom.silhouettes, custom.lead_time,
-       custom.price_range_display, custom.sizing_note. Edit in Admin > Collections >
+       custom.sizing_note. (Price range is computed, see below.) Edit in Admin > Collections >
        [collection name] > scroll to Metafields at the bottom of the page.
     3. Hardcoded placeholder — shown when neither source has data yet.
 
-  Per CD Note 4 (spec Section 7): price range is always a manually maintained
-  string, never computed from collection.products min/max.
+  PRICE RANGE (changed 2026-10-22, site inspection C2): computed from the collection's own
+  products, lowest to highest with "+" after the top figure, Indian grouping. The hand-typed
+  custom.price_range_display metafield and the section setting are no longer read.
+  Liquid exposes only the first 50 products of a collection and no price-range minimum, so:
+    - max  = the larger of the first-50 max and the price filter's range_max (whole collection)
+    - min  = first-50 minimum; for collections of more than 50 products a tiny inline script
+             replaces it with the true minimum (one-product price-ascending JSON fetch).
 {%- endcomment -%}
 
 {%- liquid
   assign intro_copy  = section.settings.intro_copy          | default: collection.metafields.custom.intro_copy          | default: "Intro copy pending — Creative Director, see collection-build-spec.md §4"
   assign silhouettes = section.settings.silhouettes         | default: collection.metafields.custom.silhouettes         | default: "—"
   assign lead_time   = section.settings.lead_time           | default: collection.metafields.custom.lead_time           | default: "—"
-  assign price_range = section.settings.price_range_display | default: collection.metafields.custom.price_range_display | default: "—"
+  assign pr_min = 0
+  assign pr_max = 0
+  for p in collection.products
+    assign p_lo = p.price_min
+    assign p_hi = p.price_max
+    if pr_min == 0 or p_lo < pr_min
+      assign pr_min = p_lo
+    endif
+    if p_hi > pr_max
+      assign pr_max = p_hi
+    endif
+  endfor
+  for f in collection.filters
+    if f.type == 'price_range' and f.range_max > pr_max
+      assign pr_max = f.range_max
+    endif
+  endfor
+  assign price_range = ''
+  if pr_max > 0
+    assign pr_min_r = pr_min | divided_by: 100.0 | round
+    assign pr_max_r = pr_max | divided_by: 100.0 | round
+    capture pr_lo_txt
+      render 'ka-format-inr', rupees: pr_min_r
+    endcapture
+    capture pr_hi_txt
+      render 'ka-format-inr', rupees: pr_max_r
+    endcapture
+    if pr_min_r == pr_max_r
+      assign price_range = pr_hi_txt
+    else
+      assign price_range = pr_lo_txt | append: ' – ' | append: pr_hi_txt | append: '+'
+    endif
+  endif
+  if price_range == blank
+    assign price_range = "—"
+  endif
   assign sizing_note = section.settings.sizing_note         | default: collection.metafields.custom.sizing_note         | default: "Made to Measure"
 -%}
 
@@ -39,7 +79,7 @@
     </div>
     <div>
       <p class="ka-coll-intro__fact-label">Price Range</p>
-      <p class="ka-coll-intro__fact-value">{{ price_range }}</p>
+      <p class="ka-coll-intro__fact-value" data-ka-price-range>{{ price_range }}</p>
     </div>
     <div>
       <p class="ka-coll-intro__fact-label">Sizing</p>
@@ -47,6 +87,32 @@
     </div>
   </div>
 </section>
+
+{%- if collection.products_count > 50 and pr_max > 0 -%}
+<script>
+(function () {
+  var el = document.querySelector('[data-ka-price-range]');
+  if (!el || !window.fetch) return;
+  var max = {{ pr_max_r }};
+  fetch('{{ collection.url }}/products.json?sort_by=price-ascending&limit=1', { credentials: 'same-origin' })
+    .then(function (r) { return r.ok ? r.json() : null; })
+    .then(function (d) {
+      if (!d || !d.products || !d.products[0]) return;
+      var lo = Infinity;
+      d.products[0].variants.forEach(function (v) { lo = Math.min(lo, parseFloat(v.price)); });
+      if (!isFinite(lo) || lo <= 0 || lo >= max) return;
+      var f = function (n) {
+        n = Math.round(n);
+        var s = String(n);
+        if (s.length > 3) { s = s.slice(0, -3).replace(/\B(?=(\d{2})+(?!\d))/g, ',') + ',' + s.slice(-3); }
+        return '\u20B9' + s;
+      };
+      el.textContent = f(lo) + ' \u2013 ' + f(max) + '+';
+    })
+    .catch(function () {});
+})();
+</script>
+{%- endif -%}
 
 {% schema %}
 {
@@ -61,7 +127,6 @@
     { "type": "textarea", "id": "intro_copy",          "label": "Intro copy" },
     { "type": "text",     "id": "silhouettes",         "label": "Silhouettes (e.g. Corsets, Lehengas)" },
     { "type": "text",     "id": "lead_time",           "label": "Lead time (e.g. 6–8 Weeks, Made to Order)" },
-    { "type": "text",     "id": "price_range_display", "label": "Price range (e.g. ₹42,000–₹85,000+)" },
     { "type": "text",     "id": "sizing_note",         "label": "Sizing note", "default": "Made to Measure" }
   ],
   "presets": [
