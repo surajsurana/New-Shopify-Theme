@@ -63,7 +63,7 @@
 
 <div class="article-progress" id="articleProgress" aria-hidden="true"></div>
 
-<a href="{{ blog.url }}" class="article-return" id="articleReturn">&larr; Back to the Journal</a>
+<a href="{{ blog.url }}" class="article-return" id="articleReturn">&larr; <span class="article-return__lead">Back to the </span>Journal</a>
 
 <header class="a-hero" id="articleHero" aria-label="{{ article.title | escape }}">
   {%- assign hero_y = article.metafields.custom.hero_focus_y.value -%}
@@ -121,6 +121,17 @@
       requestAnimationFrame(function () { requestAnimationFrame(function () { heroBg.classList.add('loaded'); }); });
     }
     var nav = document.getElementById('ka-nav');
+    var heroEl = document.getElementById('articleHero');
+    function setHH() {
+      if (!nav || !heroEl) return;
+      var y = window.scrollY || 0;
+      if (y > 0) return;
+      var b = Math.round(nav.getBoundingClientRect().bottom);
+      if (b > 0 && b < 200) heroEl.style.setProperty('--hh', b + 'px');
+    }
+    setHH();
+    window.addEventListener('resize', setHH);
+    window.addEventListener('load', setHH);
     var returnLink = document.getElementById('articleReturn');
     var progress = document.getElementById('articleProgress');
     window.addEventListener('scroll', function () {

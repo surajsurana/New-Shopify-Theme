@@ -20,7 +20,7 @@
   overflow: hidden;
 }
 .j-mast__bg { position: absolute; inset: 0; }
-.j-mast__bg img { object-position: center 32%; }
+.j-mast__bg img { object-position: 50% 6%; }
 .j-mast__overlay {
   position: absolute;
   inset: 0;
@@ -117,4 +117,5 @@
 
 @media (max-width: 600px) {
   .j-mast { height: 74svh; }
+  .j-mast__bg img { object-position: 30% 6%; }
 }
