@@ -30,9 +30,9 @@ below does that.
 
 ### Placements (every `data-ka-placement` value in the theme)
 
-`404-concierge`, `about-hero-appointment`, `appointment-instore`, `appointment-virtual`, `cart-empty-concierge`, `collection-concierge-enquire`, `collection-concierge-styling`, `collection-empty-first-to-know`, `diary-coming-soon-share`, `diary-more-share`, `diary-share`, `faq-empty-concierge`, `float-concierge`, `footer-appointment`, `footer-concierge`, `footer-contact-number`, `home-hero-appointment`, `nav-drawer-appointment`, `nav-drawer-concierge`, `page-coming-soon-whatsapp`, `pdp-appointment`, `pdp-inline-whatsapp`, `pdp-invite-appointment`, `pdp-invite-concierge`, `pdp-minibar-appointment`, `pdp-mobilebar-whatsapp`, `pdp-styling-consultation`, `search-empty-concierge`, `search-overlay-concierge`, `visit-whatsapp`
+`404-concierge`, `about-hero-appointment`, `appointment-instore`, `appointment-virtual`, `cart-empty-concierge`, `collection-concierge-enquire`, `collection-concierge-styling`, `collection-empty-first-to-know`, `diary-coming-soon-share`, `diary-more-share`, `diary-share`, `faq-empty-concierge`, `float-concierge`, `footer-appointment`, `footer-concierge`, `footer-contact-number`, `home-hero-appointment`, `home-loomiere-teaser`, `nav-drawer-appointment`, `nav-drawer-concierge`, `page-coming-soon-whatsapp`, `pdp-appointment`, `pdp-inline-whatsapp`, `pdp-invite-appointment`, `pdp-invite-concierge`, `pdp-minibar-appointment`, `pdp-mobilebar-whatsapp`, `pdp-styling-consultation`, `search-empty-concierge`, `search-overlay-concierge`, `visit-whatsapp`
 
-(31 distinct values are present in the theme today, not 26.)
+(32 distinct values are present in the theme today, not 26; `home-loomiere-teaser` was added 2026-10-22 for the temporary Loomière teaser.)
 
 ## GA4 decision: custom pixel (cookie-stitched), not a theme-side gtag call
 

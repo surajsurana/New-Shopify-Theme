@@ -1,3 +1,6 @@
+{%- comment -%} Suppressed while the Loomière teaser (theme setting loomiere_state) is on; teaser carries the homepage H1 then. {%- endcomment -%}
+{%- assign ka_loom = settings.loomiere_state | default: 'off' -%}
+{%- if ka_loom == 'off' -%}
 {{ 'ka-hero.css' | asset_url | stylesheet_tag }}
 {{ 'ka-animations.css' | asset_url | stylesheet_tag }}
 
@@ -50,6 +53,7 @@
     <div class="ka-hero__scroll-line"></div>
   </div>
 </section>
+{%- endif -%}
 
 {% schema %}
 {

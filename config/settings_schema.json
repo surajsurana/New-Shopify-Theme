@@ -72,5 +72,209 @@
       { "type": "textarea", "id": "welcome_offer_fine_print",     "label": "Fine print", "default": "Valid toward your first order. Not combinable with other offers.", "info": "Checked against KLP3000's actual Shopify discount config on 2026-09-14: appliesOncePerCustomer is false (the code is genuinely reusable per customer, not one-use — per Suraj, the real Shopify discount config stays as-is, so no 'one use per customer' claim is made here) and combinesWith is false on every axis (so 'Not combinable with other offers' is accurate and is kept). If the discount's real configuration ever changes, re-check this text against it — see build spec Flag F3." },
       { "type": "text",     "id": "welcome_offer_dismiss_label",  "label": "Dismiss link label",   "default": "Not today" }
     ]
+  },
+  {
+    "name": "Loomière teaser",
+    "settings": [
+      {
+        "type": "paragraph",
+        "content": "Temporary homepage takeover (Docs/loomiere-teaser-build-spec.md). Off: normal hero. Teaser: this replaces the hero, CTA books a WhatsApp styling appointment. Live: CTA goes to /collections/loomiere (falls back to Teaser if that collection has no published products)."
+      },
+      {
+        "type": "select",
+        "id": "loomiere_state",
+        "label": "State",
+        "options": [
+          {
+            "value": "off",
+            "label": "Off (normal hero)"
+          },
+          {
+            "value": "teaser",
+            "label": "Teaser"
+          },
+          {
+            "value": "live",
+            "label": "Live (collection launched)"
+          }
+        ],
+        "default": "off"
+      },
+      {
+        "type": "header",
+        "content": "Copy"
+      },
+      {
+        "type": "text",
+        "id": "loomiere_eyebrow",
+        "label": "Eyebrow (desktop only)",
+        "default": "Karishma & Ashita · Mumbai, India"
+      },
+      {
+        "type": "text",
+        "id": "loomiere_headline_teaser",
+        "label": "Headline, Teaser state",
+        "default": "Launching soon",
+        "info": "Alternative: Introducing"
+      },
+      {
+        "type": "text",
+        "id": "loomiere_headline_live",
+        "label": "Headline, Live state",
+        "default": "Introducing"
+      },
+      {
+        "type": "text",
+        "id": "loomiere_name",
+        "label": "Name (the H1)",
+        "default": "Loomière"
+      },
+      {
+        "type": "text",
+        "id": "loomiere_line",
+        "label": "Line",
+        "default": "Rich textures. Fluid drapes. Playful shimmer."
+      },
+      {
+        "type": "text",
+        "id": "loomiere_cta_teaser",
+        "label": "CTA, Teaser state",
+        "default": "Book a styling appointment to see it first"
+      },
+      {
+        "type": "text",
+        "id": "loomiere_cta_live",
+        "label": "CTA, Live state",
+        "default": "Explore the collection"
+      },
+      {
+        "type": "text",
+        "id": "loomiere_more_label",
+        "label": "Quiet link label",
+        "default": "Explore our collections"
+      },
+      {
+        "type": "url",
+        "id": "loomiere_more_url",
+        "label": "Quiet link URL",
+        "info": "Blank falls back to /collections."
+      },
+      {
+        "type": "header",
+        "content": "Desktop image"
+      },
+      {
+        "type": "image_picker",
+        "id": "loomiere_image_desktop",
+        "label": "Desktop image",
+        "info": "Blank uses the bundled crimson frame."
+      },
+      {
+        "type": "select",
+        "id": "loomiere_focal_desktop_x",
+        "label": "Focal point X",
+        "options": [
+          {
+            "value": "30%",
+            "label": "30%"
+          },
+          {
+            "value": "50%",
+            "label": "50%"
+          },
+          {
+            "value": "70%",
+            "label": "70%"
+          }
+        ],
+        "default": "70%"
+      },
+      {
+        "type": "select",
+        "id": "loomiere_focal_desktop_y",
+        "label": "Focal point Y",
+        "options": [
+          {
+            "value": "12%",
+            "label": "12%"
+          },
+          {
+            "value": "50%",
+            "label": "50%"
+          },
+          {
+            "value": "88%",
+            "label": "88%"
+          }
+        ],
+        "default": "88%"
+      },
+      {
+        "type": "text",
+        "id": "loomiere_alt_desktop",
+        "label": "Desktop alt text",
+        "default": "A model in a crimson couture gown by Karishma & Ashita, reclining, in warm studio light"
+      },
+      {
+        "type": "header",
+        "content": "Phone image"
+      },
+      {
+        "type": "image_picker",
+        "id": "loomiere_image_phone",
+        "label": "Phone image",
+        "info": "Blank uses the bundled fuchsia frame."
+      },
+      {
+        "type": "select",
+        "id": "loomiere_focal_phone_x",
+        "label": "Focal point X",
+        "options": [
+          {
+            "value": "40%",
+            "label": "40%"
+          },
+          {
+            "value": "52%",
+            "label": "52%"
+          },
+          {
+            "value": "60%",
+            "label": "60%"
+          }
+        ],
+        "default": "52%"
+      },
+      {
+        "type": "select",
+        "id": "loomiere_focal_phone_y",
+        "label": "Focal point Y",
+        "options": [
+          {
+            "value": "0%",
+            "label": "0%"
+          },
+          {
+            "value": "6%",
+            "label": "6%"
+          },
+          {
+            "value": "30%",
+            "label": "30%"
+          },
+          {
+            "value": "50%",
+            "label": "50%"
+          }
+        ],
+        "default": "0%"
+      },
+      {
+        "type": "text",
+        "id": "loomiere_alt_phone",
+        "label": "Phone alt text",
+        "default": "A model in a fuchsia couture corset and drape skirt by Karishma & Ashita"
+      }
+    ]
   }
 ]
