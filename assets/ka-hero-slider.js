@@ -9,7 +9,7 @@
   if(!slides.length||!pauseBtn||!wrap) return;
   var reduce=window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches;
   var idx=0, busy=false, autoplay=!reduce, userPaused=false;
-  var holds={}; // hover, focus, touch, hidden, off (offscreen)
+  var holds={}; // focus, touch, hidden, off (offscreen)
 
   function load(i){
     var img=slides[i].querySelector('img[data-src]'); if(!img) return Promise.resolve();
@@ -30,7 +30,7 @@
   }
   function go(n,manual){
     if(n===idx||busy) return;
-    if(manual){autoplay=false;} // any manual choice ends autoplay for this visit
+    // a manual choice (tab, arrow key, swipe) just shows that slide; its own dwell timer starts and the loop carries on (Suraj, 2026-10-23). Only the pause button stops it.
     busy=true;
     load(n).then(function(){
       var from=slides[idx], to=slides[n];
@@ -62,9 +62,8 @@
     pauseBtn.setAttribute('aria-label',userPaused?'Play slideshow':'Pause slideshow');
     setClasses();
   });
-  // holds: mouse hover, keyboard focus inside, touch, tab hidden, hero scrolled out of view
-  root.addEventListener('pointerenter',function(e){if(e.pointerType==='mouse'){holds.hover=true;setClasses()}});
-  root.addEventListener('pointerleave',function(e){if(e.pointerType==='mouse'){holds.hover=false;setClasses()}});
+  // holds: keyboard focus inside, touch, tab hidden, hero scrolled out of view.
+  // No mouse-hover hold: the hero fills the screen, so a hover hold kept it still for almost every desktop visitor.
   root.addEventListener('focusin',function(e){var vis=true;try{vis=e.target.matches(':focus-visible')}catch(x){} holds.focus=vis;setClasses()}); // keyboard focus only; a mouse/tap click on the pause button must not hold autoplay
   root.addEventListener('focusout',function(){holds.focus=false;setClasses()});
   document.addEventListener('visibilitychange',function(){holds.hidden=document.hidden;setClasses()});
