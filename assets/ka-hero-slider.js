@@ -42,7 +42,7 @@
       root.classList.add('is-cycled');
       tabs.forEach(function(t,i){ if(i===n) t.setAttribute('aria-current','true'); else t.removeAttribute('aria-current'); });
       idx=n; status.textContent=to.getAttribute('aria-label');
-      setTimeout(function(){from.classList.remove('is-prev');busy=false},reduce?0:1700);
+      setTimeout(function(){from.classList.remove('is-prev');busy=false},reduce?0:2100); // just after the 2s fade-in completes
       setClasses();
     });
   }

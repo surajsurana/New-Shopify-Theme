@@ -141,10 +141,13 @@
 .ka-hero--slider .ka-hero__slide {
   position: absolute; top: 0; right: 0; bottom: 0; left: 0;
   opacity: 0; visibility: hidden; z-index: 0;
-  transition: opacity 1.6s var(--ease-soft), visibility 0s linear 1.6s;
+  transition: opacity 2s cubic-bezier(.45,0,.25,1), visibility 0s linear 2s;
 }
-.ka-hero--slider .ka-hero__slide.is-prev { opacity: 1; visibility: visible; z-index: 1; transition: opacity .7s var(--ease-soft) .9s, visibility 0s linear 1.6s; }
-.ka-hero--slider .ka-hero__slide.is-active { opacity: 1; visibility: visible; z-index: 2; transition: opacity 1.6s var(--ease-soft), visibility 0s; }
+/* Smooth crossfade (Suraj, 2026-10-23): the outgoing slide stays fully opaque and perfectly still underneath
+   while the incoming one fades in over it, so there is no dark dip and no zoom snap. */
+.ka-hero--slider .ka-hero__slide.is-prev { opacity: 1; visibility: visible; z-index: 1; transition: none; }
+.ka-hero--slider .ka-hero__slide.is-active { opacity: 1; visibility: visible; z-index: 2; transition: opacity 2s cubic-bezier(.45,0,.25,1), visibility 0s; }
+.ka-hero--slider .ka-hero__slide.is-prev .ka-hero__bg { transform: scale(1); transition: none; }
 .ka-hero--slider .ka-hero__slide.is-prev .ka-hero__content,
 .ka-hero--slider .ka-hero__slide.is-prev .lt__content { opacity: 0; transition: opacity .5s var(--ease-soft); }
 
