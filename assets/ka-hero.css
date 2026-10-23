@@ -202,6 +202,7 @@
 @media (max-width: 600px) {
   .ka-hero--slider .ka-hero__content { bottom: 52px; }
   .ka-hero--slider .ka-hero__scroll { bottom: 44px; }
+  .ka-hero--slider .ka-hero__bg img { object-position: 34% 8%; }  /* keep the approved First Love phone crop (line 125) */
 }
 @media (prefers-reduced-motion: reduce) {
   .ka-hero--slider *, .ka-hero--slider .ka-hero__ctrl { animation: none !important; transition: none !important; }
