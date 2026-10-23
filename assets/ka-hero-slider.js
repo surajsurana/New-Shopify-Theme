@@ -65,7 +65,7 @@
   // holds: mouse hover, keyboard focus inside, touch, tab hidden, hero scrolled out of view
   root.addEventListener('pointerenter',function(e){if(e.pointerType==='mouse'){holds.hover=true;setClasses()}});
   root.addEventListener('pointerleave',function(e){if(e.pointerType==='mouse'){holds.hover=false;setClasses()}});
-  root.addEventListener('focusin',function(){holds.focus=true;setClasses()});
+  root.addEventListener('focusin',function(e){var vis=true;try{vis=e.target.matches(':focus-visible')}catch(x){} holds.focus=vis;setClasses()}); // keyboard focus only; a mouse/tap click on the pause button must not hold autoplay
   root.addEventListener('focusout',function(){holds.focus=false;setClasses()});
   document.addEventListener('visibilitychange',function(){holds.hidden=document.hidden;setClasses()});
   if('IntersectionObserver' in window) new IntersectionObserver(function(en){holds.off=!en[0].isIntersecting;setClasses()},{threshold:.5}).observe(root);
