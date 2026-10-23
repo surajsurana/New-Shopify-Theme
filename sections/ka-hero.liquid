@@ -1,4 +1,8 @@
-{%- comment -%} Suppressed while the Loomière teaser (theme setting loomiere_state) is on; teaser carries the homepage H1 then. {%- endcomment -%}
+{%- comment -%}
+  Homepage hero for every loomiere_state (Docs/home-hero-slider-build-spec.md).
+  off: plain First Love hero (unchanged markup, no slider code). teaser / live: 2-slide slider,
+  slide 1 Loomière (content from Theme settings > Loomière teaser), slide 2 First Love (this section's settings).
+{%- endcomment -%}
 {%- assign ka_loom = settings.loomiere_state | default: 'off' -%}
 {%- if ka_loom == 'off' -%}
 {{ 'ka-hero.css' | asset_url | stylesheet_tag }}
@@ -53,6 +57,119 @@
     <div class="ka-hero__scroll-line"></div>
   </div>
 </section>
+{%- else -%}
+  {%- assign lt_is_live = false -%}
+  {%- if ka_loom == 'live' and collections['loomiere'] != blank and collections['loomiere'].products_count > 0 -%}
+    {%- assign lt_is_live = true -%}
+  {%- endif -%}
+  {%- assign lt_name = settings.loomiere_name | default: 'Loomière' -%}
+  {%- assign lt_prefill = "Hello K&A, I'd like to book a styling appointment to see " | append: lt_name | append: ' first' -%}
+  {%- assign lt_fdx = settings.loomiere_focal_desktop_x | default: '70%' -%}
+  {%- assign lt_fdy = settings.loomiere_focal_desktop_y | default: '88%' -%}
+  {%- assign lt_fpx = settings.loomiere_focal_phone_x | default: '52%' -%}
+  {%- assign lt_fpy = settings.loomiere_focal_phone_y | default: '0%' -%}
+  {%- assign lt_alt_d = settings.loomiere_alt_desktop | default: 'A model in a crimson couture gown by Karishma & Ashita, reclining, in warm studio light' -%}
+  {%- assign lt_alt_p = settings.loomiere_alt_phone | default: 'A model in a fuchsia couture corset and drape skirt by Karishma & Ashita' -%}
+{{ 'ka-hero.css' | asset_url | stylesheet_tag }}
+{{ 'ka-loomiere-teaser.css' | asset_url | stylesheet_tag }}
+{{ 'ka-animations.css' | asset_url | stylesheet_tag }}
+
+<section class="ka-hero ka-hero--slider" id="ka-hero" aria-roledescription="carousel" aria-label="Featured collections">
+  <div class="ka-hero__slides" id="ka-hero-slides" aria-live="off">
+
+    {%- comment -%} SLIDE 1: Loomière (carries the page's only H1) {%- endcomment -%}
+    <div class="ka-hero__slide is-active" role="group" aria-roledescription="slide" aria-label="1 of 2: {{ lt_name | escape }}" data-dwell="8">
+      <div class="lt" style="--fx:{{ lt_fdx }};--fy:{{ lt_fdy }};--pfx:{{ lt_fpx }};--pfy:{{ lt_fpy }}">
+        <div class="lt__media">
+          <picture>
+            {%- if settings.loomiere_image_phone != blank -%}
+              <source media="(max-width:700px)" srcset="{{ settings.loomiere_image_phone | image_url: width: 800 }} 800w, {{ settings.loomiere_image_phone | image_url: width: 1200 }} 1200w" sizes="100vw">
+            {%- else -%}
+              <source media="(max-width:700px)" srcset="{{ 'loomiere-teaser-phone.jpg' | asset_url }}">
+            {%- endif -%}
+            {%- if settings.loomiere_image_desktop != blank -%}
+              <img src="{{ settings.loomiere_image_desktop | image_url: width: 2000 }}"
+                   srcset="{{ settings.loomiere_image_desktop | image_url: width: 1200 }} 1200w, {{ settings.loomiere_image_desktop | image_url: width: 1800 }} 1800w, {{ settings.loomiere_image_desktop | image_url: width: 2400 }} 2400w"
+                   sizes="100vw" alt="{{ lt_alt_d | escape }}" loading="eager" fetchpriority="high" width="2400" height="1800">
+            {%- else -%}
+              <img src="{{ 'loomiere-teaser-desktop.jpg' | asset_url }}" alt="{{ lt_alt_d | escape }}" loading="eager" fetchpriority="high" width="2400" height="1800">
+            {%- endif -%}
+          </picture>
+        </div>
+        <div class="lt__scrim"></div>
+        <div class="lt__content">
+          {%- if settings.loomiere_eyebrow != blank -%}<p class="lt__eyebrow">{{ settings.loomiere_eyebrow | escape }}</p>{%- endif -%}
+          <p class="lt__kicker">{%- if lt_is_live -%}{{ settings.loomiere_headline_live | default: 'Introducing' | escape }}{%- else -%}{{ settings.loomiere_headline_teaser | default: 'Launching soon' | escape }}{%- endif -%}</p>
+          <h1 class="lt__name">{{ lt_name | escape }}</h1>
+          {%- if settings.loomiere_line != blank -%}<p class="lt__line">{{ settings.loomiere_line | escape }}</p>{%- endif -%}
+          {%- if lt_is_live -%}
+            <a class="lt__cta" href="{{ routes.collections_url }}/loomiere">{{ settings.loomiere_cta_live | default: 'Explore the collection' | escape }}</a>
+          {%- else -%}
+            <a class="lt__cta" href="https://wa.me/{{ settings.whatsapp_number }}?text={{ lt_prefill | url_encode }}" target="_blank" rel="noopener" data-ka-enquiry="appointment" data-ka-placement="home-loomiere-teaser">{{ settings.loomiere_cta_teaser | default: 'Book a styling appointment to see it first' | escape }}</a>
+          {%- endif -%}
+          {%- if settings.loomiere_more_label != blank -%}
+            <a class="lt__more" href="{{ settings.loomiere_more_url | default: routes.collections_url }}">{{ settings.loomiere_more_label | escape }}</a>
+          {%- endif -%}
+        </div>
+      </div>
+    </div>
+
+    {%- comment -%} SLIDE 2: First Love (title is an h2 here; it is the h1 only when the slider is absent). Image is fetched by ka-hero-slider.js after load. {%- endcomment -%}
+    <div class="ka-hero__slide" role="group" aria-roledescription="slide" aria-label="2 of 2: First Love" data-dwell="7" aria-hidden="true">
+      <div class="ka-hero__bg">
+        {% if section.settings.hero_image != blank %}
+          <img
+            data-src="{{ section.settings.hero_image | image_url: width: 1800 }}"
+            data-srcset="{{ section.settings.hero_image | image_url: width: 900 }} 900w, {{ section.settings.hero_image | image_url: width: 1200 }} 1200w, {{ section.settings.hero_image | image_url: width: 1800 }} 1800w"
+            sizes="100vw"
+            alt="{{ section.settings.hero_image.alt | escape | default: 'K&A Bridal Couture — opening editorial' }}"
+            width="1800"
+            height="1276"
+            class="img-filter-hero"
+          >
+        {% else %}
+          <img
+            data-src="{{ 'first-love-hero.jpg' | asset_url }}"
+            alt="K&A Bridal Couture — First Love editorial"
+            width="1800"
+            height="1276"
+            class="img-filter-hero"
+          >
+        {% endif %}
+      </div>
+      <div class="ka-hero__overlay"></div>
+      <div class="ka-hero__content">
+        <p class="ka-hero__eyebrow">{{ section.settings.eyebrow }}</p>
+        <h2 class="ka-hero__title">
+          {{ section.settings.title_line1 }}<br>
+          <strong>{{ section.settings.title_line2 }}</strong>
+        </h2>
+        <p class="ka-hero__sub">{{ section.settings.subtitle }}</p>
+        <div class="ka-hero__ctas">
+          <a href="{{ section.settings.cta_primary_url }}" class="btn-ghost" tabindex="-1">{{ section.settings.cta_primary_label }}</a>
+          <a href="https://wa.me/{{ settings.whatsapp_number }}?text={{ "Hello K&A, I'd like to book a styling appointment" | url_encode }}" class="btn-text" target="_blank" rel="noopener" tabindex="-1" data-ka-enquiry="appointment" data-ka-placement="home-hero-appointment">{{ section.settings.cta_secondary_label }}</a>
+        </div>
+      </div>
+      <div class="ka-hero__scroll" aria-hidden="true">
+        <span>Scroll</span>
+        <div class="ka-hero__scroll-line"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="ka-hero__ctrl" role="group" aria-label="Slideshow controls">
+    <button class="ka-hero__pause" type="button" id="ka-hero-pause" aria-pressed="false" aria-label="Pause slideshow">
+      <svg class="i-pause" viewBox="0 0 8 8" aria-hidden="true"><rect x="0.5" y="0" width="2.3" height="8"/><rect x="5.2" y="0" width="2.3" height="8"/></svg>
+      <svg class="i-play" viewBox="0 0 8 8" aria-hidden="true"><path d="M1 0 L8 4 L1 8Z"/></svg>
+    </button>
+    <ul class="ka-hero__tabs">
+      <li><button class="ka-hero__tab" type="button" aria-label="Show slide 1 of 2: {{ lt_name | escape }}" aria-current="true" style="--dwell:8s"><span>01</span><span class="ka-hero__bar"><i></i></span></button></li>
+      <li><button class="ka-hero__tab" type="button" aria-label="Show slide 2 of 2: First Love" style="--dwell:7s"><span>02</span><span class="ka-hero__bar"><i></i></span></button></li>
+    </ul>
+  </div>
+  <p class="ka-hero__sr" id="ka-hero-status" role="status"></p>
+</section>
+<script src="{{ 'ka-hero-slider.js' | asset_url }}" defer></script>
 {%- endif -%}
 
 {% schema %}

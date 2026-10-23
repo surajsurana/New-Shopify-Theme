@@ -130,3 +130,84 @@
   .ka-hero__sub { display: none; }
   .ka-hero__ctas { margin-top: 26px; gap: 22px; }
 }
+
+/* ================================================================
+   SLIDER (loomiere_state teaser / live). Spec: Docs/home-hero-slider-build-spec.md
+   Every rule is scoped to .ka-hero--slider; the plain (off) hero is unaffected.
+   Slide 1 (Loomiere) rules live in ka-loomiere-teaser.css.
+================================================================ */
+.ka-hero--slider { background: var(--c-charcoal-2); }
+.ka-hero--slider .ka-hero__slides { position: absolute; top: 0; right: 0; bottom: 0; left: 0; touch-action: pan-y; }
+.ka-hero--slider .ka-hero__slide {
+  position: absolute; top: 0; right: 0; bottom: 0; left: 0;
+  opacity: 0; visibility: hidden; z-index: 0;
+  transition: opacity 1.6s var(--ease-soft), visibility 0s linear 1.6s;
+}
+.ka-hero--slider .ka-hero__slide.is-prev { opacity: 1; visibility: visible; z-index: 1; transition: opacity .7s var(--ease-soft) .9s, visibility 0s linear 1.6s; }
+.ka-hero--slider .ka-hero__slide.is-active { opacity: 1; visibility: visible; z-index: 2; transition: opacity 1.6s var(--ease-soft), visibility 0s; }
+.ka-hero--slider .ka-hero__slide.is-prev .ka-hero__content,
+.ka-hero--slider .ka-hero__slide.is-prev .lt__content { opacity: 0; transition: opacity .5s var(--ease-soft); }
+
+/* Slide 2: First Love (same values as the plain hero) */
+.ka-hero--slider .ka-hero__bg { position: absolute; top: 0; right: 0; bottom: 0; left: 0; transform: scale(1.05); transition: transform 2.2s var(--ease-luxury); }
+.ka-hero--slider .ka-hero__slide.is-active .ka-hero__bg { transform: scale(1); }
+.ka-hero--slider .ka-hero__bg img { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; object-position: center 20%; }
+.ka-hero--slider .ka-hero__overlay { position: absolute; top: 0; right: 0; bottom: 0; left: 0; }
+.ka-hero--slider .ka-hero__eyebrow,
+.ka-hero--slider .ka-hero__title,
+.ka-hero--slider .ka-hero__sub,
+.ka-hero--slider .ka-hero__ctas { opacity: 0; animation: none; }
+.ka-hero--slider .is-active .ka-hero__eyebrow { animation: fadeUp 1s var(--ease-luxury) .6s forwards; }
+.ka-hero--slider .is-active .ka-hero__title { animation: fadeUp 1.2s var(--ease-luxury) .9s forwards; }
+.ka-hero--slider .is-active .ka-hero__sub { animation: fadeUp 1s var(--ease-luxury) 1.3s forwards; }
+.ka-hero--slider .is-active .ka-hero__ctas { animation: fadeUp 1s var(--ease-luxury) 1.6s forwards; }
+.ka-hero--slider.is-cycled .is-active .ka-hero__eyebrow { animation-delay: .5s; }
+.ka-hero--slider.is-cycled .is-active .ka-hero__title { animation-delay: .7s; }
+.ka-hero--slider.is-cycled .is-active .ka-hero__sub { animation-delay: .95s; }
+.ka-hero--slider.is-cycled .is-active .ka-hero__ctas { animation-delay: 1.2s; }
+.ka-hero--slider .is-prev .ka-hero__eyebrow,
+.ka-hero--slider .is-prev .ka-hero__title,
+.ka-hero--slider .is-prev .ka-hero__sub,
+.ka-hero--slider .is-prev .ka-hero__ctas { opacity: 1; animation: none; }
+.ka-hero--slider .ka-hero__scroll { animation: none; opacity: 1; }
+
+/* Controls: pause + two hairline progress segments */
+.ka-hero__ctrl { position: absolute; left: var(--gutter); bottom: 36px; z-index: 5; display: flex; align-items: center; gap: 20px; opacity: 0; animation: fadeIn 1s var(--ease-luxury) 2.2s forwards; }
+.ka-hero__tabs { display: flex; align-items: center; gap: 14px; list-style: none; margin: 0; padding: 0; }
+.ka-hero__tab { display: flex; align-items: center; gap: 10px; padding: 12px 0; font-size: .58rem; font-weight: 400; letter-spacing: .2em; color: rgba(255,255,255,.5); transition: color .5s; background: none; border: 0; cursor: pointer; font-family: inherit; }
+.ka-hero__tab[aria-current="true"] { color: #fff; }
+.ka-hero__bar { display: block; position: relative; width: 56px; height: 1px; background: rgba(255,255,255,.3); overflow: hidden; }
+.ka-hero__bar i { position: absolute; top: 0; left: 0; height: 100%; width: 0; background: #fff; }
+.ka-hero__tab[aria-current="true"] .ka-hero__bar i { width: 100%; }
+.ka-hero.is-playing .ka-hero__tab[aria-current="true"] .ka-hero__bar i { width: 0; animation: heroFill var(--dwell, 7s) linear forwards; }
+.ka-hero.is-hold .ka-hero__tab[aria-current="true"] .ka-hero__bar i { animation-play-state: paused; }
+@keyframes heroFill { to { width: 100%; } }
+.ka-hero__pause { width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; color: rgba(255,255,255,.75); border: 1px solid rgba(255,255,255,.3); border-radius: 50%; background: none; cursor: pointer; padding: 0; transition: border-color .35s, color .35s; }
+.ka-hero__pause:hover { color: #fff; border-color: #fff; }
+.ka-hero__pause svg { width: 8px; height: 8px; fill: currentColor; }
+.ka-hero__pause .i-play { display: none; }
+.ka-hero__pause[aria-pressed="true"] .i-play { display: block; }
+.ka-hero__pause[aria-pressed="true"] .i-pause { display: none; }
+.ka-hero--slider button:focus-visible,
+.ka-hero--slider a:focus-visible { outline: 1px solid #fff; outline-offset: 4px; }
+.ka-hero__sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+
+@media (max-width: 700px) {
+  .ka-hero--slider .ka-hero__slides { bottom: 44px; }
+  .ka-hero__ctrl { left: 0; right: 0; bottom: 0; height: 44px; padding-left: 20px; justify-content: flex-start; background: var(--c-charcoal-2); gap: 14px; }
+  .ka-hero__tab { padding: 8px 0; }
+  .ka-hero__bar { width: 34px; }
+  .ka-hero__tabs { gap: 12px; }
+}
+@media (max-width: 600px) {
+  .ka-hero--slider .ka-hero__content { bottom: 52px; }
+  .ka-hero--slider .ka-hero__scroll { bottom: 44px; }
+  .ka-hero--slider .ka-hero__bg img { object-position: 34% 8%; }  /* keep the approved First Love phone crop (line 125) */
+}
+@media (prefers-reduced-motion: reduce) {
+  .ka-hero--slider *, .ka-hero--slider .ka-hero__ctrl { animation: none !important; transition: none !important; }
+  .ka-hero--slider .ka-hero__eyebrow, .ka-hero--slider .ka-hero__title, .ka-hero--slider .ka-hero__sub, .ka-hero--slider .ka-hero__ctas,
+  .ka-hero--slider .lt__eyebrow, .ka-hero--slider .lt__kicker, .ka-hero--slider .lt__name, .ka-hero--slider .lt__line, .ka-hero--slider .lt__cta, .ka-hero--slider .lt__more,
+  .ka-hero__ctrl { opacity: 1 !important; transform: none !important; }
+  .ka-hero--slider .lt__media img, .ka-hero--slider .ka-hero__bg { transform: none !important; }
+}
