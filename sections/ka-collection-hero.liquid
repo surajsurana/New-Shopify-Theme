@@ -30,6 +30,12 @@
   non-blank (numerals dropped, D2). Optional metafield custom.hero_focus
   (e.g. "50% 8%") sets object-position so portrait photographs are not
   cropped through the face; default stays "center 30%".
+
+  2026-10-26 (Loomiere phone hero): optional metafields custom.hero_image_mobile
+  (file_reference) + custom.hero_focus_mobile (e.g. "52% 0%"). When the image is
+  set, the hero renders as <picture> with a (max-width:600px) <source>, and the
+  mobile focus is applied through --hero-pos-m (see ka-collection-hero.css).
+  When it is not set the markup is unchanged for every other collection.
 {%- endcomment -%}
 
 {%- liquid
@@ -37,6 +43,13 @@
   assign hero_mf_eyebrow = collection.metafields.custom.hero_eyebrow.value
   assign hero_mf_focus = collection.metafields.custom.hero_focus.value
   assign hero_focus_style = ''
+  assign hero_mf_image_mobile = collection.metafields.custom.hero_image_mobile.value
+  assign hero_mf_focus_mobile = collection.metafields.custom.hero_focus_mobile.value
+  assign hero_pos_m_style = ''
+  if hero_mf_focus_mobile != blank
+    assign hero_focus_m_safe = hero_mf_focus_mobile | strip | escape
+    assign hero_pos_m_style = ' --hero-pos-m: ' | append: hero_focus_m_safe | append: ';'
+  endif
   if hero_mf_focus != blank
     assign hero_focus_safe = hero_mf_focus | strip | escape
     assign hero_focus_style = 'object-position: ' | append: hero_focus_safe | append: ';'
@@ -58,7 +71,21 @@
 
 <section class="ka-coll-hero">
   <div class="ka-coll-hero__frame reveal-img">
-    {% if hero_mf_image != blank %}
+    {% if hero_mf_image != blank and hero_mf_image_mobile != blank %}
+      <picture class="ka-coll-hero__pic">
+        <source media="(max-width: 600px)" srcset="{{ hero_mf_image_mobile | image_url: width: 900 }} 900w, {{ hero_mf_image_mobile | image_url: width: 1200 }} 1200w" sizes="100vw">
+        <img
+          src="{{ hero_mf_image | image_url: width: 1800 }}"
+          alt="{{ hero_mf_image.alt | default: collection.title | escape }}"
+          loading="eager"
+          fetchpriority="high"
+          width="1800"
+          height="1100"
+          class="img-filter-coll-page-dark ka-coll-hero__img--m"
+          style="{{ hero_focus_style }}{{ hero_pos_m_style }}"
+        />
+      </picture>
+    {% elsif hero_mf_image != blank %}
       <img
         src="{{ hero_mf_image | image_url: width: 1800 }}"
         alt="{{ hero_mf_image.alt | default: collection.title | escape }}"
