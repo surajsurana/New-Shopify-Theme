@@ -17,6 +17,7 @@
   overflow: hidden;
 }
 .ka-coll-hero__frame img { object-position: center 30%; }
+.ka-coll-hero__pic { display: block; width: 100%; height: 100%; }
 .ka-coll-hero__overlay {
   position: absolute;
   inset: 0;
@@ -110,4 +111,5 @@
   .ka-coll-hero__content { flex-direction: column; align-items: flex-start; gap: 18px; }
   .ka-coll-hero__meta { text-align: left; }
   .ka-coll-hero__content::before { -webkit-mask-image: none; mask-image: none; }
+  .ka-coll-hero__frame img.ka-coll-hero__img--m { object-position: var(--hero-pos-m, center 30%) !important; }
 }
