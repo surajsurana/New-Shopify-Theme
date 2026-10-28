@@ -12,10 +12,14 @@
         {% assign card_url = block.settings.collection.url | default: block.settings.card_url %}
         <a href="{{ card_url }}" class="ka-coll-card reveal-img" {{ block.shopify_attributes }}>
           <div class="ka-coll-card__image">
-            {% if block.settings.image != blank %}
+            {%- assign card_img = block.settings.image -%}
+            {%- if card_img == blank and block.settings.collection != blank -%}
+              {%- assign card_img = block.settings.collection.image -%}
+            {%- endif -%}
+            {% if card_img != blank %}
               <img
-                src="{{ block.settings.image | image_url: width: 700 }}"
-                alt="{{ block.settings.image.alt | escape | default: block.settings.name }}"
+                src="{{ card_img | image_url: width: 700 }}"
+                alt="{{ block.settings.name | escape }}"
                 loading="lazy"
                 width="700"
                 height="1050"
@@ -63,7 +67,7 @@
     {
       "type": "collection_card",
       "name": "Collection card",
-      "limit": 5,
+      "limit": 6,
       "settings": [
         { "type": "image_picker", "id": "image",      "label": "Card image" },
         { "type": "text",         "id": "name",       "label": "Collection name", "default": "The Festive Edit" },

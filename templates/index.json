@@ -180,6 +180,14 @@
     "ka-collections-directory": {
       "type": "ka-collections-directory",
       "blocks": {
+        "loomiere": {
+          "type": "collection_card",
+          "settings": {
+            "name": "Loomière",
+            "collection": "loomiere",
+            "card_url": "/collections/loomiere"
+          }
+        },
         "first-love": {
           "type": "collection_card",
           "settings": {
@@ -223,6 +231,7 @@
         }
       },
       "block_order": [
+        "loomiere",
         "first-love",
         "the-festive-edit",
         "the-bloom-soiree",
