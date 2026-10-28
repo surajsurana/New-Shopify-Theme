@@ -32,11 +32,11 @@
       "blocks": {
         "loomiere": {
           "type": "featured_collection",
-          "settings": { "collection": "loomiere", "wide_feature": true }
+          "settings": { "collection": "loomiere", "use_collection_image": true }
         },
         "first-love": {
           "type": "featured_collection",
-          "settings": { "collection": "first-love" }
+          "settings": { "collection": "first-love", "wide_feature": true, "use_collection_image": true }
         },
         "festive-edit": {
           "type": "featured_collection",
