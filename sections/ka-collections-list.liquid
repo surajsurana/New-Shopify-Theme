@@ -61,7 +61,7 @@
         {% for block in section.blocks %}
           {% assign coll = block.settings.collection %}
           {% if coll != blank %}
-            <a href="{{ coll.url }}" class="ka-coll-card" {{ block.shopify_attributes }}>
+            <a href="{{ coll.url }}" class="ka-coll-card{% if block.settings.wide_feature %} ka-coll-card--feature{% endif %}" {{ block.shopify_attributes }}>
               <div class="ka-coll-card__image">
                 {%- assign coll_mf_image = coll.metafields.custom.hero_image.value -%}
                 {% if coll_mf_image != blank %}
@@ -82,7 +82,7 @@
                     loading="lazy"
                     width="700"
                     height="1050"
-                    class="img-filter-collection"
+                    class="img-filter-collection ka-coll-card__img--collection"
                   />
                 {% else %}
                   {%- case coll.handle -%}
@@ -150,7 +150,8 @@
       "type": "featured_collection",
       "name": "Collection",
       "settings": [
-        { "type": "collection", "id": "collection", "label": "Collection" }
+        { "type": "collection", "id": "collection", "label": "Collection" },
+        { "type": "checkbox", "id": "wide_feature", "label": "Wide feature card", "default": false, "info": "Spans two columns. Use for one lead collection so the grid stays even." }
       ]
     }
   ],
